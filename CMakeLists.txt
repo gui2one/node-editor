@@ -33,6 +33,7 @@ add_executable(${PROJECT_NAME}
   ${imgui_sources}
   src/main.cpp
   src/ImGuiNode.cpp
+  src/NodeManager.cpp
  
 )
 

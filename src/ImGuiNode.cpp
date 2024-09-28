@@ -10,7 +10,7 @@ ImGuiNode::~ImGuiNode()
 
 }
 
-void ImGuiNode::render(ImDrawList *draw_list, ImVec2 _offset)
+void ImGuiNode::Render(ImDrawList *draw_list, ImVec2 _offset)
 {
     offset = _offset;
     ImVec2 min = ImVec2(position.x + offset.x, position.y + offset.y);
@@ -25,17 +25,20 @@ void ImGuiNode::render(ImDrawList *draw_list, ImVec2 _offset)
     }
 
     if(selected){
-        draw_list->AddRect(min, max, IM_COL32(255, 255, 255, 255), 3.0f);
+        draw_list->AddRect(min, max, IM_COL32(200, 200, 60, 100), 3.0f, 0, 3.0f);
     }
 
-    
-    
 }
 
-bool ImGuiNode::IsNodeHovered()
+bool ImGuiNode::IsHovered()
 {
     ImVec2 min = ImVec2(position.x + offset.x, position.y + offset.y);
     ImVec2 max = ImVec2(min.x + size.x, min.y + size.y);    
-    hovered = ImGui::IsMouseHoveringRect(min, max);
+    bool hovered = ImGui::IsMouseHoveringRect(min, max);
     return hovered;
+}
+
+bool ImGuiNode::IsNodeDragged()
+{
+    return false;
 }

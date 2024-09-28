@@ -16,7 +16,10 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "ImGuiNode.h"
+#include "NodeManager.h"
 
+
+NodeManager manager;
 void ImGuiInit(GLFWwindow *window)
 {
     // init ImGui
@@ -25,6 +28,7 @@ void ImGuiInit(GLFWwindow *window)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
+    manager.Init(&io);
     // io.Fonts->AddFontFromFileTTF(ORBITONS_RES_DIR "/fonts/JetBrainsMono-Regular.ttf", 16);
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -73,7 +77,7 @@ void ImGuiEndFrame()
 
 }
 
-void canvas_demo(std::vector<ImGuiNode> &nodes){
+void canvas_demo(std::vector<std::shared_ptr<ImGuiNode>> &nodes){
 
     static ImVector<ImVec2> points;
     static ImVec2 scrolling(0.0f, 0.0f);
@@ -182,8 +186,8 @@ void canvas_demo(std::vector<ImGuiNode> &nodes){
 
 
     // draw my fancyNodes
-    for(auto& node : nodes) {
-        node.render(draw_list, ImVec2(origin.x, origin.y));
+    for(auto node : nodes) {
+        node->Render(draw_list, ImVec2(origin.x, origin.y));
     }
 
 
@@ -192,35 +196,6 @@ void canvas_demo(std::vector<ImGuiNode> &nodes){
 
 }
 
-void manage_mouse_input(std::vector<ImGuiNode> &nodes) {
-    
-    ImGuiNode* hovered = nullptr;
-    ImGuiNode* cur_node = nullptr;
-    for(auto& node : nodes) {
-        node.highlighted = false;
-        // node.selected = false;
-        if(node.IsNodeHovered()) {
-            if(ImGui::IsMouseClicked(0)) {
-                if(node.selected) {
-                    node.selected = false;
-                }else{
-
-                    cur_node = &node;
-                }
-            }
-
-            hovered = &node;
-        }
-    }
-    
-    if( cur_node){
-
-        cur_node->selected = true;
-    }
-    if(hovered) {
-        hovered->highlighted = true;
-    }
-}
 int main(int argc, char **argv)
 {
 
@@ -250,17 +225,19 @@ int main(int argc, char **argv)
     ImGuiInit(window);
 
     glViewport(0, 0, 640, 360);
-    glfwSwapInterval(1);
+    glfwSwapInterval(0);
     
 
-    std::vector<ImGuiNode> nodes;
-    ImGuiNode node1;
-    node1.position = ImVec2(750, 500);
-    ImGuiNode node2;
-    node2.position = ImVec2(800, 500);
+    std::vector<std::shared_ptr<ImGuiNode>> nodes;
+    auto node1 = std::make_shared<ImGuiNode>();
+    node1->position = ImVec2(750, 510);
+    auto node2 = std::make_shared<ImGuiNode>();
+    node2->position = ImVec2(800, 500);
     // node2.size = ImVec2(100, 30);
     nodes.push_back(node1);
     nodes.push_back(node2);
+
+    manager.SetNodes(nodes);
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -276,8 +253,7 @@ int main(int argc, char **argv)
         }
 
         ImGui::Begin("Canvas test");
-
-            manage_mouse_input(nodes);
+            manager.Update();
             canvas_demo(nodes);
         ImGui::End();
         ImGuiEndFrame();
