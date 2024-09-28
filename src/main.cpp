@@ -28,7 +28,6 @@ void ImGuiInit(GLFWwindow *window)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    manager.Init(&io);
     // io.Fonts->AddFontFromFileTTF(ORBITONS_RES_DIR "/fonts/JetBrainsMono-Regular.ttf", 16);
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -77,7 +76,7 @@ void ImGuiEndFrame()
 
 }
 
-void canvas_demo(std::vector<std::shared_ptr<ImGuiNode>> &nodes){
+void canvas_demo(){
 
     static ImVector<ImVec2> points;
     static ImVec2 scrolling(0.0f, 0.0f);
@@ -228,16 +227,13 @@ int main(int argc, char **argv)
     glfwSwapInterval(0);
     
 
-    std::vector<std::shared_ptr<ImGuiNode>> nodes;
     auto node1 = std::make_shared<ImGuiNode>();
-    node1->position = ImVec2(750, 510);
+    node1->position = ImVec2(500, 300);
     auto node2 = std::make_shared<ImGuiNode>();
-    node2->position = ImVec2(800, 500);
-    // node2.size = ImVec2(100, 30);
-    // nodes.push_back(node1);
-    // nodes.push_back(node2);
-    manager.GetNodes().push_back(node1);
-    manager.GetNodes().push_back(node2);
+    node2->position = ImVec2(620, 320);
+    auto& nodes = manager.GetNodes();
+    nodes.push_back(node1);
+    nodes.push_back(node2);
 
     // manager.SetNodes(nodes);
     while (!glfwWindowShouldClose(window))
@@ -256,7 +252,7 @@ int main(int argc, char **argv)
 
         ImGui::Begin("Canvas test");
             manager.Update();
-            canvas_demo(nodes);
+            canvas_demo();
         ImGui::End();
         ImGuiEndFrame();
 

@@ -15,7 +15,6 @@ public:
     NodeManager();
     ~NodeManager();
 
-    void Init(ImGuiIO* io);
     void Update();
 
 
@@ -26,7 +25,6 @@ public:
 
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
-    ImGuiIO* mIO;
 };
 
 #endif

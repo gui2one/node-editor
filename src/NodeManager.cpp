@@ -10,9 +10,6 @@ NodeManager::~NodeManager()
 {
 
 }
-void NodeManager::Init(ImGuiIO* io){
-    mIO = io;
-}
 
 void NodeManager::Update()
 {
