@@ -89,5 +89,5 @@ include_directories(
   ${_include_dirs}
 )
 
-add_subdirectory(example)
+# add_subdirectory(example)
 
