@@ -183,7 +183,7 @@ void canvas_demo(std::vector<ImGuiNode> &nodes){
 
     // draw my fancyNodes
     for(auto& node : nodes) {
-        node.render(draw_list, ImVec2(scrolling.x, scrolling.y));
+        node.render(draw_list, ImVec2(origin.x, origin.y));
     }
 
 
@@ -193,8 +193,33 @@ void canvas_demo(std::vector<ImGuiNode> &nodes){
 }
 
 void manage_mouse_input(std::vector<ImGuiNode> &nodes) {
+    
+    ImGuiNode* hovered = nullptr;
+    ImGuiNode* cur_node = nullptr;
+    for(auto& node : nodes) {
+        node.highlighted = false;
+        // node.selected = false;
+        if(node.IsNodeHovered()) {
+            if(ImGui::IsMouseClicked(0)) {
+                if(node.selected) {
+                    node.selected = false;
+                }else{
 
-        
+                    cur_node = &node;
+                }
+            }
+
+            hovered = &node;
+        }
+    }
+    
+    if( cur_node){
+
+        cur_node->selected = true;
+    }
+    if(hovered) {
+        hovered->highlighted = true;
+    }
 }
 int main(int argc, char **argv)
 {
@@ -230,10 +255,11 @@ int main(int argc, char **argv)
 
     std::vector<ImGuiNode> nodes;
     ImGuiNode node1;
-    nodes.push_back(node1);
+    node1.position = ImVec2(750, 500);
     ImGuiNode node2;
     node2.position = ImVec2(800, 500);
     // node2.size = ImVec2(100, 30);
+    nodes.push_back(node1);
     nodes.push_back(node2);
     while (!glfwWindowShouldClose(window))
     {
