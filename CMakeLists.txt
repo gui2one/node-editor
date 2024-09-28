@@ -18,19 +18,19 @@ endfunction()
 
 set(imgui_sources 
   # imgui stuff
-  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
-  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
 
-  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui.cpp
-  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_demo.cpp
-  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_draw.cpp
-  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_widgets.cpp
-  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_tables.cpp     
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_demo.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_draw.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_widgets.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_tables.cpp     
 )
 add_library(imgui STATIC ${imgui_sources})
 target_include_directories(imgui PUBLIC 
-  ${CMAKE_SOURCE_DIR}/_deps/imgui-src
-  ${CMAKE_SOURCE_DIR}/_deps/glfw-src/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/imgui-src
+  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/glfw-src/include
 )
 add_library(${PROJECT_NAME} STATIC
 
