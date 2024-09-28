@@ -18,24 +18,24 @@ endfunction()
 
 set(imgui_sources 
   # imgui stuff
-  build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
-  build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
 
-  build/_deps/imgui-src/imgui.cpp
-  build/_deps/imgui-src/imgui_demo.cpp
-  build/_deps/imgui-src/imgui_draw.cpp
-  build/_deps/imgui-src/imgui_widgets.cpp
-  build/_deps/imgui-src/imgui_tables.cpp     
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_demo.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_draw.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_widgets.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_tables.cpp     
 )
 add_library(imgui STATIC ${imgui_sources})
 target_include_directories(imgui PUBLIC 
-  build/_deps/imgui-src
-  build/_deps/glfw-src/include
+  ${CMAKE_SOURCE_DIR}/_deps/imgui-src
+  ${CMAKE_SOURCE_DIR}/_deps/glfw-src/include
 )
 add_library(${PROJECT_NAME} STATIC
 
-  src/ImGuiNode.cpp
-  src/NodeManager.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/ImGuiNode.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/NodeManager.cpp
  
 )
 
@@ -43,6 +43,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 
 set(_include_dirs
   ${CMAKE_CURRENT_SOURCE_DIR}/src
+  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/glfw-src/include
   ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/glm-src/
   ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/
   ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/backends
@@ -89,5 +90,5 @@ include_directories(
   ${_include_dirs}
 )
 
-# add_subdirectory(example)
+add_subdirectory(example)
 
