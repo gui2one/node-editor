@@ -18,37 +18,37 @@ endfunction()
 
 set(imgui_sources 
   # imgui stuff
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
 
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_demo.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_draw.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_widgets.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/imgui_tables.cpp     
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_demo.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_draw.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_widgets.cpp
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_tables.cpp     
 )
 add_library(imgui STATIC ${imgui_sources})
 target_include_directories(imgui PUBLIC 
-  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/imgui-src
-  ${CMAKE_CURRENT_SOURCE_DIR}/_deps/glfw-src/include
+  ${CMAKE_SOURCE_DIR}/_deps/imgui-src
+  ${CMAKE_SOURCE_DIR}/_deps/glfw-src/include
 )
 add_library(${PROJECT_NAME} STATIC
 
-${CMAKE_CURRENT_SOURCE_DIR}/src/ImGuiNode.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/src/NodeManager.cpp
+src/ImGuiNode.cpp
+src/NodeManager.cpp
  
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 
 set(_include_dirs
-  ${CMAKE_CURRENT_SOURCE_DIR}/src
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/glfw-src/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/glm-src/
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui-src/backends
-  ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/imgui_node_editor-src
-  ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include
+  src/
+  ${CMAKE_SOURCE_DIR}/build/_deps/glfw-src/include
+  ${CMAKE_SOURCE_DIR}/build/_deps/glm-src/
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui_node_editor-src
+  vendor/glad/include
 )
 
 # GLM
@@ -80,7 +80,7 @@ FetchDependencyAndMakeAvailable(
   https://github.com/ocornut/imgui
   v1.91.2-docking
 )
-target_include_directories(${PROJECT_NAME} PRIVATE 
+target_include_directories(${PROJECT_NAME} PUBLIC 
   ${_include_dirs}
 )
 
