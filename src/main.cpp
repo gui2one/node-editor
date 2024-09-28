@@ -1,6 +1,7 @@
 #include <iostream>
 #include <assert.h>
 #include <string>
+#include <vector>
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -13,6 +14,8 @@
 #define GLM_ENABLE_EXPERIMENTAL 
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
+
+#include "ImGuiNode.h"
 
 void ImGuiInit(GLFWwindow *window)
 {
@@ -70,7 +73,7 @@ void ImGuiEndFrame()
 
 }
 
-void canvas_demo(){
+void canvas_demo(std::vector<ImGuiNode> &nodes){
 
     static ImVector<ImVec2> points;
     static ImVec2 scrolling(0.0f, 0.0f);
@@ -178,14 +181,20 @@ void canvas_demo(){
     }
 
 
-    // custom rectangles
-    ImVec2 min = ImVec2(200 + origin.x, 200 + origin.y);
-    ImVec2 max = ImVec2(100 + min.x, 200 + min.y);
-    draw_list->AddRectFilled(min, max, IM_COL32(0, 50, 50, 255));    
+    // draw my fancyNodes
+    for(auto& node : nodes) {
+        node.render(draw_list, ImVec2(scrolling.x, scrolling.y));
+    }
+
 
     draw_list->PopClipRect();
 
 
+}
+
+void manage_mouse_input(std::vector<ImGuiNode> &nodes) {
+
+        
 }
 int main(int argc, char **argv)
 {
@@ -218,6 +227,14 @@ int main(int argc, char **argv)
     glViewport(0, 0, 640, 360);
     glfwSwapInterval(1);
     
+
+    std::vector<ImGuiNode> nodes;
+    ImGuiNode node1;
+    nodes.push_back(node1);
+    ImGuiNode node2;
+    node2.position = ImVec2(800, 500);
+    // node2.size = ImVec2(100, 30);
+    nodes.push_back(node2);
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -234,7 +251,8 @@ int main(int argc, char **argv)
 
         ImGui::Begin("Canvas test");
 
-            canvas_demo();
+            manage_mouse_input(nodes);
+            canvas_demo(nodes);
         ImGui::End();
         ImGuiEndFrame();
 

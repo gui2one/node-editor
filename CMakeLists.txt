@@ -17,9 +17,8 @@ function(FetchDependencyAndMakeAvailable NAME URL TAG)
   FetchContent_MakeAvailable(${NAME})
 endfunction()
 
-add_executable(${PROJECT_NAME}
-
-  src/main.cpp
+set(imgui_sources 
+  # imgui stuff
   build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
   build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
 
@@ -27,7 +26,14 @@ add_executable(${PROJECT_NAME}
   build/_deps/imgui-src/imgui_demo.cpp
   build/_deps/imgui-src/imgui_draw.cpp
   build/_deps/imgui-src/imgui_widgets.cpp
-  build/_deps/imgui-src/imgui_tables.cpp      
+  build/_deps/imgui-src/imgui_tables.cpp     
+)
+
+add_executable(${PROJECT_NAME}
+  ${imgui_sources}
+  src/main.cpp
+  src/ImGuiNode.cpp
+ 
 )
 
 set(_include_dirs
