@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
 
-
 include(FetchContent)   
 Set(FETCHCONTENT_QUIET FALSE)
 set(CMAKE_CXX_STANDARD 20)
@@ -41,11 +40,7 @@ add_library(${PROJECT_NAME} STATIC
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
-add_executable(example
-  src/example.cpp
-)
-target_link_libraries(example PUBLIC imgui)
-target_link_libraries(example PUBLIC ${PROJECT_NAME})
+
 set(_include_dirs
   ${CMAKE_CURRENT_SOURCE_DIR}/src
   ${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/glm-src/
@@ -72,12 +67,11 @@ FetchDependencyAndMakeAvailable(
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 target_include_directories(${PROJECT_NAME} PRIVATE build/_deps/glfw-src/include)
-target_link_libraries(example PRIVATE glfw)
-target_include_directories(example PRIVATE build/_deps/glfw-src/include)
+
 # GLAD
 add_subdirectory(vendor/glad)
 target_link_libraries(${PROJECT_NAME} PUBLIC glad)
-target_link_libraries(example PUBLIC glad)
+
 
 #IMGUI
 FetchDependencyAndMakeAvailable(
@@ -88,12 +82,12 @@ FetchDependencyAndMakeAvailable(
 target_include_directories(${PROJECT_NAME} PRIVATE 
   ${_include_dirs}
 )
-target_include_directories(example PRIVATE 
-${_include_dirs}
-)
+
 
 include_directories(
   
   ${_include_dirs}
 )
+
+add_subdirectory(example)
 
