@@ -20,6 +20,10 @@ public:
 
 
     inline void SetNodes(std::vector<std::shared_ptr<ImGuiNode>> _nodes) { nodes = _nodes; }
+
+    inline std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() { return nodes; }
+    inline const std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() const { return nodes; }
+
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     ImGuiIO* mIO;

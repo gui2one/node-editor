@@ -186,7 +186,7 @@ void canvas_demo(std::vector<std::shared_ptr<ImGuiNode>> &nodes){
 
 
     // draw my fancyNodes
-    for(auto node : nodes) {
+    for(auto node : manager.GetNodes()) {
         node->Render(draw_list, ImVec2(origin.x, origin.y));
     }
 
@@ -234,10 +234,12 @@ int main(int argc, char **argv)
     auto node2 = std::make_shared<ImGuiNode>();
     node2->position = ImVec2(800, 500);
     // node2.size = ImVec2(100, 30);
-    nodes.push_back(node1);
-    nodes.push_back(node2);
+    // nodes.push_back(node1);
+    // nodes.push_back(node2);
+    manager.GetNodes().push_back(node1);
+    manager.GetNodes().push_back(node2);
 
-    manager.SetNodes(nodes);
+    // manager.SetNodes(nodes);
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
