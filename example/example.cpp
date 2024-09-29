@@ -22,7 +22,7 @@ void ImGuiInit(GLFWwindow *window)
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
-    const char *glsl_version = "#version 130";
+    const char *glsl_version = "#version 330";
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     ////////////
