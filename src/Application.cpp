@@ -24,7 +24,7 @@ bool Application::Init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    m_NativeWindow = glfwCreateWindow(1280, 720, "Starter Project", NULL, NULL);
+    m_NativeWindow = glfwCreateWindow(1280, 720, "The Node Editor | Another one ?!!", NULL, NULL);
 
     if (m_NativeWindow == NULL)
     {
@@ -104,6 +104,10 @@ void Application::ImGuiEndFrame()
 
 
 }
+void Application::SetLoopFunction(std::function<void()> func)
+{
+    m_LoopFunction = func;
+}
 void Application::Update()
 {
     while (!glfwWindowShouldClose(m_NativeWindow))
@@ -121,8 +125,8 @@ void Application::Update()
         }
 
         ImGui::Begin("Canvas test");
-            // manager.Update();
-            // canvas_demo();
+            
+            m_LoopFunction();
         ImGui::End();
         ImGuiEndFrame();
 

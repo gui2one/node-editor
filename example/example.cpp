@@ -7,63 +7,10 @@
 
 
 NodeManager manager;
-void ImGuiInit(GLFWwindow *window)
-{
-    // init ImGui
-    // Setup Dear ImGui context
-
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    // io.Fonts->AddFontFromFileTTF(ORBITONS_RES_DIR "/fonts/JetBrainsMono-Regular.ttf", 16);
-
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    const char *glsl_version = "#version 330";
-    ImGui_ImplOpenGL3_Init(glsl_version);
-
-    ////////////
-    // end imgui config
-    ///////////
-}
-void ImGuiBeginFrame()
-{
-    // Start the Dear ImGui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    ImGui::DockSpaceOverViewport(NULL, NULL, ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode /*|ImGuiDockNodeFlags_NoResize*/);
-}
-void ImGuiEndFrame()
-{
-
-    // Rendering
-    ImGui::Render();
-
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    // ImGui::EndFrame();
-
-    ImGuiIO &io = ImGui::GetIO();
-
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-        GLFWwindow *backup_current_context = glfwGetCurrentContext();
-
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-
-        glfwMakeContextCurrent(backup_current_context);
-    }
-
-
-}
 
 void canvas_demo(){
+
+    manager.Update();
 
     static ImVector<ImVec2> points;
     static ImVec2 scrolling(0.0f, 0.0f);
@@ -72,9 +19,9 @@ void canvas_demo(){
     static bool opt_enable_context_menu = true;
     static bool adding_line = false;
 
-    ImGui::Checkbox("Enable grid", &opt_enable_grid);
-    ImGui::Checkbox("Enable context menu", &opt_enable_context_menu);
-    ImGui::Text("Mouse Left: drag to add lines,\nMouse Right: drag to scroll, click for context menu.");
+    // ImGui::Checkbox("Enable grid", &opt_enable_grid);
+    // ImGui::Checkbox("Enable context menu", &opt_enable_context_menu);
+    // ImGui::Text("Mouse Left: drag to add lines,\nMouse Right: drag to scroll, click for context menu.");
 
     // Typically you would use a BeginChild()/EndChild() pair to benefit from a clipping region + own scrolling.
     // Here we demonstrate that this can be replaced by simple offsetting + custom drawing + PushClipRect/PopClipRect() calls.
@@ -182,85 +129,26 @@ void canvas_demo(){
 
 }
 
+
 int main(int argc, char **argv)
 {
     Application app;
+    auto node1 = std::make_shared<ImGuiNode>();
+    node1->position = ImVec2(500, 300);
+    auto node2 = std::make_shared<ImGuiNode>();
+    node2->position = ImVec2(620, 320);
+    auto& nodes = manager.GetNodes();
+    nodes.push_back(node1);
+    nodes.push_back(node2);    
     if(!app.Init()) {
         std::cout << "Big Problem !!!" << std::endl;
         return -1;
     };
-
+    app.SetLoopFunction([](){
+        canvas_demo();
+    });
     app.Update();
-    // if (!glfwInit())
-    // {
-    //     printf("problem with GLFW\n");
-    //     return -1;
-    // }
-    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    // GLFWwindow *window = glfwCreateWindow(1280, 720, "Starter Project", NULL, NULL);
-
-    // if (window == NULL)
-    // {
-    //     std::cout << "Failed to create GLFW window" << std::endl;
-    //     glfwTerminate();
-    //     return -1;
-    // }
-    // glfwMakeContextCurrent(window);
-    // if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    // {
-    //     std::cout << "Failed to initialize GLAD" << std::endl;
-    //     return -1;
-    // }
-
-    // ImGuiInit(window);
-
-    // glViewport(0, 0, 640, 360);
-    // glfwSwapInterval(0);
-    
-
-    // auto node1 = std::make_shared<ImGuiNode>();
-    // node1->position = ImVec2(500, 300);
-    // auto node2 = std::make_shared<ImGuiNode>();
-    // node2->position = ImVec2(620, 320);
-    // auto& nodes = manager.GetNodes();
-    // nodes.push_back(node1);
-    // nodes.push_back(node2);
-
-
-
-    // while (!glfwWindowShouldClose(window))
-    // {
-    //     glfwPollEvents();
-    //     ImGuiBeginFrame();
-
-    //     glClearColor(0.f, 0.f, 0.f, 1.f);
-    //     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    //     static bool showDemoWindow = false;
-    //     if (showDemoWindow)
-    //     {
-    //         ImGui::ShowDemoWindow(&showDemoWindow);
-    //     }
-
-    //     ImGui::Begin("Canvas test");
-    //         manager.Update();
-    //         canvas_demo();
-    //     ImGui::End();
-    //     ImGuiEndFrame();
-
-    //     glfwSwapBuffers(window);
-
-        
-
-
-    // }
-    // ImGui_ImplOpenGL3_Shutdown();
-    // ImGui_ImplGlfw_Shutdown();
-    // ImGui::DestroyContext();
-    // glfwDestroyWindow(window);
-    // glfwTerminate();
+  
 
     printf("GoodBye... \n");
     return 0;
