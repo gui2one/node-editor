@@ -6,7 +6,7 @@
 class ImGuiNode
 {
 public:
-    ImGuiNode();
+    ImGuiNode(const char * _title);
     ~ImGuiNode();
 
     void Render(ImDrawList* draw_data, ImVec2 offset);

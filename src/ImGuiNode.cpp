@@ -1,6 +1,6 @@
 #include "ImGuiNode.h"
 
-ImGuiNode::ImGuiNode() : title("default"), position(500, 500), size(100, 30)
+ImGuiNode::ImGuiNode(const char * _title) : title(_title), position(500, 500), size(100, 30)
 {
 
 }
