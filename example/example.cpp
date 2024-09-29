@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "node_editor.h"
-
+#include "MeshGenerator.h"
 int main()
 {
 
@@ -17,7 +17,7 @@ int main()
 
     auto& manager = app.GetNodeManager();
 
-    auto node1 = std::make_shared<ImGuiNode>("Node A");
+    auto node1 = std::make_shared<GridGenerator>("Generator");
     node1->position = ImVec2(500, 300);
     auto node2 = std::make_shared<ImGuiNode>("Node B");
     node2->position = ImVec2(620, 320);
