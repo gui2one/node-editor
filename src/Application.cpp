@@ -123,11 +123,16 @@ void Application::Update()
         {
             ImGui::ShowDemoWindow(&showDemoWindow);
         }
-
+        
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Canvas test");
+        
             
             m_LoopFunction();
+
         ImGui::End();
+        ImGui::PopStyleVar();
+        
         ImGuiEndFrame();
 
         glfwSwapBuffers(m_NativeWindow);
