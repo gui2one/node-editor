@@ -13,6 +13,8 @@ public:
 
     bool Init();
     
+    inline NodeManager& GetNodeManager() { return m_NodeManager; }
+    
     void SetLoopFunction(std::function<void()> func);
     void Update();
 
@@ -25,6 +27,7 @@ private:
 private:
     GLFWwindow* m_NativeWindow;
     std::function<void()> m_LoopFunction;
+    NodeManager m_NodeManager;
 };
 
 #endif

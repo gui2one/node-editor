@@ -132,26 +132,29 @@ void canvas_demo(NodeManager& mngr){
 int main(int argc, char **argv)
 {
 
-    NodeManager manager;
+    
     auto node1 = std::make_shared<ImGuiNode>();
     node1->position = ImVec2(500, 300);
+    node1->title = "Node 1";
     auto node2 = std::make_shared<ImGuiNode>();
+    node2->title = "Node 2";
     node2->position = ImVec2(620, 320);
-    auto& nodes = manager.GetNodes();
-    nodes.push_back(node1);
-    nodes.push_back(node2);  
 
     Application app;  
+    auto& manager = app.GetNodeManager();
+    manager.AddNode(node1);
+    manager.AddNode(node2);  
     if(!app.Init()) {
         std::cout << "Big Problem !!!" << std::endl;
         return -1;
     };
-    app.SetLoopFunction([&manager](){
-        canvas_demo(manager);
+    app.SetLoopFunction([&app](){
+        canvas_demo(app.GetNodeManager());
     });
     app.Update();
-  
 
-    printf("GoodBye... \n");
+    std::cout << "Goodbye ..." << std::endl;
+    printf("hey !!!!\n");
+
     return 0;
 }

@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.20)
 
 include(FetchContent)   
+
 Set(FETCHCONTENT_QUIET FALSE)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+
 project(node_editor)
 
 function(FetchDependencyAndMakeAvailable NAME URL TAG)
@@ -27,29 +31,33 @@ set(imgui_sources
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_widgets.cpp
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_tables.cpp     
 )
+
 add_library(imgui STATIC ${imgui_sources})
+target_compile_options(imgui PRIVATE -W1)
+
 target_include_directories(imgui PUBLIC 
   ${CMAKE_SOURCE_DIR}/_deps/imgui-src
   ${CMAKE_SOURCE_DIR}/_deps/glfw-src/include
 )
+
 add_library(${PROJECT_NAME} STATIC
 
-src/ImGuiNode.cpp
-src/NodeManager.cpp
-src/Application.cpp
+  src/ImGuiNode.cpp
+  src/NodeManager.cpp
+  src/Application.cpp
  
 )
-
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -W4)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 
 set(_include_dirs
   src/
+  vendor/glad/include
   ${CMAKE_SOURCE_DIR}/build/_deps/glfw-src/include
   ${CMAKE_SOURCE_DIR}/build/_deps/glm-src/
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui_node_editor-src
-  vendor/glad/include
 )
 
 # GLM

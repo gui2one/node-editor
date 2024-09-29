@@ -17,7 +17,7 @@ void ImGuiNode::Render(ImDrawList *draw_list, ImVec2 _offset)
     ImVec2 max = ImVec2(min.x + size.x, min.y + size.y);
     draw_list->AddRectFilled(min, max, IM_COL32(30, 30, 30, 255), 3.0f);
 
-    
+    draw_list->AddText(ImVec2(min.x + 10, min.y + 10), IM_COL32(255, 255, 255, 255), title);   
     if(!highlighted){
         draw_list->AddRect(min, max, IM_COL32(50, 50, 50, 255), 3.0f);
     } else {
