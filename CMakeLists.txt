@@ -33,7 +33,7 @@ set(imgui_sources
 )
 
 add_library(imgui STATIC ${imgui_sources})
-target_compile_options(imgui PRIVATE -W1)
+# target_compile_options(imgui PRIVATE -W1)
 
 target_include_directories(imgui PUBLIC 
   ${CMAKE_SOURCE_DIR}/_deps/imgui-src
@@ -47,7 +47,7 @@ add_library(${PROJECT_NAME} STATIC
   src/Application.cpp
  
 )
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -W4)
+target_compile_options(${PROJECT_NAME} PUBLIC /W4)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 
 set(_include_dirs

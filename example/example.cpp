@@ -80,8 +80,6 @@ void canvas_demo(NodeManager& mngr){
     
     if(ImGui::IsItemClicked() || ImGui::IsItemHovered()) {
 
-        float zoom_amount = io.MouseWheel;
-        // std::cout << "zoom !!!" << zoom_amount << std::endl;
         scale += io.MouseWheel * 0.2f;
     
     }
@@ -129,7 +127,7 @@ void canvas_demo(NodeManager& mngr){
 }
 
 
-int main(int argc, char **argv)
+int main()
 {
 
     
