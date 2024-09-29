@@ -47,7 +47,7 @@ add_library(${PROJECT_NAME} STATIC
   src/Application.cpp
  
 )
-target_compile_options(${PROJECT_NAME} PUBLIC /W4)
+target_compile_options(${PROJECT_NAME} PUBLIC /W4 /external:W0)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 
 set(_include_dirs
