@@ -36,6 +36,7 @@ add_library(${PROJECT_NAME} STATIC
 
 src/ImGuiNode.cpp
 src/NodeManager.cpp
+src/Application.cpp
  
 )
 

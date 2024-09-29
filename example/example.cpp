@@ -184,76 +184,83 @@ void canvas_demo(){
 
 int main(int argc, char **argv)
 {
-
-    if (!glfwInit())
-    {
-        printf("problem with GLFW\n");
+    Application app;
+    if(!app.Init()) {
+        std::cout << "Big Problem !!!" << std::endl;
         return -1;
-    }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    GLFWwindow *window = glfwCreateWindow(1280, 720, "Starter Project", NULL, NULL);
+    };
 
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-        return -1;
-    }
+    app.Update();
+    // if (!glfwInit())
+    // {
+    //     printf("problem with GLFW\n");
+    //     return -1;
+    // }
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // GLFWwindow *window = glfwCreateWindow(1280, 720, "Starter Project", NULL, NULL);
 
-    ImGuiInit(window);
+    // if (window == NULL)
+    // {
+    //     std::cout << "Failed to create GLFW window" << std::endl;
+    //     glfwTerminate();
+    //     return -1;
+    // }
+    // glfwMakeContextCurrent(window);
+    // if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    // {
+    //     std::cout << "Failed to initialize GLAD" << std::endl;
+    //     return -1;
+    // }
 
-    glViewport(0, 0, 640, 360);
-    glfwSwapInterval(0);
+    // ImGuiInit(window);
+
+    // glViewport(0, 0, 640, 360);
+    // glfwSwapInterval(0);
     
 
-    auto node1 = std::make_shared<ImGuiNode>();
-    node1->position = ImVec2(500, 300);
-    auto node2 = std::make_shared<ImGuiNode>();
-    node2->position = ImVec2(620, 320);
-    auto& nodes = manager.GetNodes();
-    nodes.push_back(node1);
-    nodes.push_back(node2);
+    // auto node1 = std::make_shared<ImGuiNode>();
+    // node1->position = ImVec2(500, 300);
+    // auto node2 = std::make_shared<ImGuiNode>();
+    // node2->position = ImVec2(620, 320);
+    // auto& nodes = manager.GetNodes();
+    // nodes.push_back(node1);
+    // nodes.push_back(node2);
 
-    // manager.SetNodes(nodes);
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwPollEvents();
-        ImGuiBeginFrame();
 
-        glClearColor(0.f, 0.f, 0.f, 1.f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        static bool showDemoWindow = false;
-        if (showDemoWindow)
-        {
-            ImGui::ShowDemoWindow(&showDemoWindow);
-        }
+    // while (!glfwWindowShouldClose(window))
+    // {
+    //     glfwPollEvents();
+    //     ImGuiBeginFrame();
 
-        ImGui::Begin("Canvas test");
-            manager.Update();
-            canvas_demo();
-        ImGui::End();
-        ImGuiEndFrame();
+    //     glClearColor(0.f, 0.f, 0.f, 1.f);
+    //     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glfwSwapBuffers(window);
+    //     static bool showDemoWindow = false;
+    //     if (showDemoWindow)
+    //     {
+    //         ImGui::ShowDemoWindow(&showDemoWindow);
+    //     }
+
+    //     ImGui::Begin("Canvas test");
+    //         manager.Update();
+    //         canvas_demo();
+    //     ImGui::End();
+    //     ImGuiEndFrame();
+
+    //     glfwSwapBuffers(window);
 
         
 
 
-    }
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    // }
+    // ImGui_ImplOpenGL3_Shutdown();
+    // ImGui_ImplGlfw_Shutdown();
+    // ImGui::DestroyContext();
+    // glfwDestroyWindow(window);
+    // glfwTerminate();
 
     printf("GoodBye... \n");
     return 0;

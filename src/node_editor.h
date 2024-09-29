@@ -17,5 +17,6 @@
 
 #include "ImGuiNode.h"
 #include "NodeManager.h"
+#include "Application.h"
 
 #endif
