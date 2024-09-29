@@ -20,7 +20,7 @@ public:
     ImVec2 offset; // this should be unique per node network, but that'll do for now
 
     bool selected = false;
-    // bool hovered = false;
+    bool grabbed = false;
     bool highlighted = false;
 };
 

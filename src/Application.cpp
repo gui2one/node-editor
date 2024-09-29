@@ -70,6 +70,7 @@ void Application::ImGuiInit(GLFWwindow *window)
     // end imgui config
     ///////////
 }
+
 void Application::ImGuiBeginFrame()
 {
     // Start the Dear ImGui frame
@@ -104,9 +105,8 @@ void Application::ImGuiEndFrame()
 
 
 }
+
 void Application::DrawCanvas(){
-
-
 
     static ImVector<ImVec2> points;
     static ImVec2 scrolling(0.0f, 0.0f);
