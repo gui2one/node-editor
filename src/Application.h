@@ -15,8 +15,9 @@ public:
     
     inline NodeManager& GetNodeManager() { return m_NodeManager; }
     
+    void DrawCanvas();
     void SetLoopFunction(std::function<void()> func);
-    void Update();
+    void Run();
 
 private:
 

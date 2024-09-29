@@ -15,7 +15,7 @@ public:
     NodeManager();
     ~NodeManager();
 
-    void Update();
+    void MouseEvents();
 
 
     inline void SetNodes(std::vector<std::shared_ptr<ImGuiNode>> _nodes) { nodes = _nodes; }

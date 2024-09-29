@@ -11,7 +11,7 @@ NodeManager::~NodeManager()
 
 }
 
-void NodeManager::Update()
+void NodeManager::MouseEvents()
 {
     ImGuiNode* hovered = nullptr;
     ImGuiNode* cur_node = nullptr;    
