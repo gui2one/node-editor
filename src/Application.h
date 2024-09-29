@@ -12,11 +12,15 @@ public:
     ~Application();
 
     bool Init();
+    
+    void SetLoopFunction(std::function<void()> func);
+    void Update();
+
+private:
+
     void ImGuiInit(GLFWwindow* window);
     void ImGuiBeginFrame();
     void ImGuiEndFrame();
-    void SetLoopFunction(std::function<void()> func);
-    void Update();
 
 private:
     GLFWwindow* m_NativeWindow;

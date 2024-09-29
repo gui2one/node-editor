@@ -6,11 +6,10 @@
 #include "node_editor.h"
 
 
-NodeManager manager;
 
-void canvas_demo(){
+void canvas_demo(NodeManager& mngr){
 
-    manager.Update();
+    mngr.Update();
 
     static ImVector<ImVec2> points;
     static ImVec2 scrolling(0.0f, 0.0f);
@@ -119,7 +118,7 @@ void canvas_demo(){
 
 
     // draw my fancyNodes
-    for(auto node : manager.GetNodes()) {
+    for(auto node : mngr.GetNodes()) {
         node->Render(draw_list, ImVec2(origin.x, origin.y));
     }
 
@@ -132,20 +131,23 @@ void canvas_demo(){
 
 int main(int argc, char **argv)
 {
-    Application app;
+
+    NodeManager manager;
     auto node1 = std::make_shared<ImGuiNode>();
     node1->position = ImVec2(500, 300);
     auto node2 = std::make_shared<ImGuiNode>();
     node2->position = ImVec2(620, 320);
     auto& nodes = manager.GetNodes();
     nodes.push_back(node1);
-    nodes.push_back(node2);    
+    nodes.push_back(node2);  
+
+    Application app;  
     if(!app.Init()) {
         std::cout << "Big Problem !!!" << std::endl;
         return -1;
     };
-    app.SetLoopFunction([](){
-        canvas_demo();
+    app.SetLoopFunction([&manager](){
+        canvas_demo(manager);
     });
     app.Update();
   
