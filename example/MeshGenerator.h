@@ -19,7 +19,6 @@ public:
     MeshGenerator();
     ~MeshGenerator();
 
-    virtual void Generate() = 0;
 private:
 
 };
