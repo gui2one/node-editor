@@ -4,7 +4,7 @@
 #pragma once
 
 #include "node_editor.h"
-#include <functional>
+
 class Application
 {
 public:

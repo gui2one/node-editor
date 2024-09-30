@@ -32,8 +32,8 @@ void ImGuiNode::Render(ImDrawList *draw_list, ImVec2 _offset)
         ImVec2 nodePos = ImVec2(position.x + offset.x + size.x/2.0f, position.y + offset.y);
         ImVec2 inputPos = ImVec2(GetInput(0)->position.x + offset.x + GetInput(0)->size.x/2.0f, GetInput(0)->position.y + offset.y + GetInput(0)->size.y);
         float y_sep = inputPos.y - nodePos.y;
-        ImVec2 ctrl1 = ImVec2(nodePos.x, nodePos.y + y_sep);
-        ImVec2 ctrl2 = ImVec2(inputPos.x, inputPos.y - y_sep);
+        ImVec2 ctrl1 = ImVec2(nodePos.x, nodePos.y) + ImVec2(0, y_sep);
+        ImVec2 ctrl2 = ImVec2(inputPos.x, inputPos.y) - ImVec2(0, y_sep);
 
         draw_list->AddBezierCubic(nodePos, ctrl1, ctrl2, inputPos, IM_COL32(0, 255, 255, 255), 2.0f); // ImDrawList API uses screen coordinates()
     }    
