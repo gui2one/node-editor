@@ -3,6 +3,7 @@
 
 #pragma once
 #include <imgui.h>
+
 class ImGuiNode
 {
 public:
@@ -25,13 +26,6 @@ public:
 };
 
 
-template <typename T>
-class Node : public ImGuiNode
-{
-
-public:
-    Node(const char * _title) : ImGuiNode(_title) {}
-};
 
 
 #endif

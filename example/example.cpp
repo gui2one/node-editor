@@ -30,11 +30,10 @@ int main()
     
         
     });
-
+    node1->Update();
     app.Run();
 
-    std::cout << "Goodbye ..." << std::endl;
-    printf("hey !!!!\n");
+    std::cout << "__All Done__" << std::endl;
 
     return 0;
 }
