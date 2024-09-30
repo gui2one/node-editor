@@ -187,6 +187,11 @@ void Application::DrawCanvas(){
     // draw my fancyNodes
     for(auto node : GetNodeManager().GetNodes()) {
         node->Render(draw_list, ImVec2(origin.x, origin.y));
+        if(node->GetInput(0) != nullptr) {
+            ImVec2 nodePos = ImVec2(node->position.x + origin.x + node->size.x/2.0f, node->position.y + origin.y);
+            ImVec2 inputPos = ImVec2(node->GetInput(0)->position.x + origin.x + node->GetInput(0)->size.x/2.0f, node->GetInput(0)->position.y + origin.y + node->GetInput(0)->size.y);
+            draw_list->AddLine(nodePos, inputPos, IM_COL32(0, 255, 255, 255), 2.0f);
+        }
     }
 
 

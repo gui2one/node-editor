@@ -21,6 +21,7 @@ int main()
     node1->position = ImVec2(500, 300);
     auto node2 = std::make_shared<ImGuiNode>("Node B");
     node2->position = ImVec2(620, 320);
+    node2->SetInput(0, node1);
 
 
     manager.AddNode(node1);
