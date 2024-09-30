@@ -17,7 +17,7 @@ int main()
 
     auto& manager = app.GetNodeManager();
 
-    auto node1 = std::make_shared<GridGenerator>("Generator");
+    auto node1 = std::make_shared<Node<GridGenerator>>("Generator");
     node1->position = ImVec2(500, 300);
     auto node2 = std::make_shared<ImGuiNode>("Node B");
     node2->position = ImVec2(620, 320);

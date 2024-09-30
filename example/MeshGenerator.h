@@ -3,10 +3,10 @@
 
 #pragma once
 #include "ImguiNode.h"
-class MeshGenerator : public ImGuiNode
+class MeshGenerator
 {
 public:
-    MeshGenerator(const char * _title);
+    MeshGenerator();
     ~MeshGenerator();
 
 private:
@@ -16,10 +16,11 @@ private:
 class GridGenerator : public MeshGenerator
 {
 public:
-    GridGenerator(const char * _title);
+    GridGenerator();
     ~GridGenerator();
 
 private:
 };
+
 
 #endif

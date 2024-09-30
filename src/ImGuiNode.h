@@ -24,4 +24,14 @@ public:
     bool highlighted = false;
 };
 
+
+template <typename T>
+class Node : public ImGuiNode
+{
+
+public:
+    Node(const char * _title) : ImGuiNode(_title) {}
+};
+
+
 #endif
