@@ -36,13 +36,42 @@ public:
 private:
 };
 
+class StringModifier : public StringOperator
+{
+public:
+    StringModifier();
+    ~StringModifier();
+
+private:
+
+};
+
+class StringConcatenator : public StringModifier
+{
+public:
+    StringConcatenator();
+    ~StringConcatenator();
+
+    void Generate() override{
+        std::cout << "String Concatenator !!!!!" << std::endl;
+        
+    }
+};
 
 template <typename T>
 class Node : public ImGuiNode, public T
 {
     static_assert(std::is_base_of<StringOperator, T>::value, "T must be derived from SpringOperator");
 public:
-    Node(const char * _title) : ImGuiNode(_title) {}
+    Node(const char * _title) : ImGuiNode(_title) {
+        if(std::is_base_of<StringGenerator, T>::value) {
+            
+            color = NODE_COLOR::MAROON;
+        }else if(std::is_base_of<StringModifier, T>::value) {
+            
+            color = NODE_COLOR::DARK_GREEN;
+        }
+    }
 
     
     void Update() {

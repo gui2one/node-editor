@@ -19,8 +19,8 @@ int main()
 
     auto node1 = std::make_shared<Node<HelloGenerator>>("Generator");
     node1->position = ImVec2(500, 300);
-    auto node2 = std::make_shared<ImGuiNode>("Node B");
-    node2->position = ImVec2(620, 320);
+    auto node2 = std::make_shared<Node<StringConcatenator>>("Concatenator");
+    node2->position = ImVec2(600, 400);
     node2->SetInput(0, node1);
 
 

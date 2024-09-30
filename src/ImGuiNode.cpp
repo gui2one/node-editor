@@ -1,6 +1,6 @@
 #include "ImGuiNode.h"
 
-ImGuiNode::ImGuiNode(const char * _title) : title(_title), position(500, 500), size(100, 30)
+ImGuiNode::ImGuiNode(const char * _title) : title(_title), position(500, 500), size(100, 30), color(NODE_COLOR::DARK_GREY)
 {
 
 }
@@ -15,7 +15,7 @@ void ImGuiNode::Render(ImDrawList *draw_list, ImVec2 _offset)
     offset = _offset;
     ImVec2 min = ImVec2(position.x + offset.x, position.y + offset.y);
     ImVec2 max = ImVec2(min.x + size.x, min.y + size.y);
-    draw_list->AddRectFilled(min, max, IM_COL32(30, 30, 30, 255), 3.0f);
+    draw_list->AddRectFilled(min, max, color, 3.0f);
 
     draw_list->AddText(ImVec2(min.x + 10, min.y + 10), IM_COL32(255, 255, 255, 255), title);   
     if(!highlighted){
@@ -35,7 +35,7 @@ void ImGuiNode::Render(ImDrawList *draw_list, ImVec2 _offset)
         ImVec2 ctrl1 = ImVec2(nodePos.x, nodePos.y) + ImVec2(0, y_sep);
         ImVec2 ctrl2 = ImVec2(inputPos.x, inputPos.y) - ImVec2(0, y_sep);
 
-        draw_list->AddBezierCubic(nodePos, ctrl1, ctrl2, inputPos, IM_COL32(0, 255, 255, 255), 2.0f); // ImDrawList API uses screen coordinates()
+        draw_list->AddBezierCubic(nodePos, ctrl1, ctrl2, inputPos, NODE_COLOR::GREY, 2.0f); // ImDrawList API uses screen coordinates()
     }    
 
 }
