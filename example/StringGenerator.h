@@ -6,34 +6,33 @@
 #include <type_traits>
 #include <iostream>
 
-class MeshOperator{
+class StringOperator{
 public:
-    MeshOperator(){};
-    virtual ~MeshOperator() = default;
+    StringOperator(){};
+    virtual ~StringOperator() = default;
     virtual void Generate() = 0;
 };
 
-class MeshGenerator : public MeshOperator
+class StringGenerator : public StringOperator
 {
 public:
-    MeshGenerator();
-    ~MeshGenerator();
+    StringGenerator();
+    ~StringGenerator();
 
 private:
 
 };
 
-class GridGenerator : public MeshGenerator
+class HelloGenerator : public StringGenerator
 {
 public:
-    GridGenerator();
-    ~GridGenerator();
+    HelloGenerator();
+    ~HelloGenerator();
 
     void Generate() override{
-        std::cout << "Grid Generator !!!!!" << std::endl;
+        std::cout << "Hello Generator !!!!!" << std::endl;
         
     }
-
 private:
 };
 
@@ -41,7 +40,7 @@ private:
 template <typename T>
 class Node : public ImGuiNode, public T
 {
-    static_assert(std::is_base_of<MeshOperator, T>::value, "T must be derived from MeshGenerator");
+    static_assert(std::is_base_of<StringOperator, T>::value, "T must be derived from SpringOperator");
 public:
     Node(const char * _title) : ImGuiNode(_title) {}
 
