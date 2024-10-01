@@ -225,20 +225,22 @@ void Application::DrawNodes(){
  
         // input 'connectors'
         for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
-            draw_list->AddCircleFilled(ImVec2(node->position.x + offset.x + 10 + (i * 20), node->position.y + offset.y - 4), 5.0f, (ImU32)NODE_COLOR::WHITE);
+            ImVec2 cp = node->position + offset + ImVec2(10.0f + (i * 20.0f), -4.0f);
+            draw_list->AddCircleFilled(cp, 5.0f, (ImU32)NODE_COLOR::WHITE);
         }
 
 
         //output 'connector'
-        draw_list->AddCircleFilled(ImVec2(node->position.x + offset.x + node->size.x/2.0f, node->position.y + offset.y + node->size.y), 5.0f, (ImU32)NODE_COLOR::WHITE); 
+        ImVec2 cp = node->position + offset + ImVec2(node->size.x/2.0f, node->size.y);
+        draw_list->AddCircleFilled(cp, 5.0f, (ImU32)NODE_COLOR::WHITE); 
 
     
-        ImVec2 min = ImVec2(node->position.x + offset.x, node->position.y + offset.y);
-        ImVec2 max = ImVec2(min.x + node->size.x, min.y + node->size.y);
+        ImVec2 min = node->position + offset;
+        ImVec2 max = min + node->size;
         draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
 
-        draw_list->AddText(ImVec2(min.x + 10, min.y + 10), IM_COL32(255, 255, 255, 255), node->title);   
+        draw_list->AddText(min + ImVec2(10.0f, 10.0f), IM_COL32(255, 255, 255, 255), node->title);   
         if(!node->highlighted){
             draw_list->AddRect(min, max, IM_COL32(50, 50, 50, 255), 3.0f);
         } else {
@@ -253,8 +255,8 @@ void Application::DrawNodes(){
 }
 
 bool Application::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
-    ImVec2 min = ImVec2(node->position.x + m_Origin.x, node->position.y + m_Origin.y);
-    ImVec2 max = ImVec2(min.x + node->size.x, min.y + node->size.y);    
+    ImVec2 min = node->position + m_Origin;
+    ImVec2 max = min + node->size;    
     bool hovered = ImGui::IsMouseHoveringRect(min, max);
     return hovered;    
 }
