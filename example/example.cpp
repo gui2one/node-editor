@@ -31,7 +31,20 @@ int main()
     
         
     });
-    node1->Update();
+
+    app.SetNodesMenu([&app ](){
+        if (ImGui::MenuItem("Generator", NULL, false, true)) 
+        { 
+            app.GetNodeManager().AddNode(std::make_shared<Node<HelloGenerator>>("Generator"));
+            
+        }
+        if (ImGui::MenuItem("Concatenator", NULL, false, true)) 
+        { 
+            app.GetNodeManager().AddNode(std::make_shared<Node<StringConcatenator>>("Concatenator"));
+            
+        }
+    });
+    app.GetNodeManager().Evaluate();
     app.Run();
 
     std::cout << "__All Done__" << std::endl;

@@ -134,8 +134,8 @@ void Application::DrawCanvas(){
 
     const bool is_hovered = ImGui::IsItemHovered(); // Hovered
     const bool is_active = ImGui::IsItemActive();   // Held
-    const ImVec2 origin((canvas_p0.x + scrolling.x), (canvas_p0.y + scrolling.y)); // Lock scrolled origin
-    const ImVec2 mouse_pos_in_canvas(io.MousePos.x - origin.x, io.MousePos.y - origin.y);
+    m_Origin = ImVec2((canvas_p0.x + scrolling.x), (canvas_p0.y + scrolling.y)); // Lock scrolled origin
+    const ImVec2 mouse_pos_in_canvas(io.MousePos.x - m_Origin.x, io.MousePos.y - m_Origin.y);
 
 
     // Pan (we use a zero mouse threshold when there's no context menu)
@@ -160,11 +160,7 @@ void Application::DrawCanvas(){
         ImGui::OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
     if (ImGui::BeginPopup("context"))
     {
-        if (adding_line)
-            points.resize(points.size() - 2);
-        adding_line = false;
-        if (ImGui::MenuItem("Add Node", NULL, false, true)) { printf("adding a node now !"); }
-        if (ImGui::MenuItem("Remove all", NULL, false, points.Size > 0)) { points.clear(); }
+        m_NodesMenu();
         ImGui::EndPopup();
     }
 
@@ -180,15 +176,12 @@ void Application::DrawCanvas(){
     }
     for (int n = 0; n < points.Size; n += 2){
 
-        draw_list->AddLine(ImVec2(origin.x + points[n].x, origin.y + points[n].y), ImVec2(origin.x + points[n + 1].x, origin.y + points[n + 1].y), IM_COL32(255, 255, 0, 255), 2.0f);
+        draw_list->AddLine(ImVec2(m_Origin.x + points[n].x, m_Origin.y + points[n].y), ImVec2(m_Origin.x + points[n + 1].x, m_Origin.y + points[n + 1].y), IM_COL32(255, 255, 0, 255), 2.0f);
     }
 
 
-    // draw my fancyNodes
-    for(auto node : GetNodeManager().GetNodes()) {
-        node->Render(draw_list, ImVec2(origin.x, origin.y));
+    DrawNodes();
 
-    }
 
 
     draw_list->PopClipRect();
@@ -199,6 +192,117 @@ void Application::DrawCanvas(){
 void Application::SetLoopFunction(std::function<void()> func)
 {
     m_LoopFunction = func;
+}
+void Application::SetNodesMenu(std::function<void()> func)
+{
+    m_NodesMenu = func;
+}
+
+void Application::DrawNodes(){
+
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    ImVec2 offset = m_Origin;
+
+    //draw connections first
+    for(auto node : GetNodeManager().GetNodes()) {
+        auto ptr = static_cast<ImGuiNode*>(node.get());
+        if(ptr->GetInput(0) != nullptr) {
+            ImVec2 nodePos = ImVec2(node->position.x + offset.x + node->size.x/2.0f, node->position.y + offset.y);
+            ImVec2 inputPos = ImVec2(ptr->GetInput(0)->position.x + offset.x + ptr->GetInput(0)->size.x/2.0f, ptr->GetInput(0)->position.y + offset.y + ptr->GetInput(0)->size.y);
+            float y_sep = inputPos.y - nodePos.y;
+            ImVec2 ctrl1 = ImVec2(nodePos.x, nodePos.y) + ImVec2(0, y_sep);
+            ImVec2 ctrl2 = ImVec2(inputPos.x, inputPos.y) - ImVec2(0, y_sep);
+
+            draw_list->AddBezierCubic(nodePos, ctrl1, ctrl2, inputPos, (ImU32)NODE_COLOR::GREY, 2.0f); // ImDrawList API uses screen coordinates()
+        }          
+
+    }
+    
+    for(auto node : GetNodeManager().GetNodes()) {
+
+
+        // auto ptr = static_cast<ImGuiNode*>(node.get());
+ 
+        // input 'connectors'
+        for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
+            draw_list->AddCircleFilled(ImVec2(node->position.x + offset.x + 10 + (i * 20), node->position.y + offset.y - 4), 5.0f, (ImU32)NODE_COLOR::WHITE);
+        }
+
+
+        //output 'connector'
+        draw_list->AddCircleFilled(ImVec2(node->position.x + offset.x + node->size.x/2.0f, node->position.y + offset.y + node->size.y), 5.0f, (ImU32)NODE_COLOR::WHITE); 
+
+    
+        ImVec2 min = ImVec2(node->position.x + offset.x, node->position.y + offset.y);
+        ImVec2 max = ImVec2(min.x + node->size.x, min.y + node->size.y);
+        draw_list->AddRectFilled(min, max, node->color, 3.0f);
+
+
+        draw_list->AddText(ImVec2(min.x + 10, min.y + 10), IM_COL32(255, 255, 255, 255), node->title);   
+        if(!node->highlighted){
+            draw_list->AddRect(min, max, IM_COL32(50, 50, 50, 255), 3.0f);
+        } else {
+            draw_list->AddRect(min, max, IM_COL32(100, 100, 100, 255), 3.0f);
+        }
+
+        if(node->selected){
+            draw_list->AddRect(min, max, IM_COL32(200, 200, 60, 100), 3.0f, 0, 3.0f);
+        }
+        
+    }
+}
+
+bool Application::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
+    ImVec2 min = ImVec2(node->position.x + m_Origin.x, node->position.y + m_Origin.y);
+    ImVec2 max = ImVec2(min.x + node->size.x, min.y + node->size.y);    
+    bool hovered = ImGui::IsMouseHoveringRect(min, max);
+    return hovered;    
+}
+void Application::MouseEvents()
+{
+    auto& mngr = GetNodeManager();
+    static int inc = 0;
+    ImGuiNode* hovered = nullptr;
+    ImGuiNode* cur_node = nullptr;    
+
+    for(auto node : mngr.GetNodes()) {
+        node->highlighted = false;
+        
+        if(ImGui::IsMouseClicked(0) && IsNodeHovered(node)) {
+            
+            if(node->selected) {
+                node->selected = false;
+            }else{
+                cur_node = node.get();
+            }
+        }
+        if(ImGui::IsMouseDragging(ImGuiMouseButton_Left, 1.0f)) {
+            if(IsNodeHovered(node)) {
+                if( node->grabbed == false) {
+                    
+                    node->grabbed = true;    
+                }
+                hovered = node.get();
+            }  
+        }else{
+            node->grabbed = false;
+        }
+    }
+    
+    if( cur_node){
+
+        cur_node->selected = true;      
+    }
+    if(hovered) {
+        hovered->highlighted = true;
+    }
+
+    for(auto node : mngr.GetNodes()) {
+        if(node->grabbed) {
+            node->position.x += ImGui::GetIO().MouseDelta.x;
+            node->position.y += ImGui::GetIO().MouseDelta.y;
+        }
+    }    
 }
 void Application::Run()
 {
@@ -219,7 +323,7 @@ void Application::Run()
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Canvas test");
         
-        GetNodeManager().MouseEvents();
+        MouseEvents();
         DrawCanvas();
             
         m_LoopFunction();

@@ -40,6 +40,8 @@ public:
     ImGuiNode(const char * _title);
     ~ImGuiNode();
 
+
+    virtual void Update() = 0;
     void Render(ImDrawList* draw_data, ImVec2 offset);
     bool IsHovered();
     bool IsNodeDragged();
@@ -53,6 +55,15 @@ public:
         if( index < 0 || index > 3) return nullptr;
         return inputs[index];
     }
+
+protected :
+    inline void SetNumAvailableInputs(uint32_t num) { 
+        assert(num > 0 && num <= 4);
+        // static_assert(num <= 4, "Number of available inputs must be less than or equal to 4");
+        m_NumAvailableInputs = num; 
+    }
+public:
+    inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
 public:
 
     const char* title;
@@ -64,6 +75,9 @@ public:
     bool selected = false;
     bool grabbed = false;
     bool highlighted = false;
+
+private:
+    uint32_t m_NumAvailableInputs = 1;
 
 private:
     std::array<std::shared_ptr<ImGuiNode>, 4> inputs = {nullptr, nullptr, nullptr, nullptr};

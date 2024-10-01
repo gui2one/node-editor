@@ -6,11 +6,14 @@
 #include <type_traits>
 #include <iostream>
 
-class StringOperator{
+class StringOperator : public ImGuiNode{
 public:
-    StringOperator(){};
+    StringOperator(): ImGuiNode("default"){};
     virtual ~StringOperator() = default;
     virtual void Generate() = 0;
+
+public :
+
 };
 
 class StringGenerator : public StringOperator
@@ -18,7 +21,7 @@ class StringGenerator : public StringOperator
 public:
     StringGenerator();
     ~StringGenerator();
-
+    virtual void Generate() = 0;
 private:
 
 };
@@ -59,17 +62,18 @@ public:
 };
 
 template <typename T>
-class Node : public ImGuiNode, public T
+class Node : public T
 {
     static_assert(std::is_base_of<StringOperator, T>::value, "T must be derived from SpringOperator");
 public:
-    Node(const char * _title) : ImGuiNode(_title) {
+    Node(const char * _title) {
+        auto node = static_cast<ImGuiNode*>(this);
         if(std::is_base_of<StringGenerator, T>::value) {
-            
-            color = NODE_COLOR::MAROON;
+            node->color = NODE_COLOR::MAROON;
+            node->title = _title;
         }else if(std::is_base_of<StringModifier, T>::value) {
-            
-            color = NODE_COLOR::DARK_GREEN;
+            node->color = NODE_COLOR::DARK_GREEN;
+            node->title = _title;
         }
     }
 

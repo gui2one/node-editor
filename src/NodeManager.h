@@ -24,6 +24,8 @@ public:
     inline std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() { return nodes; }
     inline const std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() const { return nodes; }
 
+
+    void Evaluate();
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
 };

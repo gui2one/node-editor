@@ -17,7 +17,16 @@ public:
     
     void DrawCanvas();
     void SetLoopFunction(std::function<void()> func);
+    void SetNodesMenu(std::function<void()> func);
+    void DrawNodes();
+
+
+    void MouseEvents();
+    bool IsNodeHovered(std::shared_ptr<ImGuiNode> node);
     void Run();
+
+public :
+    ImVec2 m_Origin;
 
 private:
 
@@ -28,6 +37,7 @@ private:
 private:
     GLFWwindow* m_NativeWindow;
     std::function<void()> m_LoopFunction;
+    std::function<void()> m_NodesMenu = [](){};
     NodeManager m_NodeManager;
 };
 

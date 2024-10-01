@@ -30,6 +30,7 @@ HelloGenerator::~HelloGenerator()
 
 StringConcatenator::StringConcatenator()
 {
+    SetNumAvailableInputs(2);
 }
 
 StringConcatenator::~StringConcatenator()
