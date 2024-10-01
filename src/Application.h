@@ -2,7 +2,8 @@
 #define APPLICATION_H
 
 #pragma once
-
+#include <chrono>
+#include <thread>
 #include "node_editor.h"
 
 class Application

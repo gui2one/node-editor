@@ -5,4 +5,6 @@
 #include <imgui.h>
 ImVec2 operator+(ImVec2 a, ImVec2 b);
 ImVec2 operator-(ImVec2 a, ImVec2 b);
+ImVec2 operator*(ImVec2 a, ImVec2 b);
+ImVec2 operator/(ImVec2 a, ImVec2 b);
 #endif

@@ -1,3 +1,4 @@
+#include <windows.h>
 #include <iostream>
 #include <assert.h>
 #include <string>
@@ -5,7 +6,10 @@
 
 #include "node_editor.h"
 #include "StringGenerator.h"
+
+
 int main()
+
 {
 
     Application app;  

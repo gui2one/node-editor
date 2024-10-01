@@ -60,7 +60,7 @@ void Application::ImGuiInit(GLFWwindow *window)
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     const char *glsl_version = "#version 330";
@@ -336,5 +336,7 @@ void Application::Run()
         ImGuiEndFrame();
 
         glfwSwapBuffers(m_NativeWindow);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
