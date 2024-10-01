@@ -2,7 +2,7 @@
 
 StringGenerator::StringGenerator()
 {
-
+    SetNumAvailableInputs(0);
 }
 
 StringGenerator::~StringGenerator()
@@ -22,6 +22,7 @@ StringModifier::~StringModifier()
 
 HelloGenerator::HelloGenerator(): StringGenerator()
 {
+    
 }
 
 HelloGenerator::~HelloGenerator()

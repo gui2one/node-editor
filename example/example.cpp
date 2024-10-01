@@ -49,6 +49,7 @@ int main()
         }
     });
     app.GetNodeManager().Evaluate();
+    
     app.Run();
 
     std::cout << "__All Done__" << std::endl;

@@ -37,7 +37,6 @@ public:
 
     void Generate() override{
         m_StringCache = "Hello";
-        // std::cout << "Hello Generator !!!!!" << std::endl;
         
     }
 private:
@@ -60,7 +59,10 @@ public:
     ~StringConcatenator();
 
     void Generate() override{
-        std::cout << "String Concatenator !!!!!" << std::endl;
+        if( inputs[0] != nullptr) {
+            m_StringCache = inputs[0]->m_StringCache + " !!!! oh yeah !!!";
+            
+        }
         
     }
 };
@@ -90,6 +92,8 @@ public:
             op->inputs[0] = static_cast<StringOperator*>(node->GetInput(0).get());
         }
         op->Generate();
+        std::cout << op->m_StringCache << std::endl;
+        
 
     }
 };
