@@ -5,6 +5,7 @@
 #include "ImguiNode.h"
 #include <type_traits>
 #include <iostream>
+#include <string>
 
 class StringOperator : public ImGuiNode{
 public:
@@ -13,7 +14,9 @@ public:
     virtual void Generate() = 0;
 
 public :
+    std::string m_StringCache = "";
 
+    std::array<StringOperator*, 4> inputs = { nullptr, nullptr, nullptr, nullptr }; 
 };
 
 class StringGenerator : public StringOperator
@@ -33,7 +36,8 @@ public:
     ~HelloGenerator();
 
     void Generate() override{
-        std::cout << "Hello Generator !!!!!" << std::endl;
+        m_StringCache = "Hello";
+        // std::cout << "Hello Generator !!!!!" << std::endl;
         
     }
 private:
@@ -79,8 +83,13 @@ public:
 
     
     void Update() {
-        auto ptr = static_cast<T*>(this);
-        ptr->Generate();
+        auto node = static_cast<ImGuiNode*>(this);
+        // auto node = std::dynamic_pointer_cast<std::shared_ptr<ImGuiNode>(this);
+        auto op = static_cast<StringOperator*>(this);
+        if(node->GetInput(0) != nullptr) {
+            op->inputs[0] = static_cast<StringOperator*>(node->GetInput(0).get());
+        }
+        op->Generate();
 
     }
 };
