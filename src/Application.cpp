@@ -41,8 +41,8 @@ bool Application::Init()
     }
 
     glfwSetWindowUserPointer(m_NativeWindow, &m_WindowData);
+    
     glfwSetMouseButtonCallback(m_NativeWindow, [](GLFWwindow *window, int button, int action, int mods) {
-
         // WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
         {
@@ -81,6 +81,13 @@ bool Application::Init()
 
         }
     });
+
+    glfwSetCursorPosCallback(m_NativeWindow, [](GLFWwindow *window, double xpos, double ypos) {
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        data->mouseX = xpos;
+        data->mouseY = ypos;
+    });
+    
     glfwSetFramebufferSizeCallback(m_NativeWindow, [](GLFWwindow *window, int width, int height) {
         WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
         data->width = width;

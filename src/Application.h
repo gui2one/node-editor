@@ -9,6 +9,9 @@
 struct WindowData{
     int width = 1280;
     int height = 720;
+
+    int mouseX = 0;
+    int mouseY = 0;
     const char* title = "The Node Editor | Another one ?!!";
 };
 
