@@ -40,9 +40,8 @@ public:
     ImGuiNode(const char * _title);
     ~ImGuiNode();
 
-
     virtual void Update() = 0;
-    void Render(ImDrawList* draw_data, ImVec2 offset);
+
     bool IsHovered();
     bool IsNodeDragged();
 
@@ -59,13 +58,11 @@ public:
 protected :
     inline void SetNumAvailableInputs(uint32_t num) { 
         assert(num > 0 && num <= 4);
-        // static_assert(num <= 4, "Number of available inputs must be less than or equal to 4");
         m_NumAvailableInputs = num; 
     }
 public:
     inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
 public:
-
     const char* title;
     NODE_COLOR color;
     ImVec2 position;

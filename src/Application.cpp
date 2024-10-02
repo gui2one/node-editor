@@ -219,26 +219,19 @@ void Application::DrawNodes(){
     }
     
     for(auto node : GetNodeManager().GetNodes()) {
-
-
-        // auto ptr = static_cast<ImGuiNode*>(node.get());
- 
         // input 'connectors'
         for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
             ImVec2 cp = node->position + offset + ImVec2(10.0f + (i * 20.0f), -4.0f);
             draw_list->AddCircleFilled(cp, 5.0f, (ImU32)NODE_COLOR::WHITE);
         }
 
-
         //output 'connector'
         ImVec2 cp = node->position + offset + ImVec2(node->size.x/2.0f, node->size.y);
         draw_list->AddCircleFilled(cp, 5.0f, (ImU32)NODE_COLOR::WHITE); 
 
-    
         ImVec2 min = node->position + offset;
         ImVec2 max = min + node->size;
         draw_list->AddRectFilled(min, max, node->color, 3.0f);
-
 
         draw_list->AddText(min + ImVec2(10.0f, 10.0f), IM_COL32(255, 255, 255, 255), node->title);   
         if(!node->highlighted){
