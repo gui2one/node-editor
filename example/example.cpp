@@ -21,15 +21,19 @@ int main()
 
     auto& manager = app.GetNodeManager();
 
-    auto node1 = std::make_shared<Node<HelloGenerator>>("Generator");
-    node1->position = ImVec2(500, 300);
-    auto node2 = std::make_shared<Node<StringConcatenator>>("Concatenator");
-    node2->position = ImVec2(600, 400);
-    node2->SetInput(0, node1);
+    auto hello_node = std::make_shared<Node<HelloGenerator>>("Hello");
+    hello_node->position = ImVec2(500, 300);
+    auto world_node = std::make_shared<Node<WorldGenerator>>("World");
+    world_node->position = ImVec2(650, 300);
+    auto concat_node = std::make_shared<Node<StringConcatenator>>("Concatenator");
+    concat_node->position = ImVec2(600, 400);
+    concat_node->SetInput(0, hello_node);
+    concat_node->SetInput(1, world_node);
 
 
-    manager.AddNode(node1);
-    manager.AddNode(node2);  
+    manager.AddNode(hello_node);
+    manager.AddNode(world_node);
+    manager.AddNode(concat_node);  
 
     app.SetLoopFunction([&app ](){
     

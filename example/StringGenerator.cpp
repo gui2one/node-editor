@@ -37,3 +37,11 @@ StringConcatenator::StringConcatenator()
 StringConcatenator::~StringConcatenator()
 {
 }
+
+WorldGenerator::WorldGenerator()
+{
+}
+
+WorldGenerator::~WorldGenerator()
+{
+}

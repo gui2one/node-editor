@@ -42,6 +42,19 @@ public:
 private:
 };
 
+class WorldGenerator : public StringGenerator
+{
+public:
+    WorldGenerator();
+    ~WorldGenerator();
+
+    void Generate() override{
+        m_StringCache = "World";
+        
+    }
+private:
+};
+
 class StringModifier : public StringOperator
 {
 public:
@@ -59,8 +72,8 @@ public:
     ~StringConcatenator();
 
     void Generate() override{
-        if( inputs[0] != nullptr) {
-            m_StringCache = inputs[0]->m_StringCache + " !!!! oh yeah !!!";
+        if( inputs[0] != nullptr && inputs[1] != nullptr) {
+            m_StringCache = inputs[0]->m_StringCache + inputs[1]->m_StringCache;
             
         }
         
@@ -88,8 +101,11 @@ public:
         auto node = static_cast<ImGuiNode*>(this);
         // auto node = std::dynamic_pointer_cast<std::shared_ptr<ImGuiNode>(this);
         auto op = static_cast<StringOperator*>(this);
-        if(node->GetInput(0) != nullptr) {
-            op->inputs[0] = static_cast<StringOperator*>(node->GetInput(0).get());
+        for(size_t i = 0; i < MAX_N_INPUTS; i++) {
+            if(node->GetInput(i) != nullptr) {
+                op->inputs[i] = static_cast<StringOperator*>(node->GetInput(i).get());
+            }
+            
         }
         op->Generate();
         std::cout << op->m_StringCache << std::endl;

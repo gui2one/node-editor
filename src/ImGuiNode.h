@@ -10,6 +10,7 @@
 
 #include "ui_utils.h"
 
+constexpr size_t MAX_N_INPUTS = 4;
 
 enum NODE_COLOR{
     BLACK = IM_COL32(0, 0, 0, 255),
@@ -70,9 +71,11 @@ public:
 
 protected :
     inline void SetNumAvailableInputs(uint32_t num) { 
-        assert(num >= 0 && num <= 4);
+        if(num > MAX_N_INPUTS) {
+            std::cout << "Too many inputs" << std::endl; 
+            num = MAX_N_INPUTS;
+        }
         m_NumAvailableInputs = num; 
-
         InitInputConnectors();
     }
 
@@ -93,7 +96,7 @@ private:
     uint32_t m_NumAvailableInputs = 1;
 
 private:
-    std::array<std::shared_ptr<ImGuiNode>, 4> inputs = {nullptr, nullptr, nullptr, nullptr};
+    std::array<std::shared_ptr<ImGuiNode>, MAX_N_INPUTS> inputs = {nullptr, nullptr, nullptr, nullptr};
     std::vector<InputConnector> m_InputConnectors;
 };
 

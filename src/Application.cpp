@@ -208,17 +208,21 @@ void Application::DrawNodes(){
     //draw connections first
     for(auto node : GetNodeManager().GetNodes()) {
         auto ptr = static_cast<ImGuiNode*>(node.get());
-        if(ptr->GetInput(0) != nullptr) {
-            auto input_conn = ptr->GetInputConnector(0);
-            ImVec2 p0 = node->position + input_conn->relative_pos;
-            ImVec2 inputPos = ImVec2(ptr->GetInput(0)->position.x + offset.x + ptr->GetInput(0)->size.x/2.0f, ptr->GetInput(0)->position.y + offset.y + ptr->GetInput(0)->size.y);
-            float y_sep = inputPos.y - p0.y;
-            ImVec2 ctrl1 = p0 + ImVec2(0, y_sep);
-            ImVec2 ctrl2 = inputPos - ImVec2(0, y_sep);
+        for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
+            
+            if(ptr->GetInput(i) != nullptr) {
+                auto other = ptr->GetInput(i);
+                auto input_conn = ptr->GetInputConnector(i);
+                ImVec2 p0 = node->position + input_conn->relative_pos;
+                ImVec2 other_pos = other->position + offset + ImVec2(other->size.x/2.0f, other->size.y);
+                
+                float y_sep = other_pos.y - p0.y;
+                ImVec2 ctrl1 = p0 + ImVec2(0, y_sep);
+                ImVec2 ctrl2 = other_pos - ImVec2(0, y_sep);
 
-            draw_list->AddBezierCubic(p0, ctrl1, ctrl2, inputPos, (ImU32)NODE_COLOR::GREY, 2.0f); // ImDrawList API uses screen coordinates()
-        }          
-
+                draw_list->AddBezierCubic(p0, ctrl1, ctrl2, other_pos, (ImU32)NODE_COLOR::GREY, 2.0f); // ImDrawList API uses screen coordinates()
+            }
+        }
     }
     
     for(auto node : GetNodeManager().GetNodes()) {
@@ -249,7 +253,6 @@ void Application::DrawNodes(){
         if(node->selected){
             draw_list->AddRect(min, max, IM_COL32(200, 200, 60, 100), 3.0f, 0, 3.0f);
         }
-        
     }
 }
 
