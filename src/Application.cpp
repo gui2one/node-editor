@@ -189,10 +189,12 @@ void Application::DrawCanvas(){
     
 
 }
+
 void Application::SetLoopFunction(std::function<void()> func)
 {
     m_LoopFunction = func;
 }
+
 void Application::SetNodesMenu(std::function<void()> func)
 {
     m_NodesMenu = func;

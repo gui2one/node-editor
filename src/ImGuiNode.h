@@ -57,7 +57,7 @@ public:
 
 protected :
     inline void SetNumAvailableInputs(uint32_t num) { 
-        assert(num > 0 && num <= 4);
+        assert(num >= 0 && num <= 4);
         m_NumAvailableInputs = num; 
     }
 public:
