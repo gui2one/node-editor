@@ -101,7 +101,7 @@ public:
         auto node = static_cast<ImGuiNode*>(this);
         // auto node = std::dynamic_pointer_cast<std::shared_ptr<ImGuiNode>(this);
         auto op = static_cast<StringOperator*>(this);
-        for(size_t i = 0; i < MAX_N_INPUTS; i++) {
+        for(uint32_t i = 0; i < MAX_N_INPUTS; i++) {
             if(node->GetInput(i) != nullptr) {
                 op->inputs[i] = static_cast<StringOperator*>(node->GetInput(i).get());
             }

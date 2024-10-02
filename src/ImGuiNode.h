@@ -10,7 +10,7 @@
 
 #include "ui_utils.h"
 
-constexpr size_t MAX_N_INPUTS = 4;
+constexpr uint32_t MAX_N_INPUTS = 4;
 
 enum NODE_COLOR{
     BLACK = IM_COL32(0, 0, 0, 255),
