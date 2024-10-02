@@ -6,6 +6,13 @@
 #include <thread>
 #include "node_editor.h"
 
+struct WindowData{
+    int width = 1280;
+    int height = 720;
+    const char* title = "The Node Editor | Another one ?!!";
+};
+
+
 class Application
 {
 public:
@@ -28,6 +35,7 @@ public:
 
 public :
     ImVec2 m_Origin;
+    WindowData m_WindowData;
 
 private:
     void ImGuiInit(GLFWwindow* window);

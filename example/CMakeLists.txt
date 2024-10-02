@@ -8,5 +8,5 @@ add_executable(${PROJECT_NAME}
     example.cpp
     StringGenerator.cpp
 )
-target_compile_options(${PROJECT_NAME} PUBLIC /W4)
+target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC node_editor)

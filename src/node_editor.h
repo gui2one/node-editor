@@ -5,6 +5,11 @@
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+#define GLFW_MOD_CTRL_SHIFT 0x0003
+#define GLFW_MOD_SHIFT_ALT 0x0005
+#define GLFW_MOD_CTRL_ALT 0x0006
+
+
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 #include "imgui.h"

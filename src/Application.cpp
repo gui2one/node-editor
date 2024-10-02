@@ -16,6 +16,7 @@ Application::~Application()
 
 bool Application::Init()
 {
+    
     if (!glfwInit())
     {
         printf("problem with GLFW\n");
@@ -24,7 +25,7 @@ bool Application::Init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    m_NativeWindow = glfwCreateWindow(1280, 720, "The Node Editor | Another one ?!!", NULL, NULL);
+    m_NativeWindow = glfwCreateWindow(m_WindowData.width, m_WindowData.height, m_WindowData.title, NULL, NULL);
 
     if (m_NativeWindow == NULL)
     {
@@ -38,6 +39,54 @@ bool Application::Init()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return false;
     }
+
+    glfwSetWindowUserPointer(m_NativeWindow, &m_WindowData);
+    glfwSetMouseButtonCallback(m_NativeWindow, [](GLFWwindow *window, int button, int action, int mods) {
+
+        // WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        {
+            std::cout << mods << std::endl;
+            switch (mods)
+            {
+            case GLFW_MOD_CONTROL:
+                std::cout << "Ctrl Click" << std::endl;
+                break;
+            case GLFW_MOD_SHIFT:
+                std::cout << "Shift Click" << std::endl;
+                break;
+            case GLFW_MOD_ALT:
+                std::cout << "Alt Click" << std::endl;
+                break;
+            case GLFW_MOD_CTRL_SHIFT:
+                std::cout << "Ctrl Shift Click" << std::endl;
+                break;
+            case GLFW_MOD_CTRL_ALT:
+                std::cout << "Ctrl Alt Click" << std::endl;
+                break;
+            default:
+                std::cout << "Click" << std::endl;
+
+                
+                break;
+            }
+            if(mods == GLFW_MOD_SHIFT){
+
+            }
+
+        }
+        else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+        {
+            // std::cout << "Mouse Release" << std::endl;
+
+        }
+    });
+    glfwSetFramebufferSizeCallback(m_NativeWindow, [](GLFWwindow *window, int width, int height) {
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        data->width = width;
+        data->height = height;
+        glViewport(0, 0, width, height);
+    });
 
     ImGuiInit(m_NativeWindow);
 
@@ -266,12 +315,12 @@ bool Application::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
 void Application::MouseEvents()
 {
     auto& mngr = GetNodeManager();
-    static int inc = 0;
 
     ImGuiNode* cur_node = nullptr;    
 
     for(auto node : mngr.GetNodes()) {
         node->highlighted = IsNodeHovered(node);
+
         if(ImGui::IsMouseClicked(0) && IsNodeHovered(node)) {
             if(node->selected) {
                 node->selected = false;
