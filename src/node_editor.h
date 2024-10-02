@@ -27,4 +27,8 @@
 #include "NodeManager.h"
 #include "Application.h"
 
+#include "Event.h"
+#include "EventManager.h"
+#include "EventDispatcher.h"
+
 #endif

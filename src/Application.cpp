@@ -43,49 +43,53 @@ bool Application::Init()
     glfwSetWindowUserPointer(m_NativeWindow, &m_WindowData);
     
     glfwSetMouseButtonCallback(m_NativeWindow, [](GLFWwindow *window, int button, int action, int mods) {
-        // WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
-        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-        {
-            std::cout << mods << std::endl;
-            switch (mods)
-            {
-            case GLFW_MOD_CONTROL:
-                std::cout << "Ctrl Click" << std::endl;
-                break;
-            case GLFW_MOD_SHIFT:
-                std::cout << "Shift Click" << std::endl;
-                break;
-            case GLFW_MOD_ALT:
-                std::cout << "Alt Click" << std::endl;
-                break;
-            case GLFW_MOD_CTRL_SHIFT:
-                std::cout << "Ctrl Shift Click" << std::endl;
-                break;
-            case GLFW_MOD_CTRL_ALT:
-                std::cout << "Ctrl Alt Click" << std::endl;
-                break;
-            default:
-                std::cout << "Click" << std::endl;
+        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        if (action == GLFW_PRESS) {
+            MouseClickEvent clickEvent(button);
+            EventManager::GetInstance().Dispatch(clickEvent);
+        }        
+        // if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        // {
+        //     std::cout << mods << std::endl;
+        //     switch (mods)
+        //     {
+        //     case GLFW_MOD_CONTROL:
+        //         std::cout << "Ctrl Click" << std::endl;
+        //         break;
+        //     case GLFW_MOD_SHIFT:
+        //         std::cout << "Shift Click" << std::endl;
+        //         break;
+        //     case GLFW_MOD_ALT:
+        //         std::cout << "Alt Click" << std::endl;
+        //         break;
+        //     case GLFW_MOD_CTRL_SHIFT:
+        //         std::cout << "Ctrl Shift Click" << std::endl;
+        //         break;
+        //     case GLFW_MOD_CTRL_ALT:
+        //         std::cout << "Ctrl Alt Click" << std::endl;
+        //         break;
+        //     default:
+        //         std::cout << "Click" << std::endl;
 
                 
-                break;
-            }
-            if(mods == GLFW_MOD_SHIFT){
+        //         break;
+        //     }
+        //     if(mods == GLFW_MOD_SHIFT){
 
-            }
+        //     }
 
-        }
-        else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-        {
-            // std::cout << "Mouse Release" << std::endl;
+        // }
+        // else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+        // {
+        //     // std::cout << "Mouse Release" << std::endl;
 
-        }
+        // }
     });
 
     glfwSetCursorPosCallback(m_NativeWindow, [](GLFWwindow *window, double xpos, double ypos) {
         WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
-        data->mouseX = xpos;
-        data->mouseY = ypos;
+        data->mouseX = (int)xpos;
+        data->mouseY = (int)ypos;
     });
     
     glfwSetFramebufferSizeCallback(m_NativeWindow, [](GLFWwindow *window, int width, int height) {
@@ -93,6 +97,14 @@ bool Application::Init()
         data->width = width;
         data->height = height;
         glViewport(0, 0, width, height);
+    });
+
+
+    // event system test 
+
+    EventManager::GetInstance().Subscribe(EventType::MouseClick, [](const Event& event) {
+        const MouseClickEvent& clickEvent = static_cast<const MouseClickEvent&>(event);
+        std::cout << "Mouse clicked with button " << clickEvent.button << "\n";
     });
 
     ImGuiInit(m_NativeWindow);

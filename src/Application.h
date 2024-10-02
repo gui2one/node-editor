@@ -13,6 +13,7 @@ struct WindowData{
     int mouseX = 0;
     int mouseY = 0;
     const char* title = "The Node Editor | Another one ?!!";
+    
 };
 
 
@@ -50,6 +51,8 @@ private:
     std::function<void()> m_LoopFunction;
     std::function<void()> m_NodesMenu = [](){};
     NodeManager m_NodeManager;
+    
+
 };
 
 #endif
