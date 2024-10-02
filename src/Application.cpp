@@ -255,18 +255,17 @@ bool Application::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
     bool hovered = ImGui::IsMouseHoveringRect(min, max);
     return hovered;    
 }
+
 void Application::MouseEvents()
 {
     auto& mngr = GetNodeManager();
     static int inc = 0;
-    ImGuiNode* hovered = nullptr;
+
     ImGuiNode* cur_node = nullptr;    
 
     for(auto node : mngr.GetNodes()) {
-        node->highlighted = false;
-        
+        node->highlighted = IsNodeHovered(node);
         if(ImGui::IsMouseClicked(0) && IsNodeHovered(node)) {
-            
             if(node->selected) {
                 node->selected = false;
             }else{
@@ -276,10 +275,8 @@ void Application::MouseEvents()
         if(ImGui::IsMouseDragging(ImGuiMouseButton_Left, 1.0f)) {
             if(IsNodeHovered(node)) {
                 if( node->grabbed == false) {
-                    
                     node->grabbed = true;    
                 }
-                hovered = node.get();
             }  
         }else{
             node->grabbed = false;
@@ -287,11 +284,7 @@ void Application::MouseEvents()
     }
     
     if( cur_node){
-
         cur_node->selected = true;      
-    }
-    if(hovered) {
-        hovered->highlighted = true;
     }
 
     for(auto node : mngr.GetNodes()) {
@@ -301,6 +294,7 @@ void Application::MouseEvents()
         }
     }    
 }
+
 void Application::Run()
 {
     while (!glfwWindowShouldClose(m_NativeWindow))

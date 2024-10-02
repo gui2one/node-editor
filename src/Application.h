@@ -30,7 +30,6 @@ public :
     ImVec2 m_Origin;
 
 private:
-
     void ImGuiInit(GLFWwindow* window);
     void ImGuiBeginFrame();
     void ImGuiEndFrame();
