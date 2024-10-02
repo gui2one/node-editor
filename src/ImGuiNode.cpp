@@ -18,10 +18,11 @@ void ImGuiNode::InitInputConnectors()
 
     float spot_width = size.x / num_spots;
     for(uint32_t i = 0; i < num_spots; i++) {
-    
+        float x = spot_width * i + spot_width / 2.0f;
+        float y = -4.0f;
         InputConnector connector;
         connector.index = i;
-        connector.relative_pos = ImVec2(10.0f + (i * 40.0f), -4.0f);
+        connector.relative_pos = ImVec2(x, y);
         m_InputConnectors.push_back(connector);    
     }
 }
