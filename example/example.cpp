@@ -52,8 +52,8 @@ int main()
             
         }
     });
-    app.GetNodeManager().Evaluate();
-    
+    // app.GetNodeManager().Evaluate();
+    concat_node->Update();
     app.Run();
 
     std::cout << "__All Done__" << std::endl;
