@@ -42,8 +42,6 @@ public:
 
     virtual void Update() = 0;
 
-    bool IsHovered();
-    bool IsNodeDragged();
 
     inline void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node) { 
         if( index < 0 || index > 3) return;
@@ -67,7 +65,6 @@ public:
     NODE_COLOR color;
     ImVec2 position;
     ImVec2 size;
-    ImVec2 offset; // this should be unique per node network, but that'll do for now
 
     bool selected = false;
     bool grabbed = false;
