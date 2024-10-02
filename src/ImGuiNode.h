@@ -4,6 +4,7 @@
 #pragma once
 #include <imgui.h>
 #include <memory>
+#include <iostream>
 #include <vector>
 #include <array>
 
@@ -34,6 +35,11 @@ enum NODE_COLOR{
     YELLOW = IM_COL32(255, 255, 0, 255)
 };
 
+struct InputConnector{
+    ImVec2 relative_pos;
+    uint32_t index;
+};
+
 class ImGuiNode
 {
 public:
@@ -48,16 +54,29 @@ public:
         inputs[index] = node; 
     }
 
-    inline std::shared_ptr<ImGuiNode>GetInput(uint32_t index) {
+    inline std::shared_ptr<ImGuiNode> GetInput(uint32_t index) {
         if( index < 0 || index > 3) return nullptr;
         return inputs[index];
+    }
+
+    inline InputConnector* GetInputConnector(uint32_t index) {
+        if( index < 0 || index >= GetNumAvailableInputs()) {
+            std::cout << "Problem with GetInputConnector" << std::endl;
+            
+            return nullptr;
+        }
+        return &m_InputConnectors[index];
     }
 
 protected :
     inline void SetNumAvailableInputs(uint32_t num) { 
         assert(num >= 0 && num <= 4);
         m_NumAvailableInputs = num; 
+
+        InitInputConnectors();
     }
+
+    void InitInputConnectors();
 public:
     inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
 public:
@@ -75,6 +94,7 @@ private:
 
 private:
     std::array<std::shared_ptr<ImGuiNode>, 4> inputs = {nullptr, nullptr, nullptr, nullptr};
+    std::vector<InputConnector> m_InputConnectors;
 };
 
 
