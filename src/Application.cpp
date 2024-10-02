@@ -100,12 +100,7 @@ bool Application::Init()
     });
 
 
-    // event system test 
 
-    EventManager::GetInstance().Subscribe(EventType::MouseClick, [](const Event& event) {
-        const MouseClickEvent& clickEvent = static_cast<const MouseClickEvent&>(event);
-        std::cout << "Mouse clicked with button " << clickEvent.button << "\n";
-    });
 
     ImGuiInit(m_NativeWindow);
 
@@ -281,7 +276,7 @@ void Application::DrawNodes(){
             if(ptr->GetInput(i) != nullptr) {
                 auto other = ptr->GetInput(i);
                 auto input_conn = ptr->GetInputConnector(i);
-                ImVec2 p0 = node->position + input_conn->relative_pos;
+                ImVec2 p0 = node->position + input_conn->relative_pos + m_Origin;
                 ImVec2 other_pos = other->position + offset + ImVec2(other->size.x/2.0f, other->size.y);
                 
                 float y_sep = other_pos.y - p0.y;

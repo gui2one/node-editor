@@ -9,6 +9,7 @@
 
 #include <imgui.h>
 #include "ImGuiNode.h"
+#include "EventManager.h"
 class NodeManager
 {
 public:
