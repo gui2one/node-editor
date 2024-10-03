@@ -107,4 +107,5 @@ public:
         std::cout << op->m_StringCache << std::endl;
     }
 };
+
 #endif

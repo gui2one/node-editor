@@ -26,7 +26,6 @@ public:
     inline NodeManager& GetNodeManager() { return m_NodeManager; }
     bool Init();
     void DrawCanvas();
-    void SetLoopFunction(std::function<void()> func);
     void SetNodesMenu(std::function<void()> func);
     void DrawNodes();
 

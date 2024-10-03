@@ -233,11 +233,6 @@ void Application::DrawCanvas(){
 
 }
 
-void Application::SetLoopFunction(std::function<void()> func)
-{
-    m_LoopFunction = func;
-}
-
 void Application::SetNodesMenu(std::function<void()> func)
 {
     m_NodesMenu = func;
@@ -317,11 +312,9 @@ void Application::Run()
         
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Canvas test");
-        
-        // MouseEvents();
+
         DrawCanvas();
-            
-        m_LoopFunction();
+
 
         ImGui::End();
         ImGui::PopStyleVar();
