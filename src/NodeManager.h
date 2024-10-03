@@ -46,10 +46,12 @@ public:
     inline void SetGLFWWindow(GLFWwindow* _window) { m_GLFWWindow = _window; }
     inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 
-    void Evaluate();
+    void Evaluate(std::function<void()> func);
+
 
     bool IsNodeHovered(std::shared_ptr<ImGuiNode> node);
     bool IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint32_t index);
+    void ResetConnectionProcedure();
 
     void OnMouseMove(const Event& event);
     void OnMouseClick(const Event& event);

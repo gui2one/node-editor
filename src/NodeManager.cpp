@@ -189,12 +189,9 @@ ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>> nodes)
     return ImVec2(centerx, centery);
 }
 
-void NodeManager::Evaluate()
+void NodeManager::Evaluate(std::function<void()> func)
 {
-    for (auto node : nodes)
-    {
-        node->Update();
-    }
+    func();
 }
 
 bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
@@ -233,6 +230,14 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint3
 
 
     return hovered;
+}
+
+void NodeManager::ResetConnectionProcedure()
+{
+    m_ConnectionProcedure.started = false;
+    m_ConnectionProcedure.input_node = nullptr;
+    m_ConnectionProcedure.output_node = nullptr;
+    m_ConnectionProcedure.output_index = 0;
 }
 
 void NodeManager::OnMouseMove(const Event &event)
@@ -290,6 +295,14 @@ void NodeManager::OnMouseClick(const Event &event)
                 node->selected = false;
         }
 
+        if(m_ConnectionProcedure.started && IsNodeHovered(node)) {
+            clicked_something = true;
+            m_ConnectionProcedure.input_node = node;
+
+            m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
+            ResetConnectionProcedure();
+            
+        }
         for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
             auto ptr = static_cast<ImGuiNode *>(node.get());
             InputConnector *connector = ptr->GetInputConnector(i);
@@ -312,10 +325,21 @@ void NodeManager::OnMouseClick(const Event &event)
 
 void NodeManager::OnMouseRelease(const Event &event)
 {
-    if (!m_CanvasHovered)
-        return;
+    std::cout << "Release One node" << std::endl;
+    std::cout << "Canvas Hovered : " << (m_CanvasHovered ? "true" : "false") << std::endl;
+    // if (!m_CanvasHovered)
+    //     return;
     const MouseReleaseEvent &clickEvent = static_cast<const MouseReleaseEvent &>(event);
+    for(auto node : nodes) {
+        if(m_ConnectionProcedure.started && IsNodeHovered(node)) {
+            m_ConnectionProcedure.input_node = node;
 
+            m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
+            ResetConnectionProcedure();
+            
+            
+        }
+    }
     m_ConnectionProcedure.started = false;
 }
 
