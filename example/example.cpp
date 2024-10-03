@@ -8,10 +8,7 @@
 #include "StringGenerator.h"
 
 
-int main()
-
-{
-
+int main(){
     Application app;  
 
     if(!app.Init()) {
@@ -30,30 +27,22 @@ int main()
     concat_node->SetInput(0, hello_node);
     concat_node->SetInput(1, world_node);
 
-
     manager.AddNode(hello_node);
     manager.AddNode(world_node);
     manager.AddNode(concat_node);  
 
-    app.SetLoopFunction([&app ](){
-    
-        
-    });
-
     app.SetNodesMenu([&app ](){
         if (ImGui::MenuItem("Generator", NULL, false, true)) 
         { 
-            app.GetNodeManager().AddNode(std::make_shared<Node<HelloGenerator>>("Generator"));
-            
+            app.GetNodeManager().AddNode(std::make_shared<Node<HelloGenerator>>("Generator"));            
         }
         if (ImGui::MenuItem("Concatenator", NULL, false, true)) 
         { 
             app.GetNodeManager().AddNode(std::make_shared<Node<StringConcatenator>>("Concatenator"));
-            
         }
     });
     // app.GetNodeManager().Evaluate();
-    concat_node->Update();
+    concat_node->Update(); // call Update() on the 'last' node only should trigger Update() on all preceding nodes
     app.Run();
 
     std::cout << "__All Done__" << std::endl;
