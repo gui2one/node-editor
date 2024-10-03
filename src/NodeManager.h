@@ -16,17 +16,16 @@ public:
     NodeManager();
     ~NodeManager();
 
-    void MouseEvents();
-
-
     inline void SetNodes(std::vector<std::shared_ptr<ImGuiNode>> _nodes) { nodes = _nodes; }
     inline void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
 
     inline std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() { return nodes; }
     inline const std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() const { return nodes; }
 
-
     void Evaluate();
+
+    void OnMouseMove(const Event& event);
+    void OnMouseClick(const Event& event);
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
 };

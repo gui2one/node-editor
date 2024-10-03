@@ -43,53 +43,18 @@ bool Application::Init()
     glfwSetWindowUserPointer(m_NativeWindow, &m_WindowData);
     
     glfwSetMouseButtonCallback(m_NativeWindow, [](GLFWwindow *window, int button, int action, int mods) {
-        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        // WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
         if (action == GLFW_PRESS) {
             MouseClickEvent clickEvent(button);
             EventManager::GetInstance().Dispatch(clickEvent);
         }        
-        // if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-        // {
-        //     std::cout << mods << std::endl;
-        //     switch (mods)
-        //     {
-        //     case GLFW_MOD_CONTROL:
-        //         std::cout << "Ctrl Click" << std::endl;
-        //         break;
-        //     case GLFW_MOD_SHIFT:
-        //         std::cout << "Shift Click" << std::endl;
-        //         break;
-        //     case GLFW_MOD_ALT:
-        //         std::cout << "Alt Click" << std::endl;
-        //         break;
-        //     case GLFW_MOD_CTRL_SHIFT:
-        //         std::cout << "Ctrl Shift Click" << std::endl;
-        //         break;
-        //     case GLFW_MOD_CTRL_ALT:
-        //         std::cout << "Ctrl Alt Click" << std::endl;
-        //         break;
-        //     default:
-        //         std::cout << "Click" << std::endl;
-
-                
-        //         break;
-        //     }
-        //     if(mods == GLFW_MOD_SHIFT){
-
-        //     }
-
-        // }
-        // else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-        // {
-        //     // std::cout << "Mouse Release" << std::endl;
-
-        // }
+     
     });
 
     glfwSetCursorPosCallback(m_NativeWindow, [](GLFWwindow *window, double xpos, double ypos) {
-        WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
-        data->mouseX = (int)xpos;
-        data->mouseY = (int)ypos;
+
+        MouseMoveEvent moveEvent((float)xpos, (float)ypos);
+        EventManager::GetInstance().Dispatch(moveEvent);
     });
     
     glfwSetFramebufferSizeCallback(m_NativeWindow, [](GLFWwindow *window, int width, int height) {
@@ -100,8 +65,16 @@ bool Application::Init()
     });
 
 
-
-
+    // add event listeners !!!
+    auto& dispatcher = EventManager::GetInstance(); 
+    auto& node_manager = this->GetNodeManager();
+    dispatcher.Subscribe(EventType::MouseClick, [&node_manager](const Event& event) {
+        node_manager.OnMouseClick(event);
+    });
+    dispatcher.Subscribe(EventType::MouseMove, [&node_manager](const Event& event) {
+        node_manager.OnMouseMove(event);
+    });
+    
     ImGuiInit(m_NativeWindow);
 
     glViewport(0, 0, 640, 360);
