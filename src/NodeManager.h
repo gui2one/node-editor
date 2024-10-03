@@ -15,6 +15,12 @@
 
 
 struct ConnectionProcedure{
+    enum Direction{
+        CHILD_TO_PARENT = 0,
+        PARENT_TO_CHILD = 1
+    };
+
+    Direction direction = CHILD_TO_PARENT;
     bool started = false;
     std::shared_ptr<ImGuiNode> output_node;
     uint32_t output_index;
