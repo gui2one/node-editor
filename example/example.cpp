@@ -41,14 +41,14 @@ int main(){
     manager.AddNode(concat_node2);  
     manager.AddNode(output);  
 
-    app.SetNodesMenu([&app ](){
+    manager.SetNodesMenu([&manager ](){
         if (ImGui::MenuItem("Generator", NULL, false, true)) 
         { 
-            app.GetNodeManager().AddNode(std::make_shared<Node<HelloGenerator>>("Generator"));            
+            manager.AddNode(std::make_shared<Node<HelloGenerator>>("Generator"));            
         }
         if (ImGui::MenuItem("Concatenator", NULL, false, true)) 
         { 
-            app.GetNodeManager().AddNode(std::make_shared<Node<StringConcatenator>>("Concatenator"));
+            manager.AddNode(std::make_shared<Node<StringConcatenator>>("Concatenator"));
         }
     });
     // app.GetNodeManager().Evaluate();

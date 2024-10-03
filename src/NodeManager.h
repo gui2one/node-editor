@@ -25,6 +25,10 @@ public:
     inline std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() { return nodes; }
     inline const std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() const { return nodes; }
 
+    void SetNodesMenu(std::function<void()> func);
+    void DrawNodes();
+    void DrawCanvas();
+
     inline void SetGLFWWindow(GLFWwindow* _window) { m_GLFWWindow = _window; }
     inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 
@@ -41,6 +45,7 @@ public:
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     GLFWwindow* m_GLFWWindow;
+    std::function<void()> m_NodesMenu = [](){};
 };
 
 #endif

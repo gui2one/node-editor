@@ -13,9 +13,7 @@ struct WindowData{
     int mouseX = 0;
     int mouseY = 0;
     const char* title = "The Node Editor | Another one ?!!";
-    
 };
-
 
 class Application
 {
@@ -25,10 +23,6 @@ public:
 
     inline NodeManager& GetNodeManager() { return m_NodeManager; }
     bool Init();
-    void DrawCanvas();
-    void SetNodesMenu(std::function<void()> func);
-    void DrawNodes();
-
     void Run();
 
 public :
@@ -42,10 +36,7 @@ private:
 
 private:
     GLFWwindow* m_NativeWindow;
-    std::function<void()> m_NodesMenu = [](){};
     NodeManager m_NodeManager;
-    
-
 };
 
 #endif
