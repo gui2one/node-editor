@@ -5,6 +5,7 @@
 enum class EventType {
     MouseMove,
     MouseClick,
+    MouseRelease,
     KeyPress,
     NodeSelected,
     NodeMoved,
@@ -36,6 +37,17 @@ public:
 
     EventType GetType() const override {
         return EventType::MouseClick;
+    }
+};
+
+class MouseReleaseEvent : public Event {
+public:
+    int button;
+
+    MouseReleaseEvent(int button) : button(button) {}
+
+    EventType GetType() const override {
+        return EventType::MouseRelease;
     }
 };
 

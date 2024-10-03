@@ -2,9 +2,9 @@
 #define UI_UTILS_H   
 #pragma once
 
-#include <imgui.h>
-ImVec2 operator+(ImVec2 a, ImVec2 b);
-ImVec2 operator-(ImVec2 a, ImVec2 b);
-ImVec2 operator*(ImVec2 a, ImVec2 b);
-ImVec2 operator/(ImVec2 a, ImVec2 b);
+// #include <imgui.h>
+// ImVec2 operator+(ImVec2 a, ImVec2 b);
+// ImVec2 operator-(ImVec2 a, ImVec2 b);
+// ImVec2 operator*(ImVec2 a, ImVec2 b);
+// ImVec2 operator/(ImVec2 a, ImVec2 b);
 #endif
