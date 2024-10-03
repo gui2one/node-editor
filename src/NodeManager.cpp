@@ -51,6 +51,9 @@ void NodeManager::DrawNodes()
             auto input_conn = ptr->GetInputConnector(i);
             ImVec2 cp = node->position + offset + input_conn->relative_pos;
             draw_list->AddCircleFilled(cp, 5.0f, NODE_COLOR::WHITE);
+            if(input_conn->hovered){
+                draw_list->AddCircle(cp, 5.0f, NODE_COLOR::ORANGE, 0, 3.0f);
+            }
         }
 
         // output 'connector'
@@ -198,6 +201,28 @@ bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
     return hovered;
 }
 
+bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint32_t index)
+{
+    double cursor_x, cursor_y;
+    glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
+    bool hovered = false;
+
+    auto ptr = static_cast<ImGuiNode *>(node.get());
+    InputConnector *connector = ptr->GetInputConnector(index);
+    ImVec2 connector_pos = node->position + connector->relative_pos + m_Origin;
+
+    float padding = 1.5f;
+    if (cursor_x > connector_pos.x  - connector->width * padding && 
+        cursor_x < connector_pos.x + connector->width * padding && 
+        cursor_y > connector_pos.y  - connector->width * padding && 
+        cursor_y < connector_pos.y + connector->width * padding)
+    {
+        hovered =true;
+    }
+
+
+    return hovered;
+}
 void NodeManager::OnMouseMove(const Event &event)
 {
     const MouseMoveEvent &moveEvent = static_cast<const MouseMoveEvent &>(event);
@@ -212,12 +237,23 @@ void NodeManager::OnMouseMove(const Event &event)
             node->position.x += delta.x;
             node->position.y += delta.y;
         }
-        if(IsNodeHovered(node))
+        if (IsNodeHovered(node))
+        {
             hovered_node = node;
+        }
+
+        for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
+            auto ptr = static_cast<ImGuiNode *>(node.get());
+            InputConnector *connector = ptr->GetInputConnector(i);
+            connector->hovered = IsInputConnectorHovered(node, i);
+        }
+        // node->GetInputConnector(0)->hovered = IsInputConnectorHovered(node, 0);
+        
     }
     old_pos = ImVec2(moveEvent.x, moveEvent.y);
 
-    if(hovered_node != nullptr){
+    if (hovered_node != nullptr)
+    {
         hovered_node->highlighted = true;
     }
 }

@@ -35,6 +35,7 @@ public:
     void Evaluate();
 
     bool IsNodeHovered(std::shared_ptr<ImGuiNode> node);
+    bool IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint32_t index);
 
     void OnMouseMove(const Event& event);
     void OnMouseClick(const Event& event);

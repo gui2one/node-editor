@@ -42,6 +42,8 @@ struct InputConnector
 {
     ImVec2 relative_pos;
     uint32_t index;
+    float width = 5.0f; 
+    bool hovered = false;
 };
 
 class ImGuiNode
