@@ -12,7 +12,8 @@
 
 constexpr uint32_t MAX_N_INPUTS = 4;
 
-enum NODE_COLOR{
+enum NODE_COLOR
+{
     BLACK = (ImU32)IM_COL32(0, 0, 0, 255),
     BLUE = (ImU32)IM_COL32(0, 0, 255, 255),
     DARK_BLUE = (ImU32)IM_COL32(0, 0, 100, 255),
@@ -20,6 +21,7 @@ enum NODE_COLOR{
     CYAN = (ImU32)IM_COL32(0, 255, 255, 255),
     GREEN = (ImU32)IM_COL32(0, 255, 0, 255),
     DARK_GREEN = (ImU32)IM_COL32(0, 100, 0, 255),
+    LIGHT_GREY = (ImU32)IM_COL32(160, 160, 160, 255),
     GREY = (ImU32)IM_COL32(128, 128, 128, 255),
     DARK_GREY = (ImU32)IM_COL32(32, 32, 32, 255),
     INDIGO = (ImU32)IM_COL32(75, 0, 130, 255),
@@ -36,7 +38,8 @@ enum NODE_COLOR{
     YELLOW = (ImU32)IM_COL32(255, 255, 0, 255)
 };
 
-struct InputConnector{
+struct InputConnector
+{
     ImVec2 relative_pos;
     uint32_t index;
 };
@@ -44,46 +47,55 @@ struct InputConnector{
 class ImGuiNode
 {
 public:
-    ImGuiNode(const char * _title);
+    ImGuiNode(const char *_title);
     ~ImGuiNode();
 
     virtual void Update() = 0;
 
-
-    inline void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node) { 
-        if( index < 0 || index > 3) return;
-        inputs[index] = node; 
+    inline void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node)
+    {
+        if (index < 0 || index > 3)
+            return;
+        inputs[index] = node;
     }
 
-    inline std::shared_ptr<ImGuiNode> GetInput(uint32_t index) {
-        if( index < 0 || index > 3) return nullptr;
+    inline std::shared_ptr<ImGuiNode> GetInput(uint32_t index)
+    {
+        if (index < 0 || index > 3)
+            return nullptr;
         return inputs[index];
     }
 
-    inline InputConnector* GetInputConnector(uint32_t index) {
-        if( index < 0 || index >= GetNumAvailableInputs()) {
+    inline InputConnector *GetInputConnector(uint32_t index)
+    {
+        if (index < 0 || index >= GetNumAvailableInputs())
+        {
             std::cout << "Problem with GetInputConnector" << std::endl;
-            
+
             return nullptr;
         }
         return &m_InputConnectors[index];
     }
 
-protected :
-    inline void SetNumAvailableInputs(uint32_t num) { 
-        if(num > MAX_N_INPUTS) {
-            std::cout << "Too many inputs" << std::endl; 
+protected:
+    inline void SetNumAvailableInputs(uint32_t num)
+    {
+        if (num > MAX_N_INPUTS)
+        {
+            std::cout << "Too many inputs" << std::endl;
             num = MAX_N_INPUTS;
         }
-        m_NumAvailableInputs = num; 
+        m_NumAvailableInputs = num;
         InitInputConnectors();
     }
 
     void InitInputConnectors();
+
 public:
     inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
+
 public:
-    const char* title;
+    const char *title;
     NODE_COLOR color;
     ImVec2 position;
     ImVec2 size;
@@ -100,9 +112,11 @@ private:
     std::vector<InputConnector> m_InputConnectors;
 };
 
-class OUTPUT_NODE: public ImGuiNode{
+class OUTPUT_NODE : public ImGuiNode
+{
 public:
-    OUTPUT_NODE(const char * _title) : ImGuiNode(_title) {
+    OUTPUT_NODE(const char *_title) : ImGuiNode(_title)
+    {
         SetNumAvailableInputs(1);
     }
 
