@@ -1,25 +1,18 @@
 #include "NodeManager.h"
 
 NodeManager::NodeManager()
-{
-    // event system test 
-    // EventManager::GetInstance().Subscribe(EventType::MouseClick, [](const Event& event) {
-    //     const MouseClickEvent& clickEvent = static_cast<const MouseClickEvent&>(event);
-    //     std::cout << "Mouse clicked with button " << clickEvent.button << "\n";
-    // });    
-
-    
+{    
 }
-
 
 NodeManager::~NodeManager()
 {
-
 }
+
 void NodeManager::SetNodesMenu(std::function<void()> func)
 {
     m_NodesMenu = func;
 }
+
 void NodeManager::DrawNodes()
 {
    ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -64,6 +57,7 @@ void NodeManager::DrawNodes()
         draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
         draw_list->AddText(min + ImVec2(10.0f, 10.0f), IM_COL32(255, 255, 255, 255), node->title);   
+
         if(!node->highlighted){
             draw_list->AddRect(min, max, IM_COL32(50, 50, 50, 255), 3.0f);
         } else {
@@ -76,11 +70,11 @@ void NodeManager::DrawNodes()
     }    
 }
 
-void NodeManager::DrawCanvas(){
-
+void NodeManager::DrawCanvas()
+{
+    m_CanvasHovered = ImGui::IsWindowHovered();
     static ImVector<ImVec2> points;
     static ImVec2 scrolling(0.0f, 0.0f);
-    static float scale = 1.0f;
     static bool opt_enable_grid = true;
     static bool opt_enable_context_menu = true;
     static bool adding_line = false;
@@ -101,12 +95,10 @@ void NodeManager::DrawCanvas(){
     // This will catch our interactions
     ImGui::InvisibleButton("canvas", canvas_sz, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
     
-
     const bool is_hovered = ImGui::IsItemHovered(); // Hovered
     const bool is_active = ImGui::IsItemActive();   // Held
     m_Origin = ImVec2((canvas_p0.x + scrolling.x), (canvas_p0.y + scrolling.y)); // Lock scrolled origin
     const ImVec2 mouse_pos_in_canvas(io.MousePos.x - m_Origin.x, io.MousePos.y - m_Origin.y);
-
 
     // Pan (we use a zero mouse threshold when there's no context menu)
     // You may decide to make that threshold dynamic based on whether the mouse is hovering something etc.
@@ -116,28 +108,20 @@ void NodeManager::DrawCanvas(){
         scrolling.x += io.MouseDelta.x;
         scrolling.y += io.MouseDelta.y;
     }
-    
-    if(ImGui::IsItemClicked() || ImGui::IsItemHovered()) {
-
-        scale += io.MouseWheel * 0.2f;
-    
-    }
-    
 
     // Context menu (under default mouse threshold)
     ImVec2 drag_delta = ImGui::GetMouseDragDelta(ImGuiMouseButton_Right);
     if (opt_enable_context_menu && drag_delta.x == 0.0f && drag_delta.y == 0.0f)
         ImGui::OpenPopupOnItemClick("context", ImGuiPopupFlags_MouseButtonRight);
-    if (ImGui::BeginPopup("context"))
-    {
+    if (ImGui::BeginPopup("context")){
         m_NodesMenu();
         ImGui::EndPopup();
     }
 
-    // Draw grid + all lines in the canvas
+    // Draw grid
     draw_list->PushClipRect(canvas_p0, canvas_p1, true);
-    if (opt_enable_grid)
-    {
+
+    if (opt_enable_grid){
         const float GRID_STEP = 64.0f;
         for (float x = fmodf(scrolling.x, GRID_STEP); x < canvas_sz.x; x += GRID_STEP)
             draw_list->AddLine(ImVec2(canvas_p0.x + x, canvas_p0.y), ImVec2(canvas_p0.x + x, canvas_p1.y), IM_COL32(200, 200, 200, 40));
@@ -145,19 +129,12 @@ void NodeManager::DrawCanvas(){
             draw_list->AddLine(ImVec2(canvas_p0.x, canvas_p0.y + y), ImVec2(canvas_p1.x, canvas_p0.y + y), IM_COL32(200, 200, 200, 40));
     }
     for (int n = 0; n < points.Size; n += 2){
-
         draw_list->AddLine(ImVec2(m_Origin.x + points[n].x, m_Origin.y + points[n].y), ImVec2(m_Origin.x + points[n + 1].x, m_Origin.y + points[n + 1].y), IM_COL32(255, 255, 0, 255), 2.0f);
     }
 
-    // m_NodeManager.m_Origin = m_Origin;
     DrawNodes();
 
-
-
     draw_list->PopClipRect();
-
-    
-
 }
 
 void NodeManager::Evaluate()
@@ -178,7 +155,7 @@ bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
     if(cursor_x > min.x && cursor_x < max.x && cursor_y > min.y && cursor_y < max.y) {
         hovered = true;
     }
-    // bool hovered = ImGui::IsMouseHoveringRect(min, max);
+
     return hovered;    
 }
 
@@ -198,6 +175,8 @@ void NodeManager::OnMouseMove(const Event& event)
 
 void NodeManager::OnMouseClick(const Event &event)
 {
+    if(!m_CanvasHovered) return;
+
     const MouseClickEvent& clickEvent = static_cast<const MouseClickEvent&>(event);
     for(auto node : nodes) {
         if(IsNodeHovered(node) && node->selected == false) {
@@ -211,5 +190,6 @@ void NodeManager::OnMouseClick(const Event &event)
 
 void NodeManager::OnMouseRelease(const Event &event)
 {
+    if(!m_CanvasHovered) return;
     const MouseReleaseEvent& clickEvent = static_cast<const MouseReleaseEvent&>(event);
 }

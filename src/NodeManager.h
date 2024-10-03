@@ -7,14 +7,14 @@
 #include <memory>
 #include <iostream>
 
-
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include "ImGuiNode.h"
 #include "EventManager.h"
 #include "GLFW/glfw3.h"
-class NodeManager
-{
+
+class NodeManager{
+
 public:
     NodeManager();
     ~NodeManager();
@@ -42,6 +42,7 @@ public:
 
 public:
     ImVec2 m_Origin;
+    bool m_CanvasHovered = false;
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     GLFWwindow* m_GLFWWindow;

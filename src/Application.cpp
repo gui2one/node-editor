@@ -162,10 +162,22 @@ void Application::Run()
         {
             ImGui::ShowDemoWindow(&showDemoWindow);
         }
-        
+
+        ImGui::BeginMainMenuBar();
+        if (ImGui::BeginMenu("File"))
+        {
+            if (ImGui::MenuItem("New", "Ctrl+N"))
+            {
+                std::cout << "New file" << std::endl;
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::Begin("Canvas test");
 
+        
         m_NodeManager.DrawCanvas();
 
         ImGui::End();
