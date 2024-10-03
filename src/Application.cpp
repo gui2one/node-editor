@@ -65,6 +65,13 @@ bool Application::Init()
         MouseMoveEvent moveEvent((float)xpos, (float)ypos);
         dispatcher.Dispatch(moveEvent);
     });
+
+    glfwSetKeyCallback(m_NativeWindow, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+        if(action == GLFW_PRESS) {
+            KeyPressEvent pressEvent(key);
+            dispatcher.Dispatch(pressEvent);
+        }
+    });
     
     glfwSetFramebufferSizeCallback(m_NativeWindow, [](GLFWwindow *window, int width, int height) {
         WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
@@ -82,6 +89,9 @@ bool Application::Init()
     });
     dispatcher.Subscribe(EventType::MouseMove, [&node_manager](const Event& event) {
         node_manager.OnMouseMove(event);
+    });
+    dispatcher.Subscribe(EventType::KeyPress, [&node_manager](const Event& event) {
+        node_manager.OnKeyPress(event);
     });
     
     ImGuiInit(m_NativeWindow);
@@ -127,12 +137,11 @@ void Application::ImGuiBeginFrame()
 
 void Application::ImGuiEndFrame()
 {
-    // Rendering
     ImGui::Render();
 
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    // ImGui::EndFrame();
+    ImGui::EndFrame();
 
     ImGuiIO &io = ImGui::GetIO();
 
@@ -164,22 +173,33 @@ void Application::Run()
         }
 
         ImGui::BeginMainMenuBar();
-        if (ImGui::BeginMenu("File"))
-        {
+        if (ImGui::BeginMenu("File")){
             if (ImGui::MenuItem("New", "Ctrl+N"))
             {
-                std::cout << "New file" << std::endl;
+                std::cout << "New file Not Implemented Yet" << std::endl;
+            }
+            ImGui::EndMenu();
+        }
+
+        if(ImGui::BeginMenu("View")){
+
+            if(ImGui::MenuItem("Center All", "F")) {
+                m_NodeManager.ViewFrameAll();
             }
             ImGui::EndMenu();
         }
         ImGui::EndMainMenuBar();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        static bool first_opened = true;
+
         ImGui::Begin("Canvas test");
 
-        
         m_NodeManager.DrawCanvas();
-
+        if(first_opened) {
+            m_NodeManager.ViewFrameAll();
+            first_opened = false;
+        }
         ImGui::End();
         ImGui::PopStyleVar();
         

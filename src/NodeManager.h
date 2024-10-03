@@ -39,10 +39,15 @@ public:
     void OnMouseMove(const Event& event);
     void OnMouseClick(const Event& event);
     void OnMouseRelease(const Event& event);
+    void OnKeyPress(const Event& event);
+
+    void ViewFrameAll();
 
 public:
     ImVec2 m_Origin;
+    ImVec2 m_Scrolling = ImVec2(0,0);
     bool m_CanvasHovered = false;
+    ImVec2 m_CanvasSize;
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     GLFWwindow* m_GLFWWindow;

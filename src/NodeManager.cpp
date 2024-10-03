@@ -73,8 +73,9 @@ void NodeManager::DrawNodes()
 void NodeManager::DrawCanvas()
 {
     m_CanvasHovered = ImGui::IsWindowHovered();
+    m_CanvasSize = ImGui::GetWindowSize();
     static ImVector<ImVec2> points;
-    static ImVec2 scrolling(0.0f, 0.0f);
+    // static ImVec2 scrolling(0.0f, 0.0f);
     static bool opt_enable_grid = true;
     static bool opt_enable_context_menu = true;
     static bool adding_line = false;
@@ -97,7 +98,7 @@ void NodeManager::DrawCanvas()
     
     const bool is_hovered = ImGui::IsItemHovered(); // Hovered
     const bool is_active = ImGui::IsItemActive();   // Held
-    m_Origin = ImVec2((canvas_p0.x + scrolling.x), (canvas_p0.y + scrolling.y)); // Lock scrolled origin
+    m_Origin = ImVec2((canvas_p0.x + m_Scrolling.x), (canvas_p0.y + m_Scrolling.y)); // Lock scrolled origin
     const ImVec2 mouse_pos_in_canvas(io.MousePos.x - m_Origin.x, io.MousePos.y - m_Origin.y);
 
     // Pan (we use a zero mouse threshold when there's no context menu)
@@ -105,8 +106,8 @@ void NodeManager::DrawCanvas()
     const float mouse_threshold_for_pan = opt_enable_context_menu ? -1.0f : 0.0f;
     if (is_active && ImGui::IsMouseDragging(ImGuiMouseButton_Right, mouse_threshold_for_pan))
     {
-        scrolling.x += io.MouseDelta.x;
-        scrolling.y += io.MouseDelta.y;
+        m_Scrolling.x += io.MouseDelta.x;
+        m_Scrolling.y += io.MouseDelta.y;
     }
 
     // Context menu (under default mouse threshold)
@@ -123,9 +124,9 @@ void NodeManager::DrawCanvas()
 
     if (opt_enable_grid){
         const float GRID_STEP = 64.0f;
-        for (float x = fmodf(scrolling.x, GRID_STEP); x < canvas_sz.x; x += GRID_STEP)
+        for (float x = fmodf(m_Scrolling.x, GRID_STEP); x < canvas_sz.x; x += GRID_STEP)
             draw_list->AddLine(ImVec2(canvas_p0.x + x, canvas_p0.y), ImVec2(canvas_p0.x + x, canvas_p1.y), IM_COL32(200, 200, 200, 40));
-        for (float y = fmodf(scrolling.y, GRID_STEP); y < canvas_sz.y; y += GRID_STEP)
+        for (float y = fmodf(m_Scrolling.y, GRID_STEP); y < canvas_sz.y; y += GRID_STEP)
             draw_list->AddLine(ImVec2(canvas_p0.x, canvas_p0.y + y), ImVec2(canvas_p1.x, canvas_p0.y + y), IM_COL32(200, 200, 200, 40));
     }
     for (int n = 0; n < points.Size; n += 2){
@@ -137,10 +138,25 @@ void NodeManager::DrawCanvas()
     draw_list->PopClipRect();
 }
 
+ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>> nodes){
+    if(nodes.size() == 0) return ImVec2(0,0);
+    float minx = 999999999.f, miny = 999999999.f, maxx = -999999999.f, maxy = -999999999.f;
+    
+    for(auto node : nodes) {
+        if(node->position.x < minx) minx = node->position.x;
+        if(node->position.y < miny) miny = node->position.y;
+        if(node->position.x > maxx) maxx = node->position.x;
+        if(node->position.y > maxy) maxy = node->position.y;
+    }
+    float centerx, centery;
+    centerx = (minx + maxx) / 2.0f + nodes[0]->size.x / 2.0f;
+    centery = (miny + maxy) / 2.0f + nodes[0]->size.y / 2.0f;
+    return ImVec2(centerx, centery);
+}
+
 void NodeManager::Evaluate()
 {
     for(auto node : nodes) {
-
         node->Update();
     }
 }
@@ -192,4 +208,19 @@ void NodeManager::OnMouseRelease(const Event &event)
 {
     if(!m_CanvasHovered) return;
     const MouseReleaseEvent& clickEvent = static_cast<const MouseReleaseEvent&>(event);
+}
+
+void NodeManager::OnKeyPress(const Event &event)
+{
+    if(!m_CanvasHovered) return;
+    const KeyPressEvent& clickEvent = static_cast<const KeyPressEvent&>(event);
+    if(clickEvent.key == GLFW_KEY_F) {
+        ViewFrameAll();
+    }
+}
+
+void NodeManager::ViewFrameAll()
+{
+    ImVec2 center = get_nodes_center(nodes);
+    m_Scrolling = -center + m_CanvasSize / 2.0f;
 }

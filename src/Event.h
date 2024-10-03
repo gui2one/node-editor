@@ -51,6 +51,17 @@ public:
     }
 };
 
+class KeyPressEvent : public Event {
+public:
+    int key;
+
+    KeyPressEvent(int key) : key(key) {}
+
+    EventType GetType() const override {
+        return EventType::KeyPress;
+    }
+};
+
 // Define more events as needed, e.g., for keypress, node actions, etc.
 
 
