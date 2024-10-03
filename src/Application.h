@@ -23,18 +23,13 @@ public:
     Application();
     ~Application();
 
-    bool Init();
-    
     inline NodeManager& GetNodeManager() { return m_NodeManager; }
-    
+    bool Init();
     void DrawCanvas();
     void SetLoopFunction(std::function<void()> func);
     void SetNodesMenu(std::function<void()> func);
     void DrawNodes();
 
-
-    void MouseEvents();
-    bool IsNodeHovered(std::shared_ptr<ImGuiNode> node);
     void Run();
 
 public :

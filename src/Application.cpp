@@ -299,52 +299,6 @@ void Application::DrawNodes(){
     }
 }
 
-bool Application::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
-    ImVec2 min = node->position + m_Origin;
-    ImVec2 max = min + node->size;    
-    bool hovered = ImGui::IsMouseHoveringRect(min, max);
-    return hovered;    
-}
-
-void Application::MouseEvents()
-{
-    auto& mngr = GetNodeManager();
-
-    ImGuiNode* cur_node = nullptr;    
-
-    for(auto node : mngr.GetNodes()) {
-        node->highlighted = IsNodeHovered(node);
-
-        if(ImGui::IsMouseClicked(0) && IsNodeHovered(node)) {
-            if(node->selected) {
-                node->selected = false;
-            }else{
-                cur_node = node.get();
-            }
-        }
-        if(ImGui::IsMouseDragging(ImGuiMouseButton_Left, 1.0f)) {
-            if(IsNodeHovered(node)) {
-                if( node->grabbed == false) {
-                    node->grabbed = true;    
-                }
-            }  
-        }else{
-            node->grabbed = false;
-        }
-    }
-    
-    if( cur_node){
-        cur_node->selected = true;      
-    }
-
-    for(auto node : mngr.GetNodes()) {
-        if(node->grabbed) {
-            node->position.x += ImGui::GetIO().MouseDelta.x;
-            node->position.y += ImGui::GetIO().MouseDelta.y;
-        }
-    }    
-}
-
 void Application::Run()
 {
     while (!glfwWindowShouldClose(m_NativeWindow))
