@@ -100,7 +100,12 @@ private:
     std::vector<InputConnector> m_InputConnectors;
 };
 
+class OUTPUT_NODE: public ImGuiNode{
+public:
+    OUTPUT_NODE(const char * _title) : ImGuiNode(_title) {
+        SetNumAvailableInputs(1);
+    }
 
-
-
+    void Update() override;
+};
 #endif

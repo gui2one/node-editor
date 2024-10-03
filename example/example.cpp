@@ -27,6 +27,10 @@ int main(){
     concat_node->SetInput(0, hello_node);
     concat_node->SetInput(1, world_node);
 
+    auto output = std::make_shared<OUTPUT_NODE>("Output");
+    output->position = ImVec2(800, 300);
+    output->SetInput(0, concat_node);
+
     manager.AddNode(hello_node);
     manager.AddNode(world_node);
     manager.AddNode(concat_node);  
@@ -42,7 +46,7 @@ int main(){
         }
     });
     // app.GetNodeManager().Evaluate();
-    concat_node->Update(); // call Update() on the 'last' node only should trigger Update() on all preceding nodes
+    output->Update();
     app.Run();
 
     std::cout << "__All Done__" << std::endl;

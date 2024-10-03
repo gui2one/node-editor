@@ -26,3 +26,10 @@ void ImGuiNode::InitInputConnectors()
         m_InputConnectors.push_back(connector);    
     }
 }
+
+void OUTPUT_NODE::Update()
+{
+    if(GetInput(0) != nullptr) {
+        GetInput(0)->Update();
+    }
+}
