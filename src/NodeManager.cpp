@@ -26,7 +26,8 @@ void NodeManager::Evaluate()
     }
 }
 
-bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
+bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
+{
     ImVec2 min = node->position + m_Origin;
     ImVec2 max = min + node->size;
     double cursor_x, cursor_y;
@@ -53,18 +54,14 @@ void NodeManager::OnMouseMove(const Event& event)
     old_pos = ImVec2(moveEvent.x, moveEvent.y);
 }
 
-
-
 void NodeManager::OnMouseClick(const Event &event)
 {
     const MouseClickEvent& clickEvent = static_cast<const MouseClickEvent&>(event);
-    std::cout << "Mouse clicked with button " << clickEvent.button << "\n";
     for(auto node : nodes) {
-        // std::cout << (IsNodeHovered(node) ? ">" : "") << node->title << std::endl;
-        
         if(IsNodeHovered(node) && node->selected == false) {
             node->selected = true;
         }else{
+            if(ImGui::GetIO().KeyCtrl == false)
             node->selected = false;
         }
     }
@@ -73,5 +70,4 @@ void NodeManager::OnMouseClick(const Event &event)
 void NodeManager::OnMouseRelease(const Event &event)
 {
     const MouseReleaseEvent& clickEvent = static_cast<const MouseReleaseEvent&>(event);
-    // std::cout << "Mouse Released with button " << clickEvent.button << "\n";
 }
