@@ -42,7 +42,6 @@ private:
 
 private:
     GLFWwindow* m_NativeWindow;
-    std::function<void()> m_LoopFunction;
     std::function<void()> m_NodesMenu = [](){};
     NodeManager m_NodeManager;
     
