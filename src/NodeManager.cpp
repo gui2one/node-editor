@@ -345,7 +345,6 @@ void NodeManager::OnMouseRelease(const Event &event)
             
         }
     }
-    // m_ConnectionProcedure.started = false;
 }
 
 void NodeManager::OnKeyPress(const Event &event)
