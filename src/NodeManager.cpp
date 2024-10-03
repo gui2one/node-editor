@@ -232,6 +232,12 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint3
     return hovered;
 }
 
+void NodeManager::ApplyConnectionProcedure()
+{
+    m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
+    ResetConnectionProcedure();
+}
+
 void NodeManager::ResetConnectionProcedure()
 {
     m_ConnectionProcedure.started = false;
@@ -299,8 +305,7 @@ void NodeManager::OnMouseClick(const Event &event)
             clicked_something = true;
             m_ConnectionProcedure.input_node = node;
 
-            m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
-            ResetConnectionProcedure();
+            ApplyConnectionProcedure();
             
         }
         for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
@@ -340,7 +345,7 @@ void NodeManager::OnMouseRelease(const Event &event)
             
         }
     }
-    m_ConnectionProcedure.started = false;
+    // m_ConnectionProcedure.started = false;
 }
 
 void NodeManager::OnKeyPress(const Event &event)
