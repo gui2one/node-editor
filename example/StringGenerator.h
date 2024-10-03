@@ -58,7 +58,7 @@ class StringModifier : public StringOperator
 public:
     StringModifier();
     ~StringModifier();
-
+    virtual void Generate() = 0;
 private:
 
 };
@@ -79,7 +79,7 @@ public:
 template <typename T>
 class Node : public T
 {
-    static_assert(std::is_base_of<StringOperator, T>::value, "T must be derived from SpringOperator");
+    static_assert(std::is_base_of<StringOperator, T>::value, "T must be derived from StringOperator");
 public:
     Node(const char * _title) {
         auto node = static_cast<ImGuiNode*>(this);
@@ -97,8 +97,10 @@ public:
         auto op = static_cast<StringOperator*>(this);
         for(uint32_t i = 0; i < MAX_N_INPUTS; i++) {
             if(node->GetInput(i) != nullptr) {
+                node->GetInput(i)->Update(); /* Important !!*/
                 op->inputs[i] = static_cast<StringOperator*>(node->GetInput(i).get());
                 op->inputs[i]->Generate();
+                // std::cout << node->title << " -> " << op->inputs[i]->m_StringCache << std::endl;
             }
         }
         op->Generate();

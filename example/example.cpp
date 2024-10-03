@@ -26,14 +26,20 @@ int main(){
     concat_node->position = ImVec2(600, 400);
     concat_node->SetInput(0, hello_node);
     concat_node->SetInput(1, world_node);
+    auto concat_node2 = std::make_shared<Node<StringConcatenator>>("Concatenator2");
+    concat_node2->position = ImVec2(600, 600);
+    concat_node2->SetInput(0, concat_node);
+    concat_node2->SetInput(1, world_node);
 
     auto output = std::make_shared<OUTPUT_NODE>("Output");
-    output->position = ImVec2(800, 300);
-    output->SetInput(0, concat_node);
+    output->position = concat_node2->position + ImVec2(0, 100);
+    output->SetInput(0, concat_node2);
 
     manager.AddNode(hello_node);
     manager.AddNode(world_node);
     manager.AddNode(concat_node);  
+    manager.AddNode(concat_node2);  
+    manager.AddNode(output);  
 
     app.SetNodesMenu([&app ](){
         if (ImGui::MenuItem("Generator", NULL, false, true)) 
