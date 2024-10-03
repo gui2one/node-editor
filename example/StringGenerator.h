@@ -16,7 +16,7 @@ public:
 public :
     std::string m_StringCache = "";
 
-    std::array<StringOperator*, 4> inputs = { nullptr, nullptr, nullptr, nullptr }; 
+    // std::array<StringOperator*, 4> inputs = { nullptr, nullptr, nullptr, nullptr }; 
 };
 
 class StringGenerator : public StringOperator
@@ -70,8 +70,10 @@ public:
     ~StringConcatenator();
 
     void Generate() override{
-        if( inputs[0] != nullptr && inputs[1] != nullptr) {
-            m_StringCache = inputs[0]->m_StringCache + inputs[1]->m_StringCache;        
+        if( GetInput(0) != nullptr && GetInput(1) != nullptr) {
+            auto op0 = static_cast<StringOperator*>(GetInput(0).get());
+            auto op1 = static_cast<StringOperator*>(GetInput(1).get());
+            m_StringCache = op0->m_StringCache + op1->m_StringCache;        
         }
     }
 };
@@ -98,8 +100,9 @@ public:
         for(uint32_t i = 0; i < MAX_N_INPUTS; i++) {
             if(node->GetInput(i) != nullptr) {
                 node->GetInput(i)->Update(); /* Important !!*/
-                op->inputs[i] = static_cast<StringOperator*>(node->GetInput(i).get());
-                op->inputs[i]->Generate();
+                auto opinput = static_cast<StringOperator*>(node->GetInput(i).get());
+                op->SetInput(i, node->GetInput(i));
+                opinput->Generate();
                 // std::cout << node->title << " -> " << op->inputs[i]->m_StringCache << std::endl;
             }
         }
