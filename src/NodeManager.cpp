@@ -41,6 +41,17 @@ void NodeManager::DrawNodes()
         }
     }
 
+    if(m_ConnectionProcedure.started) {
+        ImVec2 connector_pos = m_ConnectionProcedure.output_node->GetInputConnector(m_ConnectionProcedure.output_index)->relative_pos + m_ConnectionProcedure.output_node->position + offset;
+        ImVec2 p0 = connector_pos;
+        double x, y;
+        glfwGetCursorPos(m_GLFWWindow, &x, &y);
+        // std::cout << x << " " << y  << std::endl;
+        ImVec2 cursor_pos = ImVec2((float)x, (float)y);
+        ImVec2 p1 = cursor_pos;
+        draw_list->AddBezierCubic(p0, p0 - ImVec2(0, 100), p1 + ImVec2(0, 100), p1, NODE_COLOR::ORANGE, 2.0f);
+    }
+
     for (auto node : GetNodes())
     {
         auto ptr = static_cast<ImGuiNode *>(node.get());
@@ -223,6 +234,7 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint3
 
     return hovered;
 }
+
 void NodeManager::OnMouseMove(const Event &event)
 {
     const MouseMoveEvent &moveEvent = static_cast<const MouseMoveEvent &>(event);
@@ -264,17 +276,37 @@ void NodeManager::OnMouseClick(const Event &event)
         return;
 
     const MouseClickEvent &clickEvent = static_cast<const MouseClickEvent &>(event);
+    bool clicked_something = false;
     for (auto node : nodes)
     {
         if (IsNodeHovered(node) && node->selected == false)
         {
             node->selected = true;
+            clicked_something = true;
         }
         else
         {
             if (ImGui::GetIO().KeyCtrl == false)
                 node->selected = false;
         }
+
+        for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
+            auto ptr = static_cast<ImGuiNode *>(node.get());
+            InputConnector *connector = ptr->GetInputConnector(i);
+            if(connector->hovered) {
+                clicked_something = true;
+                std::cout << "connector grabbed" << std::endl;
+                connector->grabbed = true;
+
+                m_ConnectionProcedure.started = true;
+                m_ConnectionProcedure.output_node = node;
+                m_ConnectionProcedure.output_index = i;
+            }
+        }
+    }
+
+    if(!clicked_something) {
+        m_ConnectionProcedure.started = false;
     }
 }
 
@@ -283,6 +315,8 @@ void NodeManager::OnMouseRelease(const Event &event)
     if (!m_CanvasHovered)
         return;
     const MouseReleaseEvent &clickEvent = static_cast<const MouseReleaseEvent &>(event);
+
+    m_ConnectionProcedure.started = false;
 }
 
 void NodeManager::OnKeyPress(const Event &event)

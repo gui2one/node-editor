@@ -13,6 +13,14 @@
 #include "EventManager.h"
 #include "GLFW/glfw3.h"
 
+
+struct ConnectionProcedure{
+    bool started = false;
+    std::shared_ptr<ImGuiNode> output_node;
+    uint32_t output_index;
+    std::shared_ptr<ImGuiNode> input_node;
+};
+
 class NodeManager{
 
 public:
@@ -53,6 +61,9 @@ private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     GLFWwindow* m_GLFWWindow;
     std::function<void()> m_NodesMenu = [](){};
+
+    ConnectionProcedure m_ConnectionProcedure;
 };
+
 
 #endif

@@ -44,6 +44,7 @@ struct InputConnector
     uint32_t index;
     float width = 5.0f; 
     bool hovered = false;
+    bool grabbed = false;
 };
 
 class ImGuiNode
