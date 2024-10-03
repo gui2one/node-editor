@@ -33,7 +33,7 @@ void NodeManager::DrawNodes()
                 ImVec2 ctrl1 = p0 + ImVec2(0, y_sep);
                 ImVec2 ctrl2 = other_pos - ImVec2(0, y_sep);
 
-                draw_list->AddBezierCubic(p0, ctrl1, ctrl2, other_pos, (ImU32)NODE_COLOR::GREY, 2.0f); // ImDrawList API uses screen coordinates()
+                draw_list->AddBezierCubic(p0, ctrl1, ctrl2, other_pos, NODE_COLOR::GREY, 2.0f); // ImDrawList API uses screen coordinates()
             }
         }
     }
@@ -45,12 +45,12 @@ void NodeManager::DrawNodes()
         for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
             auto input_conn = ptr->GetInputConnector(i);
             ImVec2 cp = node->position + offset + input_conn->relative_pos;
-            draw_list->AddCircleFilled(cp, 5.0f, (ImU32)NODE_COLOR::WHITE);
+            draw_list->AddCircleFilled(cp, 5.0f, NODE_COLOR::WHITE);
         }
 
         //output 'connector'
         ImVec2 cp = node->position + offset + ImVec2(node->size.x/2.0f, node->size.y);
-        draw_list->AddCircleFilled(cp, 5.0f, (ImU32)NODE_COLOR::WHITE); 
+        draw_list->AddCircleFilled(cp, 5.0f, NODE_COLOR::WHITE); 
 
         ImVec2 min = node->position + offset;
         ImVec2 max = min + node->size;
