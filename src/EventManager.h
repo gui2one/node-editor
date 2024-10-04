@@ -2,7 +2,7 @@
 #define EVENTMANAGER_H
 #pragma once
 
-#include "EventDispatcher.cpp"
+#include "EventDispatcher.h"
 class EventManager {
 public:
     static EventDispatcher& GetInstance() {
