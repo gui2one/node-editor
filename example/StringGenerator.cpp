@@ -53,6 +53,7 @@ StringRepeater::StringRepeater():StringModifier()
     auto param = std::make_shared<Param<uint32_t>>("Count", 10);
     m_Params.push_back(param);
 }
+
 StringRepeater::~StringRepeater()
 {
 }

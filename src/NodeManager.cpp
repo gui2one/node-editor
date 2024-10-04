@@ -345,8 +345,6 @@ void NodeManager::OnMouseRelease(const Event &event) {
 
       ApplyConnectionProcedure();
       Evaluate();
-      // m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index,
-      // m_ConnectionProcedure.input_node); ResetConnectionProcedure();
     }
   }
 }
