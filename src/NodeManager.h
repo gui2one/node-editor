@@ -49,8 +49,10 @@ public:
     inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 
     void SetOutputNode(std::shared_ptr<ImGuiNode> node);
-    void Evaluate();
 
+    /// @brief Computes result for all 'parents' of m_OutputNode.
+    /// does nothing if m_OutputNode == nullptr
+    void Evaluate();
 
     bool IsNodeHovered(std::shared_ptr<ImGuiNode> node);
     bool IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint32_t index);
