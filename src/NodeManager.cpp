@@ -324,7 +324,6 @@ void NodeManager::OnMouseClick(const Event &event)
             if (connector->hovered)
             {
                 clicked_something = true;
-                std::cout << "connector grabbed" << std::endl;
                 connector->grabbed = true;
 
                 m_ConnectionProcedure.started = true;
