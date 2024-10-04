@@ -115,6 +115,20 @@ void NodeManager::DrawCanvas() {
   draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(50, 50, 50, 255));
   draw_list->AddRect(canvas_p0, canvas_p1, IM_COL32(255, 255, 255, 255));
 
+    // This will catch our interactions
+    // ImGui::InvisibleButton("canvas", canvas_sz, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
+
+    if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)){
+
+      ImGui::OpenPopup("context", 1);
+    }
+
+    if (ImGui::BeginPopup("context"))
+    {
+        ImGui::Text("Add Node");
+        m_NodesMenu();
+        ImGui::EndPopup();
+    }
   // Draw grid
   draw_list->PushClipRect(canvas_p0, canvas_p1, true);
 
@@ -138,6 +152,10 @@ void NodeManager::DrawCanvas() {
         IM_COL32(255, 255, 0, 255), 2.0f);
   }
 
+
+
+
+
   DrawNodes();
 
   draw_list->PopClipRect();
@@ -157,6 +175,7 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node) {
       char buffer[2048];
       if(p_string->value.length() > 2048) p_string->value = p_string->value.substr(0, 2048);
       std::copy(p_string->value.begin(), p_string->value.end(), buffer);
+      buffer[p_string->value.length()] = 0;
       if (ImGui::InputText(param->name, buffer, 2048)) {
         p_string->value = std::string(buffer);
       }
@@ -261,7 +280,7 @@ void NodeManager::OnMouseMove(const Event &event) {
   static ImVec2 old_pos = ImVec2(0, 0);
   ImVec2 delta = ImVec2(moveEvent.x - old_pos.x, moveEvent.y - old_pos.y);
   std::shared_ptr<ImGuiNode> hovered_node = nullptr;
-  if(ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
+  if(ImGui::IsMouseDown(ImGuiMouseButton_Middle)) {
       m_Origin += delta;
   }
   for (auto node : nodes) {
