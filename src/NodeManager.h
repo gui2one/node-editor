@@ -46,7 +46,8 @@ public:
     inline void SetGLFWWindow(GLFWwindow* _window) { m_GLFWWindow = _window; }
     inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 
-    void Evaluate(std::function<void()> func);
+    void SetOutputNode(std::shared_ptr<ImGuiNode> node);
+    void Evaluate();
 
 
     bool IsNodeHovered(std::shared_ptr<ImGuiNode> node);
@@ -73,6 +74,7 @@ private:
     std::function<void()> m_NodesMenu = [](){};
 
     ConnectionProcedure m_ConnectionProcedure;
+    std::shared_ptr<ImGuiNode> m_OutputNode = nullptr;
 };
 
 

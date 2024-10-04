@@ -189,9 +189,14 @@ ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>> nodes)
     return ImVec2(centerx, centery);
 }
 
-void NodeManager::Evaluate(std::function<void()> func)
+void NodeManager::Evaluate()
 {
-    func();
+    m_OutputNode->Update();
+}
+
+void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node)
+{
+    m_OutputNode = node;
 }
 
 bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
@@ -339,8 +344,10 @@ void NodeManager::OnMouseRelease(const Event &event)
         if(m_ConnectionProcedure.started && IsNodeHovered(node)) {
             m_ConnectionProcedure.input_node = node;
 
-            m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
-            ResetConnectionProcedure();
+            ApplyConnectionProcedure();
+            Evaluate();
+            // m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
+            // ResetConnectionProcedure();
             
             
         }

@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/build/example/Debug/node_editor_example.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/build/example/Debug/",
             "environment": [],
             "console": "externalTerminal"
         }
