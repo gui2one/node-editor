@@ -362,7 +362,7 @@ void NodeManager::OnKeyPress(const Event &event) {
 
 void NodeManager::ViewFrameAll() {
   ImVec2 center = get_nodes_center(nodes);
-  m_Scrolling = -center + m_CanvasSize / 2.0f;
+  m_Origin = -center + m_CanvasSize / 2.0f;
 }
 
 }; // namespace NodeEditor
