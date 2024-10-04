@@ -46,3 +46,10 @@ WorldGenerator::~WorldGenerator()
 {
 }
 
+StringRepeater::StringRepeater()
+{
+    SetNumAvailableInputs(1);
+}
+StringRepeater::~StringRepeater()
+{
+}

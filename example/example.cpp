@@ -47,6 +47,10 @@ int main(){
         { 
             manager.AddNode(std::make_shared<Node<StringConcatenator>>("Concatenator"));
         }
+        if (ImGui::MenuItem("Repeater", NULL, false, true)) 
+        { 
+            manager.AddNode(std::make_shared<Node<StringRepeater>>("Repeater"));
+        }
     });
 
     EventManager::GetInstance().Subscribe(EventType::NodeConnection,[&app, &concat_node2](const Event& event){

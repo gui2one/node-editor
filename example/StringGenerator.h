@@ -78,6 +78,25 @@ public:
     }
 };
 
+class StringRepeater : public StringModifier{
+public:
+    StringRepeater();
+    ~StringRepeater();
+
+    void Generate() override{
+        if( GetInput(0) != nullptr) {
+            std::string val = "";
+            auto op0 = static_cast<StringOperator*>(GetInput(0).get());
+            for(uint32_t i = 0; i < m_Count; i++) {
+                val += op0->m_StringCache;
+            }
+            m_StringCache = val;
+        }
+    }
+
+public:
+    uint32_t m_Count = 2;
+};
 template <typename T>
 class Node : public T
 {
