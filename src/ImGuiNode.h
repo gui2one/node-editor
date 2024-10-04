@@ -12,6 +12,7 @@
 #include "ui_utils.h"
 
 constexpr uint32_t MAX_N_INPUTS = 4;
+namespace NodeEditor {
 
 enum NODE_COLOR
 {
@@ -131,5 +132,6 @@ public:
     }
 
     void Update() override;
+};
 };
 #endif

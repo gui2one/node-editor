@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 #include "node_editor.h"
+namespace NodeEditor {
 
 struct WindowData{
     int width = 1280;
@@ -39,4 +40,5 @@ private:
     NodeManager m_NodeManager;
 };
 
+};
 #endif

@@ -1,4 +1,5 @@
 #include "NodeManager.h"
+namespace NodeEditor {
 NodeManager::NodeManager()
 {
 }
@@ -405,3 +406,5 @@ void NodeManager::ViewFrameAll()
     ImVec2 center = get_nodes_center(nodes);
     m_Scrolling = -center + m_CanvasSize / 2.0f;
 }
+
+};

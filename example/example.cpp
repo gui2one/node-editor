@@ -7,6 +7,7 @@
 #include "node_editor.h"
 #include "StringGenerator.h"
 
+using namespace NodeEditor;
 
 int main(){
     Application app;  

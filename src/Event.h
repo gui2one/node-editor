@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ImGuiNode.h"
+namespace NodeEditor {
 
 enum class EventType {
     MouseMove,
@@ -80,5 +81,6 @@ public:
 
 // Define more events as needed, e.g., for keypress, node actions, etc.
 
+};
 
 #endif

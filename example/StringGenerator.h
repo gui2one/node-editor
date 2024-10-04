@@ -7,6 +7,7 @@
 #include <type_traits>
 #include <iostream>
 #include <string>
+namespace NodeEditor {
 
 class StringOperator : public ImGuiNode{
 public:
@@ -150,6 +151,7 @@ public:
         // 'final' output
         // std::cout << op->m_StringCache << std::endl;
     }
+};
 };
 
 #endif

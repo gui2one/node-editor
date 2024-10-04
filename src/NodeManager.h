@@ -14,6 +14,7 @@
 #include "GLFW/glfw3.h"
 
 
+namespace NodeEditor {
 struct ConnectionProcedure{
     enum Direction{
         CHILD_TO_PARENT = 0,
@@ -83,4 +84,5 @@ private:
 };
 
 
+};
 #endif

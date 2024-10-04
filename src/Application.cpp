@@ -1,4 +1,5 @@
 #include "Application.h"
+namespace NodeEditor {
 
 Application::Application()
 {
@@ -81,16 +82,16 @@ bool Application::Init()
     });
 
     // add event listeners !!!
-    dispatcher.Subscribe(EventType::MouseClick, [&node_manager](const Event& event) {
+    dispatcher.Subscribe(EventType::MouseClick, [&node_manager](const NodeEditor::Event& event) {
         node_manager.OnMouseClick(event);
     });
-    dispatcher.Subscribe(EventType::MouseRelease, [&node_manager](const Event& event) {
+    dispatcher.Subscribe(EventType::MouseRelease, [&node_manager](const NodeEditor::Event& event) {
         node_manager.OnMouseRelease(event);
     });
-    dispatcher.Subscribe(EventType::MouseMove, [&node_manager](const Event& event) {
+    dispatcher.Subscribe(EventType::MouseMove, [&node_manager](const NodeEditor::Event& event) {
         node_manager.OnMouseMove(event);
     });
-    dispatcher.Subscribe(EventType::KeyPress, [&node_manager](const Event& event) {
+    dispatcher.Subscribe(EventType::KeyPress, [&node_manager](const NodeEditor::Event& event) {
         node_manager.OnKeyPress(event);
     });
     
@@ -211,3 +212,5 @@ void Application::Run()
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
+
+};

@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include "Event.h"
+namespace NodeEditor {
 
 class EventDispatcher {
 public:
@@ -24,6 +25,7 @@ public:
 
 private:
     std::unordered_map<EventType, std::vector<EventCallback>> listeners;
+};
 };
 
 #endif

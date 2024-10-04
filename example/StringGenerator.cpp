@@ -1,4 +1,5 @@
 #include "StringGenerator.h"
+namespace NodeEditor {
 
 StringGenerator::StringGenerator()
 {
@@ -55,3 +56,5 @@ StringRepeater::StringRepeater()
 StringRepeater::~StringRepeater()
 {
 }
+
+};

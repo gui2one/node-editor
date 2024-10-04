@@ -5,6 +5,7 @@
 
 #include <typeinfo>
 
+namespace NodeEditor {
 class NodeParam{
 public:
     NodeParam(const char * _name): name(_name){
@@ -48,5 +49,6 @@ enum NodeParamType{
     Int,
     Float,
     String
+};
 };
 #endif
