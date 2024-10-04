@@ -193,7 +193,10 @@ ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>> nodes)
 
 void NodeManager::Evaluate()
 {
-    m_OutputNode->Update();
+    if(m_OutputNode != nullptr){
+
+        m_OutputNode->Update();
+    }
 }
 
 void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node)
