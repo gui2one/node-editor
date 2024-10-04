@@ -3,6 +3,7 @@
 
 #pragma once
 #include "ImguiNode.h"
+#include "NodeParam.h"
 #include <type_traits>
 #include <iostream>
 #include <string>
@@ -87,7 +88,9 @@ public:
         if( GetInput(0) != nullptr) {
             std::string val = "";
             auto op0 = static_cast<StringOperator*>(GetInput(0).get());
-            for(uint32_t i = 0; i < m_Count; i++) {
+            auto param_0 = static_cast<Param<uint32_t>*>(m_Params[0].get());
+            auto val_0 = get_param_value<uint32_t>(param_0);
+            for(uint32_t i = 0; i < param_0->Eval(); i++) {
                 val += op0->m_StringCache;
             }
             m_StringCache = val;

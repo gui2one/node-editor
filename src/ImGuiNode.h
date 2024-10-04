@@ -108,7 +108,7 @@ public:
     NODE_COLOR color;
     ImVec2 position;
     ImVec2 size;
-    std::vector<NodeParam> m_Params;
+    std::vector<std::shared_ptr<NodeParam>> m_Params;
 
     bool selected = false;
     bool grabbed = false;

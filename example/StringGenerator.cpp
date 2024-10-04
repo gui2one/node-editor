@@ -49,7 +49,7 @@ WorldGenerator::~WorldGenerator()
 StringRepeater::StringRepeater()
 {
     SetNumAvailableInputs(1);
-    Param<uint32_t> param("Count");
+    auto param = std::make_shared<Param<uint32_t>>("Count", 10);
     m_Params.push_back(param);
 }
 StringRepeater::~StringRepeater()
