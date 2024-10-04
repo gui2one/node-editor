@@ -41,7 +41,8 @@ void NodeManager::DrawNodes()
         }
     }
 
-    if(m_ConnectionProcedure.started) {
+    if (m_ConnectionProcedure.started)
+    {
         ImVec2 connector_pos = m_ConnectionProcedure.output_node->GetInputConnector(m_ConnectionProcedure.output_index)->relative_pos + m_ConnectionProcedure.output_node->position + offset;
         ImVec2 p0 = connector_pos;
         double x, y;
@@ -62,7 +63,8 @@ void NodeManager::DrawNodes()
             auto input_conn = ptr->GetInputConnector(i);
             ImVec2 cp = node->position + offset + input_conn->relative_pos;
             draw_list->AddCircleFilled(cp, 5.0f, NODE_COLOR::WHITE);
-            if(input_conn->hovered){
+            if (input_conn->hovered)
+            {
                 draw_list->AddCircle(cp, 5.0f, NODE_COLOR::ORANGE, 0, 3.0f);
             }
         }
@@ -225,14 +227,13 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint3
     ImVec2 connector_pos = node->position + connector->relative_pos + m_Origin;
 
     float padding = 1.5f;
-    if (cursor_x > connector_pos.x  - connector->width * padding && 
-        cursor_x < connector_pos.x + connector->width * padding && 
-        cursor_y > connector_pos.y  - connector->width * padding && 
+    if (cursor_x > connector_pos.x - connector->width * padding &&
+        cursor_x < connector_pos.x + connector->width * padding &&
+        cursor_y > connector_pos.y - connector->width * padding &&
         cursor_y < connector_pos.y + connector->width * padding)
     {
-        hovered =true;
+        hovered = true;
     }
-
 
     return hovered;
 }
@@ -270,13 +271,13 @@ void NodeManager::OnMouseMove(const Event &event)
             hovered_node = node;
         }
 
-        for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
+        for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++)
+        {
             auto ptr = static_cast<ImGuiNode *>(node.get());
             InputConnector *connector = ptr->GetInputConnector(i);
             connector->hovered = IsInputConnectorHovered(node, i);
         }
         // node->GetInputConnector(0)->hovered = IsInputConnectorHovered(node, 0);
-        
     }
     old_pos = ImVec2(moveEvent.x, moveEvent.y);
 
@@ -306,17 +307,20 @@ void NodeManager::OnMouseClick(const Event &event)
                 node->selected = false;
         }
 
-        if(m_ConnectionProcedure.started && IsNodeHovered(node)) {
+        if (m_ConnectionProcedure.started && IsNodeHovered(node))
+        {
             clicked_something = true;
             m_ConnectionProcedure.input_node = node;
 
             ApplyConnectionProcedure();
-            
+            Evaluate();
         }
-        for(uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
+        for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++)
+        {
             auto ptr = static_cast<ImGuiNode *>(node.get());
             InputConnector *connector = ptr->GetInputConnector(i);
-            if(connector->hovered) {
+            if (connector->hovered)
+            {
                 clicked_something = true;
                 std::cout << "connector grabbed" << std::endl;
                 connector->grabbed = true;
@@ -328,8 +332,14 @@ void NodeManager::OnMouseClick(const Event &event)
         }
     }
 
-    if(!clicked_something) {
-        m_ConnectionProcedure.started = false;
+    if (!clicked_something)
+    {
+        if (m_ConnectionProcedure.started)
+        {
+            m_ConnectionProcedure.started = false;
+            m_ConnectionProcedure.output_node->ResetInput(m_ConnectionProcedure.output_index);
+            ResetConnectionProcedure();
+        }
     }
 }
 
@@ -340,16 +350,16 @@ void NodeManager::OnMouseRelease(const Event &event)
     // if (!m_CanvasHovered)
     //     return;
     const MouseReleaseEvent &clickEvent = static_cast<const MouseReleaseEvent &>(event);
-    for(auto node : nodes) {
-        if(m_ConnectionProcedure.started && IsNodeHovered(node)) {
+    for (auto node : nodes)
+    {
+        if (m_ConnectionProcedure.started && IsNodeHovered(node))
+        {
             m_ConnectionProcedure.input_node = node;
 
             ApplyConnectionProcedure();
             Evaluate();
             // m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
             // ResetConnectionProcedure();
-            
-            
         }
     }
 }

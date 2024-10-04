@@ -62,6 +62,11 @@ public:
         inputs[index] = node;
     }
 
+    inline void ResetInput(uint32_t index){
+        if (index < 0 || index > 3)
+            return;
+        inputs[index] = nullptr;
+    }
     inline std::shared_ptr<ImGuiNode> GetInput(uint32_t index)
     {
         if (index < 0 || index > 3)
