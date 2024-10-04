@@ -8,6 +8,7 @@
 #include <vector>
 #include <array>
 
+#include "NodeParam.h"
 #include "ui_utils.h"
 
 constexpr uint32_t MAX_N_INPUTS = 4;
@@ -74,6 +75,7 @@ public:
         return inputs[index];
     }
 
+    inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
     inline InputConnector *GetInputConnector(uint32_t index)
     {
         if (index < 0 || index >= GetNumAvailableInputs())
@@ -100,13 +102,13 @@ protected:
     void InitInputConnectors();
 
 public:
-    inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
 
-public:
+
     const char *title;
     NODE_COLOR color;
     ImVec2 position;
     ImVec2 size;
+    std::vector<NodeParam> m_Params;
 
     bool selected = false;
     bool grabbed = false;

@@ -49,6 +49,8 @@ WorldGenerator::~WorldGenerator()
 StringRepeater::StringRepeater()
 {
     SetNumAvailableInputs(1);
+    Param<uint32_t> param("Count");
+    m_Params.push_back(param);
 }
 StringRepeater::~StringRepeater()
 {

@@ -25,6 +25,7 @@
 
 #include "ui_utils.h"
 #include "ImGuiNode.h"
+#include "NodeParam.h"
 #include "NodeManager.h"
 #include "Application.h"
 

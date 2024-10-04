@@ -43,6 +43,7 @@ target_include_directories(imgui PUBLIC
 add_library(${PROJECT_NAME} STATIC
 
   src/ImGuiNode.cpp
+  src/NodeParam.cpp
   src/NodeManager.cpp
   src/Application.cpp
   src/Event.cpp
