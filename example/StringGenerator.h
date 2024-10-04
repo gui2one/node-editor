@@ -118,6 +118,22 @@ public:
 public:
     uint32_t m_Count = 2;
 };
+
+class StringNull : public StringModifier{
+public:
+    StringNull():StringModifier(){
+        SetNumAvailableInputs(1);
+    };
+    ~StringNull(){};
+
+    void Generate() override{
+        if( GetInput(0) != nullptr) {
+            auto op0 = static_cast<StringOperator*>(GetInput(0).get());
+            m_StringCache = op0->m_StringCache;
+        }
+    }
+};
+
 template <typename T>
 class Node : public T
 {
@@ -127,6 +143,9 @@ public:
         auto node = static_cast<ImGuiNode*>(this);
         if(std::is_base_of<StringGenerator, T>::value) {
             node->color = NODE_COLOR::MAROON;
+            node->title = _title;
+        }else if(std::is_base_of<StringNull, T>::value) {
+            node->color = NODE_COLOR::ORANGE;
             node->title = _title;
         }else if(std::is_base_of<StringModifier, T>::value) {
             node->color = NODE_COLOR::DARK_GREEN;
@@ -150,6 +169,10 @@ public:
 
         // 'final' output
         // std::cout << op->m_StringCache << std::endl;
+    }
+
+    T* ToOperator() {
+        return static_cast<T*>(this);
     }
 };
 };

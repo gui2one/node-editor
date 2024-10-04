@@ -39,7 +39,7 @@ StringConcatenator::~StringConcatenator()
 {
 }
 
-WorldGenerator::WorldGenerator()
+WorldGenerator::WorldGenerator():StringGenerator()
 {
 }
 
@@ -47,7 +47,7 @@ WorldGenerator::~WorldGenerator()
 {
 }
 
-StringRepeater::StringRepeater()
+StringRepeater::StringRepeater():StringModifier()
 {
     SetNumAvailableInputs(1);
     auto param = std::make_shared<Param<uint32_t>>("Count", 10);

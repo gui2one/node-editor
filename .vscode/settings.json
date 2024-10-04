@@ -75,5 +75,7 @@
         "xlocbuf": "cpp",
         "xlocmes": "cpp"
     },
-    "codeium.enableCodeLens": false
+    "codeium.enableCodeLens": false,
+    "clang-format.executable": "C:/Program Files/LLVM/bin/clang-format"
+    
 }

@@ -50,7 +50,8 @@ public:
     inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 
     void SetOutputNode(std::shared_ptr<ImGuiNode> node);
-
+    std::shared_ptr<ImGuiNode> GetOutputNode() { return m_OutputNode; }
+    
     /// @brief Computes result for all 'parents' of m_OutputNode.
     /// does nothing if m_OutputNode == nullptr
     void Evaluate();

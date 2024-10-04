@@ -6,11 +6,11 @@
 namespace NodeEditor {
 class EventManager {
 public:
-    static EventDispatcher& GetInstance() {
-        static EventDispatcher dispatcher;
-        return dispatcher;
-    }
+  static EventDispatcher &GetInstance() {
+    static EventDispatcher dispatcher;
+    return dispatcher;
+  }
 };
-};
+}; // namespace NodeEditor
 
 #endif
