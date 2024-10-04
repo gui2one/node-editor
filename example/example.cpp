@@ -48,6 +48,14 @@ int main(){
             manager.AddNode(std::make_shared<Node<StringConcatenator>>("Concatenator"));
         }
     });
+
+    EventManager::GetInstance().Subscribe(EventType::NodeConnection,[&app, &concat_node2](const Event& event){
+        auto& manager = app.GetNodeManager();
+        manager.Evaluate();
+        std::cout << "Connection Update -> "<< concat_node2->m_StringCache << std::endl;
+        
+    });
+
     app.GetNodeManager().SetOutputNode(concat_node2);
     app.GetNodeManager().Evaluate();
     

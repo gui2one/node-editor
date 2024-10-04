@@ -242,6 +242,8 @@ void NodeManager::ApplyConnectionProcedure()
 {
     m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
     ResetConnectionProcedure();
+    NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node, m_ConnectionProcedure.output_index);
+    EventManager::GetInstance().Dispatch(event);
 }
 
 void NodeManager::ResetConnectionProcedure()
@@ -345,10 +347,6 @@ void NodeManager::OnMouseClick(const Event &event)
 
 void NodeManager::OnMouseRelease(const Event &event)
 {
-    std::cout << "Release One node" << std::endl;
-    std::cout << "Canvas Hovered : " << (m_CanvasHovered ? "true" : "false") << std::endl;
-    // if (!m_CanvasHovered)
-    //     return;
     const MouseReleaseEvent &clickEvent = static_cast<const MouseReleaseEvent &>(event);
     for (auto node : nodes)
     {

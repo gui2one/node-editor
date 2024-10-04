@@ -109,7 +109,7 @@ public:
         op->Generate();
 
         // 'final' output
-        std::cout << op->m_StringCache << std::endl;
+        // std::cout << op->m_StringCache << std::endl;
     }
 };
 

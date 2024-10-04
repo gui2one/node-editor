@@ -2,11 +2,14 @@
 #define EVENT_H
 #pragma once
 
+#include "ImGuiNode.h"
+
 enum class EventType {
     MouseMove,
     MouseClick,
     MouseRelease,
     KeyPress,
+    NodeConnection,
     NodeSelected,
     NodeMoved,
     // Add more events as needed
@@ -60,6 +63,19 @@ public:
     EventType GetType() const override {
         return EventType::KeyPress;
     }
+};
+
+class NodeConnectionEvent : public Event {
+public:
+    std::shared_ptr<ImGuiNode> input_node;
+    uint32_t input_index;
+    std::shared_ptr<ImGuiNode> output_node;
+    uint32_t output_index;
+
+    NodeConnectionEvent(std::shared_ptr<ImGuiNode> input_node, uint32_t input_index, std::shared_ptr<ImGuiNode> output_node, uint32_t output_index) {}
+    EventType GetType() const override {
+        return EventType::NodeConnection;
+    }    
 };
 
 // Define more events as needed, e.g., for keypress, node actions, etc.
