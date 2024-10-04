@@ -41,6 +41,23 @@ public:
     }
 private:
 };
+class StringGenerate : public StringGenerator
+{
+public:
+    StringGenerate(){
+        value = std::make_shared<Param<std::string>>("value", "Hello");
+        m_Params.push_back(value);
+    };
+    ~StringGenerate(){};
+
+    void Generate() override{
+        m_StringCache = get_param_value<std::string>(value.get());
+    }
+public:
+
+    std::shared_ptr<Param<std::string>> value;
+private:
+};
 
 class WorldGenerator : public StringGenerator
 {

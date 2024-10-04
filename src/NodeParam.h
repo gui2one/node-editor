@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <typeinfo>
 
 class NodeParam{
 public:
@@ -25,6 +26,7 @@ public:
     {
         return value;
     };
+
 public : 
     T value;
 

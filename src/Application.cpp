@@ -193,6 +193,7 @@ void Application::Run()
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         static bool first_opened = true;
 
+        m_NodeManager.DisplayNodeParams(m_NodeManager.m_CurrentNode);
         ImGui::Begin("Canvas test");
 
         m_NodeManager.DrawCanvas();

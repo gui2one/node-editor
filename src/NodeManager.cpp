@@ -1,5 +1,4 @@
 #include "NodeManager.h"
-
 NodeManager::NodeManager()
 {
 }
@@ -168,6 +167,31 @@ void NodeManager::DrawCanvas()
     draw_list->PopClipRect();
 }
 
+void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node)
+{
+    if(node == nullptr) return;
+
+    ImGui::Begin("Params");
+    for(auto param : node->m_Params){
+        auto p_uint32 = std::dynamic_pointer_cast<Param<uint32_t>>(param);
+        auto p_string = std::dynamic_pointer_cast<Param<std::string>>(param);
+        if( p_uint32){
+            ImGui::SliderInt(param->name,(int*)&p_uint32->value, 0, 100);
+        }else if(p_string){
+            char buffer[2048];
+            std::strcpy(buffer, p_string->value.c_str());
+            if(ImGui::InputText(param->name, buffer, 2048)){
+                p_string->value = std::string(buffer);
+            }
+            
+        }else{
+            ImGui::Text("%s -- not implemented", param->name);
+        }   
+    }   
+
+    ImGui::End();
+}
+
 ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>> nodes)
 {
     if (nodes.size() == 0)
@@ -304,6 +328,7 @@ void NodeManager::OnMouseClick(const Event &event)
         if (IsNodeHovered(node) && node->selected == false)
         {
             node->selected = true;
+            m_CurrentNode = node;
             clicked_something = true;
         }
         else

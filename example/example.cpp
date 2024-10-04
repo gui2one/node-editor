@@ -18,9 +18,9 @@ int main(){
 
     auto& manager = app.GetNodeManager();
 
-    auto hello_node = std::make_shared<Node<HelloGenerator>>("Hello");
+    auto hello_node = std::make_shared<Node<StringGenerate>>("Hello");
     hello_node->position = ImVec2(500, 300);
-    auto world_node = std::make_shared<Node<WorldGenerator>>("World");
+    auto world_node = std::make_shared<Node<StringGenerate>>("World");
     world_node->position = ImVec2(650, 300);
     auto concat_node = std::make_shared<Node<StringConcatenator>>("Concatenator");
     concat_node->position = ImVec2(600, 400);
@@ -41,7 +41,7 @@ int main(){
     manager.SetNodesMenu([&manager ](){
         if (ImGui::MenuItem("Generator", NULL, false, true)) 
         { 
-            manager.AddNode(std::make_shared<Node<HelloGenerator>>("Generator"));            
+            manager.AddNode(std::make_shared<Node<StringGenerate>>("Generator"));            
         }
         if (ImGui::MenuItem("Concatenator", NULL, false, true)) 
         { 

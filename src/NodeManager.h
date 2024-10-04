@@ -43,6 +43,8 @@ public:
     void DrawNodes();
     void DrawCanvas();
 
+    void DisplayNodeParams(std::shared_ptr<ImGuiNode> node);
+
     inline void SetGLFWWindow(GLFWwindow* _window) { m_GLFWWindow = _window; }
     inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 
@@ -68,6 +70,7 @@ public:
     ImVec2 m_Scrolling = ImVec2(0,0);
     bool m_CanvasHovered = false;
     ImVec2 m_CanvasSize;
+    std::shared_ptr<ImGuiNode> m_CurrentNode = nullptr;
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     GLFWwindow* m_GLFWWindow;
