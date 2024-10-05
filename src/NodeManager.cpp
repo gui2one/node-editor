@@ -372,6 +372,18 @@ void NodeManager::OnKeyPress(const Event &event) {
   if (!m_CanvasHovered)
     return;
   const KeyPressEvent &clickEvent = static_cast<const KeyPressEvent &>(event);
+  
+  switch(clickEvent.key) {
+    case GLFW_KEY_BACKSPACE:
+      if (m_CurrentNode != nullptr) {
+        auto it = std::find(nodes.begin(), nodes.end(), m_CurrentNode);
+        nodes.erase(it);
+        // auto index = nodes.index_of(m_CurrentNode);
+      }
+      break;
+    default:
+      break;
+  }
   if (clickEvent.key == GLFW_KEY_F) {
     ViewFrameAll();
   }
