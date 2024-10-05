@@ -10,3 +10,10 @@ add_executable(${PROJECT_NAME}
 )
 target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC node_editor)
+
+set(INI_FILE
+    ../imgui.ini
+)
+if(EXISTS "${INI_FILE}")
+    file(COPY_FILE "${INI_FILE}" ../build/example/Release/imgui.ini)
+endif()
