@@ -46,16 +46,9 @@ int main() {
   manager.AddNode(null_node);
 
   manager.SetNodesMenu([&manager]() {
-    if (ImGui::MenuItem("Generator", NULL, false, true)) {
-      manager.AddNode(std::make_shared<Node<StringGenerate>>("Generator"));
-    }
-    if (ImGui::MenuItem("Concatenator", NULL, false, true)) {
-      manager.AddNode(
-          std::make_shared<Node<StringConcatenator>>("Concatenator"));
-    }
-    if (ImGui::MenuItem("Repeater", NULL, false, true)) {
-      manager.AddNode(std::make_shared<Node<StringRepeater>>("Repeater"));
-    }
+    node_menu_item<Node<StringGenerate>>(manager, "Generator");
+    node_menu_item<Node<StringConcatenator>>(manager, "Concatenate");
+    node_menu_item<Node<StringRepeater>>(manager, "Repeater");
   });
 
   EventManager::GetInstance().Subscribe(

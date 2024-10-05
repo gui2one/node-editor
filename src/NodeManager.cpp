@@ -152,10 +152,6 @@ void NodeManager::DrawCanvas() {
         IM_COL32(255, 255, 0, 255), 2.0f);
   }
 
-
-
-
-
   DrawNodes();
 
   draw_list->PopClipRect();
