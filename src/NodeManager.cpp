@@ -10,7 +10,7 @@ void NodeManager::SetNodesMenu(std::function<void()> func) {
 
 void NodeManager::DrawNodes() {
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
-  ImVec2 offset = m_Origin;
+  ImVec2 offset = m_Origin;// - ImGui::GetWindowPos();
 
   // draw connections first
   for (auto node : GetNodes()) {
@@ -20,7 +20,7 @@ void NodeManager::DrawNodes() {
       if (ptr->GetInput(i) != nullptr) {
         auto other = ptr->GetInput(i);
         auto input_conn = ptr->GetInputConnector(i);
-        ImVec2 p0 = node->position + input_conn->relative_pos + m_Origin;
+        ImVec2 p0 = node->position + input_conn->relative_pos + offset;
         ImVec2 other_pos = other->position + offset +
                            ImVec2(other->size.x / 2.0f, other->size.y);
 
