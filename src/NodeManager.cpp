@@ -9,8 +9,9 @@ void NodeManager::SetNodesMenu(std::function<void()> func) {
 }
 
 void NodeManager::DrawNodes() {
+  m_CanvasPos = ImGui::GetWindowPos();
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
-  ImVec2 offset = m_Origin;// - ImGui::GetWindowPos();
+  ImVec2 offset = m_Origin + m_CanvasPos;
 
   // draw connections first
   for (auto node : GetNodes()) {
@@ -217,7 +218,7 @@ void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node) {
 }
 
 bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
-  ImVec2 min = node->position + m_Origin;
+  ImVec2 min = node->position + m_Origin + m_CanvasPos;
   ImVec2 max = min + node->size;
   double cursor_x, cursor_y;
   glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
@@ -238,7 +239,7 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node,
 
   auto ptr = static_cast<ImGuiNode *>(node.get());
   InputConnector *connector = ptr->GetInputConnector(index);
-  ImVec2 connector_pos = node->position + connector->relative_pos + m_Origin;
+  ImVec2 connector_pos = node->position + connector->relative_pos + m_Origin + m_CanvasPos;
 
   float padding = 1.5f;
   if (cursor_x > connector_pos.x - connector->width * padding &&

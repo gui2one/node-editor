@@ -74,6 +74,7 @@ public:
     ImVec2 m_Scrolling = ImVec2(0,0);
     bool m_CanvasHovered = false;
     ImVec2 m_CanvasSize;
+    ImVec2 m_CanvasPos;
     std::shared_ptr<ImGuiNode> m_CurrentNode = nullptr;
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
