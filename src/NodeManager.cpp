@@ -252,6 +252,11 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node,
 }
 
 void NodeManager::ApplyConnectionProcedure() {
+  if (m_ConnectionProcedure.output_node == m_ConnectionProcedure.input_node)
+  {
+    return;
+  }
+  
   m_ConnectionProcedure.output_node->SetInput(
       m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
   ResetConnectionProcedure();
