@@ -12,8 +12,12 @@ target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC node_editor)
 
 set(INI_FILE
-    ../imgui.ini
+    ${CMAKE_CURRENT_SOURCE_DIR}/../imgui.ini
 )
-if(EXISTS "${INI_FILE}")
-    file(COPY_FILE "${INI_FILE}" ../build/example/Release/imgui.ini)
-endif()
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND}
+    ARGS -E copy "${INI_FILE}" ${CMAKE_CURRENT_SOURCE_DIR}/../build/example/Release/imgui.ini
+)
