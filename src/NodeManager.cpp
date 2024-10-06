@@ -381,7 +381,6 @@ void NodeManager::OnKeyPress(const Event &event) {
       }
       break;
     case GLFW_KEY_TAB:
-      std::cout << "Tab Pressed" << std::endl;
       m_OpenNodesMenu = true;
       break;
     default:
