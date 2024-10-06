@@ -124,9 +124,11 @@ void NodeManager::DrawCanvas() {
     //   ImGui::OpenPopup("context", 1);
     // }
 
-    if(ImGui::IsKeyPressed(ImGuiKey_Tab)){
+    // if(ImGui::IsKeyPressed(ImGuiKey_Tab)){
+    if(m_OpenNodesMenu){
 
       ImGui::OpenPopup("context", 1);
+      m_OpenNodesMenu = false;
     }
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 10));
@@ -380,7 +382,7 @@ void NodeManager::OnKeyPress(const Event &event) {
       break;
     case GLFW_KEY_TAB:
       std::cout << "Tab Pressed" << std::endl;
-
+      m_OpenNodesMenu = true;
       break;
     default:
       break;

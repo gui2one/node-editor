@@ -83,6 +83,8 @@ private:
 
     ConnectionProcedure m_ConnectionProcedure;
     std::shared_ptr<ImGuiNode> m_OutputNode = nullptr;
+
+    bool m_OpenNodesMenu = false;
 };
 
 
