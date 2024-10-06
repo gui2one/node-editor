@@ -2,7 +2,8 @@
 #define NODEPARAM_H
 
 #pragma once
-
+#include <imgui.h>
+#include <string>
 #include <typeinfo>
 
 namespace NodeEditor {
@@ -12,6 +13,7 @@ public:
 
     }
     virtual ~NodeParam() = default;	 
+    virtual void Display() = 0;
 public:
     const char* name;
 };
@@ -28,6 +30,10 @@ public:
         return value;
     };
 
+    void Display(){
+        ImGui::Text("%s -- not implemented", name);
+    }
+
 public : 
     T value;
 
@@ -35,7 +41,47 @@ private:
 
 };
 
+template<>
+class Param<std::string> : public NodeParam{
+public:
+    Param(const char * _name, std::string _value): NodeParam(_name), value(_value){};
+    ~Param(){};
 
+    std::string Eval(){
+        return value;
+    }
+
+    void Display(){
+      char buffer[2048];
+      if(value.length() > 2048) value = value.substr(0, 2048);
+      std::copy(value.begin(), value.end(), buffer);
+      buffer[value.length()] = 0;
+      if (ImGui::InputText(name, buffer, 2048)) {
+        value = std::string(buffer);
+      }
+    }
+
+public :
+    std::string value;
+};
+
+template<>
+class Param<uint32_t> : public NodeParam{
+public:
+    Param(const char * _name, uint32_t _value): NodeParam(_name), value(_value){};
+    ~Param(){};
+
+    uint32_t Eval(){
+        return value;
+    }
+
+    void Display(){
+      ImGui::SliderInt(name, (int *)&value, 0, 100);
+    }
+
+public:
+    uint32_t value;
+};
 //utils
 template<typename T>
 T get_param_value(NodeParam* param){

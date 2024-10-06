@@ -164,22 +164,23 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node) {
 
   ImGui::Begin("Params");
   for (auto param : node->m_Params) {
-    auto p_uint32 = std::dynamic_pointer_cast<Param<uint32_t>>(param);
-    auto p_string = std::dynamic_pointer_cast<Param<std::string>>(param);
-    if (p_uint32) {
-      ImGui::SliderInt(param->name, (int *)&p_uint32->value, 0, 100);
-    } else if (p_string) {
-      char buffer[2048];
-      if(p_string->value.length() > 2048) p_string->value = p_string->value.substr(0, 2048);
-      std::copy(p_string->value.begin(), p_string->value.end(), buffer);
-      buffer[p_string->value.length()] = 0;
-      if (ImGui::InputText(param->name, buffer, 2048)) {
-        p_string->value = std::string(buffer);
-      }
+    param->Display();
+    // auto p_uint32 = std::dynamic_pointer_cast<Param<uint32_t>>(param);
+    // auto p_string = std::dynamic_pointer_cast<Param<std::string>>(param);
+    // if (p_uint32) {
+    //   ImGui::SliderInt(param->name, (int *)&p_uint32->value, 0, 100);
+    // } else if (p_string) {
+    //   char buffer[2048];
+    //   if(p_string->value.length() > 2048) p_string->value = p_string->value.substr(0, 2048);
+    //   std::copy(p_string->value.begin(), p_string->value.end(), buffer);
+    //   buffer[p_string->value.length()] = 0;
+    //   if (ImGui::InputText(param->name, buffer, 2048)) {
+    //     p_string->value = std::string(buffer);
+    //   }
 
-    } else {
-      ImGui::Text("%s -- not implemented", param->name);
-    }
+    // } else {
+    //   ImGui::Text("%s -- not implemented", param->name);
+    // }
   }
 
   ImGui::End();
