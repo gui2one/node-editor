@@ -119,7 +119,12 @@ void NodeManager::DrawCanvas() {
     // This will catch our interactions
     // ImGui::InvisibleButton("canvas", canvas_sz, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
 
-    if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)){
+    // if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)){
+
+    //   ImGui::OpenPopup("context", 1);
+    // }
+
+    if(ImGui::IsKeyPressed(ImGuiKey_Tab)){
 
       ImGui::OpenPopup("context", 1);
     }
@@ -170,22 +175,6 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node) {
   ImGui::Begin("Params");
   for (auto param : node->m_Params) {
     param->Display();
-    // auto p_uint32 = std::dynamic_pointer_cast<Param<uint32_t>>(param);
-    // auto p_string = std::dynamic_pointer_cast<Param<std::string>>(param);
-    // if (p_uint32) {
-    //   ImGui::SliderInt(param->name, (int *)&p_uint32->value, 0, 100);
-    // } else if (p_string) {
-    //   char buffer[2048];
-    //   if(p_string->value.length() > 2048) p_string->value = p_string->value.substr(0, 2048);
-    //   std::copy(p_string->value.begin(), p_string->value.end(), buffer);
-    //   buffer[p_string->value.length()] = 0;
-    //   if (ImGui::InputText(param->name, buffer, 2048)) {
-    //     p_string->value = std::string(buffer);
-    //   }
-
-    // } else {
-    //   ImGui::Text("%s -- not implemented", param->name);
-    // }
   }
 
   ImGui::End();
@@ -288,7 +277,7 @@ void NodeManager::OnMouseMove(const Event &event) {
   static ImVec2 old_pos = ImVec2(0, 0);
   ImVec2 delta = ImVec2(moveEvent.x - old_pos.x, moveEvent.y - old_pos.y);
   std::shared_ptr<ImGuiNode> hovered_node = nullptr;
-  if(ImGui::IsMouseDown(ImGuiMouseButton_Middle)) {
+  if(ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
       m_Origin += delta;
   }
   for (auto node : nodes) {
@@ -388,6 +377,10 @@ void NodeManager::OnKeyPress(const Event &event) {
         nodes.erase(it);
         // auto index = nodes.index_of(m_CurrentNode);
       }
+      break;
+    case GLFW_KEY_TAB:
+      std::cout << "Tab Pressed" << std::endl;
+
       break;
     default:
       break;
