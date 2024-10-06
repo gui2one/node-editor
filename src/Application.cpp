@@ -12,6 +12,7 @@ Application::~Application() {
 }
 
 bool Application::Init() {
+  
   if (!glfwInit()) {
     printf("problem with GLFW\n");
     return false;
@@ -110,9 +111,11 @@ void Application::ImGuiInit(GLFWwindow *window) {
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
-  // io.Fonts->AddFontFromFileTTF(ORBITONS_RES_DIR
-  // "/fonts/JetBrainsMono-Regular.ttf", 16);
-
+  
+  m_RegularFont = io.Fonts->AddFontFromFileTTF("resources/fonts/JetBrainsMono-Regular.ttf", 16);
+  m_BoldFont = io.Fonts->AddFontFromFileTTF("resources/fonts/JetBrainsMono-ExtraBold.ttf", 16);
+  io.Fonts->Build();
+  m_NodeManager.SetFonts(m_RegularFont, m_BoldFont);
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -131,6 +134,8 @@ void Application::ImGuiBeginFrame() {
   ImGui_ImplOpenGL3_NewFrame();
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
+
+  ImGui::PushFont(m_RegularFont);
 
   ImGui::DockSpaceOverViewport(
       NULL, NULL,

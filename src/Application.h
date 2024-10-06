@@ -30,6 +30,9 @@ public :
     ImVec2 m_Origin;
     WindowData m_WindowData;
 
+    ImFont* m_RegularFont;
+    ImFont* m_BoldFont;    
+
 private:
     void ImGuiInit(GLFWwindow* window);
     void ImGuiBeginFrame();
@@ -38,6 +41,7 @@ private:
 private:
     GLFWwindow* m_NativeWindow;
     NodeManager m_NodeManager;
+
 };
 
 };

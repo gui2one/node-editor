@@ -1,4 +1,5 @@
 #include "NodeManager.h"
+// #include "Application.h"
 namespace NodeEditor {
 NodeManager::NodeManager() {}
 
@@ -13,6 +14,15 @@ void NodeManager::DrawNodes() {
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
   ImVec2 offset = m_Origin + m_CanvasPos;
 
+
+  // display something to recognize m_OutputNode
+  for(auto node : GetNodes()) {
+    if(node == m_OutputNode) {
+      draw_list->AddCircleFilled(node->position + (node->size / 2.0f) + offset, 35.0f,
+                                 NODE_COLOR::BROWN);
+      break;
+    }
+  }
   // draw connections first
   for (auto node : GetNodes()) {
     auto ptr = static_cast<ImGuiNode *>(node.get());
@@ -74,8 +84,10 @@ void NodeManager::DrawNodes() {
     ImVec2 max = min + node->size;
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
+    if(node->selected) ImGui::PushFont(m_BoldFont);
     draw_list->AddText(min + ImVec2(10.0f, 10.0f), IM_COL32(255, 255, 255, 255),
                        node->title);
+    if(node->selected) ImGui::PopFont();
 
     if (!node->highlighted) {
       draw_list->AddRect(min, max, NODE_COLOR::DARK_GREY, 3.0f);

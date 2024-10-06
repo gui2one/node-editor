@@ -8,6 +8,7 @@
 #include <iostream>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
+
 #include <imgui.h>
 #include "ImGuiNode.h"
 #include "EventManager.h"
@@ -15,6 +16,7 @@
 
 
 namespace NodeEditor {
+
 struct ConnectionProcedure{
     enum Direction{
         CHILD_TO_PARENT = 0,
@@ -34,6 +36,7 @@ public:
     NodeManager();
     ~NodeManager();
 
+    inline void SetFonts(ImFont* _regular, ImFont* _bold) { m_RegularFont = _regular; m_BoldFont = _bold; }
     inline void SetNodes(std::vector<std::shared_ptr<ImGuiNode>> _nodes) { nodes = _nodes; }
     inline void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
 
@@ -76,6 +79,9 @@ public:
     ImVec2 m_CanvasSize;
     ImVec2 m_CanvasPos;
     std::shared_ptr<ImGuiNode> m_CurrentNode = nullptr;
+
+    ImFont * m_RegularFont;
+    ImFont * m_BoldFont;
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     GLFWwindow* m_GLFWWindow;
