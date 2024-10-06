@@ -124,12 +124,17 @@ void NodeManager::DrawCanvas() {
       ImGui::OpenPopup("context", 1);
     }
 
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 10));
     if (ImGui::BeginPopup("context"))
     {
-        ImGui::Text("Add Node");
+        ImGui::PushStyleColor(ImGuiCol_Text, NODE_COLOR::YELLOW);
+          ImGui::Text("Add Node");
+        ImGui::PopStyleColor(1);
+
         m_NodesMenu();
         ImGui::EndPopup();
     }
+    ImGui::PopStyleVar();
   // Draw grid
   draw_list->PushClipRect(canvas_p0, canvas_p1, true);
 

@@ -35,19 +35,9 @@ public:
 
 private:
 };
-
-class HelloGenerator : public StringGenerator {
-public:
-  HelloGenerator();
-  ~HelloGenerator();
-
-  void Generate() override { m_StringCache = "Hello"; }
-
-private:
-};
 class StringGenerate : public StringGenerator {
 public:
-  StringGenerate() {
+  StringGenerate(): StringGenerator() {
     value = std::make_shared<Param<std::string>>("value", "Hello");
     m_Params.push_back(value);
   };
@@ -62,15 +52,6 @@ public:
 
 private:
 };
-class WorldGenerator : public StringGenerator {
-public:
-  WorldGenerator();
-  ~WorldGenerator();
-
-  void Generate() override { m_StringCache = "World"; }
-
-private:
-};
 
 class StringModifier : public StringOperator {
 public:
@@ -80,7 +61,6 @@ public:
 
 private:
 };
-
 class StringConcatenator : public StringModifier {
 public:
   StringConcatenator() : StringModifier() { SetNumAvailableInputs(2); }
@@ -98,8 +78,12 @@ public:
 };
 class StringRepeater : public StringModifier {
 public:
-  StringRepeater();
-  ~StringRepeater();
+  StringRepeater():StringModifier() {
+    SetNumAvailableInputs(1);
+    auto param = std::make_shared<Param<uint32_t>>("Count", 10);
+    m_Params.push_back(param);
+  };
+  ~StringRepeater(){};
 
   void Generate() override {
     if (GetInput(0) != nullptr) {

@@ -51,6 +51,7 @@ int main() {
     node_menu_item<Node<StringGenerate>>(manager, "Generator");
     node_menu_item<Node<StringConcatenator>>(manager, "Concatenate");
     node_menu_item<Node<StringRepeater>>(manager, "Repeater");
+    node_menu_item<Node<StringNull>>(manager, "Null");
   });
 
   EventManager::GetInstance().Subscribe(
