@@ -61,6 +61,13 @@ int main() {
         auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
         std::cout << "Connection Update -> " << op->m_StringCache << std::endl;
       });
+  EventManager::GetInstance().Subscribe(
+      EventType::ParamChanged, [&app, &null_node](const Event &event) {
+        auto &manager = app.GetNodeManager();
+        manager.Evaluate();
+        auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
+        std::cout << "ParamChanged Event -> " << op->m_StringCache << std::endl;
+      });
 
   app.GetNodeManager().SetOutputNode(null_node);
   app.GetNodeManager().Evaluate();

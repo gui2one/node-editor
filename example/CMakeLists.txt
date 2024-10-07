@@ -8,6 +8,8 @@ add_executable(${PROJECT_NAME}
     example.cpp
     StringGenerator.cpp
 )
+
+# target_precompile_headers(${PROJECT_NAME} PUBLIC ../src/node_editor.h)
 target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC node_editor)
 

@@ -1,4 +1,5 @@
 #include "NodeManager.h"
+#include "NodeParam.h"
 // #include "Application.h"
 namespace NodeEditor {
 NodeManager::NodeManager() {}

@@ -49,8 +49,6 @@ add_library(${PROJECT_NAME} STATIC
   src/Event.cpp
   src/EventDispatcher.cpp
   src/EventManager.cpp
-  src/ui_utils.cpp
- 
 )
 
 target_compile_options(${PROJECT_NAME} PUBLIC /W3)
@@ -81,6 +79,7 @@ FetchDependencyAndMakeAvailable(
   7b6aead9fb88b3623e3b3725ebb42670cbe4c579
 )
 
+target_precompile_headers(${PROJECT_NAME} PUBLIC src/pch.h)
 target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 target_include_directories(${PROJECT_NAME} PRIVATE build/_deps/glfw-src/include)
 

@@ -3,17 +3,13 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
-#include <iostream>
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 
-#include <imgui.h>
+
 #include "ImGuiNode.h"
 #include "EventManager.h"
-#include "GLFW/glfw3.h"
-
+#define GLFW_INCLUDE_NONE 
+#include <GLFW/glfw3.h>
 
 namespace NodeEditor {
 

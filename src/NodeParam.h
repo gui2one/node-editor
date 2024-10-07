@@ -2,11 +2,11 @@
 #define NODEPARAM_H
 
 #pragma once
-#include <imgui.h>
-#include <string>
-#include <typeinfo>
 
+#include "Event.h"
+#include "EventManager.h"
 namespace NodeEditor {
+
 class NodeParam{
 public:
     NodeParam(const char * _name): name(_name){
@@ -57,8 +57,14 @@ public:
       std::copy(value.begin(), value.end(), buffer);
       buffer[value.length()] = 0;
       if (ImGui::InputText(name, buffer, 2048)) {
+
         value = std::string(buffer);
+        ParamChangedEvent event;
+        EventManager::GetInstance().Dispatch(event);
       }
+
+
+      
     }
 
 public :

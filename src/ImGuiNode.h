@@ -2,17 +2,19 @@
 #define IMGUINODE_H
 
 #pragma once
-#include <imgui.h>
+// #include <imgui.h>
 #include <memory>
 #include <iostream>
 #include <vector>
 #include <array>
 
-#include "NodeParam.h"
-#include "ui_utils.h"
+// #include "NodeParam.h"
 
 constexpr uint32_t MAX_N_INPUTS = 4;
 namespace NodeEditor {
+
+// forward declaration
+class NodeParam;
 
 enum NODE_COLOR
 {
