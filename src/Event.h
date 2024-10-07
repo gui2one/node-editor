@@ -10,10 +10,12 @@ enum class EventType {
     MouseClick,
     MouseRelease,
     KeyPress,
+
     NodeConnection,
     NodeSelected,
     NodeMoved,
-    // Add more events as needed
+
+    ParamChanged
 };
 
 class Event {
@@ -79,7 +81,18 @@ public:
     }    
 };
 
-// Define more events as needed, e.g., for keypress, node actions, etc.
+
+class ParamChangedEvent : public Event {
+public:
+
+
+    ParamChangedEvent() : Event() {}
+
+    EventType GetType() const override {
+        return EventType::ParamChanged;
+    }
+};
+
 
 };
 
