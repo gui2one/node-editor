@@ -62,9 +62,6 @@ public:
         ParamChangedEvent event;
         EventManager::GetInstance().Dispatch(event);
       }
-
-
-      
     }
 
 public :
@@ -82,7 +79,10 @@ public:
     }
 
     void Display(){
-      ImGui::SliderInt(name, (int *)&value, 0, 100);
+        if(ImGui::SliderInt(name, (int *)&value, 0, 100)){
+            ParamChangedEvent event;
+            EventManager::GetInstance().Dispatch(event);
+        }
     }
 
 public:
@@ -97,10 +97,6 @@ template<typename T>
 void set_param_value(NodeParam* param, T value){
     static_cast<Param<T>*>(param)->value = value;
 };
-enum NodeParamType{
-    Int,
-    Float,
-    String
-};
+
 };
 #endif
