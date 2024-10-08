@@ -1,9 +1,8 @@
 import os
-from pathlib import Path
 import sys
 import shutil
-print("Hey there !!!!!!!!!!!!!!!!!!!!")
-print("Current Directory is ::" + os.getcwd())
+
+# print("Current Directory is ::" + os.getcwd())
 
 config_type : str = None
 if len(sys.argv) < 2:
@@ -19,13 +18,22 @@ else :
     print("Script detects unknown build")
     sys.exit(0)
 
+
+ini_backup_name = "imgui.ini.backup"
 if config_type != None:
     print("Copying ini file for " + config_type)
-    ini_file = Path(os.path.join(os.getcwd(), "imgui.ini"))
-    existing_file = Path() / os.getcwd()/ "build/example" / config_type / "imgui.ini"
-    if ini_file.is_file() and not existing_file.is_file():
-        print("Copying ini file")
-        shutil.copyfile(Path() / os.getcwd() / "imgui.ini", "build/example/" + config_type + "/imgui.ini")
-        # os.system("copy imgui.ini build/example/" + config_type + "/imgui.ini")
+    ini_file = os.path.join(os.getcwd(), ini_backup_name)
+    existing_file = os.path.join(os.getcwd(), "build/example", config_type, "imgui.ini")
+
+    if os.path.exists(ini_file):
+        if os.path.exists(existing_file):
+            print("imgui.ini already exists. Skipping copy")
+        else:
+            print("Copying ini file")
+            shutil.copyfile(ini_file, existing_file)
     else:
         print("No ini file found")
+        # try and copy an existing one
+        if os.path.exists(existing_file):
+            print("Copying existing ini file")
+            shutil.copyfile(existing_file, ini_file)

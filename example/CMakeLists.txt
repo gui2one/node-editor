@@ -19,7 +19,7 @@ add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo "Running post-build Python script..."
-    COMMAND python ${CMAKE_SOURCE_DIR}/python/copy_ini_file_if_needed.py "$<IF:$<CONFIG:Debug>,Debug,Release>"
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/python/copy_ini_file_if_needed.py "$<IF:$<CONFIG:Debug>,Debug,Release>"
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     # ARGS -E copy "${INI_FILE}" ${${CMAKE_SOURCE_DIR}}/build/example/Release/imgui.ini
 )
