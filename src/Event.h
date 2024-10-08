@@ -15,7 +15,8 @@ enum class EventType {
     NodeSelected,
     NodeMoved,
 
-    ParamChanged
+    ParamChanged,
+    ManagerUpdate
 };
 
 class Event {
@@ -84,12 +85,18 @@ public:
 
 class ParamChangedEvent : public Event {
 public:
-
-
     ParamChangedEvent() : Event() {}
 
     EventType GetType() const override {
         return EventType::ParamChanged;
+    }
+};
+class ManagerUpdateEvent : public Event {
+public:
+    ManagerUpdateEvent() : Event() {}
+
+    EventType GetType() const override {
+        return EventType::ManagerUpdate;
     }
 };
 

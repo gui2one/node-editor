@@ -368,6 +368,7 @@ void NodeManager::OnMouseClick(const Event &event) {
 }
 
 void NodeManager::OnMouseRelease(const Event &event) {
+  
   const MouseReleaseEvent &clickEvent =
       static_cast<const MouseReleaseEvent &>(event);
   for (auto node : nodes) {
@@ -376,7 +377,17 @@ void NodeManager::OnMouseRelease(const Event &event) {
 
       ApplyConnectionProcedure();
       Evaluate();
+
+      
     }
+  }
+
+  if( m_OneParamChanged ) {
+    Evaluate();
+    m_OneParamChanged = false;
+    ManagerUpdateEvent event;
+    EventManager::GetInstance().Dispatch(event);
+      
   }
 }
 

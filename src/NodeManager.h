@@ -78,6 +78,8 @@ public:
 
     ImFont * m_RegularFont;
     ImFont * m_BoldFont;
+
+    bool m_OneParamChanged = false;
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     GLFWwindow* m_GLFWWindow;

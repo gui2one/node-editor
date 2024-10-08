@@ -64,9 +64,15 @@ int main() {
   EventManager::GetInstance().Subscribe(
       EventType::ParamChanged, [&app, &null_node](const Event &event) {
         auto &manager = app.GetNodeManager();
+        manager.m_OneParamChanged = true;
+      });
+  EventManager::GetInstance().Subscribe(
+      EventType::ManagerUpdate, [&app](const Event &event) {
+        auto &manager = app.GetNodeManager();
         manager.Evaluate();
         auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
-        std::cout << "ParamChanged Event -> " << op->m_StringCache << std::endl;
+        std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
+
       });
 
   app.GetNodeManager().SetOutputNode(null_node);
