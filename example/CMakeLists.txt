@@ -17,13 +17,14 @@ set(INI_FILE
     ${CMAKE_CURRENT_SOURCE_DIR}/../imgui.ini
 )
 
+if(EXISTS ${INI_FILE})
 add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND}
     ARGS -E copy "${INI_FILE}" ${CMAKE_CURRENT_SOURCE_DIR}/../build/example/Release/imgui.ini
 )
-
+endif()
 
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
