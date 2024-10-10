@@ -57,6 +57,7 @@ public:
 
     void OnMouseMove(const Event& event);
     void OnMouseClick(const Event& event);
+    void OnMouseDoubleClick(const Event& event);
     void OnMouseRelease(const Event& event);
     void OnKeyPress(const Event& event);
 
@@ -74,6 +75,7 @@ public:
     ImFont * m_BoldFont;
 
     bool m_OneParamChanged = false;
+    std::chrono::time_point<std::chrono::system_clock> m_LastCLickReleaseTime;
 private:
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     GLFWwindow* m_GLFWWindow;

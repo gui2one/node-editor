@@ -48,8 +48,10 @@ bool Application::Init() {
   glfwSetMouseButtonCallback(
       m_NativeWindow, [](GLFWwindow *window, int button, int action, int mods) {
         // WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
         if (action == GLFW_PRESS) {
-          MouseClickEvent clickEvent(button);
+          MouseClickEvent clickEvent(button, (float)mouseX, (float)mouseY);
           dispatcher.Dispatch(clickEvent);
         } else if (action == GLFW_RELEASE) {
           MouseReleaseEvent releaseEvent(button);
@@ -83,6 +85,12 @@ bool Application::Init() {
   dispatcher.Subscribe(EventType::MouseClick,
                        [&node_manager](const NodeEditor::Event &event) {
                          node_manager.OnMouseClick(event);
+                       });
+  dispatcher.Subscribe(EventType::MouseDoubleClick,
+                       [&node_manager](const NodeEditor::Event &event) {
+                         node_manager.OnMouseDoubleClick(event);
+                         std::cout << "double click From Application class" << std::endl;
+                         
                        });
   dispatcher.Subscribe(EventType::MouseRelease,
                        [&node_manager](const NodeEditor::Event &event) {

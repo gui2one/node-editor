@@ -376,10 +376,28 @@ void NodeManager::OnMouseClick(const Event &event) {
   }
 }
 
+void NodeManager::OnMouseDoubleClick(const Event &event)
+{
+  std::cout << "double click !!! from manager" << std::endl;
+  
+}
+
 void NodeManager::OnMouseRelease(const Event &event) {
   
   const MouseReleaseEvent &clickEvent =
       static_cast<const MouseReleaseEvent &>(event);
+  
+  auto now = std::chrono::system_clock::now();
+  if (std::chrono::duration_cast<std::chrono::milliseconds>(now - m_LastCLickReleaseTime).count() < 300) {
+    if( m_CanvasHovered){
+      double x,y;
+      glfwGetCursorPos(GetGLFWWindow(), &x, &y);
+      MouseDoubleClickEvent doubleClickEvent(clickEvent.button, (float)x, (float)y);
+      EventManager::GetInstance().Dispatch(doubleClickEvent);
+    }
+  }
+  m_LastCLickReleaseTime = now;
+
   for (auto node : nodes) {
     if (m_ConnectionProcedure.started && IsNodeHovered(node)) {
       m_ConnectionProcedure.input_node = node;
