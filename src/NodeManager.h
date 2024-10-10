@@ -1,15 +1,9 @@
 #ifndef NODEMANAGER_H
 #define NODEMANAGER_H
-
 #pragma once
-
-
-
 
 #include "ImGuiNode.h"
 #include "EventManager.h"
-#define GLFW_INCLUDE_NONE 
-#include <GLFW/glfw3.h>
 
 namespace NodeEditor {
 
