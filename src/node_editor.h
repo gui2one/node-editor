@@ -16,7 +16,11 @@ template<typename T>
 void node_menu_item(NodeEditor::NodeManager &manager, const char* label) {
     if (ImGui::MenuItem(label, NULL, false, true)) {
       auto node = std::make_shared<T>(label);
-      node->position = ImGui::GetMousePos();
+      double x,y;
+      glfwGetCursorPos(manager.GetGLFWWindow(), &x, &y);
+      // std::cout << "Mouse pos: " << x << ", " << y << std::endl;
+      
+      node->position = ImVec2((float)x, (float)y) - manager.m_Origin - manager.m_CanvasPos;
       manager.AddNode(node);
     }
 };

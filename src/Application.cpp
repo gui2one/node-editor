@@ -24,7 +24,7 @@ bool Application::Init() {
 
   m_NativeWindow = glfwCreateWindow(m_WindowData.width, m_WindowData.height,
                                     m_WindowData.title, NULL, NULL);
-  m_NodeManager.SetGLFWWindow(m_NativeWindow);
+  
 
   if (m_NativeWindow == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
@@ -33,6 +33,7 @@ bool Application::Init() {
   }
 
   glfwMakeContextCurrent(m_NativeWindow);
+  m_NodeManager.SetGLFWWindow(m_NativeWindow);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;
