@@ -8,6 +8,7 @@ namespace NodeEditor {
 enum class EventType {
     MouseMove,
     MouseClick,
+    MouseDoubleClick,
     MouseRelease,
     KeyPress,
 
@@ -40,11 +41,26 @@ class MouseClickEvent : public Event {
 public:
     int button;
 
-    MouseClickEvent(int button) : button(button) {}
+    MouseClickEvent(int button, float x, float y) : button(button), x(x), y(y) {}
 
     EventType GetType() const override {
         return EventType::MouseClick;
     }
+
+    float x, y;
+};
+
+class MouseDoubleClickEvent : public Event {
+public:
+    int button;
+
+    MouseDoubleClickEvent(int button, float x, float y) : button(button), x(x), y(y) {}
+
+    EventType GetType() const override {
+        return EventType::MouseDoubleClick;
+    }
+
+    float x,y;
 };
 
 class MouseReleaseEvent : public Event {
