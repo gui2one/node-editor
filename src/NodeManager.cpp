@@ -323,17 +323,23 @@ void NodeManager::OnMouseClick(const Event &event) {
   if (!m_CanvasHovered)
     return;
 
-  const MouseClickEvent &clickEvent =
-      static_cast<const MouseClickEvent &>(event);
+  const MouseClickEvent &clickEvent = static_cast<const MouseClickEvent &>(event);
   bool clicked_something = false;
   for (auto node : nodes) {
-    if (IsNodeHovered(node) && node->selected == false) {
-      node->selected = true;
+    bool node_hovered = IsNodeHovered(node);
+    if( node_hovered){
       m_CurrentNode = node;
       clicked_something = true;
+    }else{
+      
+    }
+
+    if (node_hovered && node->selected == false) {
+      node->selected = true;
     } else {
-      if (ImGui::GetIO().KeyCtrl == false)
-        node->selected = false;
+      // if (ImGui::GetIO().KeyCtrl == false){
+      //   node->selected = false;
+      // }
     }
 
     if (m_ConnectionProcedure.started && IsNodeHovered(node)) {
@@ -358,6 +364,9 @@ void NodeManager::OnMouseClick(const Event &event) {
   }
 
   if (!clicked_something) {
+    for(auto node : nodes) {
+      node->selected = false;
+    }
     if (m_ConnectionProcedure.started) {
       m_ConnectionProcedure.started = false;
       m_ConnectionProcedure.output_node->ResetInput(
