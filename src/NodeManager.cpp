@@ -410,11 +410,17 @@ void NodeManager::OnKeyPress(const Event &event) {
       if (m_CurrentNode != nullptr) {
         auto it = std::find(nodes.begin(), nodes.end(), m_CurrentNode);
         nodes.erase(it);
-        // auto index = nodes.index_of(m_CurrentNode);
+        m_CurrentNode = nullptr;
       }
       break;
     case GLFW_KEY_TAB:
       m_OpenNodesMenu = true;
+      break;
+    case GLFW_KEY_ENTER:
+      if(m_CurrentNode){
+        SetOutputNode(m_CurrentNode);
+        EventManager::GetInstance().Dispatch(ManagerUpdateEvent());
+      }
       break;
     default:
       break;
