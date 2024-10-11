@@ -6,9 +6,11 @@
 #include <yaml-cpp/yaml.h>
 #include "StringGenerator.h" // our 'string builder' classes
 #include "params.h"
+#include "utils.h"
 
 YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec3& v);
 YAML::Emitter& operator << (YAML::Emitter& out, const ImVec2& v);
+YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::NodeParam>& param);
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::ImGuiNode>& node);
 
 template<typename T>

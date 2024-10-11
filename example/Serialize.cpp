@@ -11,12 +11,24 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ImVec2& v) {
     out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
     return out;
 }
+
+YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::NodeParam>& param) {
+  out << YAML::BeginMap;
+  out << YAML::Key << "name";
+  out << YAML::Value << param->name;
+  out << YAML::Key << "type";
+  out << YAML::Value << typeid(*param.get()).name();
+  out << YAML::EndMap;
+  return out;
+}
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiNode>& node) {
 	auto op = static_cast<NE::StringOperator *>(node.get());
-
+  auto type_str = std::string(typeid(*node.get()).name());
+  str_replace(type_str, "class NodeEditor::Node<class NodeEditor::", "");
+  str_replace(type_str, ">", "");
   out << YAML::BeginMap;
     out << YAML::Key << "type";
-    out << YAML::Value << typeid(*node.get()).name();
+    out << YAML::Value << type_str;
     out << YAML::Key << "title";
     out << YAML::Value << node->title;
     out << YAML::Key << "uuid";
@@ -25,17 +37,22 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiN
     out << YAML::Key << "position";
     out << node->position;
     out << YAML::Key << "params";
-      out << YAML::BeginMap;
-        for(auto param : node->m_Params) {
-          out << YAML::Key << param->name;
-          auto p_string = std::dynamic_pointer_cast<NE::Param<std::string>>(param);
-          auto p_uint32_t = std::dynamic_pointer_cast<NE::Param<uint32_t>>(param);
+    out << YAML::BeginSeq;
+    for(auto param : node->m_Params) {
+      out << param;
+    }
+    out << YAML::EndSeq;
+      // out << YAML::BeginMap;
+      //   for(auto param : node->m_Params) {
+      //     out << YAML::Key << param->name;
+      //     auto p_string = std::dynamic_pointer_cast<NE::Param<std::string>>(param);
+      //     auto p_uint32_t = std::dynamic_pointer_cast<NE::Param<uint32_t>>(param);
 
-          if( p_string) out << YAML::Value <<p_string->Eval();
-          else if( p_uint32_t) out << YAML::Value << p_uint32_t->Eval();
-        }
+      //     if( p_string) out << YAML::Value <<p_string->Eval();
+      //     else if( p_uint32_t) out << YAML::Value << p_uint32_t->Eval();
+      //   }
     
-      out << YAML::EndMap;
+      // out << YAML::EndMap;
 
     out << YAML::Key << "inputs";
     out << YAML::BeginSeq;
