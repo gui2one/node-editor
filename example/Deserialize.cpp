@@ -1,5 +1,13 @@
 #include "Deserialize.h"
 
+bool str_replace(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+    return true;
+}
+
 std::shared_ptr<NodeEditor::ImGuiNode>
 find_node_by_uuid(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes, std::string uuid){
 
@@ -22,25 +30,24 @@ deserialize_yaml_save(const char *filename)
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
     for(auto item : yaml_data) {
         auto type_str = item["type"].as<std::string>();
-        if(type_str.find("StringGenerate") != std::string::npos){  
+        str_replace(type_str, "class NodeEditor::Node<class NodeEditor::", "");
+        str_replace(type_str, ">", "");
 
+        
+        if(type_str == "StringGenerate"){  
             auto node = basic_convert<StringGenerate>(item);
             node->value->value = item["params"]["value"].as<std::string>();
             nodes.push_back(node);
-        }else if(type_str.find("StringConcatenator") != std::string::npos){
-        
+        }else if(type_str == "StringConcatenator"){
             auto node = basic_convert<StringConcatenator>(item);
             nodes.push_back(node);            
-        }else if(type_str.find("StringRepeater") != std::string::npos){
-        
+        }else if(type_str == "StringRepeater"){
             auto node = basic_convert<StringRepeater>(item);
             nodes.push_back(node);            
-        }else if(type_str.find("StringNull") != std::string::npos){
-        
+        }else if(type_str == "StringNull"){
             auto node = basic_convert<StringNull>(item);
             nodes.push_back(node);            
         }else{
-
             std::cout << item["type"] << " not IMPLEMENTED ...." << std::endl;
         }
     }
