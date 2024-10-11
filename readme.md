@@ -45,34 +45,3 @@ public:
   void Generate() override {
     m_StringCache = get_param_value<std::string>(value.get());
   }
-```
-The "weakest" part, is this "Node" class you have to implement
-```cpp
-template <typename T> 
-class Node : public T {
-  static_assert(std::is_base_of<StringOperator, T>::value,
-                "T must be derived from StringOperator");
-
-public:
-  Node(const char *_title) {
-    auto node = static_cast<ImGuiNode *>(this);
-    node->title = _title;
-  }
-
-  void Update() {
-    auto node = static_cast<ImGuiNode *>(this);
-    auto op = static_cast<StringOperator *>(this);
-    for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
-      if (node->GetInput(i) != nullptr) {
-        node->GetInput(i)->Update(); /* Important !!*/
-        auto opinput = static_cast<StringOperator *>(node->GetInput(i).get());
-        op->SetInput(i, node->GetInput(i));
-        opinput->Generate();
-      }
-    }
-    op->Generate();
-  }
-
-  T *ToOperator() { return static_cast<T *>(this); }
-};
-```
