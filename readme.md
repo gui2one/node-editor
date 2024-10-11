@@ -10,6 +10,9 @@ Trying to be agnostic regarding the type of data on the Editor side, make the us
 ![screenshot](github_resources/node_editor_capture.jpg)
 
 
+
+
+An example implementation would look like that :
 ```cpp
 class StringOperator : public ImGuiNode {
 public:
@@ -20,8 +23,30 @@ public:
 public:
   std::string m_StringCache = "";
 };
+class StringGenerator : public StringOperator {
+public:
+  StringGenerator() : StringOperator() {
+    color = NODE_COLOR::MAROON;
+    SetNumAvailableInputs(0);
+  };
+  ~StringGenerator() {};
+  virtual void Generate() = 0;
 
+private:
+};
+class StringGenerate : public StringGenerator {
+public:
+  StringGenerate(): StringGenerator() {
+    value = std::make_shared<Param<std::string>>("value", "Hello");
+    m_Params.push_back(value);
+  };
+  ~StringGenerate() {};
+
+  void Generate() override {
+    m_StringCache = get_param_value<std::string>(value.get());
+  }
 ```
+The "weakest" part, is this "Node" class you have to implement
 ```cpp
 template <typename T> 
 class Node : public T {
