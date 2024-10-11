@@ -19,9 +19,6 @@ public:
 
 public:
   std::string m_StringCache = "";
-
-  // std::array<StringOperator*, 4> inputs = { nullptr, nullptr, nullptr,
-  // nullptr };
 };
 
 class StringGenerator : public StringOperator {
