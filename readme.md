@@ -10,7 +10,7 @@ Trying to be agnostic regarding the type of data on the Editor side, make the us
 ![screenshot](github_resources/node_editor_capture.jpg)
 
 
-```
+```cpp
 class StringOperator : public ImGuiNode {
 public:
   StringOperator() : ImGuiNode("default") {};
@@ -22,7 +22,7 @@ public:
 };
 
 ```
-```
+```cpp
 template <typename T> 
 class Node : public T {
   static_assert(std::is_base_of<StringOperator, T>::value,
