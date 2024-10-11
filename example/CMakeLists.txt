@@ -1,5 +1,21 @@
 cmake_minimum_required(VERSION 3.20)
 
+
+set(FETCHCONTENT_QUIET FALSE)
+# set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+function(FetchDependencyAndMakeAvailable NAME URL TAG)
+  FetchContent_Declare(
+    ${NAME}
+    GIT_REPOSITORY ${URL}
+    GIT_TAG        ${TAG}
+    GIT_PROGRESS TRUE
+  )
+  FetchContent_MakeAvailable(${NAME})
+endfunction()
+
+
 project(node_editor_example)
 
 
@@ -30,3 +46,10 @@ add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/resources" "${CMAKE_CURRENT_BINARY_DIR}$<IF:$<CONFIG:Debug>,/Debug,/Release>/resources"
 )
+
+
+# YAML-CPP
+set(YAML_CPP_BUILD_TOOLS OFF)
+FetchDependencyAndMakeAvailable(yaml-cpp https://github.com/jbeder/yaml-cpp da82fd982c260e7f335ce5acbceff24b270544d1) #master 10/11/2024
+target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp::yaml-cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC build/_deps/yaml-cpp-src/include)
