@@ -4,7 +4,7 @@
 #pragma once
 
 #include <yaml-cpp/yaml.h>
-#include "StringGenerator.h"
+#include "StringGenerator.h" // our 'string builder' classes
 #include "params.h"
 
 YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec3& v);
