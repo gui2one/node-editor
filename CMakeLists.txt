@@ -94,6 +94,13 @@ FetchDependencyAndMakeAvailable(
   https://github.com/ocornut/imgui
   v1.91.2-docking
 )
+
+
+# YAML-CPP
+FetchDependencyAndMakeAvailable(yaml-cpp https://github.com/jbeder/yaml-cpp da82fd982c260e7f335ce5acbceff24b270544d1) #master
+target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp::yaml-cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC build/_deps/yaml-cpp-src/include)
+
 target_include_directories(${PROJECT_NAME} PUBLIC 
   ${_include_dirs}
 )
