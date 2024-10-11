@@ -29,6 +29,8 @@ public:
     inline void SetFonts(ImFont* _regular, ImFont* _bold) { m_RegularFont = _regular; m_BoldFont = _bold; }
     inline void SetNodes(std::vector<std::shared_ptr<ImGuiNode>> _nodes) { nodes = _nodes; }
     inline void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
+    std::shared_ptr<ImGuiNode> FindNodeByUUID(std::string uuid);
+
 
     inline std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() { return nodes; }
     inline const std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() const { return nodes; }

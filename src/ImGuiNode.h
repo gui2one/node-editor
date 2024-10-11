@@ -7,7 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
-
+#include "utils.h"
 // #include "NodeParam.h"
 
 constexpr uint32_t MAX_N_INPUTS = 4;
@@ -106,7 +106,7 @@ protected:
 
 public:
 
-
+    std::string uuid;
     const char *title;
     NODE_COLOR color;
     ImVec2 position;

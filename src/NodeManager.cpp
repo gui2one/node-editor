@@ -6,6 +6,16 @@ NodeManager::NodeManager() {}
 
 NodeManager::~NodeManager() {}
 
+std::shared_ptr<ImGuiNode> NodeManager::FindNodeByUUID(std::string uuid)
+{
+  for(auto node : GetNodes()) {
+    if(node->uuid == uuid) {
+      return node;
+    }
+  }
+  return nullptr;
+}
+
 void NodeManager::SetNodesMenu(std::function<void()> func) {
   m_NodesMenu = func;
 }

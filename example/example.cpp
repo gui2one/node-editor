@@ -53,7 +53,6 @@ int main() {
   output_node->SetInput(0, concat_node2);
   manager.AddNode(output_node);
 
-
   serialize_nodes(manager.GetNodes());
 
   manager.SetNodesMenu([&manager]() {

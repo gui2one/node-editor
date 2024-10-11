@@ -48,6 +48,7 @@ add_library(${PROJECT_NAME} STATIC
   src/Event.cpp
   src/EventDispatcher.cpp
   src/EventManager.cpp
+  src/utils.cpp
 )
 
 target_compile_options(${PROJECT_NAME} PUBLIC /W3)

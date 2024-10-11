@@ -5,18 +5,20 @@
 
 #include "Event.h"
 #include "EventManager.h"
+#include "utils.h"
 namespace NodeEditor {
 
 class NodeParam{
 public:
     NodeParam(const char * _name): name(_name){
 
-    }
+        
+    }   
     virtual ~NodeParam() = default;	 
     virtual void Display() = 0;
 public:
     const char* name;
-    uint64_t uuid = 0;
+    // std::string uuid = 0;
 };
 
 template<typename T>
@@ -37,6 +39,7 @@ public:
 
 public : 
     T value;
+
 
 private:
 

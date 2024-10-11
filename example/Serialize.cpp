@@ -14,7 +14,11 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ImVec2& v) {
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiNode>& node) {
 	// auto op = static_cast<StringOperator *>(node.get());
   out << node->title;
+
   out << YAML::BeginMap;
+    out << YAML::Key << "uuid";
+    out << YAML::Value << node->uuid;
+    
     out << YAML::Key << "position";
     out << node->position;
     out << YAML::Key << "params";
