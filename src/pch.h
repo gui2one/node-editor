@@ -10,7 +10,7 @@
 #include <chrono>
 #include <assert.h>
 
-
+// include windows before GLFW to avoid compilation warnings
 #if defined(_WIN32) 
 #include <windows.h>
 #endif
