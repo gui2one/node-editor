@@ -6,6 +6,7 @@ project(node_editor_example)
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 add_executable(${PROJECT_NAME} 
     example.cpp
+    Application.cpp
     StringGenerator.cpp
 )
 

@@ -45,7 +45,6 @@ add_library(${PROJECT_NAME} STATIC
   src/ImGuiNode.cpp
   src/NodeParam.cpp
   src/NodeManager.cpp
-  src/Application.cpp
   src/Event.cpp
   src/EventDispatcher.cpp
   src/EventManager.cpp
