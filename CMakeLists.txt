@@ -6,6 +6,8 @@ set(FETCHCONTENT_QUIET FALSE)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(NODE_EDITOR_BUILD_EXAMPLE "Build node editor example" ON)
+
 project(node_editor)
 
 function(FetchDependencyAndMakeAvailable NAME URL TAG)
@@ -103,4 +105,6 @@ include_directories(
   ${_include_dirs}
 )
 
-add_subdirectory(example)
+if(${NODE_EDITOR_BUILD_EXAMPLE})
+  add_subdirectory(example)
+endif()
