@@ -54,7 +54,7 @@ struct InputConnector
 class ImGuiNode
 {
 public:
-    ImGuiNode(const char *_title);
+    ImGuiNode(std::string _title);
     ~ImGuiNode();
 
     virtual void Update() = 0; // implemented lower, in the Node<T> class
@@ -84,7 +84,7 @@ protected:
 public:
 
     std::string uuid;
-    const char *title;
+    std::string title;
     NODE_COLOR color;
     ImVec2 position;
     ImVec2 size;

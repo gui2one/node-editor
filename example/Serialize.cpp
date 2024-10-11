@@ -39,16 +39,14 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiN
 
     out << YAML::Key << "inputs";
     out << YAML::BeginSeq;
-    for(uint32_t i = 0; i < op->GetNumAvailableInputs(); i++) {
-      out << YAML::BeginMap;
-        out << YAML::Key << i;
+    for(uint32_t i = 0; i < MAX_N_INPUTS; i++) {
+
         if(op->GetInput(i)){
 
           out << YAML::Value << op->GetInput(i)->uuid;
         }else{
           out << YAML::Value << "null";
         }
-      out << YAML::EndMap;
     }
     out << YAML::EndSeq;
   out << YAML::EndMap;

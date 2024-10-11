@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
     example.cpp
     Application.cpp
     Serialize.cpp
+    Deserialize.cpp
     StringGenerator.cpp
 )
 

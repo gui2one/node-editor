@@ -1,7 +1,7 @@
 #include "ImGuiNode.h"
 namespace NodeEditor {
 
-ImGuiNode::ImGuiNode(const char *_title)
+ImGuiNode::ImGuiNode(std::string _title)
     : title(_title), position(500, 500), size(100, 30),
       color(NODE_COLOR::DARK_GREY) {
 

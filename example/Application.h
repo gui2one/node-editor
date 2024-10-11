@@ -6,6 +6,7 @@
 #include <imgui.h>
 #include "node_editor.h"
 #include "Serialize.h"
+#include "Deserialize.h"
 #include "params.h"
 #include <fstream>
 #include <filesystem>
