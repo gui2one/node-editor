@@ -29,6 +29,37 @@ void ImGuiNode::InitInputConnectors() {
   }
 }
 
+void ImGuiNode::SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node)
+{
+    if (index < 0 || index > 3)
+        return;
+    inputs[index] = node;
+}
+
+void ImGuiNode::ResetInput(uint32_t index){
+    if (index < 0 || index > 3)
+        return;
+    inputs[index] = nullptr;
+}
+std::shared_ptr<ImGuiNode> ImGuiNode::GetInput(uint32_t index)
+{
+    if (index < 0 || index > 3)
+        return nullptr;
+    return inputs[index];
+}
+
+
+InputConnector* ImGuiNode::GetInputConnector(uint32_t index)
+{
+    if (index < 0 || index >= GetNumAvailableInputs())
+    {
+        std::cout << "Problem with GetInputConnector" << std::endl;
+
+        return nullptr;
+    }
+    return &m_InputConnectors[index];
+}
+
 void OUTPUT_NODE::Update() {
   if (GetInput(0) != nullptr) {
     GetInput(0)->Update();

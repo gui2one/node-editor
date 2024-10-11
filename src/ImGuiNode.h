@@ -59,36 +59,13 @@ public:
 
     virtual void Update() = 0; // implemented lower, in the Node<T> class
     virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
-    inline void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node)
-    {
-        if (index < 0 || index > 3)
-            return;
-        inputs[index] = node;
-    }
+    void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node);
 
-    inline void ResetInput(uint32_t index){
-        if (index < 0 || index > 3)
-            return;
-        inputs[index] = nullptr;
-    }
-    inline std::shared_ptr<ImGuiNode> GetInput(uint32_t index)
-    {
-        if (index < 0 || index > 3)
-            return nullptr;
-        return inputs[index];
-    }
+    void ResetInput(uint32_t index);
+    std::shared_ptr<ImGuiNode> GetInput(uint32_t index);
 
     inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
-    inline InputConnector *GetInputConnector(uint32_t index)
-    {
-        if (index < 0 || index >= GetNumAvailableInputs())
-        {
-            std::cout << "Problem with GetInputConnector" << std::endl;
-
-            return nullptr;
-        }
-        return &m_InputConnectors[index];
-    }
+    InputConnector *GetInputConnector(uint32_t index);
 
 protected:
     inline void SetNumAvailableInputs(uint32_t num)
