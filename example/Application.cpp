@@ -188,6 +188,11 @@ void Application::Run() {
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("New", "Ctrl+N")) {
         std::cout << "New file Not Implemented Yet" << std::endl;
+        
+      }
+      if (ImGui::MenuItem("Save", "Ctrl+S")) {
+        std::cout << "Save file Not Implemented Yet" << std::endl;
+        serialize_nodes(m_NodeManager.GetNodes());
       }
       ImGui::EndMenu();
     }

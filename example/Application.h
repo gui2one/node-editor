@@ -5,6 +5,8 @@
 #include <thread>
 #include <imgui.h>
 #include "node_editor.h"
+#include "Serialize.h"
+#include "params.h"
 namespace NodeEditor {
 
 struct WindowData{

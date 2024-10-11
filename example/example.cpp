@@ -2,7 +2,6 @@
 #include "node_editor.h"
 #include "params.h"
 
-#include "Serialize.h"
 using namespace NodeEditor;
 
 

@@ -7,6 +7,7 @@ project(node_editor_example)
 add_executable(${PROJECT_NAME} 
     example.cpp
     Application.cpp
+    Serialize.cpp
     StringGenerator.cpp
 )
 
