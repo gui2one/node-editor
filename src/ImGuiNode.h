@@ -137,9 +137,9 @@ public:
 };
 
 
-template <typename T, typename BaseClass> class Node : public T {
-  static_assert(std::is_base_of<BaseClass, T>::value,
-                "T must be derived from StringOperator");
+template <typename T> class Node : public T {
+//   static_assert(std::is_base_of<BaseClass, T>::value,
+//                 "T must be derived from StringOperator");
 
 public:
   Node(const char *_title) {
@@ -149,11 +149,11 @@ public:
 
   void Update() {
     auto node = static_cast<ImGuiNode *>(this);
-    auto op = static_cast<BaseClass *>(this);
+    auto op = static_cast<T *>(this);
     for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
       if (node->GetInput(i) != nullptr) {
         node->GetInput(i)->Update(); /* Important !!*/
-        auto opinput = static_cast<BaseClass *>(node->GetInput(i).get());
+        auto opinput = static_cast<T *>(node->GetInput(i).get());
         op->SetInput(i, node->GetInput(i));
         opinput->Generate();
       }
