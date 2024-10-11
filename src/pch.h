@@ -12,6 +12,7 @@
 
 // include windows before GLFW to avoid compilation warnings
 #if defined(_WIN32) 
+#define NOMINMAX
 #include <windows.h>
 #endif
 
