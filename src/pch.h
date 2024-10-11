@@ -8,6 +8,8 @@
 #include <string>
 #include <typeinfo>
 #include <chrono>
+#include <assert.h>
+
 
 #if defined(_WIN32) 
 #include <windows.h>
