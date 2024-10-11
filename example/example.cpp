@@ -4,7 +4,7 @@
 
 using namespace NodeEditor;
 
-
+void add_example_nodes(NodeManager &manager);
 int main() {
 
   Application app;
@@ -15,6 +15,52 @@ int main() {
   };
 
   auto &manager = app.GetNodeManager();
+
+  
+
+  add_example_nodes(manager);
+
+  serialize_nodes(manager.GetNodes());
+
+  manager.SetNodesMenu([&manager]() {
+    node_menu_item<Node<StringGenerate>>(manager, "Generator");
+    node_menu_item<Node<StringConcatenator>>(manager, "Concatenate");
+    node_menu_item<Node<StringRepeater>>(manager, "Repeater");
+    node_menu_item<Node<StringNull>>(manager, "Null");
+  });
+
+  EventManager::GetInstance().Subscribe(
+      EventType::NodeConnection, [&app](const Event &event) {
+        auto &manager = app.GetNodeManager();
+        manager.Evaluate();
+        auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
+        std::cout << "Connection Update -> " << op->m_StringCache << std::endl;
+      });
+  EventManager::GetInstance().Subscribe(
+      EventType::ParamChanged, [&app](const Event &event) {
+        auto &manager = app.GetNodeManager();
+        manager.m_OneParamChanged = true;
+      });
+  EventManager::GetInstance().Subscribe(
+      EventType::ManagerUpdate, [&app](const Event &event) {
+        auto &manager = app.GetNodeManager();
+        manager.Evaluate();
+        auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
+        std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
+
+      });
+
+
+  app.GetNodeManager().Evaluate();
+
+  app.Run();
+
+  std::cout << "__All Done__" << std::endl;
+
+  return 0;
+}
+
+void add_example_nodes(NodeManager &manager) {
 
   auto hello_node = std::make_shared<Node<StringGenerate>>("Hello");
   hello_node->position = ImVec2(500, 300);
@@ -53,42 +99,5 @@ int main() {
   output_node->SetInput(0, concat_node2);
   manager.AddNode(output_node);
 
-  serialize_nodes(manager.GetNodes());
-
-  manager.SetNodesMenu([&manager]() {
-    node_menu_item<Node<StringGenerate>>(manager, "Generator");
-    node_menu_item<Node<StringConcatenator>>(manager, "Concatenate");
-    node_menu_item<Node<StringRepeater>>(manager, "Repeater");
-    node_menu_item<Node<StringNull>>(manager, "Null");
-  });
-
-  EventManager::GetInstance().Subscribe(
-      EventType::NodeConnection, [&app, &output_node](const Event &event) {
-        auto &manager = app.GetNodeManager();
-        manager.Evaluate();
-        auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
-        std::cout << "Connection Update -> " << op->m_StringCache << std::endl;
-      });
-  EventManager::GetInstance().Subscribe(
-      EventType::ParamChanged, [&app, &output_node](const Event &event) {
-        auto &manager = app.GetNodeManager();
-        manager.m_OneParamChanged = true;
-      });
-  EventManager::GetInstance().Subscribe(
-      EventType::ManagerUpdate, [&app](const Event &event) {
-        auto &manager = app.GetNodeManager();
-        manager.Evaluate();
-        auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
-        std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
-
-      });
-
-  app.GetNodeManager().SetOutputNode(output_node);
-  app.GetNodeManager().Evaluate();
-
-  app.Run();
-
-  std::cout << "__All Done__" << std::endl;
-
-  return 0;
+  manager.SetOutputNode(output_node);
 }
