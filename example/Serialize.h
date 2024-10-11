@@ -19,6 +19,6 @@ YAML::Emitter& operator << (YAML::Emitter& out, NodeEditor::Param<T>* param) {
 }
 
 
-void serialize_nodes(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes);
+std::string serialize_nodes(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes);
 
 #endif // SERIALIZE_H

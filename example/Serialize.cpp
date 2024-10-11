@@ -12,10 +12,11 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ImVec2& v) {
     return out;
 }
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiNode>& node) {
-	// auto op = static_cast<StringOperator *>(node.get());
-  out << node->title;
+	auto op = static_cast<NE::StringOperator *>(node.get());
 
   out << YAML::BeginMap;
+    out << YAML::Key << "title";
+    out << YAML::Value << node->title;
     out << YAML::Key << "uuid";
     out << YAML::Value << node->uuid;
     
@@ -28,25 +29,37 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiN
           auto p_string = std::dynamic_pointer_cast<NE::Param<std::string>>(param);
           auto p_uint32_t = std::dynamic_pointer_cast<NE::Param<uint32_t>>(param);
 
-          if( p_string) out << p_string->Eval();
-          else if( p_uint32_t) out << p_uint32_t->Eval();
+          if( p_string) out << YAML::Value <<p_string->Eval();
+          else if( p_uint32_t) out << YAML::Value << p_uint32_t->Eval();
         }
     
       out << YAML::EndMap;
+
+    out << YAML::Key << "inputs";
+    out << YAML::BeginSeq;
+    for(uint32_t i = 0; i < op->GetNumAvailableInputs(); i++) {
+      out << YAML::BeginMap;
+        out << YAML::Key << i;
+        out << YAML::Value << op->GetInput(i)->uuid;
+      out << YAML::EndMap;
+    }
+    out << YAML::EndSeq;
   out << YAML::EndMap;
 	return out;
 }
 
 
-void serialize_nodes(std::vector<std::shared_ptr<NE::ImGuiNode>> nodes) {
+std::string serialize_nodes(std::vector<std::shared_ptr<NE::ImGuiNode>> nodes) {
   YAML::Emitter out;
+  out << YAML::BeginSeq;
   for(auto node : nodes) {
     // auto op = static_cast<StringOperator *>(node.get());
     out << node;
   }
+  out << YAML::EndSeq;
 
-  std::cout << "Yaml output : \n"<< out.c_str() << std::endl;
-  
+  // std::cout << "Yaml output : \n"<< out.c_str() << std::endl;
+  return std::string(out.c_str());
 }
 
 

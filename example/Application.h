@@ -7,6 +7,8 @@
 #include "node_editor.h"
 #include "Serialize.h"
 #include "params.h"
+#include <fstream>
+#include <filesystem>
 namespace NodeEditor {
 
 struct WindowData{

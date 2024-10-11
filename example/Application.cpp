@@ -192,7 +192,13 @@ void Application::Run() {
       }
       if (ImGui::MenuItem("Save", "Ctrl+S")) {
         std::cout << "Save file Not Implemented Yet" << std::endl;
-        serialize_nodes(m_NodeManager.GetNodes());
+        // serialize_nodes(m_NodeManager.GetNodes());
+        auto temp_dir = std::filesystem::temp_directory_path();
+
+        auto save_path = temp_dir / "nodes.yaml";
+        std::fstream saved_file(save_path.string(), std::ios::out);
+        saved_file << serialize_nodes(m_NodeManager.GetNodes());
+        saved_file.close();
       }
       ImGui::EndMenu();
     }
