@@ -2,18 +2,37 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <windows.h>
+// #include <windows.h>
 
 
 #include "StringGenerator.h"
 #include "node_editor.h"
 #include "params.h"
 
+#include <yaml-cpp/yaml.h>
 
 using namespace NodeEditor;
 
+YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec3& v) {
+	out << YAML::Flow;
+	out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
+	return out;
+}
+
+void serialize_nodes(std::vector<std::shared_ptr<ImGuiNode>> nodes) {
+  YAML::Emitter out;
+  for(auto node : nodes) {
+    auto op = static_cast<StringOperator *>(node.get());
+    out << op->title;
+    out << glm::vec3(1.f, 2.f, 3.f);
+  }
+
+  std::cout << "Yaml output : \n"<< out.c_str() << std::endl;
+  
+}
 
 int main() {
+
   Application app;
 
   if (!app.Init()) {
@@ -46,6 +65,9 @@ int main() {
   manager.AddNode(concat_node);
   manager.AddNode(concat_node2);
   manager.AddNode(null_node);
+
+
+  serialize_nodes(manager.GetNodes());
 
   manager.SetNodesMenu([&manager]() {
     node_menu_item<Node<StringGenerate>>(manager, "Generator");

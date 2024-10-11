@@ -9,6 +9,9 @@
 #include <typeinfo>
 #include <chrono>
 
+#if defined(_WIN32) 
+#include <windows.h>
+#endif
 
 #define GLFW_INCLUDE_NONE 
 #include <glfw/glfw3.h>
