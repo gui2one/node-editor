@@ -58,7 +58,7 @@ public:
     ~ImGuiNode();
 
     virtual void Update() = 0;
-
+    virtual void Generate() = 0;
     inline void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node)
     {
         if (index < 0 || index > 3)
@@ -135,5 +135,35 @@ public:
 
     void Update() override;
 };
+
+
+template <typename T, typename BaseClass> class Node : public T {
+  static_assert(std::is_base_of<BaseClass, T>::value,
+                "T must be derived from StringOperator");
+
+public:
+  Node(const char *_title) {
+    auto node = static_cast<ImGuiNode *>(this);
+    node->title = _title;
+  }
+
+  void Update() {
+    auto node = static_cast<ImGuiNode *>(this);
+    auto op = static_cast<BaseClass *>(this);
+    for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
+      if (node->GetInput(i) != nullptr) {
+        node->GetInput(i)->Update(); /* Important !!*/
+        auto opinput = static_cast<BaseClass *>(node->GetInput(i).get());
+        op->SetInput(i, node->GetInput(i));
+        opinput->Generate();
+      }
+    }
+    op->Generate();
+  }
+
+  T *ToOperator() { return static_cast<T *>(this); }
 };
+};
+
+
 #endif
