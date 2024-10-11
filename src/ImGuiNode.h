@@ -57,8 +57,8 @@ public:
     ImGuiNode(const char *_title);
     ~ImGuiNode();
 
-    virtual void Update() = 0;
-    virtual void Generate() = 0;
+    virtual void Update() = 0; // implemented lower, in the Node<T> class
+    virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
     inline void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node)
     {
         if (index < 0 || index > 3)
