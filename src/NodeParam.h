@@ -16,6 +16,7 @@ public:
     virtual void Display() = 0;
 public:
     const char* name;
+    uint64_t uuid = 0;
 };
 
 template<typename T>
