@@ -41,7 +41,8 @@ public:
   ~StringGenerate() {};
 
   void Generate() override {
-    m_StringCache = get_param_value<std::string>(value.get());
+    auto param_0 = static_cast<Param<std::string> *>(m_Params[0].get());
+    m_StringCache = get_param_value<std::string>(param_0);    
   }
 
 public:

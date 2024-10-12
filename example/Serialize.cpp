@@ -13,11 +13,24 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ImVec2& v) {
 }
 
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::NodeParam>& param) {
+  std::string type_str = std::string(typeid(*param.get()).name());
   out << YAML::BeginMap;
   out << YAML::Key << "name";
   out << YAML::Value << param->name;
   out << YAML::Key << "type";
   out << YAML::Value << typeid(*param.get()).name();
+  if (type_str.find("class std::basic_string") != std::string::npos) {
+    auto p = std::dynamic_pointer_cast<NodeEditor::Param<std::string>>(param);
+    out << YAML::Key << "value";
+    out << YAML::Value << p->Eval();
+  }else if(type_str == "class NodeEditor::Param<unsigned int>") {
+    auto p = std::dynamic_pointer_cast<NodeEditor::Param<uint32_t>>(param);
+    out << YAML::Key << "value";
+    out << YAML::Value << p->Eval();
+  }else{
+    out << YAML::Key << "value";
+    out << YAML::Value << "null";
+  }
   out << YAML::EndMap;
   return out;
 }
