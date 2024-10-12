@@ -34,6 +34,9 @@ std::shared_ptr<NodeEditor::Node<T>> basic_node_convert(const YAML::Node& node) 
         
             auto val = p["value"].as<uint32_t>();
             set_param_value<uint32_t>(op->m_Params[0], val);
+
+        }else{
+            std::cout << "NOT IMPLEMENTED Param type:\n " << type_str << std::endl;
         }
         
     }

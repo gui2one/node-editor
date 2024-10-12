@@ -19,15 +19,21 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
   out << YAML::Value << param->name;
   out << YAML::Key << "type";
   out << YAML::Value << typeid(*param.get()).name();
+
   if (type_str.find("class std::basic_string") != std::string::npos) {
+  
     auto p = std::dynamic_pointer_cast<NodeEditor::Param<std::string>>(param);
     out << YAML::Key << "value";
     out << YAML::Value << p->Eval();
+  
   }else if(type_str == "class NodeEditor::Param<unsigned int>") {
+  
     auto p = std::dynamic_pointer_cast<NodeEditor::Param<uint32_t>>(param);
     out << YAML::Key << "value";
     out << YAML::Value << p->Eval();
+  
   }else{
+  
     out << YAML::Key << "null";
     out << YAML::Value << "null";
   }
