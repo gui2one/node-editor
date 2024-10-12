@@ -23,21 +23,17 @@ std::shared_ptr<NodeEditor::Node<T>> basic_node_convert(const YAML::Node& node) 
     op->position = ImVec2(position[0], position[1]);
     for(size_t i = 0; i < node["params"].size(); i++) {
         auto p = node["params"][i];
-        // op->m_Params.clear();
-        // std::string name = std::string(p["name"].as<std::string>());
+
         std::string type_str = std::string(p["type"].as<std::string>());
         if( type_str.find("class std::basic_string") != std::string::npos) {
-            std::cout << "Found String Parameter ---------------------------------" << std::endl;
-            auto param = std::make_shared<NodeEditor::Param<std::string>>("value", "hey !!!");
-            param->value = std::string(p["value"].as<std::string>());
-            // op->m_Params.push_back(param);
-            op->m_Params[0] = param;
+            
+            auto val = std::string(p["value"].as<std::string>());
+            set_param_value<std::string>(op->m_Params[0], val);
+        
         }else if(type_str == "class NodeEditor::Param<unsigned int>") {
-            auto param = std::make_shared<NodeEditor::Param<uint32_t>>("value", 0);
-            param->value = p["value"].as<uint32_t>();
-            op->m_Params[0] = param;
-            // op->value = param;
-            // op->m_Params.push_back(param);
+        
+            auto val = p["value"].as<uint32_t>();
+            set_param_value<uint32_t>(op->m_Params[0], val);
         }
         
     }

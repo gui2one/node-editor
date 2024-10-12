@@ -90,7 +90,7 @@ public:
       auto op0 = static_cast<StringOperator *>(GetInput(0).get());
       // auto param_0 = static_cast<Param<uint32_t> *>(m_Params[0].get());
       auto val_0 = get_param_value<uint32_t>(m_Params[0]);
-      for (uint32_t i = 0; i < m_Count; i++) {
+      for (uint32_t i = 0; i < val_0; i++) {
         val += op0->m_StringCache;
       }
       m_StringCache = val;

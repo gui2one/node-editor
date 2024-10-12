@@ -28,7 +28,7 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
     out << YAML::Key << "value";
     out << YAML::Value << p->Eval();
   }else{
-    out << YAML::Key << "value";
+    out << YAML::Key << "null";
     out << YAML::Value << "null";
   }
   out << YAML::EndMap;
