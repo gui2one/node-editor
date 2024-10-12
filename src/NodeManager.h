@@ -68,6 +68,8 @@ public:
 public:
     ImVec2 m_Origin;
     ImVec2 m_Scrolling = ImVec2(0,0);
+    float m_Zoom = 1.0f;
+    
     bool m_CanvasHovered = false;
     ImVec2 m_CanvasSize;
     ImVec2 m_CanvasPos;

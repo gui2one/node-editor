@@ -135,19 +135,18 @@ void NodeManager::DrawCanvas() {
 
   // Draw border and background color
   ImGuiIO &io = ImGui::GetIO();
+  if(io.MouseWheel > 0.0f){
+    // std::cout << "Mouse wheel up" << std::endl;
+    m_Zoom *= 1.1f;
+  } else if(io.MouseWheel < 0.0f){
+    // std::cout << "Mouse wheel down" << std::endl;
+    m_Zoom /= 1.1f;
+  }
+
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
   draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(50, 50, 50, 255));
   draw_list->AddRect(canvas_p0, canvas_p1, IM_COL32(255, 255, 255, 255));
 
-    // This will catch our interactions
-    // ImGui::InvisibleButton("canvas", canvas_sz, ImGuiButtonFlags_MouseButtonLeft | ImGuiButtonFlags_MouseButtonRight);
-
-    // if(ImGui::IsMouseClicked(ImGuiMouseButton_Right)){
-
-    //   ImGui::OpenPopup("context", 1);
-    // }
-
-    // if(ImGui::IsKeyPressed(ImGuiKey_Tab)){
     if(m_OpenNodesMenu){
 
       ImGui::OpenPopup("context", 1);
