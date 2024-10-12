@@ -51,6 +51,15 @@ struct InputConnector
     bool grabbed = false;
 };
 
+
+struct ParamLayoutItem{
+    std::string name;
+    std::shared_ptr<NodeParam> param;
+};
+struct ParamLayout{
+    std::vector<ParamLayoutItem> items;
+};
+
 class ImGuiNode
 {
 public:
@@ -89,6 +98,7 @@ public:
     ImVec2 position;
     ImVec2 size;
     std::vector<std::shared_ptr<NodeParam>> m_Params;
+    ParamLayout m_ParamLayout;
 
     bool selected = false;
     bool grabbed = false;
