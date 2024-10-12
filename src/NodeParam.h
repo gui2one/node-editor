@@ -94,12 +94,12 @@ public:
 };
 //utils
 template<typename T>
-T get_param_value(NodeParam* param){
-    return static_cast<Param<T>*>(param)->Eval();
+T get_param_value(std::shared_ptr<NodeParam> param){
+    return static_cast<Param<T>*>(param.get())->Eval();
 }
 template<typename T>
-void set_param_value(NodeParam* param, T value){
-    static_cast<Param<T>*>(param)->value = value;
+void set_param_value(std::shared_ptr<NodeParam> param, T value){
+    static_cast<Param<T>*>(param.get())->value = value;
 };
 
 };

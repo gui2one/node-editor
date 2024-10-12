@@ -35,6 +35,7 @@ std::shared_ptr<NodeEditor::Node<T>> basic_node_convert(const YAML::Node& node) 
         }else if(type_str == "class NodeEditor::Param<unsigned int>") {
             auto param = std::make_shared<NodeEditor::Param<uint32_t>>("value", 0);
             param->value = p["value"].as<uint32_t>();
+            op->m_Params[0] = param;
             // op->value = param;
             // op->m_Params.push_back(param);
         }
