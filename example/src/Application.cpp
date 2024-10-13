@@ -224,6 +224,7 @@ void Application::Run() {
         m_NodeManager.ViewFrameAll();
       }
       ImGui::MenuItem("Show Grid", NULL, &m_NodeManager.m_ViewProps.display_grid);
+      ImGui::MenuItem("Show Mouse Coords", NULL, &m_NodeManager.m_ViewProps.show_mouse_coords);
       ImGui::EndMenu();
     }
     ImGui::EndMainMenuBar();

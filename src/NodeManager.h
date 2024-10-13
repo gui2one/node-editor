@@ -24,6 +24,7 @@ struct ConnectionProcedure{
 struct ViewProperties{
     bool display_grid = true;
     bool nodes_menu_opened = false;
+    bool show_mouse_coords = true;
 };
 
 class NodeManager{
@@ -57,6 +58,8 @@ public:
     /// does nothing if m_OutputNode == nullptr
     void Evaluate();
 
+    ImVec2 ToCanvasSpace(ImVec2 pos);
+    ImVec2 ToScreenSpace(ImVec2 pos);
     bool IsNodeHovered(std::shared_ptr<ImGuiNode> node);
     bool IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint32_t index);
     

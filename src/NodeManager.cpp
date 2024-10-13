@@ -23,13 +23,11 @@ void NodeManager::SetNodesMenu(std::function<void()> func) {
 void NodeManager::DrawNodes() {
   m_CanvasPos = ImGui::GetWindowPos();
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
-  ImVec2 offset = m_Scrolling + m_CanvasPos;
-
 
   // display something to recognize m_OutputNode
   for(auto node : GetNodes()) {
     if(node == m_OutputNode) {
-      draw_list->AddCircleFilled(node->position + (node->size / 2.0f) + offset, 35.0f,
+      draw_list->AddCircleFilled(ToScreenSpace(node->position + (node->size / 2.0f)), 35.0f,
                                  NODE_COLOR::BROWN);
       break;
     }
@@ -42,9 +40,8 @@ void NodeManager::DrawNodes() {
       if (ptr->GetInput(i) != nullptr) {
         auto other = ptr->GetInput(i);
         auto input_conn = ptr->GetInputConnector(i);
-        ImVec2 p0 = node->position + input_conn->relative_pos + offset;
-        ImVec2 other_pos = other->position + offset +
-                           ImVec2(other->size.x / 2.0f, other->size.y);
+        ImVec2 p0 = ToScreenSpace(node->position + input_conn->relative_pos);
+        ImVec2 other_pos = ToScreenSpace(other->position + ImVec2(other->size.x / 2.0f, other->size.y));
 
         float y_sep = other_pos.y - p0.y;
         ImVec2 ctrl1 = p0 + ImVec2(0, y_sep);
@@ -58,12 +55,11 @@ void NodeManager::DrawNodes() {
   }
 
   if (m_ConnectionProcedure.started) {
-    ImVec2 connector_pos =
-        m_ConnectionProcedure.output_node
+    ImVec2 input_conn_pos = m_ConnectionProcedure.output_node
             ->GetInputConnector(m_ConnectionProcedure.output_index)
-            ->relative_pos +
-        m_ConnectionProcedure.output_node->position + offset;
-    ImVec2 p0 = connector_pos;
+            ->relative_pos;
+    ImVec2 connector_pos = input_conn_pos + m_ConnectionProcedure.output_node->position;
+    ImVec2 p0 = ToScreenSpace(connector_pos);
     double x, y;
     glfwGetCursorPos(m_GLFWWindow, &x, &y);
     // std::cout << x << " " << y  << std::endl;
@@ -79,7 +75,7 @@ void NodeManager::DrawNodes() {
     // input 'connectors'
     for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
       auto input_conn = ptr->GetInputConnector(i);
-      ImVec2 cp = node->position + offset + input_conn->relative_pos;
+      ImVec2 cp = ToScreenSpace(node->position + input_conn->relative_pos);
       draw_list->AddCircleFilled(cp, 5.0f, NODE_COLOR::WHITE);
       if (input_conn->hovered) {
         draw_list->AddCircle(cp, 5.0f, NODE_COLOR::ORANGE, 0, 3.0f);
@@ -87,11 +83,11 @@ void NodeManager::DrawNodes() {
     }
 
     // output 'connector'
-    ImVec2 cp =
-        node->position + offset + ImVec2(node->size.x / 2.0f, node->size.y);
+    ImVec2 cp = node->position + ImVec2(node->size.x / 2.0f, node->size.y);
+    cp = ToScreenSpace(cp);
     draw_list->AddCircleFilled(cp, 5.0f, NODE_COLOR::WHITE);
 
-    ImVec2 min = node->position + offset;
+    ImVec2 min = ToScreenSpace(node->position);
     ImVec2 max = min + node->size;
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
@@ -164,8 +160,8 @@ void NodeManager::DrawCanvas() {
 
   // 0, 0 marker
   float maker_size = 10.0f;
-  draw_list->AddLine(m_Scrolling + m_CanvasPos + ImVec2(0, maker_size/2.0f), m_Scrolling + m_CanvasPos - ImVec2(0,maker_size/2.0f), NODE_COLOR::YELLOW, 1.0f);
-  draw_list->AddLine(m_Scrolling + m_CanvasPos + ImVec2(maker_size/2.0f, 0), m_Scrolling + m_CanvasPos - ImVec2(maker_size/2.0f,0), NODE_COLOR::YELLOW, 1.0f);
+  draw_list->AddLine(ToScreenSpace(ImVec2(0, maker_size/2.0f)), ToScreenSpace(ImVec2(0,-maker_size/2.0f)), NODE_COLOR::YELLOW, 1.0f);
+  draw_list->AddLine(ToScreenSpace(ImVec2(maker_size/2.0f, 0)), ToScreenSpace(ImVec2(-maker_size/2.0f, 0)), NODE_COLOR::YELLOW, 1.0f);
   if (m_ViewProps.display_grid) {
     const float GRID_STEP = 50.0f;
     for (float x = fmodf(m_Scrolling.x, GRID_STEP); x < canvas_sz.x;
@@ -184,10 +180,12 @@ void NodeManager::DrawCanvas() {
 
   // debug draw 
   ImVec2 raw_pos = io.MousePos;
-  auto converted_pos = Utils::to_canvas_space(raw_pos, m_Scrolling + m_CanvasPos, m_Zoom);  
-  std::string txt = "(" + std::to_string((int)converted_pos.x) + ", " + std::to_string((int)converted_pos.y) + ")";
-
-  draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
+  if(m_ViewProps.show_mouse_coords){
+    
+    auto converted_pos = ToCanvasSpace(raw_pos);  
+    std::string txt = "(" + std::to_string((int)converted_pos.x) + ", " + std::to_string((int)converted_pos.y) + ")";
+    draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
+  }
   
   // All drawing finishes here
   draw_list->PopClipRect();
@@ -237,29 +235,40 @@ void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node) {
   m_OutputNode = node;
 }
 
-bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
-  ImVec2 min = node->position + m_Scrolling + m_CanvasPos;
-  ImVec2 max = min + node->size;
-  double cursor_x, cursor_y;
-  glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
-  bool hovered = false;
-  if (cursor_x > min.x && cursor_x < max.x && cursor_y > min.y &&
-      cursor_y < max.y) {
-    hovered = true;
-  }
-
-  return hovered;
+ImVec2 NodeManager::ToCanvasSpace(ImVec2 pos)
+{
+    return (pos - m_Scrolling - m_CanvasPos) * m_Zoom;
 }
 
-bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node,
-                                          uint32_t index) {
+ImVec2 NodeManager::ToScreenSpace(ImVec2 pos)
+{
+    return (pos + m_Scrolling + m_CanvasPos) * (1.0f/m_Zoom);
+}
+
+bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
+{
+    ImVec2 min = node->position + m_Scrolling + m_CanvasPos;
+    ImVec2 max = min + node->size;
+    double cursor_x, cursor_y;
+    glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
+    bool hovered = false;
+    if (cursor_x > min.x && cursor_x < max.x && cursor_y > min.y &&
+        cursor_y < max.y)
+    {
+        hovered = true;
+    }
+
+    return hovered;
+}
+
+bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint32_t index) {
   double cursor_x, cursor_y;
   glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
   bool hovered = false;
 
   auto ptr = static_cast<ImGuiNode *>(node.get());
   InputConnector *connector = ptr->GetInputConnector(index);
-  ImVec2 connector_pos = node->position + connector->relative_pos + m_Scrolling + m_CanvasPos;
+  ImVec2 connector_pos = ToScreenSpace(node->position + connector->relative_pos);
 
   float padding = 1.5f;
   if (cursor_x > connector_pos.x - connector->width * padding &&
@@ -300,12 +309,9 @@ void NodeManager::OnMouseMove(const Event &event) {
 
   const MouseMoveEvent &moveEvent = static_cast<const MouseMoveEvent &>(event);
   static ImVec2 old_pos = ImVec2(0, 0);
-  ImVec2 delta = ImVec2(moveEvent.x - old_pos.x, moveEvent.y - old_pos.y);
+  ImVec2 delta = ImVec2(moveEvent.x, moveEvent.y) - old_pos;
   std::shared_ptr<ImGuiNode> hovered_node = nullptr;
 
-  // ImVec2 raw_pos = ImVec2(moveEvent.x, moveEvent.y);
-  // auto converted_pos = Utils::to_canvas_space(raw_pos, m_Scrolling + m_CanvasPos, m_Zoom);
-  // std::cout << "converted_pos : " << converted_pos.x << ", " << converted_pos.y << std::endl;
   
   if(ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
       m_Scrolling += delta;
@@ -313,8 +319,7 @@ void NodeManager::OnMouseMove(const Event &event) {
   for (auto node : nodes) {
     node->highlighted = false;
     if (node->selected && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
-      node->position.x += delta.x;
-      node->position.y += delta.y;
+      node->position += delta;
     }
     if (IsNodeHovered(node)) {
       hovered_node = node;
@@ -325,7 +330,6 @@ void NodeManager::OnMouseMove(const Event &event) {
       InputConnector *connector = ptr->GetInputConnector(i);
       connector->hovered = IsInputConnectorHovered(node, i);
     }
-    // node->GetInputConnector(0)->hovered = IsInputConnectorHovered(node, 0);
   }
   old_pos = ImVec2(moveEvent.x, moveEvent.y);
 
