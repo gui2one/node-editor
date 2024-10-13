@@ -209,6 +209,7 @@ void Application::Run() {
         for(auto node : loaded_nodes) {
           m_NodeManager.AddNode(node);
         }
+        m_NodeManager.ViewFrameAll();
       }
       ImGui::Separator();
       if(ImGui::MenuItem("Clear All Noes")) {
@@ -221,6 +222,9 @@ void Application::Run() {
 
       if (ImGui::MenuItem("Center All", "F")) {
         m_NodeManager.ViewFrameAll();
+      }
+      if (ImGui::MenuItem("Show Grid")) {
+        m_NodeManager.m_ViewProps.display_grid = !m_NodeManager.m_ViewProps.display_grid;
       }
       ImGui::EndMenu();
     }

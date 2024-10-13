@@ -159,15 +159,20 @@ void NodeManager::DrawCanvas() {
           ImGui::Text("Add Node");
         ImGui::PopStyleColor(1);
 
-        m_NodesMenu();
+          m_NodesMenu();
+
         ImGui::EndPopup();
     }
     ImGui::PopStyleVar();
   // Draw grid
   draw_list->PushClipRect(canvas_p0, canvas_p1, true);
 
-  if (opt_enable_grid) {
-    const float GRID_STEP = 64.0f;
+  // 0, 0 marker
+  float maker_size = 10.0f;
+  draw_list->AddLine(m_Origin + m_CanvasPos + ImVec2(0, maker_size/2.0f), m_Origin + m_CanvasPos - ImVec2(0,maker_size/2.0f), NODE_COLOR::YELLOW, 1.0f);
+  draw_list->AddLine(m_Origin + m_CanvasPos + ImVec2(maker_size/2.0f, 0), m_Origin + m_CanvasPos - ImVec2(maker_size/2.0f,0), NODE_COLOR::YELLOW, 1.0f);
+  if (m_ViewProps.display_grid) {
+    const float GRID_STEP = 50.0f;
     for (float x = fmodf(m_Origin.x, GRID_STEP); x < canvas_sz.x;
          x += GRID_STEP)
       draw_list->AddLine(ImVec2(canvas_p0.x + x, canvas_p0.y),
@@ -179,12 +184,12 @@ void NodeManager::DrawCanvas() {
                          ImVec2(canvas_p1.x, canvas_p0.y + y),
                          IM_COL32(200, 200, 200, 40));
   }
-  for (int n = 0; n < points.Size; n += 2) {
-    draw_list->AddLine(
-        ImVec2(m_Origin.x + points[n].x, m_Origin.y + points[n].y),
-        ImVec2(m_Origin.x + points[n + 1].x, m_Origin.y + points[n + 1].y),
-        IM_COL32(255, 255, 0, 255), 2.0f);
-  }
+  // for (int n = 0; n < points.Size; n += 2) {
+  //   draw_list->AddLine(
+  //       ImVec2(m_Origin.x + points[n].x, m_Origin.y + points[n].y),
+  //       ImVec2(m_Origin.x + points[n + 1].x, m_Origin.y + points[n + 1].y),
+  //       IM_COL32(255, 255, 0, 255), 2.0f);
+  // }
 
   DrawNodes();
 
