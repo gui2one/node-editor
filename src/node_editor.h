@@ -20,7 +20,7 @@ void node_menu_item(NodeEditor::NodeManager &manager, const char* label) {
       glfwGetCursorPos(manager.GetGLFWWindow(), &x, &y);
       // std::cout << "Mouse pos: " << x << ", " << y << std::endl;
       
-      node->position = ImVec2((float)x, (float)y) - manager.m_Origin - manager.m_CanvasPos;
+      node->position = ImVec2((float)x, (float)y) - manager.m_Scrolling - manager.m_CanvasPos;
       manager.AddNode(node);
     }
 };

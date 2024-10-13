@@ -23,7 +23,7 @@ void NodeManager::SetNodesMenu(std::function<void()> func) {
 void NodeManager::DrawNodes() {
   m_CanvasPos = ImGui::GetWindowPos();
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
-  ImVec2 offset = m_Origin + m_CanvasPos;
+  ImVec2 offset = m_Scrolling + m_CanvasPos;
 
 
   // display something to recognize m_OutputNode
@@ -164,16 +164,16 @@ void NodeManager::DrawCanvas() {
 
   // 0, 0 marker
   float maker_size = 10.0f;
-  draw_list->AddLine(m_Origin + m_CanvasPos + ImVec2(0, maker_size/2.0f), m_Origin + m_CanvasPos - ImVec2(0,maker_size/2.0f), NODE_COLOR::YELLOW, 1.0f);
-  draw_list->AddLine(m_Origin + m_CanvasPos + ImVec2(maker_size/2.0f, 0), m_Origin + m_CanvasPos - ImVec2(maker_size/2.0f,0), NODE_COLOR::YELLOW, 1.0f);
+  draw_list->AddLine(m_Scrolling + m_CanvasPos + ImVec2(0, maker_size/2.0f), m_Scrolling + m_CanvasPos - ImVec2(0,maker_size/2.0f), NODE_COLOR::YELLOW, 1.0f);
+  draw_list->AddLine(m_Scrolling + m_CanvasPos + ImVec2(maker_size/2.0f, 0), m_Scrolling + m_CanvasPos - ImVec2(maker_size/2.0f,0), NODE_COLOR::YELLOW, 1.0f);
   if (m_ViewProps.display_grid) {
     const float GRID_STEP = 50.0f;
-    for (float x = fmodf(m_Origin.x, GRID_STEP); x < canvas_sz.x;
+    for (float x = fmodf(m_Scrolling.x, GRID_STEP); x < canvas_sz.x;
          x += GRID_STEP)
       draw_list->AddLine(ImVec2(canvas_p0.x + x, canvas_p0.y),
                          ImVec2(canvas_p0.x + x, canvas_p1.y),
                          IM_COL32(200, 200, 200, 40));
-    for (float y = fmodf(m_Origin.y, GRID_STEP); y < canvas_sz.y;
+    for (float y = fmodf(m_Scrolling.y, GRID_STEP); y < canvas_sz.y;
          y += GRID_STEP)
       draw_list->AddLine(ImVec2(canvas_p0.x, canvas_p0.y + y),
                          ImVec2(canvas_p1.x, canvas_p0.y + y),
@@ -184,7 +184,7 @@ void NodeManager::DrawCanvas() {
 
   // debug draw 
   ImVec2 raw_pos = io.MousePos;
-  auto converted_pos = Utils::to_canvas_space(raw_pos, m_Origin + m_CanvasPos, m_Zoom);  
+  auto converted_pos = Utils::to_canvas_space(raw_pos, m_Scrolling + m_CanvasPos, m_Zoom);  
   std::string txt = "(" + std::to_string((int)converted_pos.x) + ", " + std::to_string((int)converted_pos.y) + ")";
 
   draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
@@ -238,7 +238,7 @@ void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node) {
 }
 
 bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node) {
-  ImVec2 min = node->position + m_Origin + m_CanvasPos;
+  ImVec2 min = node->position + m_Scrolling + m_CanvasPos;
   ImVec2 max = min + node->size;
   double cursor_x, cursor_y;
   glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
@@ -259,7 +259,7 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node,
 
   auto ptr = static_cast<ImGuiNode *>(node.get());
   InputConnector *connector = ptr->GetInputConnector(index);
-  ImVec2 connector_pos = node->position + connector->relative_pos + m_Origin + m_CanvasPos;
+  ImVec2 connector_pos = node->position + connector->relative_pos + m_Scrolling + m_CanvasPos;
 
   float padding = 1.5f;
   if (cursor_x > connector_pos.x - connector->width * padding &&
@@ -304,11 +304,11 @@ void NodeManager::OnMouseMove(const Event &event) {
   std::shared_ptr<ImGuiNode> hovered_node = nullptr;
 
   // ImVec2 raw_pos = ImVec2(moveEvent.x, moveEvent.y);
-  // auto converted_pos = Utils::to_canvas_space(raw_pos, m_Origin + m_CanvasPos, m_Zoom);
+  // auto converted_pos = Utils::to_canvas_space(raw_pos, m_Scrolling + m_CanvasPos, m_Zoom);
   // std::cout << "converted_pos : " << converted_pos.x << ", " << converted_pos.y << std::endl;
   
   if(ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
-      m_Origin += delta;
+      m_Scrolling += delta;
   }
   for (auto node : nodes) {
     node->highlighted = false;
@@ -465,7 +465,7 @@ void NodeManager::OnKeyPress(const Event &event) {
 
 void NodeManager::ViewFrameAll() {
   ImVec2 center = get_nodes_center(nodes);
-  m_Origin = -center + m_CanvasSize / 2.0f;
+  m_Scrolling = -center + m_CanvasSize / 2.0f;
 }
 
 }; // namespace NodeEditor

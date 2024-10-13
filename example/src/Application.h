@@ -32,7 +32,6 @@ public:
     void Run();
 
 public :
-    ImVec2 m_Origin;
     WindowData m_WindowData;
 
     ImFont* m_RegularFont;

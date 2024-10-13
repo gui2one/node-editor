@@ -73,7 +73,7 @@ public:
 
 public:
     ViewProperties m_ViewProps;
-    ImVec2 m_Origin;
+    ImVec2 m_Scrolling;
     // ImVec2 m_Scrolling = ImVec2(0,0);
     float m_Zoom = 1.0f;
     
