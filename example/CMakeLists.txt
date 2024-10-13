@@ -21,14 +21,17 @@ project(node_editor_example)
 
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 add_executable(${PROJECT_NAME} 
-    example.cpp
-    utils.cpp
-    Application.cpp
-    Serialize.cpp
-    Deserialize.cpp
-    StringGenerator.cpp
+    src/example.cpp
+    src/utils.cpp
+    src/Application.cpp
+    src/Serialize.cpp
+    src/Deserialize.cpp
+    src/StringGenerator.cpp
 )
 
+include_directories(
+  src/
+)
 # target_precompile_headers(${PROJECT_NAME} PUBLIC ../src/node_editor.h)
 target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC node_editor)
