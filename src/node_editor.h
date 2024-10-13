@@ -18,9 +18,8 @@ void node_menu_item(NodeEditor::NodeManager &manager, const char* label) {
       auto node = std::make_shared<T>(label);
       double x,y;
       glfwGetCursorPos(manager.GetGLFWWindow(), &x, &y);
-      // std::cout << "Mouse pos: " << x << ", " << y << std::endl;
-      
-      node->position = ImVec2((float)x, (float)y) - manager.m_Scrolling - manager.m_CanvasPos;
+
+      node->position = ImVec2((float)x, (float)y) - manager.m_ViewProps.scrolling - manager.m_ViewProps.canvasPos;
       manager.AddNode(node);
     }
 };

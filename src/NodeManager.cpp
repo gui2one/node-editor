@@ -21,13 +21,13 @@ void NodeManager::SetNodesMenu(std::function<void()> func) {
 }
 
 void NodeManager::DrawNodes() {
-  m_CanvasPos = ImGui::GetCursorScreenPos();
+  m_ViewProps.canvasPos = ImGui::GetCursorScreenPos();
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
 
   // display something to recognize m_OutputNode
   for(auto node : GetNodes()) {
     if(node == m_OutputNode) {
-      draw_list->AddCircleFilled(ToScreenSpace(node->position + (node->size / 2.0f) * m_Zoom), 35.0f * m_Zoom,
+      draw_list->AddCircleFilled(ToScreenSpace(node->position + (node->size / 2.0f) * m_ViewProps.zoom), 35.0f * m_ViewProps.zoom,
                                  NODE_COLOR::BROWN);
       break;
     }
@@ -76,19 +76,19 @@ void NodeManager::DrawNodes() {
     for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
       auto input_conn = ptr->GetInputConnector(i);
       ImVec2 cp = ToScreenSpace(node->position + input_conn->relative_pos);
-      draw_list->AddCircleFilled(cp, 5.0f * m_Zoom, NODE_COLOR::WHITE);
+      draw_list->AddCircleFilled(cp, 5.0f * m_ViewProps.zoom, NODE_COLOR::WHITE);
       if (input_conn->hovered) {
-        draw_list->AddCircle(cp, 5.0f * m_Zoom, NODE_COLOR::ORANGE, 0, 3.0f);
+        draw_list->AddCircle(cp, 5.0f * m_ViewProps.zoom, NODE_COLOR::ORANGE, 0, 3.0f);
       }
     }
 
     // output 'connector'
     ImVec2 cp = node->position + ImVec2(node->size.x / 2.0f, node->size.y);
     cp = ToScreenSpace(cp);
-    draw_list->AddCircleFilled(cp, 5.0f * m_Zoom, NODE_COLOR::WHITE);
+    draw_list->AddCircleFilled(cp, 5.0f * m_ViewProps.zoom, NODE_COLOR::WHITE);
 
     ImVec2 min = ToScreenSpace(node->position);
-    ImVec2 max = min + (node->size  * m_Zoom);
+    ImVec2 max = min + (node->size  * m_ViewProps.zoom);
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
     if(node->selected) ImGui::PushFont(m_BoldFont);
@@ -109,9 +109,9 @@ void NodeManager::DrawNodes() {
 }
 
 void NodeManager::DrawCanvas() {
-  m_CanvasHovered = ImGui::IsWindowHovered();
+  m_ViewProps.canvasHovered = ImGui::IsWindowHovered();
   
-  m_CanvasSize = ImGui::GetWindowSize();
+  m_ViewProps.canvasSize = ImGui::GetWindowSize();
   static ImVector<ImVec2> points;
 
   ImVec2 canvas_p0 =
@@ -128,9 +128,9 @@ void NodeManager::DrawCanvas() {
   // Draw border and background color
   ImGuiIO &io = ImGui::GetIO();
   if(io.MouseWheel > 0.0f){
-    m_Zoom *= 1.1f;
+    m_ViewProps.zoom *= 1.1f;
   } else if(io.MouseWheel < 0.0f){
-    m_Zoom /= 1.1f;
+    m_ViewProps.zoom /= 1.1f;
   }
 
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -164,12 +164,12 @@ void NodeManager::DrawCanvas() {
   draw_list->AddLine(ToScreenSpace(ImVec2(maker_size/2.0f, 0)), ToScreenSpace(ImVec2(-maker_size/2.0f, 0)), NODE_COLOR::YELLOW, 1.0f);
   if (m_ViewProps.display_grid) {
     const float GRID_STEP = 50.0f;
-    for (float x = fmodf(m_Scrolling.x, GRID_STEP); x < canvas_sz.x;
+    for (float x = fmodf(m_ViewProps.scrolling.x, GRID_STEP); x < canvas_sz.x;
          x += GRID_STEP)
       draw_list->AddLine(ImVec2(canvas_p0.x + x, canvas_p0.y),
                          ImVec2(canvas_p0.x + x, canvas_p1.y),
                          IM_COL32(200, 200, 200, 40));
-    for (float y = fmodf(m_Scrolling.y, GRID_STEP); y < canvas_sz.y;
+    for (float y = fmodf(m_ViewProps.scrolling.y, GRID_STEP); y < canvas_sz.y;
          y += GRID_STEP)
       draw_list->AddLine(ImVec2(canvas_p0.x, canvas_p0.y + y),
                          ImVec2(canvas_p1.x, canvas_p0.y + y),
@@ -237,12 +237,12 @@ void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node) {
 
 ImVec2 NodeManager::ToCanvasSpace(ImVec2 pos)
 {
-    return (pos - m_Scrolling - m_CanvasPos) * (1.0f/m_Zoom);
+    return (pos - m_ViewProps.scrolling - m_ViewProps.canvasPos) * (1.0f/m_ViewProps.zoom);
 }
 
 ImVec2 NodeManager::ToScreenSpace(ImVec2 pos)
 {
-    return (pos + m_Scrolling + m_CanvasPos) * (m_Zoom);
+    return (pos + m_ViewProps.scrolling + m_ViewProps.canvasPos) * (m_ViewProps.zoom);
 }
 
 bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
@@ -304,7 +304,7 @@ void NodeManager::ResetConnectionProcedure() {
 }
 
 void NodeManager::OnMouseMove(const Event &event) {
-  if (!m_CanvasHovered)
+  if (!m_ViewProps.canvasHovered)
     return;
 
   const MouseMoveEvent &moveEvent = static_cast<const MouseMoveEvent &>(event);
@@ -314,7 +314,7 @@ void NodeManager::OnMouseMove(const Event &event) {
 
   
   if(ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
-      m_Scrolling += delta;
+      m_ViewProps.scrolling += delta;
   }
   for (auto node : nodes) {
     node->highlighted = false;
@@ -339,7 +339,7 @@ void NodeManager::OnMouseMove(const Event &event) {
 }
 
 void NodeManager::OnMouseClick(const Event &event) {
-  if (!m_CanvasHovered)
+  if (!m_ViewProps.canvasHovered)
     return;
 
   const MouseClickEvent &clickEvent = static_cast<const MouseClickEvent &>(event);
@@ -408,7 +408,7 @@ void NodeManager::OnMouseRelease(const Event &event) {
   
   auto now = std::chrono::system_clock::now();
   if (std::chrono::duration_cast<std::chrono::milliseconds>(now - m_LastCLickReleaseTime).count() < 300) {
-    if( m_CanvasHovered){
+    if( m_ViewProps.canvasHovered){
       double x,y;
       glfwGetCursorPos(GetGLFWWindow(), &x, &y);
       MouseDoubleClickEvent doubleClickEvent(clickEvent.button, (float)x, (float)y);
@@ -438,7 +438,7 @@ void NodeManager::OnMouseRelease(const Event &event) {
 }
 
 void NodeManager::OnKeyPress(const Event &event) {
-  if (!m_CanvasHovered)
+  if (!m_ViewProps.canvasHovered)
     return;
   const KeyPressEvent &clickEvent = static_cast<const KeyPressEvent &>(event);
   
@@ -469,7 +469,7 @@ void NodeManager::OnKeyPress(const Event &event) {
 
 void NodeManager::ViewFrameAll() {
   ImVec2 center = get_nodes_center(nodes);
-  m_Scrolling = -center + m_CanvasSize / 2.0f;
+  m_ViewProps.scrolling = -center + m_ViewProps.canvasSize / 2.0f;
 }
 
 }; // namespace NodeEditor
