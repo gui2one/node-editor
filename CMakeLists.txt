@@ -49,6 +49,7 @@ add_library(${PROJECT_NAME} STATIC
   src/EventDispatcher.cpp
   src/EventManager.cpp
   src/utils.cpp
+  src/utils/node_manager_utils.cpp
 )
 
 target_compile_options(${PROJECT_NAME} PUBLIC /W3)

@@ -28,20 +28,20 @@ int main() {
     node_menu_item<Node<StringRepeater>>(manager, "Repeater");
     node_menu_item<Node<StringNull>>(manager, "Null");
   });
-
-  EventManager::GetInstance().Subscribe(
+  static EventDispatcher& dispatcher = EventManager::GetInstance();
+  dispatcher.Subscribe(
       EventType::NodeConnection, [&app](const Event &event) {
         auto &manager = app.GetNodeManager();
         manager.Evaluate();
         auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
         std::cout << "Connection Update -> " << op->m_StringCache << std::endl;
       });
-  EventManager::GetInstance().Subscribe(
+  dispatcher.Subscribe(
       EventType::ParamChanged, [&app](const Event &event) {
         auto &manager = app.GetNodeManager();
         manager.m_OneParamChanged = true;
       });
-  EventManager::GetInstance().Subscribe(
+  dispatcher.Subscribe(
       EventType::ManagerUpdate, [&app](const Event &event) {
         auto &manager = app.GetNodeManager();
         manager.Evaluate();

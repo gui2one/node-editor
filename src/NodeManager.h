@@ -4,6 +4,7 @@
 
 #include "ImGuiNode.h"
 #include "EventManager.h"
+#include "utils/node_manager_utils.h"
 
 namespace NodeEditor {
 
@@ -73,7 +74,7 @@ public:
 public:
     ViewProperties m_ViewProps;
     ImVec2 m_Origin;
-    ImVec2 m_Scrolling = ImVec2(0,0);
+    // ImVec2 m_Scrolling = ImVec2(0,0);
     float m_Zoom = 1.0f;
     
     bool m_CanvasHovered = false;

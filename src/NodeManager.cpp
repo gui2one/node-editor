@@ -119,7 +119,7 @@ void NodeManager::DrawCanvas() {
   static ImVector<ImVec2> points;
 
   ImVec2 canvas_p0 =
-      ImGui::GetCursorScreenPos(); // ImDrawList API uses screen coordinates!
+      ImGui::GetCursorScreenPos(); // ImDrawList API uses screen coordinates!!!
   ImVec2 canvas_sz =
       ImGui::GetContentRegionAvail(); // Resize canvas to what's available
   if (canvas_sz.x < 50.0f)
@@ -132,10 +132,8 @@ void NodeManager::DrawCanvas() {
   // Draw border and background color
   ImGuiIO &io = ImGui::GetIO();
   if(io.MouseWheel > 0.0f){
-    // std::cout << "Mouse wheel up" << std::endl;
     m_Zoom *= 1.1f;
   } else if(io.MouseWheel < 0.0f){
-    // std::cout << "Mouse wheel down" << std::endl;
     m_Zoom /= 1.1f;
   }
 
@@ -181,15 +179,17 @@ void NodeManager::DrawCanvas() {
                          ImVec2(canvas_p1.x, canvas_p0.y + y),
                          IM_COL32(200, 200, 200, 40));
   }
-  // for (int n = 0; n < points.Size; n += 2) {
-  //   draw_list->AddLine(
-  //       ImVec2(m_Origin.x + points[n].x, m_Origin.y + points[n].y),
-  //       ImVec2(m_Origin.x + points[n + 1].x, m_Origin.y + points[n + 1].y),
-  //       IM_COL32(255, 255, 0, 255), 2.0f);
-  // }
 
   DrawNodes();
 
+  // debug draw 
+  ImVec2 raw_pos = io.MousePos;
+  auto converted_pos = Utils::to_canvas_space(raw_pos, m_Origin + m_CanvasPos, m_Zoom);  
+  std::string txt = "(" + std::to_string((int)converted_pos.x) + ", " + std::to_string((int)converted_pos.y) + ")";
+
+  draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
+  
+  // All drawing finishes here
   draw_list->PopClipRect();
 }
 
@@ -302,6 +302,11 @@ void NodeManager::OnMouseMove(const Event &event) {
   static ImVec2 old_pos = ImVec2(0, 0);
   ImVec2 delta = ImVec2(moveEvent.x - old_pos.x, moveEvent.y - old_pos.y);
   std::shared_ptr<ImGuiNode> hovered_node = nullptr;
+
+  // ImVec2 raw_pos = ImVec2(moveEvent.x, moveEvent.y);
+  // auto converted_pos = Utils::to_canvas_space(raw_pos, m_Origin + m_CanvasPos, m_Zoom);
+  // std::cout << "converted_pos : " << converted_pos.x << ", " << converted_pos.y << std::endl;
+  
   if(ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
       m_Origin += delta;
   }
