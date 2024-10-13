@@ -21,13 +21,13 @@ void NodeManager::SetNodesMenu(std::function<void()> func) {
 }
 
 void NodeManager::DrawNodes() {
-  m_CanvasPos = ImGui::GetWindowPos();
+  m_CanvasPos = ImGui::GetCursorScreenPos();
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
 
   // display something to recognize m_OutputNode
   for(auto node : GetNodes()) {
     if(node == m_OutputNode) {
-      draw_list->AddCircleFilled(ToScreenSpace(node->position + (node->size / 2.0f)), 35.0f,
+      draw_list->AddCircleFilled(ToScreenSpace(node->position + (node->size / 2.0f) * m_Zoom), 35.0f * m_Zoom,
                                  NODE_COLOR::BROWN);
       break;
     }
@@ -76,19 +76,19 @@ void NodeManager::DrawNodes() {
     for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
       auto input_conn = ptr->GetInputConnector(i);
       ImVec2 cp = ToScreenSpace(node->position + input_conn->relative_pos);
-      draw_list->AddCircleFilled(cp, 5.0f, NODE_COLOR::WHITE);
+      draw_list->AddCircleFilled(cp, 5.0f * m_Zoom, NODE_COLOR::WHITE);
       if (input_conn->hovered) {
-        draw_list->AddCircle(cp, 5.0f, NODE_COLOR::ORANGE, 0, 3.0f);
+        draw_list->AddCircle(cp, 5.0f * m_Zoom, NODE_COLOR::ORANGE, 0, 3.0f);
       }
     }
 
     // output 'connector'
     ImVec2 cp = node->position + ImVec2(node->size.x / 2.0f, node->size.y);
     cp = ToScreenSpace(cp);
-    draw_list->AddCircleFilled(cp, 5.0f, NODE_COLOR::WHITE);
+    draw_list->AddCircleFilled(cp, 5.0f * m_Zoom, NODE_COLOR::WHITE);
 
     ImVec2 min = ToScreenSpace(node->position);
-    ImVec2 max = min + node->size;
+    ImVec2 max = min + (node->size  * m_Zoom);
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
     if(node->selected) ImGui::PushFont(m_BoldFont);
@@ -237,17 +237,17 @@ void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node) {
 
 ImVec2 NodeManager::ToCanvasSpace(ImVec2 pos)
 {
-    return (pos - m_Scrolling - m_CanvasPos) * m_Zoom;
+    return (pos - m_Scrolling - m_CanvasPos) * (1.0f/m_Zoom);
 }
 
 ImVec2 NodeManager::ToScreenSpace(ImVec2 pos)
 {
-    return (pos + m_Scrolling + m_CanvasPos) * (1.0f/m_Zoom);
+    return (pos + m_Scrolling + m_CanvasPos) * (m_Zoom);
 }
 
 bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
 {
-    ImVec2 min = node->position + m_Scrolling + m_CanvasPos;
+    ImVec2 min = ToScreenSpace(node->position);
     ImVec2 max = min + node->size;
     double cursor_x, cursor_y;
     glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
