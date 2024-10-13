@@ -20,6 +20,11 @@ struct ConnectionProcedure{
     std::shared_ptr<ImGuiNode> input_node;
 };
 
+struct ViewProperties{
+    bool display_grid = true;
+    bool nodes_menu_opened = false;
+};
+
 class NodeManager{
 
 public:
@@ -66,6 +71,7 @@ public:
     void ViewFrameAll();
 
 public:
+    ViewProperties m_ViewProps;
     ImVec2 m_Origin;
     ImVec2 m_Scrolling = ImVec2(0,0);
     float m_Zoom = 1.0f;
@@ -88,7 +94,6 @@ private:
     ConnectionProcedure m_ConnectionProcedure;
     std::shared_ptr<ImGuiNode> m_OutputNode = nullptr;
 
-    bool m_OpenNodesMenu = false;
 };
 
 

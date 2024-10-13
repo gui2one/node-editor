@@ -119,8 +119,7 @@ void NodeManager::DrawCanvas() {
   static ImVector<ImVec2> points;
 
   static bool opt_enable_grid = true;
-  static bool opt_enable_context_menu = true;
-  static bool adding_line = false;
+
 
   ImVec2 canvas_p0 =
       ImGui::GetCursorScreenPos(); // ImDrawList API uses screen coordinates!
@@ -147,10 +146,10 @@ void NodeManager::DrawCanvas() {
   draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(50, 50, 50, 255));
   draw_list->AddRect(canvas_p0, canvas_p1, IM_COL32(255, 255, 255, 255));
 
-    if(m_OpenNodesMenu){
+    if(m_ViewProps.nodes_menu_opened){
 
       ImGui::OpenPopup("context", 1);
-      m_OpenNodesMenu = false;
+      m_ViewProps.nodes_menu_opened = false;
     }
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 10));
@@ -441,7 +440,7 @@ void NodeManager::OnKeyPress(const Event &event) {
       }
       break;
     case GLFW_KEY_TAB:
-      m_OpenNodesMenu = true;
+      m_ViewProps.nodes_menu_opened = true;
       break;
     case GLFW_KEY_ENTER:
       if(m_CurrentNode){
