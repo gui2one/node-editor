@@ -223,9 +223,7 @@ void Application::Run() {
       if (ImGui::MenuItem("Center All", "F")) {
         m_NodeManager.ViewFrameAll();
       }
-      if (ImGui::MenuItem("Show Grid")) {
-        m_NodeManager.m_ViewProps.display_grid = !m_NodeManager.m_ViewProps.display_grid;
-      }
+      ImGui::MenuItem("Show Grid", NULL, &m_NodeManager.m_ViewProps.display_grid);
       ImGui::EndMenu();
     }
     ImGui::EndMainMenuBar();

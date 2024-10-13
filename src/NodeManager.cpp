@@ -118,9 +118,6 @@ void NodeManager::DrawCanvas() {
   m_CanvasSize = ImGui::GetWindowSize();
   static ImVector<ImVec2> points;
 
-  static bool opt_enable_grid = true;
-
-
   ImVec2 canvas_p0 =
       ImGui::GetCursorScreenPos(); // ImDrawList API uses screen coordinates!
   ImVec2 canvas_sz =
