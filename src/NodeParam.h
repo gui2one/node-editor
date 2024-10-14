@@ -92,6 +92,29 @@ public:
 public:
     uint32_t value;
 };
+
+template<>
+class Param<bool> : public NodeParam{
+public:
+    Param(const char * _name, bool _value): NodeParam(_name), value(_value){};
+    ~Param(){};
+
+    bool Eval(){
+        return value;
+    }
+
+    void Display(){
+        if(ImGui::Checkbox(name, &value)){
+            ParamChangedEvent event;
+            EventManager::GetInstance().Dispatch(event);
+        }
+    }
+
+public:
+    bool value;
+};
+
+
 //utils
 template<typename T>
 T get_param_value(std::shared_ptr<NodeParam> param){

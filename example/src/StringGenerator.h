@@ -64,25 +64,35 @@ private:
 };
 class StringConcatenator : public StringModifier {
 public:
-  StringConcatenator() : StringModifier() { SetNumAvailableInputs(2); }
+  StringConcatenator() : StringModifier() { 
+    SetNumAvailableInputs(2); 
+    add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
+    m_ParamLayout.items = { {"Separator", add_separator_param} };  
+  }
   ~StringConcatenator() {};
 
   void Generate() override {
     if (GetInput(0) != nullptr && GetInput(1) != nullptr) {
       auto op0 = static_cast<StringOperator *>(GetInput(0).get());
       auto op1 = static_cast<StringOperator *>(GetInput(1).get());
-      m_StringCache = op0->m_StringCache + op1->m_StringCache;
+      if(add_separator_param->Eval()){
+        m_StringCache = op0->m_StringCache + " " + op1->m_StringCache;
+      }else{
+
+        m_StringCache = op0->m_StringCache + op1->m_StringCache;
+      }
     }
   }
 
 public:
+  std::shared_ptr<Param<bool>> add_separator_param;
 };
 class StringRepeater : public StringModifier {
 public:
   StringRepeater():StringModifier() {
     SetNumAvailableInputs(1);
     count = std::make_shared<Param<uint32_t>>("Count", 10);
-    // m_Params.push_back(param);
+
     m_ParamLayout.items = { {"count", count}};
   };
   ~StringRepeater(){};

@@ -32,7 +32,13 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
     out << YAML::Key << "value";
     out << YAML::Value << p->Eval();
   
-  }else{
+  }else if(type_str == "class NodeEditor::Param<bool>") {
+
+    auto p = std::dynamic_pointer_cast<NodeEditor::Param<bool>>(param);
+    out << YAML::Key << "value";
+    out << YAML::Value << p->Eval();
+  }
+  else{
   
     out << YAML::Key << "null";
     out << YAML::Value << "null";
