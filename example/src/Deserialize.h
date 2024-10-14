@@ -28,12 +28,12 @@ std::shared_ptr<NodeEditor::Node<T>> basic_node_convert(const YAML::Node& node) 
         if( type_str.find("class std::basic_string") != std::string::npos) {
             
             auto val = std::string(p["value"].as<std::string>());
-            set_param_value<std::string>(op->m_Params[0], val);
+            set_param_value<std::string>(op->m_ParamLayout.items[0].param, val);
         
         }else if(type_str == "class NodeEditor::Param<unsigned int>") {
         
             auto val = p["value"].as<uint32_t>();
-            set_param_value<uint32_t>(op->m_Params[0], val);
+            set_param_value<uint32_t>(op->m_ParamLayout.items[0].param, val);
 
         }else{
             std::cout << "NOT IMPLEMENTED Param type:\n " << type_str << std::endl;

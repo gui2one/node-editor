@@ -36,18 +36,20 @@ class StringGenerate : public StringGenerator {
 public:
   StringGenerate(): StringGenerator() {
     value = std::make_shared<Param<std::string>>("value", "Hello");
-    m_Params.push_back(value);
+
+    m_ParamLayout.items = { {"Value!!", value}};
   };
   ~StringGenerate() {};
 
   void Generate() override {
     // auto param_0 = static_cast<Param<std::string> *>(m_Params[0].get());
-    m_StringCache = get_param_value<std::string>(m_Params[0]);
+    // m_StringCache = get_param_value<std::string>(m_ParamLayout.items[0].param);
+    m_StringCache = value->Eval();
 
   }
-
-public:
   std::shared_ptr<Param<std::string>> value;
+public:
+
 
 private:
 };
@@ -79,8 +81,9 @@ class StringRepeater : public StringModifier {
 public:
   StringRepeater():StringModifier() {
     SetNumAvailableInputs(1);
-    auto param = std::make_shared<Param<uint32_t>>("Count", 10);
-    m_Params.push_back(param);
+    count = std::make_shared<Param<uint32_t>>("Count", 10);
+    // m_Params.push_back(param);
+    m_ParamLayout.items = { {"count", count}};
   };
   ~StringRepeater(){};
 
@@ -88,9 +91,8 @@ public:
     if (GetInput(0) != nullptr) {
       std::string val = "";
       auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-      // auto param_0 = static_cast<Param<uint32_t> *>(m_Params[0].get());
-      auto val_0 = get_param_value<uint32_t>(m_Params[0]);
-      for (uint32_t i = 0; i < val_0; i++) {
+
+      for (uint32_t i = 0; i < count->Eval(); i++) {
         val += op0->m_StringCache;
       }
       m_StringCache = val;
@@ -98,7 +100,7 @@ public:
   }
 
 public:
-  uint32_t m_Count = 2;
+  std::shared_ptr<Param<uint32_t>> count;
 };
 class StringNull : public StringModifier {
 public:

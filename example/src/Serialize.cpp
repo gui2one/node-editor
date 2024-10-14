@@ -57,8 +57,8 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiN
     out << node->position;
     out << YAML::Key << "params";
     out << YAML::BeginSeq;
-    for(auto param : node->m_Params) {
-      out << param;
+    for(auto item : node->m_ParamLayout.items) {
+      out << item.param;
     }
     out << YAML::EndSeq;
       // out << YAML::BeginMap;

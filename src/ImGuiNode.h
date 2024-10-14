@@ -97,7 +97,6 @@ public:
     NODE_COLOR color;
     ImVec2 position;
     ImVec2 size;
-    std::vector<std::shared_ptr<NodeParam>> m_Params;
     ParamLayout m_ParamLayout;
 
     bool selected = false;

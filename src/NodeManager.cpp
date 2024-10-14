@@ -196,8 +196,8 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node) {
     return;
 
   ImGui::Begin("Params");
-  for (auto param : node->m_Params) {
-    param->Display();
+  for (auto item : node->m_ParamLayout.items) {
+    item.param->Display();
   }
 
   ImGui::End();
