@@ -5,11 +5,6 @@ YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec3& v) {
     out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
     return out;
 }
-YAML::Emitter& operator << (YAML::Emitter& out, const ImVec2& v) {
-    out << YAML::Flow;
-    out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
-    return out;
-}
 
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::NodeParam>& param) {
   std::string type_str = std::string(typeid(*param.get()).name());
@@ -101,16 +96,12 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
 
 
 std::string serialize_nodes(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes) {
-  YAML::Emitter out;
-  out << YAML::BeginSeq;
-  for(auto node : nodes) {
-    // auto op = static_cast<StringOperator *>(node.get());
-    out << node;
-  }
-  out << YAML::EndSeq;
 
-  // std::cout << "Yaml output : \n"<< out.c_str() << std::endl;
-  return std::string(out.c_str());
+  YAML::Node output;
+  for(auto node : nodes) {
+    output.push_back(node->YAMLSerialize());
+  }
+  return YAML::Dump(output);
 }
 
 

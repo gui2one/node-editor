@@ -14,27 +14,50 @@ template<>
 struct convert<ImVec2> {
   static Node encode(const ImVec2& rhs) {
     Node node;
-    node.push_back(rhs.x);
-    node.push_back(rhs.y);
+    node["x"] = rhs.x;
+    node["y"] = rhs.y;
+    // node.push_back(rhs.x);
+    // node.push_back(rhs.y);
     return node;
   }
 
   static bool decode(const Node& node, ImVec2& rhs) {
-    if(!node.IsSequence() || node.size() != 2) {
+    if(!node.IsMap() || node.size() != 2) {
       return false;
     }
 
-    rhs.x = node[0].as<float>();
-    rhs.y = node[1].as<float>();
+    rhs.x = node["x"].as<float>();
+    rhs.y = node["y"].as<float>();
     return true;
   }
 };
-}
+
+template<>
+struct convert<NodeEditor::ImGuiNode> {
+  static Node encode(const NodeEditor::ImGuiNode& rhs) {
+    Node node;
+    node["title"] = rhs.title;
+    node["position"] = rhs.position;
+    node["size"] = rhs.size;
+    return node;
+  }
+
+  static bool decode(const Node& node, NodeEditor::ImGuiNode& rhs) {
+    if(!node.IsMap() || node.size() != 3) {
+      return false;
+    }
+
+    rhs.title = node["title"].as<std::string>();
+    rhs.position = node["position"].as<ImVec2>();
+    rhs.size = node["size"].as<ImVec2>();
+    return true;
+  }
+};
 
 
+};
 
 YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec3& v);
-YAML::Emitter& operator << (YAML::Emitter& out, const ImVec2& v);
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::NodeParam>& param);
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::ImGuiNode>& node);
 
