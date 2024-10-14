@@ -33,13 +33,22 @@ void ImGuiNode::InitInputConnectors() {
 
 YAML::Node ImGuiNode::YAMLSerialize() { 
   YAML::Node yaml_node;
+  yaml_node["uuid"] = uuid;
   yaml_node["title"] = title;
   yaml_node["position"] = position;
   yaml_node["size"] = size;
   for(auto item : m_ParamLayout.items) {
     yaml_node["params"].push_back(item.param->YAMLSerialize());
   }
-  // yaml_node["params"] =
+
+  for(size_t i = 0; i < MAX_N_INPUTS; i++) {
+    if( inputs[i] != nullptr ){
+      yaml_node["inputs"].push_back(inputs[i]->uuid);
+    }else{
+      yaml_node["inputs"].push_back("null");
+    }
+  }
+
   return yaml_node; 
   
 }
