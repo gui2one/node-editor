@@ -40,20 +40,42 @@ target_include_directories(imgui PUBLIC
   ${CMAKE_SOURCE_DIR}/_deps/glfw-src/include
 )
 
+
+
+
 add_library(${PROJECT_NAME} STATIC
 
-  src/ImGuiNode.cpp
-  src/NodeParam.cpp
-  src/NodeManager.cpp
-  src/Event.cpp
-  src/EventDispatcher.cpp
-  src/EventManager.cpp
-  src/utils.cpp
-  src/utils/node_manager_utils.cpp
+# src/yaml_serialize.cpp
+src/ImGuiNode.cpp
+src/NodeParam.cpp
+src/NodeManager.cpp
+src/Event.cpp
+src/EventDispatcher.cpp
+src/EventManager.cpp
+src/utils.cpp
+src/utils/node_manager_utils.cpp
 )
+
+
+add_library(serialize_lib STATIC 
+ src/yaml_serialize.cpp
+)
+target_include_directories(serialize_lib PUBLIC 
+  src/
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src
+  ${CMAKE_SOURCE_DIR}/build/_deps/yaml-cpp-src/include
+  ${_include_dirs}
+)
+
+target_link_libraries(serialize_lib PUBLIC yaml-cpp::yaml-cpp)
+target_link_libraries(serialize_lib PUBLIC imgui)
+
 
 target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
+target_link_libraries(${PROJECT_NAME} PUBLIC serialize_lib)
+
+
 
 set(_include_dirs
   src/
@@ -68,8 +90,9 @@ set(_include_dirs
 
 # YAML-CPP
 set(YAML_CPP_BUILD_TOOLS OFF)
+set(BUILD_SHARED_LIBS OFF)
 FetchDependencyAndMakeAvailable(yaml-cpp https://github.com/jbeder/yaml-cpp da82fd982c260e7f335ce5acbceff24b270544d1) #master 10/11/2024
-target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp::yaml-cpp)
+
 target_include_directories(${PROJECT_NAME} PUBLIC build/_deps/yaml-cpp-src/include)
 
 
@@ -114,6 +137,8 @@ include_directories(
   
   ${_include_dirs}
 )
+
+
 
 if(${NODE_EDITOR_BUILD_EXAMPLE})
   add_subdirectory(example)

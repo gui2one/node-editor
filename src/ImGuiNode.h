@@ -1,16 +1,18 @@
 #ifndef IMGUINODE_H
 #define IMGUINODE_H
 
-#pragma once
-// #include <imgui.h>
+#include <imgui.h>
 #include <memory>
 #include <iostream>
 #include <vector>
 #include <array>
 #include "utils.h"
+
 #include <yaml-cpp/yaml.h>
 
+
 constexpr uint32_t MAX_N_INPUTS = 4;
+
 namespace NodeEditor {
 
 // forward declaration
@@ -69,7 +71,8 @@ public:
 
     virtual void Update() = 0; // implemented lower, in the Node<T> class
     virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
-    virtual YAML::Node YAMLSerialize() = 0;
+    
+    YAML::Node YAMLSerialize();
     
     void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node);
 

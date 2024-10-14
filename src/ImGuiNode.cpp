@@ -1,5 +1,7 @@
 #include "ImGuiNode.h"
+#include "yaml_serialize.h"
 namespace NodeEditor {
+
 
 ImGuiNode::ImGuiNode(std::string _title)
     : title(_title), position(500, 500), size(100, 30),
@@ -29,11 +31,19 @@ void ImGuiNode::InitInputConnectors() {
   }
 }
 
-void ImGuiNode::SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node)
-{
-    if (index < 0 || index > 3)
-        return;
-    inputs[index] = node;
+YAML::Node ImGuiNode::YAMLSerialize() { 
+  YAML::Node yaml_node;
+  yaml_node["title"] = title;
+  yaml_node["position"] = position;
+  yaml_node["size"] = size;
+  return yaml_node; 
+  
+}
+
+void ImGuiNode::SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node) {
+  if (index < 0 || index > 3)
+    return;
+  inputs[index] = node;
 }
 
 void ImGuiNode::ResetInput(uint32_t index){

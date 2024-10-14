@@ -1,7 +1,6 @@
 #ifndef NODEPARAM_H
 #define NODEPARAM_H
 
-#pragma once
 
 #include <yaml-cpp/yaml.h>
 #include "Event.h"

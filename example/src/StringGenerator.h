@@ -1,6 +1,6 @@
 #ifndef MESHGENERATOR_H
 #define MESHGENERATOR_H
-#pragma once
+
 
 #include "ImguiNode.h"
 #include "NodeParam.h"
@@ -17,11 +17,11 @@ public:
   virtual ~StringOperator() = default;
 
 
-  YAML::Node YAMLSerialize() override {
-    YAML::Node yaml_node;
-    yaml_node["value"] = "---------- StringOperator Not Implemented ----------";
-    return yaml_node;
-  }
+  // YAML::Node YAMLSerialize() override {
+  //   YAML::Node yaml_node;
+  //   yaml_node["value"] = "---------- StringOperator Not Implemented ----------";
+  //   return yaml_node;
+  // }
 public:
   std::string m_StringCache = "";
 };
@@ -50,11 +50,11 @@ public:
     m_StringCache = value->Eval();
   }
 
-  YAML::Node YAMLSerialize() override {
-    YAML::Node yaml_node;
-    yaml_node["node"] = value->Eval();
-    return yaml_node;
-  }
+  // YAML::Node YAMLSerialize() override {
+  //   YAML::Node yaml_node;
+  //   yaml_node["node"] = value->Eval();
+  //   return yaml_node;
+  // }
 
   std::shared_ptr<Param<std::string>> value;
 public:

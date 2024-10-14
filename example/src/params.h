@@ -1,6 +1,5 @@
 #ifndef PARAMS_H
 #define PARAMS_H
-#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>

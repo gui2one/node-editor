@@ -1,6 +1,6 @@
 #ifndef EVENT_H
 #define EVENT_H
-#pragma once
+
 
 #include "ImGuiNode.h"
 namespace NodeEditor {

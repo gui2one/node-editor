@@ -1,6 +1,5 @@
 #ifndef PCH_H
 #define PCH_H
-#pragma once
 
 #include <vector>
 #include <memory>
@@ -37,6 +36,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+//#include <yaml-cpp/yaml.h>
 
 
 #endif

@@ -1,6 +1,5 @@
-#include "Serialize.h"
+#include "yaml_serialize.h"
 
-namespace NE = NodeEditor;
 YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec3& v) {
     out << YAML::Flow;
     out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
@@ -47,7 +46,7 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
   out << YAML::EndMap;
   return out;
 }
-YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiNode>& node) {
+YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::ImGuiNode>& node) {
 
   out << node->YAMLSerialize();
   return out;
@@ -101,7 +100,7 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiN
 }
 
 
-std::string serialize_nodes(std::vector<std::shared_ptr<NE::ImGuiNode>> nodes) {
+std::string serialize_nodes(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes) {
   YAML::Emitter out;
   out << YAML::BeginSeq;
   for(auto node : nodes) {

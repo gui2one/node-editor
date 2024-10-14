@@ -201,15 +201,15 @@ void Application::Run() {
       }
       if( ImGui::MenuItem("Load", "Ctrl+L")) {
 
-        auto temp_dir = std::filesystem::temp_directory_path();
-        auto save_path = temp_dir / "nodes.yaml";
-        auto loaded_nodes = deserialize_yaml_save(save_path.string().c_str());
+        // auto temp_dir = std::filesystem::temp_directory_path();
+        // auto save_path = temp_dir / "nodes.yaml";
+        // auto loaded_nodes = deserialize_yaml_save(save_path.string().c_str());
 
-        m_NodeManager.GetNodes().clear();
-        for(auto node : loaded_nodes) {
-          m_NodeManager.AddNode(node);
-        }
-        m_NodeManager.ViewFrameAll();
+        // m_NodeManager.GetNodes().clear();
+        // for(auto node : loaded_nodes) {
+        //   m_NodeManager.AddNode(node);
+        // }
+        // m_NodeManager.ViewFrameAll();
       }
       ImGui::Separator();
       if(ImGui::MenuItem("Clear All Noes")) {

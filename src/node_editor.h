@@ -1,7 +1,7 @@
 #ifndef NODE_EDITOR_H
 #define NODE_EDITOR_H
-#pragma once
 
+#include "yaml_serialize.h"
 #include "ImGuiNode.h"
 #include "NodeParam.h"
 #include "NodeManager.h"

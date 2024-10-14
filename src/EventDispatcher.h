@@ -1,7 +1,6 @@
 #ifndef EVENTDISPATCHER_H
 #define EVENTDISPATCHER_H
 
-#pragma once
 
 #include "Event.h"
 #include <functional>

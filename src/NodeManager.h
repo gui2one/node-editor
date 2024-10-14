@@ -1,6 +1,5 @@
 #ifndef NODEMANAGER_H
 #define NODEMANAGER_H
-#pragma once
 
 #include "ImGuiNode.h"
 #include "EventManager.h"

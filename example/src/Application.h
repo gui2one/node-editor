@@ -1,15 +1,14 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#pragma once
 #include <thread>
 #include <imgui.h>
 #include "node_editor.h"
-#include "Serialize.h"
-#include "Deserialize.h"
+
 #include "params.h"
 #include <fstream>
 #include <filesystem>
+#include "yaml_serialize.h"
 namespace NodeEditor {
 
 struct WindowData{
