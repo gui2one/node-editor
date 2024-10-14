@@ -15,8 +15,13 @@ class StringOperator : public ImGuiNode {
 public:
   StringOperator() : ImGuiNode("default") {};
   virtual ~StringOperator() = default;
-  // virtual void Generate() = 0;
 
+
+  YAML::Node YAMLSerialize() override {
+    YAML::Node yaml_node;
+    yaml_node["value"] = "---------- StringOperator Not Implemented ----------";
+    return yaml_node;
+  }
 public:
   std::string m_StringCache = "";
 };
@@ -42,11 +47,9 @@ public:
   ~StringGenerate() {};
 
   void Generate() override {
-    // auto param_0 = static_cast<Param<std::string> *>(m_Params[0].get());
-    // m_StringCache = get_param_value<std::string>(m_ParamLayout.items[0].param);
     m_StringCache = value->Eval();
-
   }
+
   std::shared_ptr<Param<std::string>> value;
 public:
 

@@ -65,6 +65,14 @@ set(_include_dirs
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui_node_editor-src
 )
 
+
+# YAML-CPP
+set(YAML_CPP_BUILD_TOOLS OFF)
+FetchDependencyAndMakeAvailable(yaml-cpp https://github.com/jbeder/yaml-cpp da82fd982c260e7f335ce5acbceff24b270544d1) #master 10/11/2024
+target_link_libraries(${PROJECT_NAME} PUBLIC yaml-cpp::yaml-cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC build/_deps/yaml-cpp-src/include)
+
+
 # GLM
 FetchDependencyAndMakeAvailable(
   glm

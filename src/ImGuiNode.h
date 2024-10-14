@@ -8,7 +8,7 @@
 #include <vector>
 #include <array>
 #include "utils.h"
-// #include "NodeParam.h"
+#include <yaml-cpp/yaml.h>
 
 constexpr uint32_t MAX_N_INPUTS = 4;
 namespace NodeEditor {
@@ -69,6 +69,8 @@ public:
 
     virtual void Update() = 0; // implemented lower, in the Node<T> class
     virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
+    virtual YAML::Node YAMLSerialize() = 0;
+    
     void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node);
 
     void ResetInput(uint32_t index);

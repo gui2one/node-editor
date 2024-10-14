@@ -14,6 +14,7 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ImVec2& v) {
 
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::NodeParam>& param) {
   std::string type_str = std::string(typeid(*param.get()).name());
+
   out << YAML::BeginMap;
   out << YAML::Key << "name";
   out << YAML::Value << param->name;
@@ -47,6 +48,10 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
   return out;
 }
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NE::ImGuiNode>& node) {
+
+  out << node->YAMLSerialize();
+  return out;
+  
 	auto op = static_cast<NE::StringOperator *>(node.get());
   auto type_str = std::string(typeid(*node.get()).name());
   str_replace(type_str, "class NodeEditor::Node<class NodeEditor::", "");
