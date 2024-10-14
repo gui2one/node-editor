@@ -36,6 +36,10 @@ YAML::Node ImGuiNode::YAMLSerialize() {
   yaml_node["title"] = title;
   yaml_node["position"] = position;
   yaml_node["size"] = size;
+  for(auto item : m_ParamLayout.items) {
+    yaml_node["params"].push_back(item.param->YAMLSerialize());
+  }
+  // yaml_node["params"] =
   return yaml_node; 
   
 }
