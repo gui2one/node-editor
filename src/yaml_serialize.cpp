@@ -22,4 +22,16 @@ std::string serialize_nodes(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> 
   return YAML::Dump(output);
 }
 
+std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::string yaml) {
+
+  std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes;
+  YAML::Node output = YAML::Load(yaml);
+  for(auto node : output) {
+    std::cout << YAML::Dump(node) << std::endl;
+    
+    // nodes.push_back(op);
+  }
+  return nodes;
+}
+
 

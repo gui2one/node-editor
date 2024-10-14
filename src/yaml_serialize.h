@@ -34,23 +34,23 @@ struct convert<ImVec2> {
 };
 
 template<>
-struct convert<NodeEditor::ImGuiNode> {
-  static Node encode(const NodeEditor::ImGuiNode& rhs) {
+struct convert<std::shared_ptr<NodeEditor::ImGuiNode>> {
+  static Node encode(const std::shared_ptr<NodeEditor::ImGuiNode>& rhs) {
     Node node;
-    node["title"] = rhs.title;
-    node["position"] = rhs.position;
-    node["size"] = rhs.size;
+    node["title"] = rhs->title;
+    node["position"] = rhs->position;
+    node["size"] = rhs->size;
     return node;
   }
 
-  static bool decode(const Node& node, NodeEditor::ImGuiNode& rhs) {
+  static bool decode(const Node& node, std::shared_ptr<NodeEditor::ImGuiNode>& rhs) {
     if(!node.IsMap() || node.size() != 3) {
       return false;
     }
 
-    rhs.title = node["title"].as<std::string>();
-    rhs.position = node["position"].as<ImVec2>();
-    rhs.size = node["size"].as<ImVec2>();
+    rhs->title = node["title"].as<std::string>();
+    rhs->position = node["position"].as<ImVec2>();
+    rhs->size = node["size"].as<ImVec2>();
     return true;
   }
 };
@@ -103,4 +103,5 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
 
 std::string serialize_nodes(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes);
 
+std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::string yaml);
 #endif // NODE_EDITOR_YAML_SERIALIZE_H

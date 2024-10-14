@@ -201,10 +201,12 @@ void Application::Run() {
       }
       if( ImGui::MenuItem("Load", "Ctrl+L")) {
 
-        // auto temp_dir = std::filesystem::temp_directory_path();
-        // auto save_path = temp_dir / "nodes.yaml";
-        // auto loaded_nodes = deserialize_yaml_save(save_path.string().c_str());
-
+        auto temp_dir = std::filesystem::temp_directory_path();
+        auto save_path = temp_dir / "nodes.yaml";
+        std::ifstream saved_file(save_path.string());
+        std::string content((std::istreambuf_iterator<char>(saved_file)), std::istreambuf_iterator<char>());
+        saved_file.close();
+        auto loaded_nodes = deserialize_nodes(content);
         // m_NodeManager.GetNodes().clear();
         // for(auto node : loaded_nodes) {
         //   m_NodeManager.AddNode(node);
