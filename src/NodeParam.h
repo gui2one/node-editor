@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <yaml-cpp/yaml.h>
 #include "Event.h"
 #include "EventManager.h"
 #include "utils.h"
@@ -16,6 +17,7 @@ public:
     }   
     virtual ~NodeParam() = default;	 
     virtual void Display() = 0;
+    virtual YAML::Node YAMLSerialize() = 0;
 public:
     const char* name;
     // std::string uuid = 0;
@@ -35,6 +37,12 @@ public:
 
     void Display(){
         ImGui::Text("%s -- not implemented", name);
+    }
+
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        yaml_node["value"] = "????";
+        return yaml_node;
     }
 
 public : 
@@ -68,6 +76,12 @@ public:
       }
     }
 
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        yaml_node["value"] = value;
+        return yaml_node;
+    }    
+
 public :
     std::string value;
 };
@@ -89,6 +103,12 @@ public:
         }
     }
 
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        yaml_node["value"] = value;
+        return yaml_node;
+    }    
+
 public:
     uint32_t value;
 };
@@ -109,6 +129,12 @@ public:
             EventManager::GetInstance().Dispatch(event);
         }
     }
+
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        yaml_node["value"] = value;
+        return yaml_node;
+    }    
 
 public:
     bool value;

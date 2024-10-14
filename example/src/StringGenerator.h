@@ -50,6 +50,12 @@ public:
     m_StringCache = value->Eval();
   }
 
+  YAML::Node YAMLSerialize() override {
+    YAML::Node yaml_node;
+    yaml_node["node"] = value->Eval();
+    return yaml_node;
+  }
+
   std::shared_ptr<Param<std::string>> value;
 public:
 
