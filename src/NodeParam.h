@@ -23,8 +23,7 @@ public:
 };
 
 template<typename T>
-class Param : public NodeParam
-{
+class Param : public NodeParam{
 public:
     Param(const char * _name, T _value): NodeParam(_name), value(_value){};
     ~Param(){};
@@ -78,8 +77,8 @@ public:
 
     YAML::Node YAMLSerialize() override {
         YAML::Node yaml_node;
-        yaml_node["name"] = name;
-        yaml_node["value"] = value;
+        yaml_node["name__"] = name;
+        yaml_node["value__"] = value;
         return yaml_node;
     }    
 

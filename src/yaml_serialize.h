@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 
 namespace YAML {
+
 template<>
 struct convert<ImVec2> {
   static Node encode(const ImVec2& rhs) {
@@ -54,19 +55,50 @@ struct convert<NodeEditor::ImGuiNode> {
   }
 };
 
+template<>
+struct convert<std::shared_ptr<NodeEditor::NodeParam>> {
+  static Node encode(const std::shared_ptr<NodeEditor::NodeParam>& rhs) {
+    Node node;
+    node["name"] = std::string(rhs->name);
+    // node["value"] = rhs->Eval();
+    return node;
+  }
 
+  static bool decode(const Node& node, std::shared_ptr<NodeEditor::NodeParam>& rhs) {
+    if(!node.IsMap() || node.size() != 2) {
+      return false;
+    }
+
+    rhs->name = node["name"].as<std::string>().c_str();  
+    // rhs->value = node["value"];
+    return true;
+  }
 };
 
+template<>
+struct convert<NodeEditor::ParamLayoutItem> {
+  static Node encode(const NodeEditor::ParamLayoutItem& rhs) {
+    Node node;
+    node["name"] = rhs.name;
+    node["param"] = rhs.param;
+    return node;
+  }
+
+  static bool decode(const Node& node, NodeEditor::ParamLayoutItem& rhs) {
+    if(!node.IsMap() || node.size() != 2) {
+      return false;
+    }
+
+    rhs.name = node["name"].as<std::string>();  
+    rhs.param = node["param"].as<std::shared_ptr<NodeEditor::NodeParam>>();
+    return true;
+  }
+};
+}//END namespace YAML
+
 YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec3& v);
-YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::NodeParam>& param);
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::ImGuiNode>& node);
 
-template<typename T>
-YAML::Emitter& operator << (YAML::Emitter& out, NodeEditor::Param<T>* param) {
-	out << YAML::Key <<param->name;
-  out << param->Eval();
-	return out;
-}
 
 
 std::string serialize_nodes(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes);
