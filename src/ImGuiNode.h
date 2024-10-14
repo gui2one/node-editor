@@ -58,6 +58,7 @@ struct ParamLayoutItem{
 };
 struct ParamLayout{
     std::vector<ParamLayoutItem> items;
+    ParamLayoutItem& Get(size_t idx);
 };
 
 class ImGuiNode

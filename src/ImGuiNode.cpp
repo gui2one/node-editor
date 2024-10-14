@@ -66,4 +66,9 @@ void OUTPUT_NODE::Update() {
   }
 }
 
+ParamLayoutItem& ParamLayout::Get(size_t idx) {
+
+  return items[idx];
+}
+
 }; // namespace NodeEditor
