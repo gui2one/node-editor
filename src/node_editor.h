@@ -5,6 +5,7 @@
 #include "ImGuiNode.h"
 #include "NodeParam.h"
 #include "NodeManager.h"
+#include "NodeFactory.h"
 #include "Application.h"
 
 #include "Event.h"

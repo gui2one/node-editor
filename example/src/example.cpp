@@ -7,6 +7,8 @@ using namespace NodeEditor;
 void add_example_nodes(NodeManager &manager);
 int main() {
 
+  REGISTER_NODE_TYPE(NodeEditor::StringGenerate);
+  
   Application app;
 
   if (!app.Init()) {

@@ -37,6 +37,6 @@ private:
 };
 
 #define REGISTER_NODE_TYPE(Type) \
-    NodeEditor::NodeFactoryRegistry::instance().registerType(#Type, []() -> std::shared_ptr<NodeEditor::ImGuiNode> { return std::make_shared<Type>(); })
+    NodeEditor::NodeFactoryRegistry::instance().registerType(#Type, []() -> std::shared_ptr<NodeEditor::Node<Type>> { return std::make_shared<NodeEditor::Node<Type>>("default_name"); })
 
 #endif // NODE_EDITOR_NODEFACTORY_H
