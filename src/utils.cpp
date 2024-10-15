@@ -35,4 +35,12 @@ bool str_replace_all(std::string &str, const std::string &from, const std::strin
     return replaced;
 
 }
+
+bool str_replace_last(std::string &str, const std::string &from, const std::string &to){
+    size_t pos = str.find_last_of(from);
+    if(pos == std::string::npos)
+        return false;
+    str.replace(pos, from.length(), to);
+    return true;
+}
 };

@@ -32,6 +32,8 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
     std::cout << "Deserializing type : " << type_name << std::endl;
     auto factory_node = NodeEditor::NodeFactoryRegistry::instance().create(type_name);
     factory_node->position = node["position"].as<ImVec2>();
+    factory_node->title = node["title"].as<std::string>();
+    factory_node->uuid = node["uuid"].as<std::string>();
     nodes.push_back(factory_node);
   }
   return nodes;

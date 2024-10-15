@@ -6,6 +6,20 @@
 #include "Event.h"
 #include "EventManager.h"
 #include "utils.h"
+
+#define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC \
+    YAML::Node YAMLSerialize() override {\
+        YAML::Node yaml_node;\
+        std::string type_str = typeid(*this).name();\
+        NodeEditor::str_replace_all(type_str,"class ", "");\
+        NodeEditor::str_replace(type_str,"NodeEditor::Param<", "");\
+        NodeEditor::str_replace_last(type_str,">", "");\
+        yaml_node["type"] = type_str;\
+        yaml_node["name"] = name;\
+        yaml_node["value"] = value;\
+        return yaml_node;\
+    }
+
 namespace NodeEditor {
 
 class NodeParam{
@@ -41,7 +55,7 @@ public:
         YAML::Node yaml_node;
         yaml_node["type"] = typeid(*this).name();
         yaml_node["name"] = name;
-        yaml_node["value"] = Eval();
+        yaml_node["value"] = value;
         return yaml_node;
     }
 
@@ -76,13 +90,14 @@ public:
       }
     }
 
-    YAML::Node YAMLSerialize() override {
-        YAML::Node yaml_node;
-        yaml_node["type"] = typeid(*this).name();
-        yaml_node["name__"] = name;
-        yaml_node["value__"] = value;
-        return yaml_node;
-    }    
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC;
+    // YAML::Node YAMLSerialize() override {
+    //     YAML::Node yaml_node;
+    //     yaml_node["type"] = typeid(*this).name();
+    //     yaml_node["name__"] = name;
+    //     yaml_node["value__"] = value;
+    //     return yaml_node;
+    // }    
 
 public :
     std::string value;
@@ -104,14 +119,14 @@ public:
             EventManager::GetInstance().Dispatch(event);
         }
     }
-
-    YAML::Node YAMLSerialize() override {
-        YAML::Node yaml_node;
-        yaml_node["type"] = typeid(*this).name();
-        yaml_node["name"] = name;
-        yaml_node["value"] = value;
-        return yaml_node;
-    }    
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC;
+    // YAML::Node YAMLSerialize() override {
+    //     YAML::Node yaml_node;
+    //     yaml_node["type"] = typeid(*this).name();
+    //     yaml_node["name"] = name;
+    //     yaml_node["value"] = value;
+    //     return yaml_node;
+    // }    
 
 public:
     uint32_t value;
@@ -133,14 +148,14 @@ public:
             EventManager::GetInstance().Dispatch(event);
         }
     }
-
-    YAML::Node YAMLSerialize() override {
-        YAML::Node yaml_node;
-        yaml_node["type"] = typeid(*this).name();
-        yaml_node["name"] = name;
-        yaml_node["value"] = value;
-        return yaml_node;
-    }    
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC;
+    // YAML::Node YAMLSerialize() override {
+    //     YAML::Node yaml_node;
+    //     yaml_node["type"] = typeid(*this).name();
+    //     yaml_node["name"] = name;
+    //     yaml_node["value"] = value;
+    //     return yaml_node;
+    // }    
 
 public:
     bool value;
