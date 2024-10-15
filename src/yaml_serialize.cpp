@@ -27,8 +27,10 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
   std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes;
   YAML::Node output = YAML::Load(yaml);
   for(auto node : output) {
-    std::cout << YAML::Dump(node) << std::endl;
-    
+    // std::cout << YAML::Dump(node) << std::endl;
+    std::string type_name = node["type"].as<std::string>();
+    std::cout << "Deserializing type : " << type_name << std::endl;
+
     // nodes.push_back(op);
   }
   return nodes;

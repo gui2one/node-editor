@@ -46,6 +46,7 @@ target_include_directories(imgui PUBLIC
 add_library(${PROJECT_NAME} STATIC
 
 # src/yaml_serialize.cpp
+src/NodeFactory.cpp
 src/ImGuiNode.cpp
 src/NodeParam.cpp
 src/NodeManager.cpp
