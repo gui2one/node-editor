@@ -1,5 +1,11 @@
 #include "yaml_serialize.h"
 
+YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec2& v) {
+    out << YAML::Flow;
+    out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
+    return out;
+}
+
 YAML::Emitter& operator << (YAML::Emitter& out, const glm::vec3& v) {
     out << YAML::Flow;
     out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
@@ -50,8 +56,12 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
         NodeEditor::set_param_value<unsigned int>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<unsigned int>());
         
       }else if(p_type_str == "bool") {
-        NodeEditor::set_param_value<bool>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<bool>());
+        NodeEditor::set_param_value<bool>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<bool>()); 
+      }else if(p_type_str.find("struct glm::vec<2,float,0>") != std::string::npos) {
+        NodeEditor::set_param_value<glm::vec2>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<glm::vec2>()); 
+      }else if(p_type_str.find("struct glm::vec<3,float,0>") != std::string::npos) {
         
+        NodeEditor::set_param_value<glm::vec3>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<glm::vec3>()); 
       }
       // auto type_id = typeid(factory_node->m_ParamLayout.items[inc].param).name();
       // std::cout << "Param type id : " << type_id << std::endl;

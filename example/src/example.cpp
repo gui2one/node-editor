@@ -1,6 +1,7 @@
 #include "StringGenerator.h"
 #include "node_editor.h"
 #include "params.h"
+#include "Application.h"
 
 using namespace NodeEditor;
 

@@ -3,9 +3,12 @@
 
 
 #include <yaml-cpp/yaml.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "Event.h"
 #include "EventManager.h"
 #include "utils.h"
+// #include "yaml_serialize.h"
 
 #define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC() \
     YAML::Node YAMLSerialize() override {\
@@ -33,7 +36,6 @@ public:
     virtual YAML::Node YAMLSerialize() = 0;
 public:
     const char* name;
-    // std::string uuid = 0;
 };
 
 template<typename T>
@@ -62,10 +64,53 @@ public:
 public : 
     T value;
 
-
 private:
 
 };
+
+
+template<>
+class Param<glm::vec2> : public NodeParam{
+public:
+    Param(const char * _name, glm::vec2 _value): NodeParam(_name), value(_value){};
+    ~Param(){};
+
+    glm::vec2 Eval(){
+        return value;
+    }
+
+    void Display(){
+        if(ImGui::DragFloat2(name, glm::value_ptr(value))){
+            ParamChangedEvent event;
+            EventManager::GetInstance().Dispatch(event);
+        }
+    }
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+public:
+    glm::vec2 value;
+};
+
+template<>
+class Param<glm::vec3> : public NodeParam{
+public:
+    Param(const char * _name, glm::vec3 _value): NodeParam(_name), value(_value){};
+    ~Param(){};
+
+    glm::vec3 Eval(){
+        return value;
+    }
+
+    void Display(){
+        if(ImGui::DragFloat3(name, glm::value_ptr(value))){
+            ParamChangedEvent event;
+            EventManager::GetInstance().Dispatch(event);
+        }
+    }
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+public:
+    glm::vec3 value;
+};
+
 
 template<>
 class Param<std::string> : public NodeParam{
@@ -91,13 +136,6 @@ public:
     }
 
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-    // YAML::Node YAMLSerialize() override {
-    //     YAML::Node yaml_node;
-    //     yaml_node["type"] = typeid(*this).name();
-    //     yaml_node["name__"] = name;
-    //     yaml_node["value__"] = value;
-    //     return yaml_node;
-    // }    
 
 public :
     std::string value;
@@ -119,14 +157,7 @@ public:
             EventManager::GetInstance().Dispatch(event);
         }
     }
-    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-    // YAML::Node YAMLSerialize() override {
-    //     YAML::Node yaml_node;
-    //     yaml_node["type"] = typeid(*this).name();
-    //     yaml_node["name"] = name;
-    //     yaml_node["value"] = value;
-    //     return yaml_node;
-    // }    
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();    
 
 public:
     uint32_t value;
@@ -149,18 +180,9 @@ public:
         }
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-    // YAML::Node YAMLSerialize() override {
-    //     YAML::Node yaml_node;
-    //     yaml_node["type"] = typeid(*this).name();
-    //     yaml_node["name"] = name;
-    //     yaml_node["value"] = value;
-    //     return yaml_node;
-    // }    
-
 public:
     bool value;
 };
-
 
 //utils
 template<typename T>

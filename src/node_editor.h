@@ -6,7 +6,7 @@
 #include "NodeParam.h"
 #include "NodeManager.h"
 #include "NodeFactory.h"
-#include "Application.h"
+// #include "Application.h"
 
 #include "Event.h"
 #include "EventManager.h"
