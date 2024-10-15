@@ -8,7 +8,9 @@ void add_example_nodes(NodeManager &manager);
 int main() {
 
   REGISTER_NODE_TYPE(NodeEditor::StringGenerate);
+
   
+
   Application app;
 
   if (!app.Init()) {
@@ -19,6 +21,11 @@ int main() {
   auto &manager = app.GetNodeManager();
 
   
+  auto factory_node = NodeEditor::NodeFactoryRegistry::instance().create("NodeEditor::StringGenerate");
+  factory_node->position = ImVec2(200, 0);
+  std::cout << "factory_node : " << factory_node->title << std::endl;
+
+  manager.AddNode(factory_node);
 
   add_example_nodes(manager);
 
