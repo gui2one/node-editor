@@ -5,6 +5,7 @@
 #include <yaml-cpp/yaml.h>
 #include "ImGuiNode.h"
 #include "NodeParam.h"
+#include "NodeFactory.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <glm/glm.hpp>

@@ -207,11 +207,14 @@ void Application::Run() {
         std::string content((std::istreambuf_iterator<char>(saved_file)), std::istreambuf_iterator<char>());
         saved_file.close();
         auto loaded_nodes = deserialize_nodes(content);
-        // m_NodeManager.GetNodes().clear();
-        // for(auto node : loaded_nodes) {
-        //   m_NodeManager.AddNode(node);
-        // }
-        // m_NodeManager.ViewFrameAll();
+        m_NodeManager.GetNodes().clear();
+        float x = 0.0f;
+        for(auto node : loaded_nodes) {
+          node->position = ImVec2(x, 0);
+          x += 150.0f;
+          m_NodeManager.AddNode(node);
+        }
+        m_NodeManager.ViewFrameAll();
       }
       ImGui::Separator();
       if(ImGui::MenuItem("Clear All Noes")) {

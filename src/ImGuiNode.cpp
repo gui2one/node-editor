@@ -33,7 +33,10 @@ void ImGuiNode::InitInputConnectors() {
 
 YAML::Node ImGuiNode::YAMLSerialize() { 
   YAML::Node yaml_node;
-  yaml_node["type"] = typeid(*this).name();
+  std::string type_str = typeid(*this).name();
+  str_replace_all(type_str, "class ", "");
+  yaml_node["type"] = type_str;
+  
   yaml_node["uuid"] = uuid;
   yaml_node["title"] = title;
   yaml_node["position"] = position;
