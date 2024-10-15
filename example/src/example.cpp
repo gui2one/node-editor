@@ -8,6 +8,9 @@ void add_example_nodes(NodeManager &manager);
 int main() {
 
   REGISTER_NODE_TYPE(NodeEditor::StringGenerate);
+  REGISTER_NODE_TYPE(NodeEditor::StringConcatenator);
+  REGISTER_NODE_TYPE(NodeEditor::StringRepeater);
+  REGISTER_NODE_TYPE(NodeEditor::StringNull);
 
   
 

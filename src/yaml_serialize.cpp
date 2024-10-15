@@ -30,7 +30,8 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
     // std::cout << YAML::Dump(node) << std::endl;
     std::string type_name = node["type"].as<std::string>();
     std::cout << "Deserializing type : " << type_name << std::endl;
-    auto factory_node = NodeEditor::NodeFactoryRegistry::instance().create("NodeEditor::StringGenerate");
+    auto factory_node = NodeEditor::NodeFactoryRegistry::instance().create(type_name);
+    factory_node->position = node["position"].as<ImVec2>();
     nodes.push_back(factory_node);
   }
   return nodes;

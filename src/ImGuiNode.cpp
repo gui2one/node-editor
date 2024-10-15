@@ -35,6 +35,8 @@ YAML::Node ImGuiNode::YAMLSerialize() {
   YAML::Node yaml_node;
   std::string type_str = typeid(*this).name();
   str_replace_all(type_str, "class ", "");
+  str_replace(type_str, "NodeEditor::Node<", "");
+  str_replace(type_str, ">", "");
   yaml_node["type"] = type_str;
   
   yaml_node["uuid"] = uuid;

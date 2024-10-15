@@ -210,8 +210,8 @@ void Application::Run() {
         m_NodeManager.GetNodes().clear();
         float x = 0.0f;
         for(auto node : loaded_nodes) {
-          node->position = ImVec2(x, 0);
-          x += 150.0f;
+          // node->position = ImVec2(x, 0);
+          // x += 150.0f;
           m_NodeManager.AddNode(node);
         }
         m_NodeManager.ViewFrameAll();
