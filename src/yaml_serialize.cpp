@@ -29,12 +29,60 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
   for(auto node : output) {
     // std::cout << YAML::Dump(node) << std::endl;
     std::string type_name = node["type"].as<std::string>();
-    std::cout << "Deserializing type : " << type_name << std::endl;
+    // std::cout << "Deserializing type : " << type_name << std::endl;
     auto factory_node = NodeEditor::NodeFactoryRegistry::instance().create(type_name);
     factory_node->position = node["position"].as<ImVec2>();
     factory_node->title = node["title"].as<std::string>();
     factory_node->uuid = node["uuid"].as<std::string>();
+
+    int inc = 0;
+    for(auto p_node : node["params"]) {
+      std::string p_type_str = p_node["type"].as<std::string>();
+      // std::cout << "Param Type : " << p_type_str << std::endl;
+      // std::cout << "Param name : " << p_node["name"].as<std::string>() << std::endl;
+      
+      if(p_type_str == "std::string") {
+        NodeEditor::set_param_value<std::string>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<std::string>());
+      }else if(p_type_str.find("std::basic_string") != std::string::npos) {
+        
+        NodeEditor::set_param_value<std::string>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<std::string>());
+      }else if(p_type_str == "unsigned int") {
+        NodeEditor::set_param_value<unsigned int>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<unsigned int>());
+        
+      }else if(p_type_str == "bool") {
+        NodeEditor::set_param_value<bool>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<bool>());
+        
+      }
+      // auto type_id = typeid(factory_node->m_ParamLayout.items[inc].param).name();
+      // std::cout << "Param type id : " << type_id << std::endl;
+      
+      // std::cout << p_node["name"].YAML_CONVERT(p_node["type"].as<std::string>()) << std::endl;
+      
+      // SET_PARAM_VALUE(factory_node->m_ParamLayout.items[inc].param, p_node["value"], p_node["type"].as<std::string>());
+      // factory_node->m_ParamLayout.items[inc].param
+      inc++; 
+    }
+
+
     nodes.push_back(factory_node);
+  }
+
+  // second pass to make connections
+  for(auto node : output) {
+    auto my_uuid = node["uuid"].as<std::string>();
+    auto my_self = NodeEditor::Utils::FindNodeByUUID(my_uuid, nodes);
+    if(my_self != nullptr){
+      std::cout << "Found : " << my_self->title << std::endl;
+      
+    }
+    for(size_t i=0; i< MAX_N_INPUTS; i++) {
+      auto input_uuid = node["inputs"][i].as<std::string>();
+      auto input_node = NodeEditor::Utils::FindNodeByUUID(input_uuid, nodes);
+      if(input_node != nullptr) {
+        std::cout << "Connecting : " << my_self->title << " -> " << input_node->title << "" << std::endl;
+        my_self->SetInput(i, input_node);
+      }
+    }
   }
   return nodes;
 }

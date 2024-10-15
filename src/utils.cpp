@@ -43,4 +43,16 @@ bool str_replace_last(std::string &str, const std::string &from, const std::stri
     str.replace(pos, from.length(), to);
     return true;
 }
+bool str_remove(std::string &str, const std::string &target)
+{
+    return str_replace(str, target, "");
+}
+bool str_remove_all(std::string &str, const std::string &target)
+{
+    return str_replace_all(str, target, "");
+}
+bool str_remove_last(std::string &str, const std::string &target)
+{
+    return str_replace_last(str, target, "");
+}
 };

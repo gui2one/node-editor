@@ -10,6 +10,14 @@
 #include <imgui.h>
 #include <glm/glm.hpp>
 
+#include "utils/node_manager_utils.h"
+
+#define YAML_CONVERT(type_str) \
+  as<type_str>()
+
+#define SET_PARAM_VALUE(param, value, type)\
+   set_param_value(param, value.YAML_CONVERT(type))
+
 namespace YAML {
 
 template<>

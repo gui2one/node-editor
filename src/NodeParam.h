@@ -7,13 +7,13 @@
 #include "EventManager.h"
 #include "utils.h"
 
-#define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC \
+#define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC() \
     YAML::Node YAMLSerialize() override {\
         YAML::Node yaml_node;\
         std::string type_str = typeid(*this).name();\
-        NodeEditor::str_replace_all(type_str,"class ", "");\
-        NodeEditor::str_replace(type_str,"NodeEditor::Param<", "");\
-        NodeEditor::str_replace_last(type_str,">", "");\
+        NodeEditor::str_remove_all(type_str,"class ");\
+        NodeEditor::str_remove(type_str,"NodeEditor::Param<");\
+        NodeEditor::str_remove_last(type_str,">");\
         yaml_node["type"] = type_str;\
         yaml_node["name"] = name;\
         yaml_node["value"] = value;\
@@ -90,7 +90,7 @@ public:
       }
     }
 
-    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC;
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
     // YAML::Node YAMLSerialize() override {
     //     YAML::Node yaml_node;
     //     yaml_node["type"] = typeid(*this).name();
@@ -119,7 +119,7 @@ public:
             EventManager::GetInstance().Dispatch(event);
         }
     }
-    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC;
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
     // YAML::Node YAMLSerialize() override {
     //     YAML::Node yaml_node;
     //     yaml_node["type"] = typeid(*this).name();
@@ -148,7 +148,7 @@ public:
             EventManager::GetInstance().Dispatch(event);
         }
     }
-    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC;
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
     // YAML::Node YAMLSerialize() override {
     //     YAML::Node yaml_node;
     //     yaml_node["type"] = typeid(*this).name();
