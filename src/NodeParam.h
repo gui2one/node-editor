@@ -39,6 +39,7 @@ public:
 
     YAML::Node YAMLSerialize() override {
         YAML::Node yaml_node;
+        yaml_node["type"] = typeid(*this).name();
         yaml_node["name"] = name;
         yaml_node["value"] = Eval();
         return yaml_node;
@@ -77,6 +78,7 @@ public:
 
     YAML::Node YAMLSerialize() override {
         YAML::Node yaml_node;
+        yaml_node["type"] = typeid(*this).name();
         yaml_node["name__"] = name;
         yaml_node["value__"] = value;
         return yaml_node;
@@ -105,6 +107,7 @@ public:
 
     YAML::Node YAMLSerialize() override {
         YAML::Node yaml_node;
+        yaml_node["type"] = typeid(*this).name();
         yaml_node["name"] = name;
         yaml_node["value"] = value;
         return yaml_node;
@@ -133,6 +136,7 @@ public:
 
     YAML::Node YAMLSerialize() override {
         YAML::Node yaml_node;
+        yaml_node["type"] = typeid(*this).name();
         yaml_node["name"] = name;
         yaml_node["value"] = value;
         return yaml_node;
