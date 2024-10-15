@@ -23,7 +23,7 @@ struct ConnectionProcedure{
 struct ViewProperties{
     bool display_grid = true;
     bool nodes_menu_opened = false;
-    bool show_mouse_coords = true;
+    bool show_mouse_coords = false;
     ImVec2 scrolling;
 
     float zoom = 1.0f;

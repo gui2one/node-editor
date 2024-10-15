@@ -81,17 +81,18 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
   for(auto node : output) {
     auto my_uuid = node["uuid"].as<std::string>();
     auto my_self = NodeEditor::Utils::FindNodeByUUID(my_uuid, nodes);
-    if(my_self != nullptr){
-      std::cout << "Found : " << my_self->title << std::endl;
-      
-    }
+    
+    if(my_self == nullptr) continue;
+    
     for(size_t i=0; i< MAX_N_INPUTS; i++) {
       auto input_uuid = node["inputs"][i].as<std::string>();
       auto input_node = NodeEditor::Utils::FindNodeByUUID(input_uuid, nodes);
-      if(input_node != nullptr) {
-        std::cout << "Connecting : " << my_self->title << " -> " << input_node->title << "" << std::endl;
-        my_self->SetInput((uint32_t)i, input_node);
-      }
+
+      if(input_node == nullptr) continue;
+
+      std::cout << "Connecting : " << my_self->title << " -> " << input_node->title << "" << std::endl;
+      my_self->SetInput((uint32_t)i, input_node);
+
     }
   }
   return nodes;
