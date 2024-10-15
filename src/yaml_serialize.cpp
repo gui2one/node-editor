@@ -90,7 +90,7 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
       auto input_node = NodeEditor::Utils::FindNodeByUUID(input_uuid, nodes);
       if(input_node != nullptr) {
         std::cout << "Connecting : " << my_self->title << " -> " << input_node->title << "" << std::endl;
-        my_self->SetInput(i, input_node);
+        my_self->SetInput((uint32_t)i, input_node);
       }
     }
   }

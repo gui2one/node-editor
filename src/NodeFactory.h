@@ -3,12 +3,13 @@
 #pragma once
 
 #include <unordered_map>
-// #include <memory>
-// #include <functional>
-// #include <string>
 #include "ImGuiNode.h"
 
 namespace NodeEditor {
+struct NodeFactoryRegistryItem{
+    std::string category_name;
+    std::function<std::shared_ptr<ImGuiNode>()> factory_func;
+};
 // Registry to hold factories
 class NodeFactoryRegistry {
 public:
@@ -19,24 +20,27 @@ public:
         return registry;
     }
 
-    void registerType(const std::string& typeName, FactoryFunc factory) {
-        factories[typeName] = factory;
+    void registerType(const std::string& typeName, NodeFactoryRegistryItem item) {
+        factories[typeName] = item;
     }
 
     std::shared_ptr<ImGuiNode> create(const std::string& typeName) const {
         auto it = factories.find(typeName);
         if (it != factories.end()) {
-            return it->second();
+            return it->second.factory_func();
         }
         return nullptr; // Type not found
     }
 
 private:
-    std::unordered_map<std::string, FactoryFunc> factories;
+    std::unordered_map<std::string, NodeFactoryRegistryItem> factories;
 };
 };
 
-#define REGISTER_NODE_TYPE(Type) \
-    NodeEditor::NodeFactoryRegistry::instance().registerType(#Type, []() -> std::shared_ptr<NodeEditor::Node<Type>> { return std::make_shared<NodeEditor::Node<Type>>("factory_node"); })
+#define REGISTER_NODE_TYPE(Category, Type) \
+    NodeEditor::NodeFactoryRegistry::instance().registerType(#Type, { \
+        Category,\
+    []() -> std::shared_ptr<NodeEditor::Node<Type>> { return std::make_shared<NodeEditor::Node<Type>>("factory_node"); }\
+    })
 
 #endif // NODE_EDITOR_NODEFACTORY_H
