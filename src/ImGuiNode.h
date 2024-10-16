@@ -82,6 +82,11 @@ public:
     inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
     InputConnector *GetInputConnector(uint32_t index);
 
+    inline size_t GetMultiInputCount() { return m_MultiInput.size(); }
+    inline std::shared_ptr<ImGuiNode> GetMultiInput(size_t index) { return m_MultiInput[index]; }
+    inline void ActivateMultiInput() { m_IsMultiInput = true; }
+    inline bool IsMultiInput() { return m_IsMultiInput; }
+
 protected:
     inline void SetNumAvailableInputs(uint32_t num)
     {
@@ -111,9 +116,11 @@ public:
 
 private:
     uint32_t m_NumAvailableInputs = 1;
+    bool m_IsMultiInput = false;
 
 private:
     std::array<std::shared_ptr<ImGuiNode>, MAX_N_INPUTS> inputs = {nullptr, nullptr, nullptr, nullptr};
+    std::vector<std::shared_ptr<ImGuiNode>> m_MultiInput;
     std::vector<InputConnector> m_InputConnectors;
 };
 
@@ -142,13 +149,26 @@ public:
   void Update() {
     auto node = static_cast<ImGuiNode *>(this);
     auto op = static_cast<T *>(this);
-    for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
-      if (node->GetInput(i) != nullptr) {
-        node->GetInput(i)->Update(); /* Important !!*/
-        // auto opinput = static_cast<T *>(node->GetInput(i).get());
-        // op->SetInput(i, node->GetInput(i));
-        // opinput->Generate();
-      }
+    if(!node->IsMultiInput()) {
+        
+        for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
+        if (node->GetInput(i) != nullptr) {
+            node->GetInput(i)->Update(); /* Important !!*/
+            // auto opinput = static_cast<T *>(node->GetInput(i).get());
+            // op->SetInput(i, node->GetInput(i));
+            // opinput->Generate();
+        }
+        }
+    }else{
+        for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
+        if (node->GetInput(i) != nullptr) {
+            node->GetMultiInput(i)->Update(); /* Important !!*/
+            // auto opinput = static_cast<T *>(node->GetInput(i).get());
+            // op->SetInput(i, node->GetInput(i));
+            // opinput->Generate();
+        }
+        }
+
     }
     op->Generate();
   }

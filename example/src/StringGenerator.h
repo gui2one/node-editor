@@ -96,6 +96,39 @@ public:
 public:
   std::shared_ptr<Param<bool>> add_separator_param;
 };
+
+class StringConcatenatorMulti : public StringModifier {
+public:
+  StringConcatenatorMulti() : StringModifier() { 
+    SetNumAvailableInputs(0);
+    ActivateMultiInput(); 
+    add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
+    m_ParamLayout.items = { {"Separator", add_separator_param} };  
+  }
+  ~StringConcatenatorMulti() {};
+
+  void Generate() override {
+    for(size_t i = 0; i < GetMultiInputCount(); i++){
+      if (GetMultiInput(i) != nullptr) {
+        auto op0 = static_cast<StringOperator *>(GetMultiInput(i).get());
+        m_StringCache += op0->m_StringCache;
+      }
+    }
+    // if (GetInput(0) != nullptr && GetInput(1) != nullptr) {
+    //   auto op0 = static_cast<StringOperator *>(GetInput(0).get());
+    //   auto op1 = static_cast<StringOperator *>(GetInput(1).get());
+    //   if(add_separator_param->Eval()){
+    //     m_StringCache = op0->m_StringCache + " " + op1->m_StringCache;
+    //   }else{
+
+    //     m_StringCache = op0->m_StringCache + op1->m_StringCache;
+    //   }
+    // }
+  }
+
+public:
+  std::shared_ptr<Param<bool>> add_separator_param;
+};
 class StringRepeater : public StringModifier {
 public:
   StringRepeater():StringModifier() {
