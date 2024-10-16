@@ -173,7 +173,8 @@ void Application::ImGuiEndFrame() {
 
 void Application::Run() {
   while (!glfwWindowShouldClose(m_NativeWindow)) {
-    glfwPollEvents();
+    // glfwPollEvents();
+    glfwWaitEvents();
     ImGuiBeginFrame();
 
     glClearColor(0.f, 0.f, 0.f, 1.f);

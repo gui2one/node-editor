@@ -50,7 +50,6 @@ public:
     inline const std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() const { return nodes; }
     std::shared_ptr<ImGuiNode> FindNodeByUUID(std::string uuid);
 
-    void SetNodesMenu(std::function<void()> func);
     void DisplayNodeParams(std::shared_ptr<ImGuiNode> node);
     void DrawNodes();
     void DrawCanvas();
@@ -81,6 +80,9 @@ public:
 
     inline void SetFonts(ImFont* _regular, ImFont* _bold) { m_RegularFont = _regular; m_BoldFont = _bold; }
 
+private:
+    void SetNodesMenu(std::function<void()> func);
+    void BuildNodeMenuFromRegistry();
 public:
     ViewProperties m_ViewProps;
     std::shared_ptr<ImGuiNode> m_CurrentNode = nullptr;

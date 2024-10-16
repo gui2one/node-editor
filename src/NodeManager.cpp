@@ -4,18 +4,7 @@
 namespace NodeEditor {
 NodeManager::NodeManager() {
   SetNodesMenu([this]() {
-    static NodeFactoryRegistry& registry = NodeFactoryRegistry::instance();
-    for(auto& factory : registry.getFactories()) {
-      if (ImGui::MenuItem(factory.first.c_str(), NULL, false, true)) {
-      auto node = registry.create(factory.first.c_str());
-      double x,y;
-      glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
-
-      node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
-      this->AddNode(node);
-    }
-    }
-
+      this->BuildNodeMenuFromRegistry();
   });
 }
 
@@ -33,6 +22,20 @@ std::shared_ptr<ImGuiNode> NodeManager::FindNodeByUUID(std::string uuid)
 
 void NodeManager::SetNodesMenu(std::function<void()> func) {
   m_NodesMenu = func;
+}
+
+void NodeManager::BuildNodeMenuFromRegistry() {
+    static NodeFactoryRegistry& registry = NodeFactoryRegistry::instance();
+    for(auto& factory : registry.getFactories()) {
+      if (ImGui::MenuItem(factory.second.label.c_str(), NULL, false, true)) {
+      auto node = registry.create(factory.first.c_str());
+      double x,y;
+      glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
+
+      node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
+      this->AddNode(node);
+    }
+    }  
 }
 
 void NodeManager::DrawNodes() {
