@@ -23,6 +23,11 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
     std::string type_name = node["type"].as<std::string>();
 
     auto factory_node = NodeEditor::NodeFactoryRegistry::instance().create(type_name);
+    if(factory_node == nullptr) {
+      std::cout << "Unabled to create type: " << type_name << "" << std::endl;
+      
+      continue;
+    }
     factory_node->position = node["position"].as<ImVec2>();
     factory_node->title = node["title"].as<std::string>();
     factory_node->uuid = node["uuid"].as<std::string>();
