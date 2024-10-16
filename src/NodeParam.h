@@ -38,6 +38,48 @@ public:
     const char* name;
 };
 
+class ParamSeparator : public NodeParam{
+public:
+    ParamSeparator(const char * _name): NodeParam(_name){};
+    ~ParamSeparator(){};
+    void Display(){
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+    }
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        std::string type_str = typeid(*this).name();
+        str_remove_all(type_str,"class ");\
+        str_remove(type_str,"NodeEditor::");\
+        yaml_node["type"] = type_str;
+        yaml_node["name"] = name;
+        yaml_node["value"] = "null";
+        return yaml_node;
+    }
+};
+
+class ParamLabel : public NodeParam{
+public:
+    ParamLabel(const char * _name): NodeParam(_name){};
+    ~ParamLabel(){};
+    void Display(){
+        ImGui::Spacing();
+        ImGui::Text("%s", name);
+        ImGui::Spacing();
+    }
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        std::string type_str = typeid(*this).name();
+        str_remove_all(type_str,"class ");\
+        str_remove(type_str,"NodeEditor::");\
+        yaml_node["type"] = type_str;
+        yaml_node["name"] = name;
+        yaml_node["value"] = "null";
+        return yaml_node;
+    }
+};
+
 template<typename T>
 class Param : public NodeParam{
 public:

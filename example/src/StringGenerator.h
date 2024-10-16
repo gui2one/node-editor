@@ -103,6 +103,8 @@ public:
     count = std::make_shared<Param<uint32_t>>("Count", 10);
     m_ParamLayout.items = { 
       {"count", count},
+      {"label", std::make_shared<ParamLabel>("Mega Label !")},
+      {"sep", std::make_shared<ParamSeparator>("----------")},
       {"fake_position", std::make_shared<Param<glm::vec3>>("Fake", glm::vec3(0.0f))},
       {"fake_position2D", std::make_shared<Param<glm::vec2>>("Fake 2", glm::vec2(0.0f))}
       };
