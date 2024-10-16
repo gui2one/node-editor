@@ -26,16 +26,39 @@ void NodeManager::SetNodesMenu(std::function<void()> func) {
 
 void NodeManager::BuildNodeMenuFromRegistry() {
     static NodeFactoryRegistry& registry = NodeFactoryRegistry::instance();
-    for(auto& factory : registry.getFactories()) {
-      if (ImGui::MenuItem(factory.second.label.c_str(), NULL, false, true)) {
-      auto node = registry.create(factory.first.c_str());
-      double x,y;
-      glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
 
-      node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
-      this->AddNode(node);
+    std::unordered_map<std::string, std::vector<NodeFactoryRegistryItem>> whole_thing;
+    // collect items by category
+    for(auto& factory : registry.getFactories()) {
+      whole_thing[factory.second.category_name].push_back(factory.second);
     }
-    }  
+
+    for(auto& [category_name, items] : whole_thing) {
+      if (ImGui::BeginMenu(category_name.c_str())){
+        for(auto& item : items) {
+          if (ImGui::MenuItem(item.label.c_str(), NULL, false, true)) {
+              auto node = registry.create(item.type_name.c_str());
+              double x,y;
+              glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
+              node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
+              this->AddNode(node);              
+          }
+        }
+
+        ImGui::EndMenu();
+      }
+    }
+
+    // for(auto& factory : registry.getFactories()) {
+    //   if (ImGui::MenuItem(factory.second.label.c_str(), NULL, false, true)) {
+    //   auto node = registry.create(factory.first.c_str());
+    //   double x,y;
+    //   glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
+
+    //   node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
+    //   this->AddNode(node);
+    // }
+    // }  
 }
 
 void NodeManager::DrawNodes() {

@@ -9,6 +9,7 @@ namespace NodeEditor {
 struct NodeFactoryRegistryItem{
     std::string category_name;
     std::string label;
+    std::string type_name;
     std::function<std::shared_ptr<ImGuiNode>()> factory_func;
 };
 // Registry to hold factories
@@ -44,7 +45,7 @@ private:
 
 #define REGISTER_NODE_TYPE(Type, Label, Category) \
     NodeEditor::NodeFactoryRegistry::instance().registerType(#Type, { \
-        Category, Label, \
+        Category, Label, #Type,\
     []() -> std::shared_ptr<NodeEditor::Node<Type>> { return std::make_shared<NodeEditor::Node<Type>>("default name"); }\
     })
 
