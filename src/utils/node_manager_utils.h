@@ -3,6 +3,10 @@
 #pragma once
 #include "ImGuiNode.h"
 namespace NodeEditor::Utils{
-    std::shared_ptr<NodeEditor::ImGuiNode> FindNodeByUUID(std::string uuid, std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes);
+    
+    std::shared_ptr<NodeEditor::ImGuiNode> 
+    FindNodeByUUID(std::string uuid, std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes);
+    
+    ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>> nodes);
 };
 #endif // NODE_EDITOR_NODE_MANAGER_UTILS_H

@@ -48,17 +48,6 @@ void NodeManager::BuildNodeMenuFromRegistry() {
         ImGui::EndMenu();
       }
     }
-
-    // for(auto& factory : registry.getFactories()) {
-    //   if (ImGui::MenuItem(factory.second.label.c_str(), NULL, false, true)) {
-    //   auto node = registry.create(factory.first.c_str());
-    //   double x,y;
-    //   glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
-
-    //   node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
-    //   this->AddNode(node);
-    // }
-    // }  
 }
 
 void NodeManager::DrawNodes() {
@@ -103,7 +92,6 @@ void NodeManager::DrawNodes() {
     ImVec2 p0 = ToScreenSpace(connector_pos);
     double x, y;
     glfwGetCursorPos(m_GLFWWindow, &x, &y);
-    // std::cout << x << " " << y  << std::endl;
     ImVec2 cursor_pos = ImVec2((float)x, (float)y);
     ImVec2 p1 = cursor_pos;
     draw_list->AddBezierCubic(p0, p0 - ImVec2(0, 100), p1 + ImVec2(0, 100), p1,
@@ -242,28 +230,6 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node) {
   }
 
   ImGui::End();
-}
-
-ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>> nodes) {
-  if (nodes.size() == 0)
-    return ImVec2(0, 0);
-  float minx = 999999999.f, miny = 999999999.f, maxx = -999999999.f,
-        maxy = -999999999.f;
-
-  for (auto node : nodes) {
-    if (node->position.x < minx)
-      minx = node->position.x;
-    if (node->position.y < miny)
-      miny = node->position.y;
-    if (node->position.x > maxx)
-      maxx = node->position.x;
-    if (node->position.y > maxy)
-      maxy = node->position.y;
-  }
-  float centerx, centery;
-  centerx = (minx + maxx) / 2.0f + nodes[0]->size.x / 2.0f;
-  centery = (miny + maxy) / 2.0f + nodes[0]->size.y / 2.0f;
-  return ImVec2(centerx, centery);
 }
 
 void NodeManager::Evaluate() {
@@ -509,7 +475,7 @@ void NodeManager::OnKeyPress(const Event &event) {
 }
 
 void NodeManager::ViewFrameAll() {
-  ImVec2 center = get_nodes_center(nodes);
+  ImVec2 center = Utils::get_nodes_center(nodes);
   m_ViewProps.scrolling = -center + m_ViewProps.canvasSize / 2.0f;
 }
 
