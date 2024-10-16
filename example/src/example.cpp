@@ -13,8 +13,6 @@ int main() {
   REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringNull, "null node","utility");
 
-  
-
   Application app;
 
   if (!app.Init()) {
@@ -24,23 +22,8 @@ int main() {
 
   auto &manager = app.GetNodeManager();
 
-  
-  auto factory_node = NodeEditor::NodeFactoryRegistry::instance().create("NodeEditor::StringGenerate");
-  factory_node->position = ImVec2(200, 0);
-  std::cout << "factory_node : " << factory_node->title << std::endl;
-
-  manager.AddNode(factory_node);
-
   add_example_nodes(manager);
 
-  // serialize_nodes(manager.GetNodes());
-
-  // manager.SetNodesMenu([&manager]() {
-  //   node_menu_item<Node<StringGenerate>>(manager, "Generator");
-  //   node_menu_item<Node<StringConcatenator>>(manager, "Concatenate");
-  //   node_menu_item<Node<StringRepeater>>(manager, "Repeater");
-  //   node_menu_item<Node<StringNull>>(manager, "Null");
-  // });
   static EventDispatcher& dispatcher = EventManager::GetInstance();
   dispatcher.Subscribe(
       EventType::NodeConnection, [&app](const Event &event) {

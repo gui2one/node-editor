@@ -44,8 +44,6 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
     int inc = 0;
     for(auto p_node : node["params"]) {
       std::string p_type_str = p_node["type"].as<std::string>();
-      // std::cout << "Param Type : " << p_type_str << std::endl;
-      // std::cout << "Param name : " << p_node["name"].as<std::string>() << std::endl;
       
       if(p_type_str == "std::string") {
         NodeEditor::set_param_value<std::string>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<std::string>());
@@ -63,13 +61,6 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
         
         NodeEditor::set_param_value<glm::vec3>(factory_node->m_ParamLayout.items[inc].param, p_node["value"].as<glm::vec3>()); 
       }
-      // auto type_id = typeid(factory_node->m_ParamLayout.items[inc].param).name();
-      // std::cout << "Param type id : " << type_id << std::endl;
-      
-      // std::cout << p_node["name"].YAML_CONVERT(p_node["type"].as<std::string>()) << std::endl;
-      
-      // SET_PARAM_VALUE(factory_node->m_ParamLayout.items[inc].param, p_node["value"], p_node["type"].as<std::string>());
-      // factory_node->m_ParamLayout.items[inc].param
       inc++; 
     }
 
@@ -90,7 +81,6 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
 
       if(input_node == nullptr) continue;
 
-      std::cout << "Connecting : " << my_self->title << " -> " << input_node->title << "" << std::endl;
       my_self->SetInput((uint32_t)i, input_node);
 
     }
