@@ -41,8 +41,10 @@ int main() {
       EventType::ManagerUpdate, [&app](const Event &event) {
         auto &manager = app.GetNodeManager();
         manager.Evaluate();
-        auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
-        std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
+        if(manager.GetOutputNode() != nullptr){
+          auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
+          std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
+        }
 
       });
 

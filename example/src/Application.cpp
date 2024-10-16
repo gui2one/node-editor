@@ -209,6 +209,7 @@ void Application::Run() {
         saved_file.close();
         auto loaded_nodes = deserialize_nodes(content);
         m_NodeManager.GetNodes().clear();
+        m_NodeManager.UnsetOutputNode();
         float x = 0.0f;
         for(auto node : loaded_nodes) {
           // node->position = ImVec2(x, 0);

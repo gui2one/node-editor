@@ -58,6 +58,7 @@ public:
     inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 
     void SetOutputNode(std::shared_ptr<ImGuiNode> node);
+    inline void UnsetOutputNode() { m_OutputNode = nullptr; };
     std::shared_ptr<ImGuiNode> GetOutputNode() { return m_OutputNode; }
 
 
