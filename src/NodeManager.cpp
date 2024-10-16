@@ -130,6 +130,15 @@ void NodeManager::DrawNodes() {
       }
     }
 
+    if(node->IsMultiInput()) {
+        ImVec2 p_left = ToScreenSpace(node->position + ImVec2(node->size.x * 0.1f, 2));
+        ImVec2 p_right = ToScreenSpace(node->position + ImVec2(node->size.x - node->size.x * 0.1f, 2));
+        
+        // draw_list->AddCircleFilled(p_left + ImVec2(0, -2.5f), 5.0f * m_ViewProps.zoom, NODE_COLOR::PINK);
+        // draw_list->AddCircleFilled(p_right+ ImVec2(0, -2.5f), 5.0f * m_ViewProps.zoom, NODE_COLOR::PINK);
+        draw_list->AddRectFilled(p_left - ImVec2(0, 10.0f), p_right, NODE_COLOR::WHITE, 5.0f);
+    }
+
     // output 'connector'
     ImVec2 cp = node->position + ImVec2(node->size.x / 2.0f, node->size.y);
     cp = ToScreenSpace(cp);

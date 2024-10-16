@@ -62,7 +62,7 @@ int main() {
 void add_example_nodes(NodeManager &manager) {
 
   auto hello_node = std::make_shared<Node<StringGenerate>>("Hello");
-  hello_node->position = ImVec2(0, 0);
+  hello_node->position = ImVec2(550, 300);
   manager.AddNode(hello_node);
 
   auto world_node = std::make_shared<Node<StringGenerate>>("World");
