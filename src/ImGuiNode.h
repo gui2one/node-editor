@@ -145,9 +145,9 @@ public:
     for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
       if (node->GetInput(i) != nullptr) {
         node->GetInput(i)->Update(); /* Important !!*/
-        auto opinput = static_cast<T *>(node->GetInput(i).get());
-        op->SetInput(i, node->GetInput(i));
-        opinput->Generate();
+        // auto opinput = static_cast<T *>(node->GetInput(i).get());
+        // op->SetInput(i, node->GetInput(i));
+        // opinput->Generate();
       }
     }
     op->Generate();

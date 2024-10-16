@@ -1,14 +1,12 @@
 #ifndef NODEPARAM_H
 #define NODEPARAM_H
 
-
 #include <yaml-cpp/yaml.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Event.h"
 #include "EventManager.h"
 #include "utils.h"
-// #include "yaml_serialize.h"
 
 #define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC() \
     YAML::Node YAMLSerialize() override {\
