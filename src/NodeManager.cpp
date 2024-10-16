@@ -2,7 +2,22 @@
 #include "NodeParam.h"
 // #include "Application.h"
 namespace NodeEditor {
-NodeManager::NodeManager() {}
+NodeManager::NodeManager() {
+  SetNodesMenu([this]() {
+    static NodeFactoryRegistry& registry = NodeFactoryRegistry::instance();
+    for(auto& factory : registry.getFactories()) {
+      if (ImGui::MenuItem(factory.first.c_str(), NULL, false, true)) {
+      auto node = registry.create(factory.first.c_str());
+      double x,y;
+      glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
+
+      node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
+      this->AddNode(node);
+    }
+    }
+
+  });
+}
 
 NodeManager::~NodeManager() {}
 

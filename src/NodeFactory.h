@@ -32,6 +32,10 @@ public:
         return nullptr; // Type not found
     }
 
+    inline std::unordered_map<std::string, NodeFactoryRegistryItem> getFactories() const {
+        return factories;
+    }
+
 private:
     std::unordered_map<std::string, NodeFactoryRegistryItem> factories;
 };

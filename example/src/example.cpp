@@ -33,14 +33,14 @@ int main() {
 
   add_example_nodes(manager);
 
-  serialize_nodes(manager.GetNodes());
+  // serialize_nodes(manager.GetNodes());
 
-  manager.SetNodesMenu([&manager]() {
-    node_menu_item<Node<StringGenerate>>(manager, "Generator");
-    node_menu_item<Node<StringConcatenator>>(manager, "Concatenate");
-    node_menu_item<Node<StringRepeater>>(manager, "Repeater");
-    node_menu_item<Node<StringNull>>(manager, "Null");
-  });
+  // manager.SetNodesMenu([&manager]() {
+  //   node_menu_item<Node<StringGenerate>>(manager, "Generator");
+  //   node_menu_item<Node<StringConcatenator>>(manager, "Concatenate");
+  //   node_menu_item<Node<StringRepeater>>(manager, "Repeater");
+  //   node_menu_item<Node<StringNull>>(manager, "Null");
+  // });
   static EventDispatcher& dispatcher = EventManager::GetInstance();
   dispatcher.Subscribe(
       EventType::NodeConnection, [&app](const Event &event) {
