@@ -41,6 +41,8 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
         NodeEditor::set_param_value<std::string>(param, p_node["value"].as<std::string>());
       }else if(p_type_str == "unsigned int") {
         NodeEditor::set_param_value<unsigned int>(param, p_node["value"].as<unsigned int>());
+      }else if(p_type_str == "float") {
+        NodeEditor::set_param_value<float>(param, p_node["value"].as<float>());
       }else if(p_type_str == "bool") {
         NodeEditor::set_param_value<bool>(param, p_node["value"].as<bool>()); 
       }else if(p_type_str.find("struct glm::vec<2,float,0>") != std::string::npos) {
