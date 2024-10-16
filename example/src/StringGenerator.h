@@ -108,6 +108,7 @@ public:
   ~StringConcatenatorMulti() {};
 
   void Generate() override {
+    m_StringCache = "";
     for(size_t i = 0; i < GetMultiInputCount(); i++){
       if (GetMultiInput(i) != nullptr) {
         auto op0 = static_cast<StringOperator *>(GetMultiInput(i).get());

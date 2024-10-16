@@ -10,6 +10,7 @@ int main() {
 
   REGISTER_NODE_TYPE(NodeEditor::StringGenerate,"generate","generator");
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenator, "concatenator", "modifier");
+  REGISTER_NODE_TYPE(NodeEditor::StringConcatenatorMulti, "concatmulti", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringNull, "null node","utility");
 
@@ -96,6 +97,14 @@ void add_example_nodes(NodeManager &manager) {
   output_node->position = ImVec2(650, 600);
   output_node->SetInput(0, concat_node2);
   manager.AddNode(output_node);
+
+
+  auto concat_multi_node = std::make_shared<Node<StringConcatenatorMulti>>("ConcatenatorMulti");
+  concat_multi_node->position = ImVec2(650, 700);
+  concat_multi_node->AppendInput(hello_node);
+  concat_multi_node->AppendInput(world_node);
+  concat_multi_node->AppendInput(excla_node);
+  manager.AddNode(concat_multi_node);
 
   manager.SetOutputNode(output_node);
 }

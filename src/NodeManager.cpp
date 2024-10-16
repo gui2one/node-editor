@@ -82,6 +82,25 @@ void NodeManager::DrawNodes() {
             2.0f); // ImDrawList API uses screen coordinates()
       }
     }
+
+    // for multi input
+    for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
+
+      if (ptr->GetMultiInput(i) != nullptr) {
+        auto other = ptr->GetMultiInput(i);
+        // auto input_conn = ptr->GetInputConnector(i);
+        ImVec2 p0 = ToScreenSpace(node->position + ImVec2(0,-15));
+        ImVec2 other_pos = ToScreenSpace(other->position + ImVec2(other->size.x / 2.0f, other->size.y));
+
+        float y_sep = other_pos.y - p0.y;
+        ImVec2 ctrl1 = p0 + ImVec2(0, y_sep);
+        ImVec2 ctrl2 = other_pos - ImVec2(0, y_sep);
+
+        draw_list->AddBezierCubic(
+            p0, ctrl1, ctrl2, other_pos, NODE_COLOR::GREY,
+            2.0f); // ImDrawList API uses screen coordinates()
+      }
+    }    
   }
 
   if (m_ConnectionProcedure.started) {
