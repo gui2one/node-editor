@@ -46,7 +46,7 @@ private:
 #define REGISTER_NODE_TYPE(Type, Label, Category) \
     NodeEditor::NodeFactoryRegistry::instance().registerType(#Type, { \
         Category, Label, #Type,\
-    []() -> std::shared_ptr<NodeEditor::Node<Type>> { return std::make_shared<NodeEditor::Node<Type>>("default name"); }\
+    []() -> std::shared_ptr<NodeEditor::Node<Type>> { return std::make_shared<NodeEditor::Node<Type>>(Label); }\
     })
 
 
