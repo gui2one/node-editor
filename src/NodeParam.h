@@ -66,7 +66,6 @@ public:
     void Display(){
         ImGui::Spacing();
         ImGui::Text("%s", name);
-        ImGui::Spacing();
     }
     YAML::Node YAMLSerialize() override {
         YAML::Node yaml_node;
