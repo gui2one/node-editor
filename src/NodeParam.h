@@ -162,6 +162,28 @@ public:
 public:
     uint32_t value;
 };
+template<>
+
+class Param<float> : public NodeParam{
+public:
+    Param(const char * _name, float _value): NodeParam(_name), value(_value){};
+    ~Param(){};
+
+    float Eval(){
+        return value;
+    }
+
+    void Display(){
+        if(ImGui::SliderFloat(name, &value, 0, 100)){
+            ParamChangedEvent event;
+            EventManager::GetInstance().Dispatch(event);
+        }
+    }
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();    
+
+public:
+    float value;
+};
 
 template<>
 class Param<bool> : public NodeParam{
