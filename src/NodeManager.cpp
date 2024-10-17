@@ -84,12 +84,14 @@ void NodeManager::DrawNodes() {
     }
 
     // for multi input
+
+    float step_size = (node->size.x * 0.8f) / node->GetMultiInputCount();
+    ImVec2 start_x = node->position + ImVec2((node->size.x * 0.2f),-8.0f);
     for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
 
       if (ptr->GetMultiInput(i) != nullptr) {
         auto other = ptr->GetMultiInput(i);
-        // auto input_conn = ptr->GetInputConnector(i);
-        ImVec2 p0 = ToScreenSpace(node->position + ImVec2(0,-15));
+        ImVec2 p0 = ToScreenSpace(start_x + ImVec2(step_size * i, 0));
         ImVec2 other_pos = ToScreenSpace(other->position + ImVec2(other->size.x / 2.0f, other->size.y));
 
         float y_sep = other_pos.y - p0.y;
