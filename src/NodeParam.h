@@ -83,11 +83,12 @@ public:
     ~ParamComboBox(){};
     void Display(){
         ImGui::Spacing();
-        ImGui::Text("%i -- COMBO_BOX NOT implemented yet ...", value);
+        ImGui::Combo(name, &value, choices.data(), static_cast<int>(choices.size()));
     }
 
     inline int GetChoice() { return value; }
     inline void SetChoice(int choice) { value = choice; }
+    inline void SetChoices(std::vector<const char*> _choices) { choices = _choices; }
 
     YAML::Node YAMLSerialize() override {
         YAML::Node yaml_node;
@@ -102,6 +103,7 @@ public:
 
 public : 
     int value = 42;
+    std::vector<const char*> choices = {"first", "second", "third"};
 };
 
 template<typename T>

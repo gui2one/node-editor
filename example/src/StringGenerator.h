@@ -104,6 +104,7 @@ public:
     ActivateMultiInput(); 
     add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
     auto combo_test = std::make_shared<ParamComboBox>("Combo Test");
+    combo_test->SetChoices({"A", "B", "C"});
     m_ParamLayout.items = { 
       {"Separator", add_separator_param}, 
       {"Combo", combo_test}  
