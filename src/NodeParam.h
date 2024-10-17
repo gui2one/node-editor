@@ -21,6 +21,13 @@
         return yaml_node;\
     }
 
+#define DISPATCH_PARAM_CHANGE_EVENT() \
+    ParamChangedEvent event;\
+    EventManager::GetInstance().Dispatch(event);
+#define DISPATCH_EDITOR_UPDATE_EVENT() \
+    ManagerUpdateEvent event;\
+    EventManager::GetInstance().Dispatch(event);
+
 namespace NodeEditor {
 
 class NodeParam{
@@ -83,7 +90,10 @@ public:
     ~ParamComboBox(){};
     void Display(){
         ImGui::Spacing();
-        ImGui::Combo(name, &value, choices.data(), static_cast<int>(choices.size()));
+        if(ImGui::Combo(name, &value, choices.data(), static_cast<int>(choices.size()))){
+            // DISPATCH_PARAM_CHANGE_EVENT();
+            DISPATCH_EDITOR_UPDATE_EVENT();
+        }
     }
 
     inline int GetChoice() { return value; }
@@ -170,8 +180,7 @@ public:
 
     void Display(){
         if(ImGui::DragFloat3(name, glm::value_ptr(value))){
-            ParamChangedEvent event;
-            EventManager::GetInstance().Dispatch(event);
+            DISPATCH_PARAM_CHANGE_EVENT();
         }
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
@@ -198,8 +207,7 @@ public:
       if (ImGui::InputText(name, buffer, 2048)) {
 
         value = std::string(buffer);
-        ParamChangedEvent event;
-        EventManager::GetInstance().Dispatch(event);
+        DISPATCH_PARAM_CHANGE_EVENT();
       }
     }
 
@@ -221,8 +229,7 @@ public:
 
     void Display(){
         if(ImGui::SliderInt(name, (int *)&value, 0, 100)){
-            ParamChangedEvent event;
-            EventManager::GetInstance().Dispatch(event);
+            DISPATCH_PARAM_CHANGE_EVENT();
         }
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();    
@@ -243,8 +250,7 @@ public:
 
     void Display(){
         if(ImGui::SliderFloat(name, &value, 0, 100)){
-            ParamChangedEvent event;
-            EventManager::GetInstance().Dispatch(event);
+            DISPATCH_PARAM_CHANGE_EVENT();
         }
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();    
@@ -265,8 +271,7 @@ public:
 
     void Display(){
         if(ImGui::Checkbox(name, &value)){
-            ParamChangedEvent event;
-            EventManager::GetInstance().Dispatch(event);
+            DISPATCH_PARAM_CHANGE_EVENT();
         }
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
