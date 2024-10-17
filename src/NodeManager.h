@@ -69,6 +69,7 @@ public:
 
     bool IsNodeHovered(std::shared_ptr<ImGuiNode> node);
     bool IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint32_t index);
+    bool IsNodeMultiInputConnectorHovered(std::shared_ptr<ImGuiNode> node);
     
     void ApplyConnectionProcedure();
     void ResetConnectionProcedure();

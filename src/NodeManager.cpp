@@ -134,9 +134,10 @@ void NodeManager::DrawNodes() {
         ImVec2 p_left = ToScreenSpace(node->position + ImVec2(node->size.x * 0.1f, 2));
         ImVec2 p_right = ToScreenSpace(node->position + ImVec2(node->size.x - node->size.x * 0.1f, 2));
         
-        // draw_list->AddCircleFilled(p_left + ImVec2(0, -2.5f), 5.0f * m_ViewProps.zoom, NODE_COLOR::PINK);
-        // draw_list->AddCircleFilled(p_right+ ImVec2(0, -2.5f), 5.0f * m_ViewProps.zoom, NODE_COLOR::PINK);
         draw_list->AddRectFilled(p_left - ImVec2(0, 10.0f), p_right, NODE_COLOR::WHITE, 5.0f);
+        if(IsNodeMultiInputConnectorHovered(node)) {
+          draw_list->AddRect(p_left - ImVec2(0, 10.0f), p_right, NODE_COLOR::RED, 5.0f, 0, 3.0f);
+        }
     }
 
     // output 'connector'
@@ -314,6 +315,19 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint3
   }
 
   return hovered;
+}
+
+bool NodeManager::IsNodeMultiInputConnectorHovered(std::shared_ptr<ImGuiNode> node)
+{
+  if(!node->IsMultiInput())  return false;
+
+  auto p_min = ToScreenSpace(node->position + ImVec2(node->size.x * 0.1f, -10.0f));
+  auto p_max = p_min + ImVec2(node->size.x * 0.9f, 10.0f);
+  if(ImGui::IsMouseHoveringRect(p_min, p_max)){
+    return true;
+  }
+
+  return false;
 }
 
 void NodeManager::ApplyConnectionProcedure() {
