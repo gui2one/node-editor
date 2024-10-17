@@ -162,7 +162,7 @@ public:
         }
     }else{
         for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
-        if (node->GetInput(i) != nullptr) {
+        if (node->GetMultiInput(i) != nullptr) {
             node->GetMultiInput(i)->Update(); /* Important !!*/
             // auto opinput = static_cast<T *>(node->GetInput(i).get());
             // op->SetInput(i, node->GetInput(i));
