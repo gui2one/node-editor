@@ -350,7 +350,12 @@ void NodeManager::ApplyConnectionProcedure() {
     return;
   }
   if(m_ConnectionProcedure.is_mutli_input){
-    
+    m_ConnectionProcedure.output_node->AppendInput(m_ConnectionProcedure.input_node);
+    ResetConnectionProcedure();
+    NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0,
+                              m_ConnectionProcedure.output_node,
+                              m_ConnectionProcedure.output_index);
+    EventManager::GetInstance().Dispatch(event);
   }else{
 
     m_ConnectionProcedure.output_node->SetInput(
@@ -365,6 +370,7 @@ void NodeManager::ApplyConnectionProcedure() {
 
 void NodeManager::ResetConnectionProcedure() {
   m_ConnectionProcedure.started = false;
+  m_ConnectionProcedure.is_mutli_input = false;
   m_ConnectionProcedure.input_node = nullptr;
   m_ConnectionProcedure.output_node = nullptr;
   m_ConnectionProcedure.output_index = 0;
