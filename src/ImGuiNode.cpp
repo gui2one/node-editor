@@ -54,6 +54,11 @@ YAML::Node ImGuiNode::YAMLSerialize() {
       yaml_node["inputs"].push_back("null");
     }
   }
+  for(size_t i = 0; i < GetMultiInputCount(); i++) {
+    if( GetMultiInput(i) != nullptr ){
+      yaml_node["multi_input"].push_back(GetMultiInput(i)->uuid);
+    }
+  }
 
   return yaml_node; 
   
