@@ -73,9 +73,11 @@ void NodeManager::DrawNodes() {
         ImVec2 p0 = ToScreenSpace(node->position + input_conn->relative_pos);
         ImVec2 other_pos = ToScreenSpace(other->position + ImVec2(other->size.x / 2.0f, other->size.y));
 
+        float x_sep = glm::abs(other_pos.x - p0.x);
         float y_sep = other_pos.y - p0.y;
-        ImVec2 ctrl1 = p0 + ImVec2(0, y_sep);
-        ImVec2 ctrl2 = other_pos - ImVec2(0, y_sep);
+        float ctrl_y_offset = y_sep * glm::min(1.0f,(x_sep / 300.0f));
+        ImVec2 ctrl1 = p0 + ImVec2(0, ctrl_y_offset);
+        ImVec2 ctrl2 = other_pos - ImVec2(0, ctrl_y_offset);
 
         draw_list->AddBezierCubic(
             p0, ctrl1, ctrl2, other_pos, NODE_COLOR::GREY,
@@ -94,10 +96,12 @@ void NodeManager::DrawNodes() {
         ImVec2 p0 = ToScreenSpace(start_x + ImVec2((step_size * i) + (step_size / 2.0f), 0));
         ImVec2 other_pos = ToScreenSpace(other->position + ImVec2(other->size.x / 2.0f, other->size.y));
 
+        float x_sep = glm::abs(other_pos.x - p0.x);
         float y_sep = other_pos.y - p0.y;
-        ImVec2 ctrl1 = p0 + ImVec2(0, y_sep);
-        ImVec2 ctrl2 = other_pos - ImVec2(0, y_sep);
-
+        float ctrl_y_offset = y_sep * glm::min(1.0f,(x_sep / 300.0f));
+        ImVec2 ctrl1 = p0 + ImVec2(0, ctrl_y_offset);
+        ImVec2 ctrl2 = other_pos - ImVec2(0, ctrl_y_offset);
+        
         draw_list->AddBezierCubic(
             p0, ctrl1, ctrl2, other_pos, NODE_COLOR::GREY,
             2.0f); // ImDrawList API uses screen coordinates()
