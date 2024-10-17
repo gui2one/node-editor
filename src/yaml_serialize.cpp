@@ -71,6 +71,15 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
       my_self->SetInput((uint32_t)i, input_node);
 
     }
+    for(size_t i=0; i< node["multi_input"].size(); i++) {
+      auto input_uuid = node["multi_input"][i].as<std::string>();
+      auto input_node = NodeEditor::Utils::FindNodeByUUID(input_uuid, nodes);
+
+      if(input_node == nullptr) continue;
+
+      my_self->AppendInput(input_node);
+
+    }
   }
   return nodes;
 }
