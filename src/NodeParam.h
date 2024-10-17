@@ -102,7 +102,7 @@ public:
     }
 
 public : 
-    int value = 42;
+    int value = 0;
     std::vector<const char*> choices = {"first", "second", "third"};
 };
 
