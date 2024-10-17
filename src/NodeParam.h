@@ -77,6 +77,33 @@ public:
     }
 };
 
+class ParamComboBox : public NodeParam{
+public:
+    ParamComboBox(const char * _name): NodeParam(_name){};
+    ~ParamComboBox(){};
+    void Display(){
+        ImGui::Spacing();
+        ImGui::Text("%i -- COMBO_BOX NOT implemented yet ...", value);
+    }
+
+    inline int GetChoice() { return value; }
+    inline void SetChoice(int choice) { value = choice; }
+
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        std::string type_str = typeid(*this).name();
+        str_remove_all(type_str,"class ");\
+        str_remove(type_str,"NodeEditor::");\
+        yaml_node["type"] = type_str;
+        yaml_node["name"] = name;
+        yaml_node["value"] = value;
+        return yaml_node;
+    }
+
+public : 
+    int value = 42;
+};
+
 template<typename T>
 class Param : public NodeParam{
 public:

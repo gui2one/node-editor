@@ -49,7 +49,10 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
         NodeEditor::set_param_value<glm::vec2>(param, p_node["value"].as<glm::vec2>()); 
       }else if(p_type_str.find("struct glm::vec<3,float,0>") != std::string::npos) {
         NodeEditor::set_param_value<glm::vec3>(param, p_node["value"].as<glm::vec3>()); 
-      } 
+      }else if(p_type_str.find("ParamComboBox") != std::string::npos) {
+        auto combo_p = std::dynamic_pointer_cast<NodeEditor::ParamComboBox>(param);
+        combo_p->SetChoice(p_node["value"].as<int>());
+      }  
     }
     
     nodes.push_back(factory_node);

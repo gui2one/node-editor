@@ -103,7 +103,11 @@ public:
     SetNumAvailableInputs(0);
     ActivateMultiInput(); 
     add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
-    m_ParamLayout.items = { {"Separator", add_separator_param} };  
+    auto combo_test = std::make_shared<ParamComboBox>("Combo Test");
+    m_ParamLayout.items = { 
+      {"Separator", add_separator_param}, 
+      {"Combo", combo_test}  
+    };
   }
   ~StringConcatenatorMulti() {};
 
