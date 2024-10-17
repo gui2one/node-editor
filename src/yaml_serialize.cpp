@@ -64,6 +64,7 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
     
     for(size_t i=0; i< MAX_N_INPUTS; i++) {
       auto input_uuid = node["inputs"][i].as<std::string>();
+      if(input_uuid == "null") continue;
       auto input_node = NodeEditor::Utils::FindNodeByUUID(input_uuid, nodes);
 
       if(input_node == nullptr) continue;
