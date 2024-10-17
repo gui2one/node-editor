@@ -439,14 +439,15 @@ void NodeManager::OnMouseClick(const Event &event) {
     }
 
     if (node_hovered && node->selected == false) {
+      if (ImGui::GetIO().KeyCtrl == false){
+        Utils::deselect_all(nodes);
+      }
       node->selected = true;
     } else {
-      // if (ImGui::GetIO().KeyCtrl == false){
-      //   node->selected = false;
-      // }
+
     }
 
-    if (m_ConnectionProcedure.started && IsNodeHovered(node)) {
+    if (m_ConnectionProcedure.started && node_hovered) {
       clicked_something = true;
       m_ConnectionProcedure.input_node = node;
 
@@ -482,9 +483,7 @@ void NodeManager::OnMouseClick(const Event &event) {
   }
 
   if (!clicked_something) {
-    for(auto node : nodes) {
-      node->selected = false;
-    }
+    Utils::deselect_all(nodes);
     if (m_ConnectionProcedure.started) {
       if(m_ConnectionProcedure.is_mutli_input){ // multi input
         ApplyConnectionProcedure();

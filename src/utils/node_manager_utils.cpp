@@ -11,7 +11,7 @@ namespace NodeEditor::Utils {
         return nullptr;
     }
 
-    ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>> nodes) {
+    ImVec2 get_nodes_center(std::vector<std::shared_ptr<ImGuiNode>>& nodes) {
         if (nodes.size() == 0)
             return ImVec2(0, 0);
         float minx = 999999999.f, miny = 999999999.f, maxx = -999999999.f,
@@ -31,5 +31,12 @@ namespace NodeEditor::Utils {
         centerx = (minx + maxx) / 2.0f + nodes[0]->size.x / 2.0f;
         centery = (miny + maxy) / 2.0f + nodes[0]->size.y / 2.0f;
         return ImVec2(centerx, centery);
+    }
+    void deselect_all(std::vector<std::shared_ptr<ImGuiNode>> &nodes)
+    {
+        for(auto node : nodes){
+            node->selected = false;
+        }
+        // return ImVec2();
     }
 };
