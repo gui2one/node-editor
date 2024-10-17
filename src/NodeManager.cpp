@@ -104,17 +104,31 @@ void NodeManager::DrawNodes() {
   }
 
   if (m_ConnectionProcedure.started) {
-    ImVec2 input_conn_pos = m_ConnectionProcedure.output_node
-            ->GetInputConnector(m_ConnectionProcedure.output_index)
-            ->relative_pos;
-    ImVec2 connector_pos = input_conn_pos + m_ConnectionProcedure.output_node->position;
-    ImVec2 p0 = ToScreenSpace(connector_pos);
-    double x, y;
-    glfwGetCursorPos(m_GLFWWindow, &x, &y);
-    ImVec2 cursor_pos = ImVec2((float)x, (float)y);
-    ImVec2 p1 = cursor_pos;
-    draw_list->AddBezierCubic(p0, p0 - ImVec2(0, 100), p1 + ImVec2(0, 100), p1,
-                              NODE_COLOR::ORANGE, 2.0f);
+    if(m_ConnectionProcedure.output_node->IsMultiInput()) {
+      
+      ImVec2 input_conn_pos = m_ConnectionProcedure.output_node->position;
+      // ImVec2 connector_pos = input_conn_pos + m_ConnectionProcedure.output_node->position;
+      ImVec2 p0 = ToScreenSpace(input_conn_pos);
+      double x, y;
+      glfwGetCursorPos(m_GLFWWindow, &x, &y);
+      ImVec2 cursor_pos = ImVec2((float)x, (float)y);
+      ImVec2 p1 = cursor_pos;
+      draw_list->AddBezierCubic(p0, p0 - ImVec2(0, 100), p1 + ImVec2(0, 100), p1,
+                                NODE_COLOR::ORANGE, 2.0f);
+    }else{
+
+      ImVec2 input_conn_pos = m_ConnectionProcedure.output_node
+              ->GetInputConnector(m_ConnectionProcedure.output_index)
+              ->relative_pos;
+      ImVec2 connector_pos = input_conn_pos + m_ConnectionProcedure.output_node->position;
+      ImVec2 p0 = ToScreenSpace(connector_pos);
+      double x, y;
+      glfwGetCursorPos(m_GLFWWindow, &x, &y);
+      ImVec2 cursor_pos = ImVec2((float)x, (float)y);
+      ImVec2 p1 = cursor_pos;
+      draw_list->AddBezierCubic(p0, p0 - ImVec2(0, 100), p1 + ImVec2(0, 100), p1,
+                                NODE_COLOR::ORANGE, 2.0f);
+    }
   }
 
   for (auto node : GetNodes()) {
@@ -323,7 +337,7 @@ bool NodeManager::IsNodeMultiInputConnectorHovered(std::shared_ptr<ImGuiNode> no
 
   auto p_min = ToScreenSpace(node->position + ImVec2(node->size.x * 0.1f, -10.0f));
   auto p_max = p_min + ImVec2(node->size.x * 0.9f, 10.0f);
-  if(ImGui::IsMouseHoveringRect(p_min, p_max)){
+  if(ImGui::IsMouseHoveringRect(p_min, p_max, false)){
     return true;
   }
 
@@ -335,14 +349,18 @@ void NodeManager::ApplyConnectionProcedure() {
   {
     return;
   }
-  
-  m_ConnectionProcedure.output_node->SetInput(
-      m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
-  ResetConnectionProcedure();
-  NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0,
-                            m_ConnectionProcedure.output_node,
-                            m_ConnectionProcedure.output_index);
-  EventManager::GetInstance().Dispatch(event);
+  if(m_ConnectionProcedure.is_mutli_input){
+    
+  }else{
+
+    m_ConnectionProcedure.output_node->SetInput(
+        m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
+    ResetConnectionProcedure();
+    NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0,
+                              m_ConnectionProcedure.output_node,
+                              m_ConnectionProcedure.output_index);
+    EventManager::GetInstance().Dispatch(event);
+  }
 }
 
 void NodeManager::ResetConnectionProcedure() {
@@ -417,16 +435,30 @@ void NodeManager::OnMouseClick(const Event &event) {
       ApplyConnectionProcedure();
       Evaluate();
     }
-    for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
-      auto ptr = static_cast<ImGuiNode *>(node.get());
-      InputConnector *connector = ptr->GetInputConnector(i);
-      if (connector->hovered) {
-        clicked_something = true;
-        connector->grabbed = true;
+    if(!node->IsMultiInput()){
 
+      for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
+        auto ptr = static_cast<ImGuiNode *>(node.get());
+        InputConnector *connector = ptr->GetInputConnector(i);
+        if (connector->hovered) {
+          clicked_something = true;
+          connector->grabbed = true;
+
+          m_ConnectionProcedure.started = true;
+          m_ConnectionProcedure.output_node = node;
+          m_ConnectionProcedure.output_index = i;
+        }
+      }
+    }else{
+      if(IsNodeMultiInputConnectorHovered(node)){
+        std::cout << "multi input connector clicked" << std::endl;
+        
+        clicked_something = true;
         m_ConnectionProcedure.started = true;
+        m_ConnectionProcedure.is_mutli_input = true;
+
         m_ConnectionProcedure.output_node = node;
-        m_ConnectionProcedure.output_index = i;
+        // m_ConnectionProcedure.output_index = 0;
       }
     }
   }

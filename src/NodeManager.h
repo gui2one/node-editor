@@ -18,6 +18,7 @@ struct ConnectionProcedure{
     std::shared_ptr<ImGuiNode> output_node;
     uint32_t output_index;
     std::shared_ptr<ImGuiNode> input_node;
+    bool is_mutli_input = false;
 };
 
 struct ViewProperties{
