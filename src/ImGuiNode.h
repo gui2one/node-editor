@@ -85,6 +85,7 @@ public:
     inline size_t GetMultiInputCount() { return m_MultiInput.size(); }
     inline std::shared_ptr<ImGuiNode> GetMultiInput(size_t index) { return m_MultiInput[index]; }
     inline void AppendInput(std::shared_ptr<ImGuiNode> node) { m_MultiInput.push_back(node); }
+    void RemoveLastInput();
     inline void ActivateMultiInput() { m_IsMultiInput = true; }
     inline bool IsMultiInput() { return m_IsMultiInput; }
 

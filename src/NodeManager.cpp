@@ -350,12 +350,24 @@ void NodeManager::ApplyConnectionProcedure() {
     return;
   }
   if(m_ConnectionProcedure.is_mutli_input){
-    m_ConnectionProcedure.output_node->AppendInput(m_ConnectionProcedure.input_node);
-    ResetConnectionProcedure();
-    NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0,
-                              m_ConnectionProcedure.output_node,
-                              m_ConnectionProcedure.output_index);
-    EventManager::GetInstance().Dispatch(event);
+    if(m_ConnectionProcedure.input_node == nullptr){
+      std::cout << "Disconnect last ?" << std::endl;
+      m_ConnectionProcedure.output_node->RemoveLastInput();
+      ResetConnectionProcedure();
+      NodeConnectionEvent event(nullptr, 0,
+                                m_ConnectionProcedure.output_node,
+                                0);
+      EventManager::GetInstance().Dispatch(event);
+      
+    }else{
+
+      m_ConnectionProcedure.output_node->AppendInput(m_ConnectionProcedure.input_node);
+      ResetConnectionProcedure();
+      NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0,
+                                m_ConnectionProcedure.output_node,
+                                m_ConnectionProcedure.output_index);
+      EventManager::GetInstance().Dispatch(event);
+    }
   }else{
 
     m_ConnectionProcedure.output_node->SetInput(
@@ -474,10 +486,14 @@ void NodeManager::OnMouseClick(const Event &event) {
       node->selected = false;
     }
     if (m_ConnectionProcedure.started) {
-      m_ConnectionProcedure.started = false;
-      m_ConnectionProcedure.output_node->ResetInput(
-          m_ConnectionProcedure.output_index);
-      ResetConnectionProcedure();
+      if(m_ConnectionProcedure.is_mutli_input){ // multi input
+        ApplyConnectionProcedure();
+      }else{
+        m_ConnectionProcedure.started = false;
+        m_ConnectionProcedure.output_node->ResetInput(
+            m_ConnectionProcedure.output_index);
+        ResetConnectionProcedure();
+      }
     }
   }
 }

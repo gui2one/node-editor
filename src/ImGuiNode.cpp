@@ -89,6 +89,13 @@ InputConnector* ImGuiNode::GetInputConnector(uint32_t index)
     return &m_InputConnectors[index];
 }
 
+void ImGuiNode::RemoveLastInput() {
+  if(m_MultiInput.size() > 0){
+
+    m_MultiInput.pop_back();
+  }
+}
+
 void OUTPUT_NODE::Update() {
   if (GetInput(0) != nullptr) {
     GetInput(0)->Update();
