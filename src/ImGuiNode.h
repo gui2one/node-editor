@@ -15,6 +15,10 @@ constexpr uint32_t MAX_N_INPUTS = 4;
 
 namespace NodeEditor {
 
+// class ImGuiNode;
+
+
+
 // forward declaration
 class NodeParam;
 
@@ -176,6 +180,16 @@ public:
   }
 
   T *ToOperator() { return static_cast<T *>(this); }
+};
+
+
+using NODE_COLLECTION = std::vector<std::shared_ptr<ImGuiNode>>; 
+struct NodeNetwork{
+
+    std::shared_ptr<ImGuiNode> outuput_node;
+    std::vector<std::shared_ptr<ImGuiNode>> nodes;
+
+    void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
 };
 };
 

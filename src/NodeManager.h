@@ -44,11 +44,11 @@ public:
     /// does nothing if m_OutputNode == nullptr
     void Evaluate();
 
-    inline void SetNodes(std::vector<std::shared_ptr<ImGuiNode>> _nodes) { nodes = _nodes; }
-    inline void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
+    inline void SetNodes(NODE_COLLECTION _nodes) { m_NodeNetwork.nodes = _nodes; }
+    inline void AddNode(std::shared_ptr<ImGuiNode> _node) { m_NodeNetwork.nodes.push_back(_node); }
 
-    inline std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() { return nodes; }
-    inline const std::vector<std::shared_ptr<ImGuiNode>>& GetNodes() const { return nodes; }
+    inline NODE_COLLECTION& GetNodes() { return m_CurrentNetwork->nodes; }
+    inline const NODE_COLLECTION& GetNodes() const { return m_CurrentNetwork->nodes; }
     std::shared_ptr<ImGuiNode> FindNodeByUUID(std::string uuid);
 
     void DisplayNodeParams(std::shared_ptr<ImGuiNode> node);
@@ -95,7 +95,8 @@ public:
     ImFont * m_RegularFont;
     ImFont * m_BoldFont;
 private:
-    std::vector<std::shared_ptr<ImGuiNode>> nodes;
+    NodeNetwork m_NodeNetwork;
+    NodeNetwork* m_CurrentNetwork;
     GLFWwindow* m_GLFWWindow;
     std::function<void()> m_NodesMenu = [](){};
 

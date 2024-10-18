@@ -6,6 +6,8 @@ NodeManager::NodeManager() {
   SetNodesMenu([this]() {
       this->BuildNodeMenuFromRegistry();
   });
+
+  m_CurrentNetwork = &m_NodeNetwork;
 }
 
 NodeManager::~NodeManager() {}
@@ -407,7 +409,7 @@ void NodeManager::OnMouseMove(const Event &event) {
   if(ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
       m_ViewProps.scrolling += delta;
   }
-  for (auto node : nodes) {
+  for (auto node : GetNodes()) {
     node->highlighted = false;
     if (node->selected && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
       node->position += delta;
@@ -435,7 +437,7 @@ void NodeManager::OnMouseClick(const Event &event) {
 
   const MouseClickEvent &clickEvent = static_cast<const MouseClickEvent &>(event);
   bool clicked_something = false;
-  for (auto node : nodes) {
+  for (auto node : GetNodes()) {
     bool node_hovered = IsNodeHovered(node);
     if( node_hovered){
       m_CurrentNode = node;
@@ -446,7 +448,7 @@ void NodeManager::OnMouseClick(const Event &event) {
 
     if (node_hovered && node->selected == false) {
       if (ImGui::GetIO().KeyCtrl == false){
-        Utils::deselect_all(nodes);
+        Utils::deselect_all(GetNodes());
       }
       node->selected = true;
     } else {
@@ -489,7 +491,7 @@ void NodeManager::OnMouseClick(const Event &event) {
   }
 
   if (!clicked_something) {
-    Utils::deselect_all(nodes);
+    Utils::deselect_all(GetNodes());
     if (m_ConnectionProcedure.started) {
       if(m_ConnectionProcedure.is_mutli_input){ // multi input
         ApplyConnectionProcedure();
@@ -525,7 +527,7 @@ void NodeManager::OnMouseRelease(const Event &event) {
   }
   m_LastCLickReleaseTime = now;
 
-  for (auto node : nodes) {
+  for (auto node : GetNodes()) {
     if (m_ConnectionProcedure.started && IsNodeHovered(node)) {
       m_ConnectionProcedure.input_node = node;
 
@@ -553,8 +555,8 @@ void NodeManager::OnKeyPress(const Event &event) {
   switch(clickEvent.key) {
     case GLFW_KEY_BACKSPACE:
       if (m_CurrentNode != nullptr) {
-        auto it = std::find(nodes.begin(), nodes.end(), m_CurrentNode);
-        nodes.erase(it);
+        auto it = std::find(GetNodes().begin(), GetNodes().end(), m_CurrentNode);
+        GetNodes().erase(it);
         m_CurrentNode = nullptr;
       }
       break;
@@ -576,7 +578,7 @@ void NodeManager::OnKeyPress(const Event &event) {
 }
 
 void NodeManager::ViewFrameAll() {
-  ImVec2 center = Utils::get_nodes_center(nodes);
+  ImVec2 center = Utils::get_nodes_center(GetNodes());
   m_ViewProps.scrolling = -center + m_ViewProps.canvasSize / 2.0f;
 }
 
