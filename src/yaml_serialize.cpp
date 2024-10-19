@@ -14,26 +14,22 @@ std::string serialize_nodes(std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> 
   return YAML::Dump(output);
 }
 
-std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::string yaml) {
+std::shared_ptr<NodeEditor::ImGuiNode> deserialize_node(YAML::Node yaml_node) {
 
-  std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes;
-  YAML::Node output = YAML::Load(yaml);
-  for(auto node : output) {
-
-    std::string type_name = node["type"].as<std::string>();
+    std::string type_name = yaml_node["type"].as<std::string>();
 
     auto factory_node = NodeEditor::NodeFactoryRegistry::instance().create(type_name);
     if(factory_node == nullptr) {
       std::cout << "Unabled to create type: " << type_name << "" << std::endl;
       
-      continue;
+      return nullptr;
     }
-    factory_node->position = node["position"].as<ImVec2>();
-    factory_node->title = node["title"].as<std::string>();
-    factory_node->uuid = node["uuid"].as<std::string>();
+    factory_node->position = yaml_node["position"].as<ImVec2>();
+    factory_node->title = yaml_node["title"].as<std::string>();
+    factory_node->uuid = yaml_node["uuid"].as<std::string>();
 
-    for(size_t i= 0; i<node["params"].size(); i++) {
-      auto p_node = node["params"][i];
+    for(size_t i= 0; i<yaml_node["params"].size(); i++) {
+      auto p_node = yaml_node["params"][i];
       std::string p_type_str = p_node["type"].as<std::string>();
       auto param = factory_node->m_ParamLayout.items[i].param;
       
@@ -54,8 +50,42 @@ std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::strin
         combo_p->SetChoice(p_node["value"].as<int>());
       }  
     }
-    
-    nodes.push_back(factory_node);
+
+    auto subnet_ptr = std::dynamic_pointer_cast<NodeEditor::SubnetNode>(factory_node);
+    if( subnet_ptr != nullptr){
+      std::cout << "TRYING TO deserialize a subnet OPERATOR" << std::endl;
+      
+      
+      NodeEditor::NODE_COLLECTION children;
+      
+      subnet_ptr->position = yaml_node["position"].as<ImVec2>();
+      subnet_ptr->title = yaml_node["title"].as<std::string>();
+      subnet_ptr->uuid = yaml_node["uuid"].as<std::string>();
+      
+      for(auto yaml_subnet_node : yaml_node["children"]) {
+        auto nd = deserialize_node(yaml_subnet_node);
+        if(nd != nullptr){
+          children.push_back(nd);
+        }
+      }
+
+      subnet_ptr->node_network.nodes = children;
+
+      return subnet_ptr;
+    }
+    return factory_node;
+}
+
+std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> deserialize_nodes(std::string yaml) {
+
+  std::vector<std::shared_ptr<NodeEditor::ImGuiNode>> nodes;
+  YAML::Node output = YAML::Load(yaml);
+  for(auto node : output) {
+
+    auto factory_node = deserialize_node(node);
+    if(factory_node != nullptr){
+      nodes.push_back(factory_node);
+    }
   }
 
   // second pass to make connections
