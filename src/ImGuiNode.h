@@ -65,7 +65,7 @@ struct ParamLayout{
     ParamLayoutItem& Get(size_t idx);
 };
 
-class ImGuiNode
+class ImGuiNode : public std::enable_shared_from_this<ImGuiNode>
 {
 public:
     ImGuiNode(std::string _title);
