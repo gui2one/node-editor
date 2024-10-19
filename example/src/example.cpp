@@ -13,6 +13,7 @@ int main() {
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenatorMulti, "concatmulti", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringNull, "null node","utility");
+  REGISTER_NODE_TYPE(NodeEditor::StringSubnet, "Subnetwork", "utility");
 
   Application app;
 

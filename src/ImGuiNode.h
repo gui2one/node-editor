@@ -15,12 +15,10 @@ constexpr uint32_t MAX_N_INPUTS = 4;
 
 namespace NodeEditor {
 
-// class ImGuiNode;
-
-
 
 // forward declaration
 class NodeParam;
+struct NodeNetwork;
 
 enum NODE_COLOR
 {
@@ -130,6 +128,18 @@ private:
     std::vector<InputConnector> m_InputConnectors;
 };
 
+
+using NODE_COLLECTION = std::vector<std::shared_ptr<ImGuiNode>>; 
+struct NodeNetwork{
+
+    std::shared_ptr<ImGuiNode> outuput_node;
+    std::vector<std::shared_ptr<ImGuiNode>> nodes;
+
+    void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
+};
+
+
+
 class OUTPUT_NODE : public ImGuiNode
 {
 public:
@@ -141,6 +151,15 @@ public:
     void Update() override;
 };
 
+class SubnetNode : public ImGuiNode
+{
+public:
+    SubnetNode(const char *_title) : ImGuiNode(_title){}
+    
+    void Update() override;
+public:
+    NodeNetwork node_network;
+};
 
 template <typename T> class Node : public T {
 //   static_assert(std::is_base_of<BaseClass, T>::value,
@@ -176,16 +195,6 @@ public:
   T *ToOperator() { return static_cast<T *>(this); }
 };
 
-
-using NODE_COLLECTION = std::vector<std::shared_ptr<ImGuiNode>>; 
-struct NodeNetwork{
-
-    std::shared_ptr<ImGuiNode> outuput_node;
-    std::vector<std::shared_ptr<ImGuiNode>> nodes;
-
-    void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
 };
-};
-
 
 #endif

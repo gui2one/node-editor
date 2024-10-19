@@ -16,15 +16,19 @@ public:
   StringOperator() : ImGuiNode("default") {};
   virtual ~StringOperator() = default;
 
-
-  // YAML::Node YAMLSerialize() override {
-  //   YAML::Node yaml_node;
-  //   yaml_node["value"] = "---------- StringOperator Not Implemented ----------";
-  //   return yaml_node;
-  // }
 public:
   std::string m_StringCache = "";
 };
+
+class StringSubnetOperator : public SubnetNode {
+public:
+  StringSubnetOperator() : SubnetNode("SubnetNode") {};
+  ~StringSubnetOperator() = default;
+
+public:
+  NodeNetwork network;
+};
+
 
 class StringGenerator : public StringOperator {
 public:
@@ -117,19 +121,14 @@ public:
     for(size_t i = 0; i < GetMultiInputCount(); i++){
       if (GetMultiInput(i) != nullptr) {
         auto op0 = static_cast<StringOperator *>(GetMultiInput(i).get());
-        m_StringCache += op0->m_StringCache;
+        if(add_separator_param->Eval()){
+          m_StringCache += " " + op0->m_StringCache;
+        }else{
+
+          m_StringCache += op0->m_StringCache;
+        }
       }
     }
-    // if (GetInput(0) != nullptr && GetInput(1) != nullptr) {
-    //   auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-    //   auto op1 = static_cast<StringOperator *>(GetInput(1).get());
-    //   if(add_separator_param->Eval()){
-    //     m_StringCache = op0->m_StringCache + " " + op1->m_StringCache;
-    //   }else{
-
-    //     m_StringCache = op0->m_StringCache + op1->m_StringCache;
-    //   }
-    // }
   }
 
 public:
@@ -181,6 +180,19 @@ public:
   }
 };
 
-}; // namespace NodeEditor
+class StringSubnet : public StringSubnetOperator {
+public:
+  StringSubnet() : StringSubnetOperator() {
+    SetNumAvailableInputs(1);
+  };
+  ~StringSubnet() {};
 
+  void Generate() override {
+    if (GetInput(0) != nullptr) {
+      auto op0 = static_cast<StringOperator *>(GetInput(0).get());
+      // m_StringCache = op0->m_StringCache;
+    }
+  }
+}; // namespace NodeEditor
+};
 #endif
