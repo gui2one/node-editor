@@ -89,7 +89,7 @@ bool Application::Init() {
   dispatcher.Subscribe(EventType::MouseDoubleClick,
                        [&node_manager](const NodeEditor::Event &event) {
                          node_manager.OnMouseDoubleClick(event);
-                         std::cout << "double click From Application class" << std::endl;
+                        //  std::cout << "double click From Application class" << std::endl;
                          
                        });
   dispatcher.Subscribe(EventType::MouseRelease,

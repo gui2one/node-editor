@@ -516,8 +516,14 @@ void NodeManager::OnMouseClick(const Event &event) {
 
 void NodeManager::OnMouseDoubleClick(const Event &event)
 {
-  std::cout << "double click !!! from manager" << std::endl;
-  
+  if(IsNodeHovered(m_CurrentNode)){
+    auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(m_CurrentNode);
+    if(subnet_ptr != nullptr){
+      // std::cout << "double clickes on SUBNET : " << m_CurrentNode->title << std::endl;
+      m_CurrentNetwork = &subnet_ptr->node_network;
+
+    }
+  }
 }
 
 void NodeManager::OnMouseRelease(const Event &event) {
