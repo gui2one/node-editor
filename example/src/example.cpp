@@ -109,5 +109,11 @@ void add_example_nodes(NodeManager &manager) {
   concat_multi_node->AppendInput(excla_node);
   manager.AddNode(concat_multi_node);
 
+
+  auto subnet = std::make_shared<Node<StringSubnet>>("Subnet");
+  subnet->position = ImVec2(650, 800);
+  subnet->SetInput(0, concat_multi_node);
+  manager.AddNode(subnet);
+  
   manager.SetOutputNode(output_node);
 }

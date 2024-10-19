@@ -154,7 +154,10 @@ public:
 class SubnetNode : public ImGuiNode
 {
 public:
-    SubnetNode(const char *_title) : ImGuiNode(_title){}
+    SubnetNode(const char *_title) : ImGuiNode(_title){
+        SetNumAvailableInputs(4);
+        color = NODE_COLOR::BLUE;
+    }
     
     void Update() override;
 public:

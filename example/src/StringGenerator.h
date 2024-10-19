@@ -25,8 +25,8 @@ public:
   StringSubnetOperator() : SubnetNode("SubnetNode") {};
   ~StringSubnetOperator() = default;
 
-public:
-  NodeNetwork network;
+// public:
+//   NodeNetwork network;
 };
 
 
@@ -183,7 +183,7 @@ public:
 class StringSubnet : public StringSubnetOperator {
 public:
   StringSubnet() : StringSubnetOperator() {
-    SetNumAvailableInputs(1);
+    // SetNumAvailableInputs(1);
   };
   ~StringSubnet() {};
 

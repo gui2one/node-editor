@@ -53,12 +53,15 @@ void NodeManager::BuildNodeMenuFromRegistry() {
 }
 
 void NodeManager::DrawNodes() {
+  if(m_CurrentNetwork == nullptr) {
+    return;
+  }
   m_ViewProps.canvasPos = ImGui::GetCursorScreenPos();
   ImDrawList *draw_list = ImGui::GetWindowDrawList();
 
   // display something to recognize m_OutputNode
   for(auto node : GetNodes()) {
-    if(node == m_OutputNode) {
+    if(node == m_CurrentNetwork->outuput_node) {
       draw_list->AddCircleFilled(ToScreenSpace(node->position + (node->size / 2.0f) * m_ViewProps.zoom), 35.0f * m_ViewProps.zoom,
                                  NODE_COLOR::BROWN);
       break;
@@ -284,13 +287,19 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node) {
 }
 
 void NodeManager::Evaluate() {
-  if (m_OutputNode != nullptr) {
-    m_OutputNode->Update();
+  if(m_CurrentNetwork != nullptr){
+    
+    if (m_CurrentNetwork->outuput_node != nullptr) {
+      m_CurrentNetwork->outuput_node->Update();
+    }
   }
 }
 
 void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node) {
-  m_OutputNode = node;
+  // m_OutputNode = node;
+  if(m_CurrentNetwork != nullptr){
+    m_CurrentNetwork->outuput_node = node;
+  }
 }
 
 ImVec2 NodeManager::ToCanvasSpace(ImVec2 pos)

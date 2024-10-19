@@ -59,8 +59,15 @@ public:
     inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 
     void SetOutputNode(std::shared_ptr<ImGuiNode> node);
-    inline void UnsetOutputNode() { m_OutputNode = nullptr; };
-    std::shared_ptr<ImGuiNode> GetOutputNode() { return m_OutputNode; }
+    inline void UnsetOutputNode() { if(m_CurrentNetwork != nullptr) m_CurrentNetwork->outuput_node = nullptr; };
+    std::shared_ptr<ImGuiNode> GetOutputNode() { 
+        if(m_CurrentNetwork != nullptr) {
+            return m_CurrentNetwork->outuput_node;
+        }else{
+            return nullptr;
+        } 
+        
+    }
 
 
     void ViewFrameAll();
@@ -101,7 +108,7 @@ private:
     std::function<void()> m_NodesMenu = [](){};
 
     ConnectionProcedure m_ConnectionProcedure;
-    std::shared_ptr<ImGuiNode> m_OutputNode = nullptr;
+
 }; // end class NodeManager
 }; // end namespace NodeEditor
 #endif
