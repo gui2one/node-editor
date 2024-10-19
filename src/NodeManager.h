@@ -69,7 +69,8 @@ public:
         
     }
 
-
+    NodeNetwork& GetRootNetwork(){ return m_NodeNetwork; };
+    void GotoRootNetwork() { m_CurrentNetwork = &m_NodeNetwork; };
     void ViewFrameAll();
 
     ImVec2 ToCanvasSpace(ImVec2 pos);

@@ -197,7 +197,7 @@ void Application::Run() {
 
         auto save_path = temp_dir / "nodes.yaml";
         std::fstream saved_file(save_path.string(), std::ios::out);
-        saved_file << serialize_nodes(m_NodeManager.GetNodes());
+        saved_file << serialize_nodes(m_NodeManager.GetRootNetwork().nodes);
         saved_file.close();
       }
       if( ImGui::MenuItem("Load", "Ctrl+L")) {
@@ -207,9 +207,12 @@ void Application::Run() {
         std::ifstream saved_file(save_path.string());
         std::string content((std::istreambuf_iterator<char>(saved_file)), std::istreambuf_iterator<char>());
         saved_file.close();
-        auto loaded_nodes = deserialize_nodes(content);
+
+        m_NodeManager.GotoRootNetwork();
         m_NodeManager.GetNodes().clear();
         m_NodeManager.UnsetOutputNode();
+        
+        auto loaded_nodes = deserialize_nodes(content);
         float x = 0.0f;
         for(auto node : loaded_nodes) {
           // node->position = ImVec2(x, 0);
