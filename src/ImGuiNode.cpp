@@ -64,10 +64,11 @@ YAML::Node ImGuiNode::YAMLSerialize() {
   auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(shared_from_this());
   if(subnet_ptr != nullptr){
     auto network = subnet_ptr->node_network;
-    for(auto node : network.nodes){
+    yaml_node["network"] = serialize_network(network);
+    // for(auto node : network.nodes){
       
-      yaml_node["children"].push_back(node->YAMLSerialize());
-    }
+    //   yaml_node["children"].push_back(node->YAMLSerialize());
+    // }
   }
   return yaml_node; 
   

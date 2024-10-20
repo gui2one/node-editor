@@ -6,19 +6,38 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
 }
 namespace NodeEditor {
 
-std::string serialize_nodes(std::vector<std::shared_ptr<ImGuiNode>> nodes) {
+YAML::Node serialize_network(NodeNetwork &network)
+{
+  YAML::Node output;
+  if(network.outuput_node != nullptr){
+
+    output["output_node"] = network.outuput_node->uuid;
+  }else{
+    output["output_node"] = "null";
+
+  }
+  output["nodes"] = serialize_nodes(network.nodes);
+
+  return output;
+}
+
+YAML::Node serialize_nodes(std::vector<std::shared_ptr<ImGuiNode>> nodes) {
 
   YAML::Node output;
   for(auto node : nodes) {
     output.push_back(node->YAMLSerialize());
   }
-  return YAML::Dump(output);
+
+
+  return output;
 }
 
 void save_all(std::filesystem::path path, NodeNetwork &network)
 {
   std::fstream saved_file(path.string(), std::ios::out);
-  saved_file << serialize_nodes(network.nodes);
+
+  saved_file << YAML::Dump(serialize_network(network));
+  // saved_file << serialize_nodes(network.nodes);
   saved_file.close();
   
 }

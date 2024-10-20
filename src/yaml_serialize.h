@@ -19,7 +19,8 @@
 YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::ImGuiNode>& node);
 namespace NodeEditor {
 
-std::string serialize_nodes(std::vector<std::shared_ptr<ImGuiNode>> nodes);
+YAML::Node serialize_network(NodeNetwork& network);
+YAML::Node serialize_nodes(std::vector<std::shared_ptr<ImGuiNode>> nodes);
 void save_all(std::filesystem::path path, NodeNetwork& network);
 
 std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(YAML::Node yaml);
