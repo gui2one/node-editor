@@ -608,11 +608,7 @@ void NodeManager::OnKeyPress(const Event &event) {
 
     case GLFW_KEY_S:
       if(clickEvent.mods & GLFW_MOD_CONTROL){
-
         SaveAll();
-        // auto temp_dir = std::filesystem::temp_directory_path();
-        // auto save_path = temp_dir / "nodes.yaml";
-        // save_all(save_path, GetRootNetwork());
       }
       break;
     
