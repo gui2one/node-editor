@@ -189,10 +189,12 @@ void Application::Run() {
     ImGui::BeginMainMenuBar();
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("New", "Ctrl+N")) {
-        std::cout << "New file Not Implemented Yet" << std::endl;
+        // std::cout << "New file Not Implemented Yet" << std::endl;
 
-        m_NodeManager.GetNodes().clear();
-        m_WindowData.current_path = std::filesystem::path("");
+        m_NodeManager.GetRootNetwork().nodes.clear();
+        m_NodeManager.GetRootNetwork().outuput_node = nullptr;
+        m_NodeManager.m_SavePath = std::filesystem::path("");
+        glfwSetWindowTitle(m_NodeManager.GetGLFWWindow(), m_NodeManager.m_SavePath.string().c_str());
       }
       if (ImGui::MenuItem("Save", "Ctrl+S")) {
 

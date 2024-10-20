@@ -83,21 +83,22 @@ std::shared_ptr<ImGuiNode> deserialize_node(YAML::Node yaml_node) {
     if( subnet_ptr != nullptr){
       std::cout << "TRYING TO deserialize a subnet OPERATOR" << std::endl;
       
+      NodeNetwork net;
+      net = deserialize_network(yaml_node["network"]);
+      // NODE_COLLECTION children;
       
-      NODE_COLLECTION children;
+      // subnet_ptr->position = yaml_node["position"].as<ImVec2>();
+      // subnet_ptr->title = yaml_node["title"].as<std::string>();
+      // subnet_ptr->uuid = yaml_node["uuid"].as<std::string>();
       
-      subnet_ptr->position = yaml_node["position"].as<ImVec2>();
-      subnet_ptr->title = yaml_node["title"].as<std::string>();
-      subnet_ptr->uuid = yaml_node["uuid"].as<std::string>();
-      
-      for(auto yaml_subnet_node : yaml_node["children"]) {
-        auto nd = deserialize_node(yaml_subnet_node);
-        if(nd != nullptr){
-          children.push_back(nd);
-        }
-      }
+      // for(auto yaml_subnet_node : yaml_node["children"]) {
+      //   auto nd = deserialize_node(yaml_subnet_node);
+      //   if(nd != nullptr){
+      //     children.push_back(nd);
+      //   }
+      // }
 
-      subnet_ptr->node_network.nodes = children;
+      subnet_ptr->node_network = net;
 
       return subnet_ptr;
     }
@@ -109,6 +110,7 @@ NodeNetwork deserialize_network(YAML::Node yaml)
   NodeNetwork network;
   // network.outuput_node = "???";
   network.nodes = deserialize_nodes(yaml["nodes"]);
+  network.outuput_node = Utils::FindNodeByUUID(yaml["output_node"].as<std::string>(), network.nodes);
   return network;
 }
 
