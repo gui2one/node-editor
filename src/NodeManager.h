@@ -83,6 +83,9 @@ public:
     void ApplyConnectionProcedure();
     void ResetConnectionProcedure();
 
+    void SaveAll();
+    void LoadAll();
+
     void OnMouseMove(const Event& event);
     void OnMouseClick(const Event& event);
     void OnMouseDoubleClick(const Event& event);
@@ -97,6 +100,7 @@ private:
 public:
     ViewProperties m_ViewProps;
     std::shared_ptr<ImGuiNode> m_CurrentNode = nullptr;
+    std::filesystem::path m_SavePath = "";
     bool m_OneParamChanged = false;
     std::chrono::time_point<std::chrono::system_clock> m_LastCLickReleaseTime;
 

@@ -405,6 +405,27 @@ void NodeManager::ResetConnectionProcedure() {
   m_ConnectionProcedure.output_index = 0;
 }
 
+void NodeManager::SaveAll() {
+
+  if(m_SavePath.empty()){
+    auto path = Utils::open_file_explorer();
+    m_SavePath = path; 
+    glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
+  }
+  save_all(m_SavePath, GetRootNetwork());
+}
+
+void NodeManager::LoadAll() {
+  if(m_SavePath.empty()){
+    auto path = Utils::open_file_explorer();
+    m_SavePath = path; 
+    glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
+  }
+
+  NODE_COLLECTION nodes = load_yaml_file(m_SavePath);
+  m_NodeNetwork.nodes = nodes;
+}
+
 void NodeManager::OnMouseMove(const Event &event) {
   if (!m_ViewProps.canvasHovered)
     return;
@@ -588,9 +609,10 @@ void NodeManager::OnKeyPress(const Event &event) {
     case GLFW_KEY_S:
       if(clickEvent.mods & GLFW_MOD_CONTROL){
 
-        auto temp_dir = std::filesystem::temp_directory_path();
-        auto save_path = temp_dir / "nodes.yaml";
-        save_all(save_path, GetRootNetwork());
+        SaveAll();
+        // auto temp_dir = std::filesystem::temp_directory_path();
+        // auto save_path = temp_dir / "nodes.yaml";
+        // save_all(save_path, GetRootNetwork());
       }
       break;
     

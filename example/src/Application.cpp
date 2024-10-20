@@ -196,37 +196,11 @@ void Application::Run() {
       }
       if (ImGui::MenuItem("Save", "Ctrl+S")) {
 
-        auto temp_dir = std::filesystem::temp_directory_path();
-
-        auto save_path = temp_dir / "nodes.yaml";
-
-        save_all(save_path, m_NodeManager.GetRootNetwork());
+        m_NodeManager.SaveAll();
 
       }
-      if( ImGui::MenuItem("Load", "Ctrl+L")) {
-
-        auto selected_file = Utils::open_file_explorer();
-        if(selected_file.extension() != ".yaml") {
-          std::cout << "Not a YAML file ?" << std::endl;
-          
-        }else{
-
-          m_WindowData.current_path = selected_file;
-        std::string _title = std::string(m_WindowData.title) + " | " + m_WindowData.current_path.string();
-        glfwSetWindowTitle(m_NativeWindow, _title.c_str());
-        
-          m_NodeManager.GotoRootNetwork();
-          m_NodeManager.GetNodes().clear();
-          m_NodeManager.UnsetOutputNode();
-          std::cout << "Selected File : " << selected_file << std::endl;
-          
-          auto loaded_nodes = load_yaml_file(selected_file);
-          for(auto node : loaded_nodes) {
-          
-            m_NodeManager.AddNode(node);
-          }
-          m_NodeManager.ViewFrameAll();
-        }
+      if( ImGui::MenuItem("Load", "Ctrl+O")) {
+        m_NodeManager.LoadAll();
       }
       ImGui::Separator();
       if(ImGui::MenuItem("Clear All Nodes")) {
