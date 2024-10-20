@@ -104,57 +104,74 @@ std::shared_ptr<ImGuiNode> deserialize_node(YAML::Node yaml_node) {
     return factory_node;
 }
 
-std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(YAML::Node yaml) {
-
-  // YAML::Node output = YAML::Load(yaml);
-  std::vector<std::shared_ptr<ImGuiNode>> nodes;
-  for(auto node : yaml) {
-
-    auto factory_node = deserialize_node(node);
-    if(factory_node != nullptr){
-      nodes.push_back(factory_node);
-    }
-  }
-
-  // second pass to make connections
-  for(auto node : yaml) {
-    auto my_uuid = node["uuid"].as<std::string>();
-    auto my_self = Utils::FindNodeByUUID(my_uuid, nodes);
-    
-    if(my_self == nullptr) continue;
-    
-    for(size_t i=0; i< MAX_N_INPUTS; i++) {
-      auto input_uuid = node["inputs"][i].as<std::string>();
-      if(input_uuid == "null") continue;
-      auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
-
-      if(input_node == nullptr) continue;
-
-      my_self->SetInput((uint32_t)i, input_node);
-
-    }
-    for(size_t i=0; i< node["multi_input"].size(); i++) {
-      auto input_uuid = node["multi_input"][i].as<std::string>();
-      auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
-
-      if(input_node == nullptr) continue;
-
-      my_self->AppendInput(input_node);
-
-    }
-  }
-  return nodes;
+NodeNetwork deserialize_network(YAML::Node yaml)
+{
+  NodeNetwork network;
+  // network.outuput_node = "???";
+  network.nodes = deserialize_nodes(yaml["nodes"]);
+  return network;
 }
 
-std::vector<std::shared_ptr<ImGuiNode>> load_yaml_file(std::filesystem::path path)
+std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(YAML::Node yaml)
+{
+
+    // YAML::Node output = YAML::Load(yaml);
+    std::vector<std::shared_ptr<ImGuiNode>> nodes;
+    for (auto node : yaml)
+    {
+
+        auto factory_node = deserialize_node(node);
+        if (factory_node != nullptr)
+        {
+            nodes.push_back(factory_node);
+        }
+    }
+
+    // second pass to make connections
+    for (auto node : yaml)
+    {
+        auto my_uuid = node["uuid"].as<std::string>();
+        auto my_self = Utils::FindNodeByUUID(my_uuid, nodes);
+
+        if (my_self == nullptr)
+            continue;
+
+        for (size_t i = 0; i < MAX_N_INPUTS; i++)
+        {
+            auto input_uuid = node["inputs"][i].as<std::string>();
+            if (input_uuid == "null")
+                continue;
+            auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
+
+            if (input_node == nullptr)
+                continue;
+
+            my_self->SetInput((uint32_t)i, input_node);
+        }
+        for (size_t i = 0; i < node["multi_input"].size(); i++)
+        {
+            auto input_uuid = node["multi_input"][i].as<std::string>();
+            auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
+
+            if (input_node == nullptr)
+                continue;
+
+            my_self->AppendInput(input_node);
+        }
+    }
+    return nodes;
+}
+
+NodeNetwork load_yaml_file(std::filesystem::path path)
 {
   std::ifstream saved_file(path.string());
   std::string content((std::istreambuf_iterator<char>(saved_file)), std::istreambuf_iterator<char>());  
   std::vector<std::shared_ptr<ImGuiNode>> nodes;
   YAML::Node output = YAML::Load(content);
 
-  nodes = deserialize_nodes(output);
-  return nodes;
+  auto network = deserialize_network(output);
+  // nodes = deserialize_nodes(output);
+  return network;
 }
 };
 

@@ -422,8 +422,8 @@ void NodeManager::LoadAll() {
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
   }
 
-  NODE_COLLECTION nodes = load_yaml_file(m_SavePath);
-  m_NodeNetwork.nodes = nodes;
+  NodeNetwork net = load_yaml_file(m_SavePath);
+  m_NodeNetwork = net;
 }
 
 void NodeManager::OnMouseMove(const Event &event) {
