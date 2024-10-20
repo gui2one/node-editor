@@ -85,11 +85,11 @@ std::shared_ptr<ImGuiNode> deserialize_node(YAML::Node yaml_node) {
     return factory_node;
 }
 
-std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(std::string yaml) {
+std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(YAML::Node yaml) {
 
+  // YAML::Node output = YAML::Load(yaml);
   std::vector<std::shared_ptr<ImGuiNode>> nodes;
-  YAML::Node output = YAML::Load(yaml);
-  for(auto node : output) {
+  for(auto node : yaml) {
 
     auto factory_node = deserialize_node(node);
     if(factory_node != nullptr){
@@ -98,7 +98,7 @@ std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(std::string yaml) {
   }
 
   // second pass to make connections
-  for(auto node : output) {
+  for(auto node : yaml) {
     auto my_uuid = node["uuid"].as<std::string>();
     auto my_self = Utils::FindNodeByUUID(my_uuid, nodes);
     
@@ -127,5 +127,15 @@ std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(std::string yaml) {
   return nodes;
 }
 
+std::vector<std::shared_ptr<ImGuiNode>> load_yaml_file(std::filesystem::path path)
+{
+  std::ifstream saved_file(path.string());
+  std::string content((std::istreambuf_iterator<char>(saved_file)), std::istreambuf_iterator<char>());  
+  std::vector<std::shared_ptr<ImGuiNode>> nodes;
+  YAML::Node output = YAML::Load(content);
+
+  nodes = deserialize_nodes(output);
+  return nodes;
+}
 };
 

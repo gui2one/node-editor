@@ -22,8 +22,9 @@ bool Application::Init() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+  std::string _title = std::string(m_WindowData.title) + " | " + m_WindowData.current_path.string();
   m_NativeWindow = glfwCreateWindow(m_WindowData.width, m_WindowData.height,
-                                    m_WindowData.title, NULL, NULL);
+                                    _title.c_str(), NULL, NULL);
   
 
   if (m_NativeWindow == NULL) {
@@ -189,7 +190,9 @@ void Application::Run() {
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("New", "Ctrl+N")) {
         std::cout << "New file Not Implemented Yet" << std::endl;
-        
+
+        m_NodeManager.GetNodes().clear();
+        m_WindowData.current_path = std::filesystem::path("");
       }
       if (ImGui::MenuItem("Save", "Ctrl+S")) {
 
@@ -202,29 +205,34 @@ void Application::Run() {
       }
       if( ImGui::MenuItem("Load", "Ctrl+L")) {
 
-        auto temp_dir = std::filesystem::temp_directory_path();
-        auto save_path = temp_dir / "nodes.yaml";
-        std::ifstream saved_file(save_path.string());
-        std::string content((std::istreambuf_iterator<char>(saved_file)), std::istreambuf_iterator<char>());
-        saved_file.close();
+        auto selected_file = Utils::open_file_explorer();
+        if(selected_file.extension() != ".yaml") {
+          std::cout << "Not a YAML file ?" << std::endl;
+          
+        }else{
 
-        m_NodeManager.GotoRootNetwork();
-        m_NodeManager.GetNodes().clear();
-        m_NodeManager.UnsetOutputNode();
+          m_WindowData.current_path = selected_file;
+        std::string _title = std::string(m_WindowData.title) + " | " + m_WindowData.current_path.string();
+        glfwSetWindowTitle(m_NativeWindow, _title.c_str());
         
-        auto loaded_nodes = deserialize_nodes(content);
-        float x = 0.0f;
-        for(auto node : loaded_nodes) {
-          // node->position = ImVec2(x, 0);
-          // x += 150.0f;
-          m_NodeManager.AddNode(node);
+          m_NodeManager.GotoRootNetwork();
+          m_NodeManager.GetNodes().clear();
+          m_NodeManager.UnsetOutputNode();
+          std::cout << "Selected File : " << selected_file << std::endl;
+          
+          auto loaded_nodes = load_yaml_file(selected_file);
+          for(auto node : loaded_nodes) {
+          
+            m_NodeManager.AddNode(node);
+          }
+          m_NodeManager.ViewFrameAll();
         }
-        m_NodeManager.ViewFrameAll();
       }
       ImGui::Separator();
-      if(ImGui::MenuItem("Clear All Noes")) {
+      if(ImGui::MenuItem("Clear All Nodes")) {
         m_NodeManager.GetNodes().clear();
       }
+
       ImGui::EndMenu();
     }
 
@@ -235,6 +243,10 @@ void Application::Run() {
       }
       ImGui::MenuItem("Show Grid", NULL, &m_NodeManager.m_ViewProps.display_grid);
       ImGui::MenuItem("Show Mouse Coords", NULL, &m_NodeManager.m_ViewProps.show_mouse_coords);
+      ImGui::Separator();
+      if(ImGui::MenuItem("Goto Root")) {
+        m_NodeManager.GotoRootNetwork();
+      }
       ImGui::EndMenu();
     }
     ImGui::EndMainMenuBar();

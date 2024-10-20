@@ -22,8 +22,8 @@ namespace NodeEditor {
 std::string serialize_nodes(std::vector<std::shared_ptr<ImGuiNode>> nodes);
 void save_all(std::filesystem::path path, NodeNetwork& network);
 
-std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(std::string yaml);
-
+std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(YAML::Node yaml);
+std::vector<std::shared_ptr<ImGuiNode>> load_yaml_file(std::filesystem::path path);
 
 };
 #endif // NODE_EDITOR_YAML_SERIALIZE_H

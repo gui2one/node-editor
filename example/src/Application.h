@@ -17,7 +17,9 @@ struct WindowData{
 
     int mouseX = 0;
     int mouseY = 0;
-    const char* title = "The Node Editor | Another one ?!!";
+    const char* title = "Stringinator 3000";
+
+    std::filesystem::path current_path;
 };
 
 class Application

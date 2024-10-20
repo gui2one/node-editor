@@ -39,4 +39,34 @@ namespace NodeEditor::Utils {
         }
         // return ImVec2();
     }
+    std::filesystem::path open_file_explorer()
+    {
+
+#ifdef _WIN32
+        OPENFILENAMEA ofn;
+        char szFile[260] = "";
+        ZeroMemory(&ofn, sizeof(OPENFILENAME));
+        ofn.lStructSize = sizeof(OPENFILENAME);
+        ofn.hwndOwner = NULL;
+        ofn.lpstrFile = szFile;
+        ofn.nMaxFile = 260;
+        ofn.lpstrFilter = "All\0*.*\0";
+        ofn.nFilterIndex = 1;
+        ofn.lpstrFileTitle = NULL;
+        ofn.nMaxFileTitle = 0;
+        ofn.lpstrInitialDir = NULL;
+        ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+        if (GetOpenFileNameA(&ofn) == TRUE)
+        {
+            return std::filesystem::path(ofn.lpstrFile);
+        }
+        else
+        {
+            return std::filesystem::path("");
+        }
+#else
+        return std::filesystem::path("");
+#endif
+    }
 };
