@@ -77,8 +77,9 @@ public:
 class KeyPressEvent : public Event {
 public:
     int key;
+    int mods;
 
-    KeyPressEvent(int key) : key(key) {}
+    KeyPressEvent(int key, int mods) : key(key), mods(mods) {}
 
     EventType GetType() const override {
         return EventType::KeyPress;

@@ -68,7 +68,7 @@ bool Application::Init() {
   glfwSetKeyCallback(m_NativeWindow, [](GLFWwindow *window, int key,
                                         int scancode, int action, int mods) {
     if (action == GLFW_PRESS) {
-      KeyPressEvent pressEvent(key);
+      KeyPressEvent pressEvent(key, mods);
       dispatcher.Dispatch(pressEvent);
     }
   });
@@ -196,9 +196,9 @@ void Application::Run() {
         auto temp_dir = std::filesystem::temp_directory_path();
 
         auto save_path = temp_dir / "nodes.yaml";
-        std::fstream saved_file(save_path.string(), std::ios::out);
-        saved_file << serialize_nodes(m_NodeManager.GetRootNetwork().nodes);
-        saved_file.close();
+
+        save_all(save_path, m_NodeManager.GetRootNetwork());
+
       }
       if( ImGui::MenuItem("Load", "Ctrl+L")) {
 
