@@ -151,7 +151,7 @@ public:
     void Update() override;
 };
 
-class SubnetNode : public ImGuiNode
+class SubnetNode : public ImGuiNode, public std::enable_shared_from_this<SubnetNode>
 {
 public:
     SubnetNode():ImGuiNode("subnet")
@@ -175,6 +175,7 @@ public:
   void Update() {
     auto node = static_cast<ImGuiNode *>(this);
     auto op = static_cast<T *>(this);
+    auto subnet_ptr = dynamic_cast<SubnetNode*>(op);
     if(!node->IsMultiInput()) {
         
         for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
@@ -184,11 +185,15 @@ public:
         }
     }else{
         for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
-        if (node->GetMultiInput(i) != nullptr) {
-            node->GetMultiInput(i)->Update(); /* Important !!*/
-        }
+            if (node->GetMultiInput(i) != nullptr) {
+                node->GetMultiInput(i)->Update(); /* Important !!*/
+            }
         }
 
+    }
+
+    if(subnet_ptr != nullptr) {
+        subnet_ptr->Update();
     }
     op->Generate();
   }
