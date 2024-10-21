@@ -26,11 +26,15 @@ public:
   virtual ~StringSubnetOperator() = default;
 
   void Generate() override {
-    m_StringCache = "!!!";
-    // if (GetInput(0) != nullptr) {
-    //   auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-    //   m_StringCache = op0->m_StringCache;
-    // }
+    if (GetInput(0) != nullptr) {
+      auto op0 = std::dynamic_pointer_cast<StringOperator>(GetInput(0));
+      if(op0 != nullptr){
+        m_StringCache = op0->m_StringCache;
+      }
+    }else{
+
+      m_StringCache = "!!!";
+    }
   }
 
 public : 

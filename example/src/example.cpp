@@ -49,15 +49,12 @@ int main() {
           auto subnet_op = std::dynamic_pointer_cast<StringSubnetOperator>(manager.GetOutputNode());
           auto op = std::dynamic_pointer_cast<StringOperator>(manager.GetOutputNode());
           if(subnet_op != nullptr){
-
             std::cout << "ManagerUpdate Event SUBNET !!!!!!!" << std::endl;
-          }
-          if(op != nullptr){
-
+            std::cout << "m_StringCache -> " << subnet_op->m_StringCache << std::endl;
+          }else if(op != nullptr){
             std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
           }else{
             std::cout << "can't convert to Operator" << std::endl;
-            
           }
         }
 
