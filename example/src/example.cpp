@@ -13,7 +13,7 @@ int main() {
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenatorMulti, "concatmulti", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringNull, "null node","utility");
-  REGISTER_NODE_TYPE(NodeEditor::StringSubnet, "Subnetwork", "utility");
+  REGISTER_NODE_TYPE(NodeEditor::StringSubnetOperator, "Subnetwork", "utility");
 
   Application app;
 
@@ -46,8 +46,19 @@ int main() {
         auto &manager = app.GetNodeManager();
         manager.Evaluate();
         if(manager.GetOutputNode() != nullptr){
-          auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
-          std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
+          auto subnet_op = std::dynamic_pointer_cast<StringSubnetOperator>(manager.GetOutputNode());
+          auto op = std::dynamic_pointer_cast<StringOperator>(manager.GetOutputNode());
+          if(subnet_op != nullptr){
+
+            std::cout << "ManagerUpdate Event SUBNET !!!!!!!" << std::endl;
+          }
+          if(op != nullptr){
+
+            std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
+          }else{
+            std::cout << "can't convert to Operator" << std::endl;
+            
+          }
         }
 
       });
@@ -110,7 +121,7 @@ void add_example_nodes(NodeManager &manager) {
   manager.AddNode(concat_multi_node);
 
 
-  auto subnet = std::make_shared<Node<StringSubnet>>("Subnet");
+  auto subnet = std::make_shared<Node<StringSubnetOperator>>("Subnet");
   subnet->position = ImVec2(650, 800);
   subnet->SetInput(0, concat_multi_node);
   manager.AddNode(subnet);

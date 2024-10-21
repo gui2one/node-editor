@@ -22,11 +22,19 @@ public:
 
 class StringSubnetOperator : public SubnetNode {
 public:
-  StringSubnetOperator() : SubnetNode("SubnetNode") {};
-  ~StringSubnetOperator() = default;
+  StringSubnetOperator() : SubnetNode() {};
+  virtual ~StringSubnetOperator() = default;
 
-// public:
-//   NodeNetwork network;
+  void Generate() override {
+    m_StringCache = "!!!";
+    // if (GetInput(0) != nullptr) {
+    //   auto op0 = static_cast<StringOperator *>(GetInput(0).get());
+    //   m_StringCache = op0->m_StringCache;
+    // }
+  }
+
+public : 
+  std::string m_StringCache = "";
 };
 
 
@@ -180,19 +188,27 @@ public:
   }
 };
 
-class StringSubnet : public StringSubnetOperator {
-public:
-  StringSubnet() : StringSubnetOperator() {
-    // SetNumAvailableInputs(1);
-  };
-  ~StringSubnet() {};
+// class StringSubnet : public StringSubnetOperator {
+// public:
+//   StringSubnet() : StringSubnetOperator() {
+//     // SetNumAvailableInputs(1);
+//   };
+//   ~StringSubnet() {};
 
-  void Generate() override {
-    if (GetInput(0) != nullptr) {
-      auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-      // m_StringCache = op0->m_StringCache;
-    }
-  }
-}; // namespace NodeEditor
-};
+//   void Update() override {
+//     std::cout << "StringSubnet::Update" << std::endl;
+//   }
+//   void Generate() override {
+//     std::cout << "Doing nothing .... " ;
+//     std::cout << m_StringCache << std::endl;
+//     // if (GetInput(0) != nullptr) {
+//     //   // auto op0 = static_cast<StringOperator *>(GetInput(0).get());
+//     //   // m_StringCache = "ok !!";
+
+//     // }
+//   }
+// public:
+//   std::string m_StringCache = "haaaa !!!";
+// }; 
+};// namespace NodeEditor
 #endif

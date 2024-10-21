@@ -154,19 +154,17 @@ public:
 class SubnetNode : public ImGuiNode
 {
 public:
-    SubnetNode(const char *_title) : ImGuiNode(_title){
+    SubnetNode():ImGuiNode("subnet")
+    {
         SetNumAvailableInputs(4);
-        color = NODE_COLOR::BLUE;
     }
-    
-    void Update() override;
+
+
 public:
     NodeNetwork node_network;
 };
 
 template <typename T> class Node : public T {
-//   static_assert(std::is_base_of<BaseClass, T>::value,
-//                 "T must be derived from StringOperator");
 
 public:
   Node(const char *_title) {

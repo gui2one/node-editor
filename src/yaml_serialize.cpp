@@ -6,7 +6,7 @@ YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor
 }
 namespace NodeEditor {
 
-YAML::Node serialize_network(NodeNetwork &network)
+YAML::Node serialize_network(NodeNetwork network)
 {
   YAML::Node output;
   if(network.outuput_node != nullptr){

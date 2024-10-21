@@ -122,11 +122,5 @@ ParamLayoutItem& ParamLayout::Get(size_t idx) {
   return items[idx];
 }
 
-void SubnetNode::Update() { 
-  std::cout << "SubnetNode::Update" << std::endl;
-  // if (GetInput(0) != nullptr) {
-  //   GetInput(0)->Update();
-  // }
-}
   
 }; // namespace NodeEditor
