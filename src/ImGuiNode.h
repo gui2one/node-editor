@@ -165,6 +165,8 @@ public:
     SubnetInputNode():ImGuiNode("subnet_input")
     {
         SetNumAvailableInputs(0);
+        size.x = 50.0f;
+        size.y = 50.0f;
     }
 
     void Update() override{}
