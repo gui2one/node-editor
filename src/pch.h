@@ -32,6 +32,7 @@
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
+#include <misc/cpp/imgui_stdlib.h> /* for std::string in ImGui::InputText() */
 
 #define GLM_ENABLE_EXPERIMENTAL 
 #include <glm/glm.hpp>

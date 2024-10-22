@@ -1,6 +1,6 @@
 #include "NodeManager.h"
 #include "NodeParam.h"
-#include "misc/cpp/imgui_stdlib.h"
+
 // #include "Application.h"
 namespace NodeEditor {
 NodeManager::NodeManager() {
