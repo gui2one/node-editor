@@ -1,5 +1,6 @@
 #include "NodeManager.h"
 #include "NodeParam.h"
+#include "misc/cpp/imgui_stdlib.h"
 // #include "Application.h"
 namespace NodeEditor {
 NodeManager::NodeManager() {
@@ -341,6 +342,8 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node) {
     return;
 
   ImGui::Begin("Params");
+  ImGui::InputText("Node Name", &node->title);
+  ImGui::Separator();
   for (auto item : node->m_ParamLayout.items) {
     item.param->Display();
   }

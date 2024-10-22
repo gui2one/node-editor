@@ -24,6 +24,8 @@ set(imgui_sources
   # imgui stuff
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp
+  
+  ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/misc/cpp/imgui_stdlib.cpp
 
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui.cpp
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/imgui_demo.cpp
