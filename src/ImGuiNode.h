@@ -15,7 +15,6 @@ constexpr uint32_t MAX_N_INPUTS = 4;
 
 namespace NodeEditor {
 
-
 // forward declaration
 class NodeParam;
 struct NodeNetwork;
@@ -54,7 +53,6 @@ struct InputConnector
     bool hovered = false;
     bool grabbed = false;
 };
-
 
 struct ParamLayoutItem{
     std::string name;
@@ -128,7 +126,6 @@ private:
     std::vector<InputConnector> m_InputConnectors;
 };
 
-
 using NODE_COLLECTION = std::vector<std::shared_ptr<ImGuiNode>>; 
 struct NodeNetwork{
 
@@ -137,8 +134,6 @@ struct NodeNetwork{
 
     void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
 };
-
-
 
 class OUTPUT_NODE : public ImGuiNode
 {
@@ -151,7 +146,7 @@ public:
     void Update() override;
 };
 
-class SubnetNode : public ImGuiNode, public std::enable_shared_from_this<SubnetNode>
+class SubnetNode : public ImGuiNode
 {
 public:
     SubnetNode():ImGuiNode("subnet")
