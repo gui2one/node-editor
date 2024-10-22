@@ -191,9 +191,11 @@ public:
         if( subnet_ptr->node_network.outuput_node != nullptr){
 
             subnet_ptr->node_network.outuput_node->Update();
+            
+            // op->m_StringCache = subnet_ptr->node_network.outuput_node->m_StringCache;
         }else{
             std::cout << "Subnet has no ouput Node" << std::endl;
-            
+            op->m_StringCache = "--- empty nodeNetwork ---";
         }
     }
     op->Generate();
