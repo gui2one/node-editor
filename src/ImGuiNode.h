@@ -154,9 +154,23 @@ public:
         SetNumAvailableInputs(4);
     }
 
-
 public:
     NodeNetwork node_network;
+};
+
+template <typename T> 
+class SubnetInputNode : public ImGuiNode
+{
+public:
+    SubnetInputNode():ImGuiNode("subnet_input")
+    {
+        SetNumAvailableInputs(0);
+    }
+
+    void Update() override{}
+    void Generate() override{}    
+public:
+    T m_DataCache;
 };
 
 template <typename T> class Node : public T {
@@ -195,7 +209,7 @@ public:
             // op->m_StringCache = subnet_ptr->node_network.outuput_node->m_StringCache;
         }else{
             std::cout << "Subnet has no ouput Node" << std::endl;
-            op->m_StringCache = "--- empty nodeNetwork ---";
+            // op->m_StringCache = "--- empty nodeNetwork ---";
         }
     }
     op->Generate();

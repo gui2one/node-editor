@@ -14,6 +14,7 @@ int main() {
   REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringNull, "null node","utility");
   REGISTER_NODE_TYPE(NodeEditor::StringSubnetOperator, "Subnetwork", "utility");
+  REGISTER_NODE_TYPE(NodeEditor::SubnetInputNode<std::string>, "SubnetInputNode", "utility");
 
   Application app;
 
