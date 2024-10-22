@@ -22,9 +22,7 @@ bool Application::Init() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  std::string _title = std::string(m_WindowData.title) + " | " + m_WindowData.current_path.string();
-  m_NativeWindow = glfwCreateWindow(m_WindowData.width, m_WindowData.height,
-                                    _title.c_str(), NULL, NULL);
+  m_NativeWindow = glfwCreateWindow(640, 480, "no title yet", NULL, NULL);
   
 
   if (m_NativeWindow == NULL) {
@@ -41,70 +39,10 @@ bool Application::Init() {
     return false;
   }
 
-  glfwSetWindowUserPointer(m_NativeWindow, &m_WindowData);
-
   auto &node_manager = this->GetNodeManager();
   static auto &dispatcher = EventManager::GetInstance();
 
-  glfwSetMouseButtonCallback(
-      m_NativeWindow, [](GLFWwindow *window, int button, int action, int mods) {
-        // WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
-        double mouseX, mouseY;
-        glfwGetCursorPos(window, &mouseX, &mouseY);
-        if (action == GLFW_PRESS) {
-          MouseClickEvent clickEvent(button, (float)mouseX, (float)mouseY);
-          dispatcher.Dispatch(clickEvent);
-        } else if (action == GLFW_RELEASE) {
-          MouseReleaseEvent releaseEvent(button);
-          dispatcher.Dispatch(releaseEvent);
-        }
-      });
-
-  glfwSetCursorPosCallback(m_NativeWindow,
-                           [](GLFWwindow *window, double xpos, double ypos) {
-                             MouseMoveEvent moveEvent((float)xpos, (float)ypos);
-                             dispatcher.Dispatch(moveEvent);
-                           });
-
-  glfwSetKeyCallback(m_NativeWindow, [](GLFWwindow *window, int key,
-                                        int scancode, int action, int mods) {
-    if (action == GLFW_PRESS) {
-      KeyPressEvent pressEvent(key, mods);
-      dispatcher.Dispatch(pressEvent);
-    }
-  });
-
-  glfwSetFramebufferSizeCallback(
-      m_NativeWindow, [](GLFWwindow *window, int width, int height) {
-        WindowData *data = (WindowData *)glfwGetWindowUserPointer(window);
-        data->width = width;
-        data->height = height;
-        glViewport(0, 0, width, height);
-      });
-
-  // add event listeners !!!
-  dispatcher.Subscribe(EventType::MouseClick,
-                       [&node_manager](const NodeEditor::Event &event) {
-                         node_manager.OnMouseClick(event);
-                       });
-  dispatcher.Subscribe(EventType::MouseDoubleClick,
-                       [&node_manager](const NodeEditor::Event &event) {
-                         node_manager.OnMouseDoubleClick(event);
-                        //  std::cout << "double click From Application class" << std::endl;
-                         
-                       });
-  dispatcher.Subscribe(EventType::MouseRelease,
-                       [&node_manager](const NodeEditor::Event &event) {
-                         node_manager.OnMouseRelease(event);
-                       });
-  dispatcher.Subscribe(EventType::MouseMove,
-                       [&node_manager](const NodeEditor::Event &event) {
-                         node_manager.OnMouseMove(event);
-                       });
-  dispatcher.Subscribe(EventType::KeyPress,
-                       [&node_manager](const NodeEditor::Event &event) {
-                         node_manager.OnKeyPress(event);
-                       });
+  node_manager.InitGLFWEvents();
 
   ImGuiInit(m_NativeWindow);
 

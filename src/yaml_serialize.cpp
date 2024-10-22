@@ -80,9 +80,7 @@ std::shared_ptr<ImGuiNode> deserialize_node(YAML::Node yaml_node) {
     }
 
     auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(factory_node);
-    if( subnet_ptr != nullptr){
-      std::cout << "TRYING TO deserialize a subnet OPERATOR" << std::endl;
-      
+    if( subnet_ptr != nullptr){      
       NodeNetwork net;
       net = deserialize_network(yaml_node["network"]);
 

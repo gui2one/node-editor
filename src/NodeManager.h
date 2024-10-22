@@ -7,6 +7,19 @@
 
 namespace NodeEditor {
 
+
+struct WindowData{
+    int width = 1280;
+    int height = 720;
+
+    int mouseX = 0;
+    int mouseY = 0;
+    const char* title = "Stringinator 3000";
+
+    std::filesystem::path current_path;
+};
+
+
 struct ConnectionProcedure{
     enum Direction{
         CHILD_TO_PARENT = 0,
@@ -40,6 +53,8 @@ public:
     NodeManager();
     ~NodeManager();
     
+
+    void InitGLFWEvents();
     /// @brief Computes result for all 'parents' of m_OutputNode.
     /// does nothing if m_OutputNode == nullptr
     void Evaluate();
@@ -98,6 +113,7 @@ private:
     void SetNodesMenu(std::function<void()> func);
     void BuildNodeMenuFromRegistry();
 public:
+    WindowData m_WindowData;
     ViewProperties m_ViewProps;
     std::shared_ptr<ImGuiNode> m_CurrentNode = nullptr;
     std::filesystem::path m_SavePath = "";

@@ -12,6 +12,68 @@ NodeManager::NodeManager() {
 
 NodeManager::~NodeManager() {}
 
+void NodeManager::InitGLFWEvents() {
+  static auto& dispatcher = EventManager::GetInstance();
+
+  glfwSetWindowUserPointer(GetGLFWWindow(), &m_WindowData);
+
+  glfwSetMouseButtonCallback(
+      GetGLFWWindow(), [](GLFWwindow *window, int button, int action, int mods) {
+        // WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
+        if (action == GLFW_PRESS) {
+          MouseClickEvent clickEvent(button, (float)mouseX, (float)mouseY);
+          dispatcher.Dispatch(clickEvent);
+        } else if (action == GLFW_RELEASE) {
+          MouseReleaseEvent releaseEvent(button);
+          dispatcher.Dispatch(releaseEvent);
+        }
+      });
+
+  glfwSetCursorPosCallback(GetGLFWWindow(),
+                           [](GLFWwindow *window, double xpos, double ypos) {
+                             MouseMoveEvent moveEvent((float)xpos, (float)ypos);
+                             dispatcher.Dispatch(moveEvent);
+                           });
+
+  glfwSetKeyCallback(GetGLFWWindow(), [](GLFWwindow *window, int key,
+                                        int scancode, int action, int mods) {
+    if (action == GLFW_PRESS) {
+      KeyPressEvent pressEvent(key, mods);
+      dispatcher.Dispatch(pressEvent);
+    }
+  });
+
+  glfwSetFramebufferSizeCallback(
+      GetGLFWWindow(), [](GLFWwindow *window, int width, int height) {
+        WindowData *data = (WindowData *)glfwGetWindowUserPointer(window);
+        data->width = width;
+        data->height = height;
+        glViewport(0, 0, width, height);
+      });  
+  dispatcher.Subscribe(EventType::MouseClick,
+                       [this](const NodeEditor::Event &event) {
+                         this->OnMouseClick(event);
+                       });
+  dispatcher.Subscribe(EventType::MouseDoubleClick,
+                       [this](const NodeEditor::Event &event) {
+                         this->OnMouseDoubleClick(event);
+                       });
+  dispatcher.Subscribe(EventType::MouseRelease,
+                       [this](const NodeEditor::Event &event) {
+                         this->OnMouseRelease(event);
+                       });
+  dispatcher.Subscribe(EventType::MouseMove,
+                       [this](const NodeEditor::Event &event) {
+                         this->OnMouseMove(event);
+                       });
+  dispatcher.Subscribe(EventType::KeyPress,
+                       [this](const NodeEditor::Event &event) {
+                         this->OnKeyPress(event);
+                       });  
+}
+
 std::shared_ptr<ImGuiNode> NodeManager::FindNodeByUUID(std::string uuid)
 {
   for(auto node : GetNodes()) {
@@ -424,6 +486,7 @@ void NodeManager::LoadAll() {
 
   NodeNetwork net = load_yaml_file(m_SavePath);
   m_NodeNetwork = net;
+  ViewFrameAll();
 }
 
 void NodeManager::OnMouseMove(const Event &event) {
