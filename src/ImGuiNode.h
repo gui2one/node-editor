@@ -129,7 +129,7 @@ private:
 using NODE_COLLECTION = std::vector<std::shared_ptr<ImGuiNode>>; 
 struct NodeNetwork{
 
-    std::shared_ptr<ImGuiNode> outuput_node;
+    std::shared_ptr<ImGuiNode> outuput_node = nullptr;
     std::vector<std::shared_ptr<ImGuiNode>> nodes;
 
     void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
@@ -188,7 +188,13 @@ public:
     }
 
     if(subnet_ptr != nullptr) {
-        subnet_ptr->Update();
+        if( subnet_ptr->node_network.outuput_node != nullptr){
+
+            subnet_ptr->node_network.outuput_node->Update();
+        }else{
+            std::cout << "Subnet has no ouput Node" << std::endl;
+            
+        }
     }
     op->Generate();
   }

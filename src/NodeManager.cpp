@@ -589,9 +589,9 @@ void NodeManager::OnMouseRelease(const Event &event) {
 void NodeManager::OnKeyPress(const Event &event) {
   if (!m_ViewProps.canvasHovered)
     return;
-  const KeyPressEvent &clickEvent = static_cast<const KeyPressEvent &>(event);
+  const KeyPressEvent &keyEvent = static_cast<const KeyPressEvent &>(event);
   
-  switch(clickEvent.key) {
+  switch(keyEvent.key) {
     case GLFW_KEY_BACKSPACE:
       if (m_CurrentNode != nullptr) {
         auto it = std::find(GetNodes().begin(), GetNodes().end(), m_CurrentNode);
@@ -610,7 +610,7 @@ void NodeManager::OnKeyPress(const Event &event) {
       break;
 
     case GLFW_KEY_S:
-      if(clickEvent.mods & GLFW_MOD_CONTROL){
+      if(keyEvent.mods & GLFW_MOD_CONTROL){
         SaveAll();
       }
       break;
@@ -618,7 +618,7 @@ void NodeManager::OnKeyPress(const Event &event) {
     default:
       break;
   }
-  if (clickEvent.key == GLFW_KEY_F) {
+  if (keyEvent.key == GLFW_KEY_F) {
     ViewFrameAll();
   }
 }
