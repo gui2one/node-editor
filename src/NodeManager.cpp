@@ -537,6 +537,9 @@ void NodeManager::OnMouseClick(const Event &event) {
 
 void NodeManager::OnMouseDoubleClick(const Event &event)
 {
+  if(m_CurrentNode == nullptr){
+    return;
+  }
   if(IsNodeHovered(m_CurrentNode)){
     auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(m_CurrentNode);
     if(subnet_ptr != nullptr){

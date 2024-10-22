@@ -65,10 +65,6 @@ YAML::Node ImGuiNode::YAMLSerialize() {
   if(subnet_ptr != nullptr){
     auto network = subnet_ptr->node_network;
     yaml_node["network"] = serialize_network(network);
-    // for(auto node : network.nodes){
-      
-    //   yaml_node["children"].push_back(node->YAMLSerialize());
-    // }
   }
   return yaml_node; 
   
