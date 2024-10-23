@@ -19,9 +19,25 @@ constexpr uint32_t MAX_N_INPUTS = 4;
 
 namespace NodeEditor {
 
-// forward declaration
-// class NodeParam;
-// template<typename T> class SubnetNode<T>;
+
+struct ParamLayoutItem{
+    std::string name;
+    std::shared_ptr<NodeParam> param;
+};
+struct ParamLayout{
+    std::vector<ParamLayoutItem> items;
+    ParamLayoutItem& Get(size_t idx){
+        return items[idx];
+    }
+};
+struct InputConnector
+{
+    ImVec2 relative_pos;
+    uint32_t index;
+    float width = 5.0f; 
+    bool hovered = false;
+    bool grabbed = false;
+};
 
 
 enum NODE_COLOR
@@ -50,37 +66,132 @@ enum NODE_COLOR
     YELLOW = (ImU32)IM_COL32(255, 255, 0, 255)
 };
 
-struct InputConnector
-{
-    ImVec2 relative_pos;
-    uint32_t index;
-    float width = 5.0f; 
-    bool hovered = false;
+class AbstractNode{
+
+public:
+    AbstractNode() = default;
+    virtual ~AbstractNode() = default;
+
+    virtual void Update() = 0; // implemented lower, in the Node<T> class
+    virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
+
+    
+
+
+
+    void SetInput(uint32_t index, std::shared_ptr<AbstractNode> node) {
+    if (index < 0 || index > 3)
+        return;
+    inputs[index] = node;
+    }
+
+    void ResetInput(uint32_t index){
+        if (index < 0 || index > 3)
+            return;
+        inputs[index] = nullptr;
+    }
+    std::shared_ptr<AbstractNode> GetInput(uint32_t index)
+    {
+        if (index < 0 || index > 3)
+            return nullptr;
+        return inputs[index];
+    }
+
+
+    InputConnector* GetInputConnector(uint32_t index)
+    {
+        if (index < 0 || index >= GetNumAvailableInputs())
+        {
+            std::cout << "Problem with GetInputConnector" << std::endl;
+
+            return nullptr;
+        }
+        return &m_InputConnectors[index];
+    }
+
+    void RemoveLastInput() {
+        if(m_MultiInput.size() > 0){
+
+            m_MultiInput.pop_back();
+        }
+    }    
+
+    inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
+
+    inline size_t GetMultiInputCount() { return m_MultiInput.size(); }
+    inline std::shared_ptr<AbstractNode> GetMultiInput(size_t index) { return m_MultiInput[index]; }
+    inline void AppendInput(std::shared_ptr<AbstractNode> node) { m_MultiInput.push_back(node); }
+
+    inline void ActivateMultiInput() { m_IsMultiInput = true; }
+    inline bool IsMultiInput() { return m_IsMultiInput; }
+
+    void SetNumAvailableInputs(uint32_t num)
+    {
+        if (num > MAX_N_INPUTS)
+        {
+            std::cout << "Too many inputs" << std::endl;
+            num = MAX_N_INPUTS;
+        }
+        m_NumAvailableInputs = num;
+        InitInputConnectors();
+    }
+
+    void InitInputConnectors(){
+        m_InputConnectors.clear();
+        uint32_t num_spots = GetNumAvailableInputs();
+
+        if (num_spots == 0)
+            return;
+
+        float spot_width = size.x / num_spots;
+        for (uint32_t i = 0; i < num_spots; i++) {
+            float x = spot_width * i + spot_width / 2.0f;
+            float y = -4.0f;
+            InputConnector connector;
+            connector.index = i;
+            connector.relative_pos = ImVec2(x, y);
+            m_InputConnectors.push_back(connector);
+        }
+    }
+
+
+private:
+    uint32_t m_NumAvailableInputs = 1;
+    bool m_IsMultiInput = false;
+
+public:
+    std::string uuid;
+    std::string title;
+    NODE_COLOR color;
+    ImVec2 position;
+    ImVec2 size;
+    ParamLayout m_ParamLayout;
+
+    bool selected = false;
     bool grabbed = false;
+    bool highlighted = false;
+
+    std::array<std::shared_ptr<AbstractNode>, MAX_N_INPUTS> inputs = {nullptr, nullptr, nullptr, nullptr};
+    std::vector<std::shared_ptr<AbstractNode>> m_MultiInput;
+    std::vector<InputConnector> m_InputConnectors;    
 };
 
-struct ParamLayoutItem{
-    std::string name;
-    std::shared_ptr<NodeParam> param;
-};
-struct ParamLayout{
-    std::vector<ParamLayoutItem> items;
-    ParamLayoutItem& Get(size_t idx){
-        return items[idx];
-    }
-};
+
 
 template<typename T>
-class ImGuiNode
+class ImGuiNode : public AbstractNode
 {
 public:
-    ImGuiNode(std::string _title): title(_title), position(500, 500), size(100, 30), color(NODE_COLOR::DARK_GREY) {
+    ImGuiNode<T>(std::string _title): 
+        AbstractNode(),
+        title(_title), position(500, 500), size(100, 30), color(NODE_COLOR::DARK_GREY) 
+    {
         uuid = generate_uuid();        
     }
     ~ImGuiNode(){};
 
-    virtual void Update() = 0; // implemented lower, in the Node<T> class
-    virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
+    // virtual void Update() = 0; // implemented lower, in the Node<T> class
+    // virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
     
     YAML::Node YAMLSerialize() { 
         YAML::Node yaml_node;
@@ -119,136 +230,43 @@ public:
         // }
         return yaml_node;     
     }
-    
 
-
-
-    void SetInput(uint32_t index, std::shared_ptr<ImGuiNode> node) {
-    if (index < 0 || index > 3)
-        return;
-    inputs[index] = node;
-    }
-
-    void ResetInput(uint32_t index){
-        if (index < 0 || index > 3)
-            return;
-        inputs[index] = nullptr;
-    }
-    std::shared_ptr<ImGuiNode> GetInput(uint32_t index)
-    {
-        if (index < 0 || index > 3)
-            return nullptr;
-        return inputs[index];
-    }
-
-
-    InputConnector* GetInputConnector(uint32_t index)
-    {
-        if (index < 0 || index >= GetNumAvailableInputs())
-        {
-            std::cout << "Problem with GetInputConnector" << std::endl;
-
-            return nullptr;
-        }
-        return &m_InputConnectors[index];
-    }
-
-    void RemoveLastInput() {
-        if(m_MultiInput.size() > 0){
-
-            m_MultiInput.pop_back();
-        }
-    }    
-
-    inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
-
-    inline size_t GetMultiInputCount() { return m_MultiInput.size(); }
-    inline std::shared_ptr<ImGuiNode> GetMultiInput(size_t index) { return m_MultiInput[index]; }
-    inline void AppendInput(std::shared_ptr<ImGuiNode> node) { m_MultiInput.push_back(node); }
-
-    inline void ActivateMultiInput() { m_IsMultiInput = true; }
-    inline bool IsMultiInput() { return m_IsMultiInput; }
-
-protected:
-    inline void SetNumAvailableInputs(uint32_t num)
-    {
-        if (num > MAX_N_INPUTS)
-        {
-            std::cout << "Too many inputs" << std::endl;
-            num = MAX_N_INPUTS;
-        }
-        m_NumAvailableInputs = num;
-        InitInputConnectors();
-    }
-
-    void InitInputConnectors(){
-        m_InputConnectors.clear();
-        uint32_t num_spots = GetNumAvailableInputs();
-
-        if (num_spots == 0)
-            return;
-
-        float spot_width = size.x / num_spots;
-        for (uint32_t i = 0; i < num_spots; i++) {
-            float x = spot_width * i + spot_width / 2.0f;
-            float y = -4.0f;
-            InputConnector connector;
-            connector.index = i;
-            connector.relative_pos = ImVec2(x, y);
-            m_InputConnectors.push_back(connector);
-        }
-    }
 
 public:
     T m_Datacache;
-    std::string uuid;
-    std::string title;
-    NODE_COLOR color;
-    ImVec2 position;
-    ImVec2 size;
-    ParamLayout m_ParamLayout;
 
-    bool selected = false;
-    bool grabbed = false;
-    bool highlighted = false;
-
-private:
-    uint32_t m_NumAvailableInputs = 1;
-    bool m_IsMultiInput = false;
-
-private:
-    std::array<std::shared_ptr<ImGuiNode>, MAX_N_INPUTS> inputs = {nullptr, nullptr, nullptr, nullptr};
-    std::vector<std::shared_ptr<ImGuiNode>> m_MultiInput;
-    std::vector<InputConnector> m_InputConnectors;
-};
-
-
-template<typename T>
-class SubnetNode : public ImGuiNode<T>
-{
-public:
-    SubnetNode();
-
-public:
-    NodeNetwork<T> node_network;
 };
 
 
 
-template<typename T>
 struct NodeNetwork{
 
-    std::shared_ptr<ImGuiNode<T>> outuput_node = nullptr;
-    std::vector<std::shared_ptr<ImGuiNode<T>>> nodes;
+    std::shared_ptr<AbstractNode> outuput_node = nullptr;
+    std::vector<std::shared_ptr<AbstractNode>> nodes;
 
-    void AddNode(std::shared_ptr<ImGuiNode<T>> _node) { nodes.push_back(_node); }
+    void AddNode(std::shared_ptr<AbstractNode> _node) { nodes.push_back(_node); }
 };
 
-template <typename T> 
-class SubnetInputNode : public ImGuiNode
+
+class SubnetNode : public AbstractNode
 {
 public:
-    SubnetInputNode():ImGuiNode("subnet_input")
+    SubnetNode():AbstractNode()
+    {
+        SetNumAvailableInputs(4);
+    }
+
+public:
+    NodeNetwork node_network;
+};
+
+
+
+template <typename T> 
+class SubnetInputNode : public AbstractNode
+{
+public:
+    SubnetInputNode():ImGuiNode<T>("subnet_input")
     {
         SetNumAvailableInputs(0);
         size.x = 50.0f;
@@ -310,9 +328,6 @@ public:
 
 
 }; // namespace NodeEditor
-
-
-// implement ImGuiNode 
 
 
 #endif

@@ -1,6 +1,6 @@
 #include "yaml_serialize.h"
 
-YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::ImGuiNode>& node) {
+YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::AbstractNode>& node) {
   out << node->YAMLSerialize();
   return out;
 }
@@ -21,7 +21,7 @@ YAML::Node serialize_network(NodeNetwork network)
   return output;
 }
 
-YAML::Node serialize_nodes(std::vector<std::shared_ptr<ImGuiNode>> nodes) {
+YAML::Node serialize_nodes(std::vector<std::shared_ptr<AbstractNode>> nodes) {
 
   YAML::Node output;
   for(auto node : nodes) {
@@ -42,7 +42,7 @@ void save_all(std::filesystem::path path, NodeNetwork &network)
   
 }
 
-std::shared_ptr<ImGuiNode> deserialize_node(YAML::Node yaml_node) {
+std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
 
     std::string type_name = yaml_node["type"].as<std::string>();
 
@@ -104,11 +104,11 @@ NodeNetwork deserialize_network(YAML::Node yaml)
   return network;
 }
 
-std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(YAML::Node yaml)
+std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml)
 {
 
     // YAML::Node output = YAML::Load(yaml);
-    std::vector<std::shared_ptr<ImGuiNode>> nodes;
+    std::vector<std::shared_ptr<AbstractNode>> nodes;
     for (auto node : yaml)
     {
 
@@ -158,7 +158,7 @@ NodeNetwork load_yaml_file(std::filesystem::path path)
 {
   std::ifstream saved_file(path.string());
   std::string content((std::istreambuf_iterator<char>(saved_file)), std::istreambuf_iterator<char>());  
-  std::vector<std::shared_ptr<ImGuiNode>> nodes;
+  std::vector<std::shared_ptr<AbstractNode>> nodes;
   YAML::Node output = YAML::Load(content);
 
   auto network = deserialize_network(output);

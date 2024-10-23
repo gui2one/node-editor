@@ -72,8 +72,8 @@ struct convert<glm::vec3> {
 };
 
 template<>
-struct convert<std::shared_ptr<NodeEditor::ImGuiNode>> {
-  static Node encode(const std::shared_ptr<NodeEditor::ImGuiNode>& rhs) {
+struct convert<std::shared_ptr<NodeEditor::AbstractNode>> {
+  static Node encode(const std::shared_ptr<NodeEditor::AbstractNode>& rhs) {
     Node node;
     node["title"] = rhs->title;
     node["position"] = rhs->position;
@@ -81,7 +81,7 @@ struct convert<std::shared_ptr<NodeEditor::ImGuiNode>> {
     return node;
   }
 
-  static bool decode(const Node& node, std::shared_ptr<NodeEditor::ImGuiNode>& rhs) {
+  static bool decode(const Node& node, std::shared_ptr<NodeEditor::AbstractNode>& rhs) {
     if(!node.IsMap() || node.size() != 3) {
       return false;
     }

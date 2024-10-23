@@ -75,7 +75,7 @@ void NodeManager::InitGLFWEvents() {
                        });  
 }
 
-std::shared_ptr<ImGuiNode> NodeManager::FindNodeByUUID(std::string uuid)
+std::shared_ptr<AbstractNode> NodeManager::FindNodeByUUID(std::string uuid)
 {
   for(auto node : GetNodes()) {
     if(node->uuid == uuid) {
@@ -132,7 +132,7 @@ void NodeManager::DrawNodes() {
   }
   // draw connections first
   for (auto node : GetNodes()) {
-    auto ptr = static_cast<ImGuiNode *>(node.get());
+    auto ptr = static_cast<AbstractNode *>(node.get());
     for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
 
       if (ptr->GetInput(i) != nullptr) {
@@ -206,7 +206,7 @@ void NodeManager::DrawNodes() {
   }
 
   for (auto node : GetNodes()) {
-    auto ptr = static_cast<ImGuiNode *>(node.get());
+    auto ptr = static_cast<AbstractNode *>(node.get());
 
     // input 'connectors'
     for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
@@ -337,7 +337,7 @@ void NodeManager::DrawCanvas() {
   draw_list->PopClipRect();
 }
 
-void NodeManager::DisplayNodeParams(std::shared_ptr<ImGuiNode> node) {
+void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   if (node == nullptr)
     return;
 
@@ -360,7 +360,7 @@ void NodeManager::Evaluate() {
   }
 }
 
-void NodeManager::SetOutputNode(std::shared_ptr<ImGuiNode> node) {
+void NodeManager::SetOutputNode(std::shared_ptr<AbstractNode> node) {
   // m_OutputNode = node;
   if(m_CurrentNetwork != nullptr){
     m_CurrentNetwork->outuput_node = node;
@@ -377,7 +377,7 @@ ImVec2 NodeManager::ToScreenSpace(ImVec2 pos)
     return (pos + m_ViewProps.scrolling + m_ViewProps.canvasPos) * (m_ViewProps.zoom);
 }
 
-bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
+bool NodeManager::IsNodeHovered(std::shared_ptr<AbstractNode> node)
 {
     ImVec2 min = ToScreenSpace(node->position);
     ImVec2 max = min + node->size;
@@ -393,12 +393,12 @@ bool NodeManager::IsNodeHovered(std::shared_ptr<ImGuiNode> node)
     return hovered;
 }
 
-bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint32_t index) {
+bool NodeManager::IsInputConnectorHovered(std::shared_ptr<AbstractNode> node, uint32_t index) {
   double cursor_x, cursor_y;
   glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
   bool hovered = false;
 
-  auto ptr = static_cast<ImGuiNode *>(node.get());
+  auto ptr = static_cast<AbstractNode *>(node.get());
   InputConnector *connector = ptr->GetInputConnector(index);
   ImVec2 connector_pos = ToScreenSpace(node->position + connector->relative_pos);
 
@@ -413,7 +413,7 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<ImGuiNode> node, uint3
   return hovered;
 }
 
-bool NodeManager::IsNodeMultiInputConnectorHovered(std::shared_ptr<ImGuiNode> node)
+bool NodeManager::IsNodeMultiInputConnectorHovered(std::shared_ptr<AbstractNode> node)
 {
   if(!node->IsMultiInput())  return false;
 
@@ -499,7 +499,7 @@ void NodeManager::OnMouseMove(const Event &event) {
   const MouseMoveEvent &moveEvent = static_cast<const MouseMoveEvent &>(event);
   static ImVec2 old_pos = ImVec2(0, 0);
   ImVec2 delta = ImVec2(moveEvent.x, moveEvent.y) - old_pos;
-  std::shared_ptr<ImGuiNode> hovered_node = nullptr;
+  std::shared_ptr<AbstractNode> hovered_node = nullptr;
 
   
   if(ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
@@ -515,7 +515,7 @@ void NodeManager::OnMouseMove(const Event &event) {
     }
 
     for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
-      auto ptr = static_cast<ImGuiNode *>(node.get());
+      auto ptr = static_cast<AbstractNode *>(node.get());
       InputConnector *connector = ptr->GetInputConnector(i);
       connector->hovered = IsInputConnectorHovered(node, i);
     }
@@ -561,7 +561,7 @@ void NodeManager::OnMouseClick(const Event &event) {
     if(!node->IsMultiInput()){
 
       for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
-        auto ptr = static_cast<ImGuiNode *>(node.get());
+        auto ptr = static_cast<AbstractNode *>(node.get());
         InputConnector *connector = ptr->GetInputConnector(i);
         if (connector->hovered) {
           clicked_something = true;
@@ -601,20 +601,7 @@ void NodeManager::OnMouseClick(const Event &event) {
   }
 }
 
-void NodeManager::OnMouseDoubleClick(const Event &event)
-{
-  if(m_CurrentNode == nullptr){
-    return;
-  }
-  if(IsNodeHovered(m_CurrentNode)){
-    auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(m_CurrentNode);
-    if(subnet_ptr != nullptr){
-      // std::cout << "double clickes on SUBNET : " << m_CurrentNode->title << std::endl;
-      m_CurrentNetwork = &subnet_ptr->node_network;
 
-    }
-  }
-}
 
 void NodeManager::OnMouseRelease(const Event &event) {
   

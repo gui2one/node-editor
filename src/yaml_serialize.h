@@ -17,18 +17,18 @@
 
 // #include "yaml_convert.h"
 
-YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::ImGuiNode>& node);
+YAML::Emitter& operator << (YAML::Emitter& out, const std::shared_ptr<NodeEditor::AbstractNode>& node);
 namespace NodeEditor {
 
 //forward declaration
 struct NodeNetwork;
 
 YAML::Node serialize_network(NodeNetwork network);
-YAML::Node serialize_nodes(std::vector<std::shared_ptr<ImGuiNode>> nodes);
+YAML::Node serialize_nodes(std::vector<std::shared_ptr<AbstractNode>> nodes);
 void save_all(std::filesystem::path path, NodeNetwork& network);
 
 NodeNetwork deserialize_network(YAML::Node yaml);
-std::vector<std::shared_ptr<ImGuiNode>> deserialize_nodes(YAML::Node yaml);
+std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml);
 NodeNetwork load_yaml_file(std::filesystem::path path);
 
 };

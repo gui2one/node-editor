@@ -3,8 +3,11 @@
 #pragma once
 
 #include "ImGuiNode.h"
+
 namespace NodeEditor {
 
+// forward declarations
+class AbstractNode;
 
 enum class EventType {
     MouseMove,
@@ -89,12 +92,12 @@ public:
 
 class NodeConnectionEvent : public Event {
 public:
-    std::shared_ptr<ImGuiNode> input_node;
+    std::shared_ptr<AbstractNode> input_node;
     uint32_t input_index;
-    std::shared_ptr<ImGuiNode> output_node;
+    std::shared_ptr<AbstractNode> output_node;
     uint32_t output_index;
 
-    NodeConnectionEvent(std::shared_ptr<ImGuiNode> input_node, uint32_t input_index, std::shared_ptr<ImGuiNode> output_node, uint32_t output_index) {}
+    NodeConnectionEvent(std::shared_ptr<AbstractNode> input_node, uint32_t input_index, std::shared_ptr<AbstractNode> output_node, uint32_t output_index) {}
     EventType GetType() const override {
         return EventType::NodeConnection;
     }    

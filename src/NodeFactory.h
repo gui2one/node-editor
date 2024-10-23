@@ -10,12 +10,12 @@ struct NodeFactoryRegistryItem{
     std::string category_name;
     std::string label;
     std::string type_name;
-    std::function<std::shared_ptr<ImGuiNode>()> factory_func;
+    std::function<std::shared_ptr<AbstractNode>()> factory_func;
 };
 // Registry to hold factories
 class NodeFactoryRegistry {
 public:
-    using FactoryFunc = std::function<std::shared_ptr<ImGuiNode>()>;
+    using FactoryFunc = std::function<std::shared_ptr<AbstractNode>()>;
 
     static NodeFactoryRegistry& instance() {
         static NodeFactoryRegistry registry;
@@ -26,7 +26,7 @@ public:
         factories[typeName] = item;
     }
 
-    std::shared_ptr<ImGuiNode> create(const std::string& typeName) const {
+    std::shared_ptr<AbstractNode> create(const std::string& typeName) const {
         auto it = factories.find(typeName);
         if (it != factories.end()) {
             return it->second.factory_func();
