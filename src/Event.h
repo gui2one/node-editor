@@ -2,10 +2,9 @@
 #define EVENT_H
 #pragma once
 
-// #include "ImGuiNode.h"
+#include "ImGuiNode.h"
 namespace NodeEditor {
 
-class ImGuiNode;
 
 enum class EventType {
     MouseMove,

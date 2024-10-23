@@ -20,8 +20,8 @@ constexpr uint32_t MAX_N_INPUTS = 4;
 namespace NodeEditor {
 
 // forward declaration
-class NodeParam;
-class SubnetNode;
+// class NodeParam;
+// template<typename T> class SubnetNode<T>;
 
 
 enum NODE_COLOR
@@ -70,17 +70,8 @@ struct ParamLayout{
     }
 };
 
-struct NodeNetwork{
-
-    std::shared_ptr<ImGuiNode> outuput_node = nullptr;
-    std::vector<std::shared_ptr<ImGuiNode>> nodes;
-
-    void AddNode(std::shared_ptr<ImGuiNode> _node) { nodes.push_back(_node); }
-};
-
-
-
-class ImGuiNode : public std::enable_shared_from_this<ImGuiNode>
+template<typename T>
+class ImGuiNode
 {
 public:
     ImGuiNode(std::string _title): title(_title), position(500, 500), size(100, 30), color(NODE_COLOR::DARK_GREY) {
@@ -121,11 +112,11 @@ public:
         }
 
         
-        auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(shared_from_this());
-        if(subnet_ptr != nullptr){
-            auto network = subnet_ptr->node_network;
-            yaml_node["network"] = serialize_network(network);
-        }
+        // auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(shared_from_this());
+        // if(subnet_ptr != nullptr){
+        //     auto network = subnet_ptr->node_network;
+        //     yaml_node["network"] = serialize_network(network);
+        // }
         return yaml_node;     
     }
     
@@ -209,7 +200,7 @@ protected:
     }
 
 public:
-
+    T m_Datacache;
     std::string uuid;
     std::string title;
     NODE_COLOR color;
@@ -231,17 +222,27 @@ private:
     std::vector<InputConnector> m_InputConnectors;
 };
 
-using NODE_COLLECTION = std::vector<std::shared_ptr<ImGuiNode>>; 
 
-class SubnetNode : public ImGuiNode
+template<typename T>
+class SubnetNode : public ImGuiNode<T>
 {
 public:
     SubnetNode();
 
 public:
-    NodeNetwork node_network;
+    NodeNetwork<T> node_network;
 };
 
+
+
+template<typename T>
+struct NodeNetwork{
+
+    std::shared_ptr<ImGuiNode<T>> outuput_node = nullptr;
+    std::vector<std::shared_ptr<ImGuiNode<T>>> nodes;
+
+    void AddNode(std::shared_ptr<ImGuiNode<T>> _node) { nodes.push_back(_node); }
+};
 
 template <typename T> 
 class SubnetInputNode : public ImGuiNode
