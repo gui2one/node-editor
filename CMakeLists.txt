@@ -49,8 +49,8 @@ add_library(${PROJECT_NAME} STATIC
 
   src/yaml_serialize.cpp
   src/NodeFactory.cpp
-  src/ImGuiNode.cpp
   src/NodeParam.cpp
+  src/ImGuiNode.cpp
   src/NodeManager.cpp
   src/Event.cpp
   src/EventDispatcher.cpp

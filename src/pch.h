@@ -1,5 +1,6 @@
-#ifndef PCH_H
-#define PCH_H
+#ifndef NODE_EDITOR_PCH_H
+#define NODE_EDITOR_PCH_H
+#pragma once
 
 #include <vector>
 #include <memory>

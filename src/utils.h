@@ -1,6 +1,6 @@
 #ifndef NODE_EDITOR_UTILS_H
 #define NODE_EDITOR_UTILS_H
-
+#pragma once
 namespace NodeEditor {
     std::string generate_uuid();
 

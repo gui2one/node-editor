@@ -1,5 +1,5 @@
+// #include "NodeParam.h"
 #include "NodeManager.h"
-#include "NodeParam.h"
 
 // #include "Application.h"
 namespace NodeEditor {

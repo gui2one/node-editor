@@ -5,7 +5,8 @@
 #include <yaml-cpp/yaml.h>
 #include <imgui.h>
 #include <glm/glm.hpp>
-#include "node_editor.h"
+#include "ImGuiNode.h"
+
 namespace YAML {
 
 template<>
