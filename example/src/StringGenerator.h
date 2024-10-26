@@ -11,7 +11,7 @@
 
 namespace NodeEditor {
 
-class StringOperator : public ImGuiNode {
+class StringOperator : public ImGuiNode<std::string> {
 public:
   StringOperator() : ImGuiNode("default") {};
   virtual ~StringOperator() = default;

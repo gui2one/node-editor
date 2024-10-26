@@ -69,7 +69,9 @@ enum NODE_COLOR
 class AbstractNode{
 
 public:
-    AbstractNode() = default;
+    AbstractNode(std::string _title):
+        title(_title), position(500, 500), size(100, 30), color(NODE_COLOR::DARK_GREY) 
+    {};
     virtual ~AbstractNode() = default;
 
     virtual void Update() = 0; // implemented lower, in the Node<T> class
@@ -77,7 +79,43 @@ public:
 
     
 
+ YAML::Node YAMLSerialize() { 
+        YAML::Node yaml_node;
+        yaml_node["title"] = title;
+        std::string type_str = typeid(*this).name();
+        str_replace_all(type_str, "class ", "");
+        str_replace(type_str, "NodeEditor::Node<", "");
+        str_replace_last(type_str, ">", "");
+        yaml_node["type"] = type_str;
+        
+        yaml_node["uuid"] = uuid;
+        yaml_node["position"] = position;
+        yaml_node["size"] = size;
+        for(auto item : m_ParamLayout.items) {
+            yaml_node["params"].push_back(item.param->YAMLSerialize());
+        }
 
+        for(size_t i = 0; i < MAX_N_INPUTS; i++) {
+            if( inputs[i] != nullptr ){
+            yaml_node["inputs"].push_back(inputs[i]->uuid);
+            }else{
+            yaml_node["inputs"].push_back("null");
+            }
+        }
+        for(size_t i = 0; i < GetMultiInputCount(); i++) {
+            if( GetMultiInput(i) != nullptr ){
+            yaml_node["multi_input"].push_back(GetMultiInput(i)->uuid);
+            }
+        }
+
+        
+        // auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(shared_from_this());
+        // if(subnet_ptr != nullptr){
+        //     auto network = subnet_ptr->node_network;
+        //     yaml_node["network"] = serialize_network(network);
+        // }
+        return yaml_node;     
+    }
 
     void SetInput(uint32_t index, std::shared_ptr<AbstractNode> node) {
     if (index < 0 || index > 3)
@@ -182,9 +220,7 @@ template<typename T>
 class ImGuiNode : public AbstractNode
 {
 public:
-    ImGuiNode<T>(std::string _title): 
-        AbstractNode(),
-        title(_title), position(500, 500), size(100, 30), color(NODE_COLOR::DARK_GREY) 
+    ImGuiNode<T>(std::string _title): AbstractNode(_title)
     {
         uuid = generate_uuid();        
     }
@@ -193,43 +229,7 @@ public:
     // virtual void Update() = 0; // implemented lower, in the Node<T> class
     // virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
     
-    YAML::Node YAMLSerialize() { 
-        YAML::Node yaml_node;
-        yaml_node["title"] = title;
-        std::string type_str = typeid(*this).name();
-        str_replace_all(type_str, "class ", "");
-        str_replace(type_str, "NodeEditor::Node<", "");
-        str_replace_last(type_str, ">", "");
-        yaml_node["type"] = type_str;
-        
-        yaml_node["uuid"] = uuid;
-        yaml_node["position"] = position;
-        yaml_node["size"] = size;
-        for(auto item : m_ParamLayout.items) {
-            yaml_node["params"].push_back(item.param->YAMLSerialize());
-        }
-
-        for(size_t i = 0; i < MAX_N_INPUTS; i++) {
-            if( inputs[i] != nullptr ){
-            yaml_node["inputs"].push_back(inputs[i]->uuid);
-            }else{
-            yaml_node["inputs"].push_back("null");
-            }
-        }
-        for(size_t i = 0; i < GetMultiInputCount(); i++) {
-            if( GetMultiInput(i) != nullptr ){
-            yaml_node["multi_input"].push_back(GetMultiInput(i)->uuid);
-            }
-        }
-
-        
-        // auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(shared_from_this());
-        // if(subnet_ptr != nullptr){
-        //     auto network = subnet_ptr->node_network;
-        //     yaml_node["network"] = serialize_network(network);
-        // }
-        return yaml_node;     
-    }
+   
 
 
 public:
@@ -251,7 +251,7 @@ struct NodeNetwork{
 class SubnetNode : public AbstractNode
 {
 public:
-    SubnetNode():AbstractNode()
+    SubnetNode():AbstractNode("no title")
     {
         SetNumAvailableInputs(4);
     }
@@ -266,7 +266,7 @@ template <typename T>
 class SubnetInputNode : public AbstractNode
 {
 public:
-    SubnetInputNode():ImGuiNode<T>("subnet_input")
+    SubnetInputNode():AbstractNode("subnet_input")
     {
         SetNumAvailableInputs(0);
         size.x = 50.0f;
@@ -283,12 +283,12 @@ template <typename T> class Node : public T {
 
 public:
   Node(const char *_title) {
-    auto node = static_cast<ImGuiNode *>(this);
+    auto node = static_cast<AbstractNode *>(this);
     node->title = _title;
   }
 
   void Update() {
-    auto node = static_cast<ImGuiNode *>(this);
+    auto node = static_cast<AbstractNode *>(this);
     auto op = static_cast<T *>(this);
     auto subnet_ptr = dynamic_cast<SubnetNode*>(op);
     if(!node->IsMultiInput()) {
