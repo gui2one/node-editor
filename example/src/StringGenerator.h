@@ -16,8 +16,6 @@ public:
   StringOperator() : ImGuiNode("default") {};
   virtual ~StringOperator() = default;
 
-public:
-  std::string m_StringCache = "";
 };
 
 class StringSubnetOperator : public SubnetNode {
@@ -29,11 +27,11 @@ public:
     if (GetInput(0) != nullptr) {
       auto op0 = std::dynamic_pointer_cast<StringOperator>(GetInput(0));
       if(op0 != nullptr){
-        m_StringCache = op0->m_StringCache;
+        // m_DataCache = op0->m_DataCache;
       }
     }else{
 
-      m_StringCache = "!!!";
+      // m_DataCache = "!!!";
     }
 
     if(node_network.outuput_node != nullptr){
@@ -41,13 +39,13 @@ public:
       auto op = std::dynamic_pointer_cast<StringOperator>(node_network.outuput_node);
       if(op != nullptr){
         
-        m_StringCache = op->m_StringCache;
+        // m_DataCache = op->m_DataCache;
       }
     }
   }
 
 public : 
-  std::string m_StringCache = "";
+  
 };
 
 
@@ -72,7 +70,7 @@ public:
   ~StringGenerate() {};
 
   void Generate() override {
-    m_StringCache = value->Eval();
+    m_DataCache = value->Eval();
   }
 
   // YAML::Node YAMLSerialize() override {
@@ -110,10 +108,10 @@ public:
       auto op0 = static_cast<StringOperator *>(GetInput(0).get());
       auto op1 = static_cast<StringOperator *>(GetInput(1).get());
       if(add_separator_param->Eval()){
-        m_StringCache = op0->m_StringCache + " " + op1->m_StringCache;
+        m_DataCache = op0->m_DataCache + " " + op1->m_DataCache;
       }else{
 
-        m_StringCache = op0->m_StringCache + op1->m_StringCache;
+        m_DataCache = op0->m_DataCache + op1->m_DataCache;
       }
     }
   }
@@ -138,15 +136,15 @@ public:
   ~StringConcatenatorMulti() {};
 
   void Generate() override {
-    m_StringCache = "";
+    m_DataCache = "";
     for(size_t i = 0; i < GetMultiInputCount(); i++){
       if (GetMultiInput(i) != nullptr) {
         auto op0 = static_cast<StringOperator *>(GetMultiInput(i).get());
         if(add_separator_param->Eval()){
-          m_StringCache += " " + op0->m_StringCache;
+          m_DataCache += " " + op0->m_DataCache;
         }else{
 
-          m_StringCache += op0->m_StringCache;
+          m_DataCache += op0->m_DataCache;
         }
       }
     }
@@ -176,9 +174,9 @@ public:
       auto op0 = static_cast<StringOperator *>(GetInput(0).get());
 
       for (uint32_t i = 0; i < count->Eval(); i++) {
-        val += op0->m_StringCache;
+        val += op0->m_DataCache;
       }
-      m_StringCache = val;
+      m_DataCache = val;
     }
   }
 
@@ -196,7 +194,7 @@ public:
   void Generate() override {
     if (GetInput(0) != nullptr) {
       auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-      m_StringCache = op0->m_StringCache;
+      m_DataCache = op0->m_DataCache;
     }
   }
 };
@@ -213,15 +211,15 @@ public:
 //   }
 //   void Generate() override {
 //     std::cout << "Doing nothing .... " ;
-//     std::cout << m_StringCache << std::endl;
+//     std::cout << m_DataCache << std::endl;
 //     // if (GetInput(0) != nullptr) {
 //     //   // auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-//     //   // m_StringCache = "ok !!";
+//     //   // m_DataCache = "ok !!";
 
 //     // }
 //   }
 // public:
-//   std::string m_StringCache = "haaaa !!!";
+//   
 // }; 
 };// namespace NodeEditor
 #endif

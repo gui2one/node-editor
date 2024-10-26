@@ -34,7 +34,7 @@ int main() {
         manager.Evaluate();
         if(manager.GetOutputNode() != nullptr){
           auto op = static_cast<StringOperator *>(manager.GetOutputNode().get());
-          std::cout << "Connection Update -> " << op->m_StringCache << std::endl;
+          std::cout << "Connection Update -> " << op->m_DataCache << std::endl;
         }
       });
   dispatcher.Subscribe(
@@ -50,9 +50,12 @@ int main() {
           auto subnet_op = std::dynamic_pointer_cast<StringSubnetOperator>(manager.GetOutputNode());
           auto op = std::dynamic_pointer_cast<StringOperator>(manager.GetOutputNode());
           if(subnet_op != nullptr){
-            std::cout << "m_StringCache -> " << subnet_op->m_StringCache << std::endl;
+            if(subnet_op->node_network.outuput_node != nullptr){
+              auto output_op = std::dynamic_pointer_cast<StringOperator>(subnet_op->node_network.outuput_node);
+              std::cout << "m_DataCache -> " << output_op->m_DataCache << std::endl;
+            }
           }else if(op != nullptr){
-            std::cout << "ManagerUpdate Event -> " << op->m_StringCache << std::endl;
+            std::cout << "ManagerUpdate Event -> " << op->m_DataCache << std::endl;
           }else{
             std::cout << "can't convert to Operator" << std::endl;
           }

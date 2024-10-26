@@ -71,7 +71,9 @@ class AbstractNode{
 public:
     AbstractNode(std::string _title):
         title(_title), position(500, 500), size(100, 30), color(NODE_COLOR::DARK_GREY) 
-    {};
+    {
+        uuid = generate_uuid();
+    };
     virtual ~AbstractNode() = default;
 
     virtual void Update() = 0; // implemented lower, in the Node<T> class
@@ -79,7 +81,7 @@ public:
 
     
 
- YAML::Node YAMLSerialize() { 
+    YAML::Node YAMLSerialize() { 
         YAML::Node yaml_node;
         yaml_node["title"] = title;
         std::string type_str = typeid(*this).name();
@@ -108,12 +110,6 @@ public:
             }
         }
 
-        
-        // auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(shared_from_this());
-        // if(subnet_ptr != nullptr){
-        //     auto network = subnet_ptr->node_network;
-        //     yaml_node["network"] = serialize_network(network);
-        // }
         return yaml_node;     
     }
 
@@ -163,7 +159,7 @@ public:
     inline void ActivateMultiInput() { m_IsMultiInput = true; }
     inline bool IsMultiInput() { return m_IsMultiInput; }
 
-    void SetNumAvailableInputs(uint32_t num)
+    inline void SetNumAvailableInputs(uint32_t num)
     {
         if (num > MAX_N_INPUTS)
         {
@@ -174,7 +170,7 @@ public:
         InitInputConnectors();
     }
 
-    void InitInputConnectors(){
+    inline void InitInputConnectors(){
         m_InputConnectors.clear();
         uint32_t num_spots = GetNumAvailableInputs();
 
@@ -222,18 +218,12 @@ class ImGuiNode : public AbstractNode
 public:
     ImGuiNode<T>(std::string _title): AbstractNode(_title)
     {
-        uuid = generate_uuid();        
+        
     }
-    ~ImGuiNode(){};
-
-    // virtual void Update() = 0; // implemented lower, in the Node<T> class
-    // virtual void Generate() = 0; // user defined method. i.e the work the node is doint for the user app 
-    
-   
-
+    virtual ~ImGuiNode() = default;
 
 public:
-    T m_Datacache;
+    T m_DataCache;
 
 };
 
@@ -246,7 +236,6 @@ struct NodeNetwork{
 
     void AddNode(std::shared_ptr<AbstractNode> _node) { nodes.push_back(_node); }
 };
-
 
 class SubnetNode : public AbstractNode
 {
