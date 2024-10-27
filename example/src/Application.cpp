@@ -22,7 +22,7 @@ bool Application::Init() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  m_NativeWindow = glfwCreateWindow(640, 480, "no title yet", NULL, NULL);
+  m_NativeWindow = glfwCreateWindow(1280, 720, "no title yet", NULL, NULL);
   
 
   if (m_NativeWindow == NULL) {
