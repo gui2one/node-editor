@@ -266,12 +266,9 @@ public:
         ActivateSubnet();
         for(size_t i = 0; i < MAX_N_INPUTS; i++) {
             auto sub_node_0 = std::make_shared<SubnetInputNode<T>>();
-            if(sub_node_0 == nullptr){
-                std::cout << "Nothing Constructed" << std::endl;
-                
-            }else{
-                node_network.nodes.push_back(sub_node_0);
-            }
+            sub_node_0->title = std::string("opinput_") + std::to_string(i);
+            sub_node_0->uuid = sub_node_0->title; 
+            node_network.AddNode(sub_node_0);
         }
     }
 };
