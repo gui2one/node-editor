@@ -55,6 +55,11 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
     factory_node->position = yaml_node["position"].as<ImVec2>();
     factory_node->title = yaml_node["title"].as<std::string>();
     factory_node->uuid = yaml_node["uuid"].as<std::string>();
+    bool is_subnet = yaml_node["is_subnet"].as<bool>();
+    if( is_subnet ) {
+      factory_node->ActivateSubnet();
+    }
+
 
     for(size_t i= 0; i<yaml_node["params"].size(); i++) {
       auto p_node = yaml_node["params"][i];
@@ -79,15 +84,12 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
       }  
     }
 
-    auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(factory_node);
-    if( subnet_ptr != nullptr){      
+    if( is_subnet){      
       NodeNetwork net;
-      net = deserialize_network(yaml_node["network"]);
-
-      subnet_ptr->node_network = net;
-
-      return subnet_ptr;
+      net = deserialize_network(yaml_node["node_network"]);
+      factory_node->node_network = net;
     }
+
     return factory_node;
 }
 

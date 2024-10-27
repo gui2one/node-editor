@@ -9,15 +9,27 @@
 #include <array>
 #include "utils.h"
 
-// #include "NodeParam.h"
+
 #include <yaml-cpp/yaml.h>
 #include "yaml_serialize.h"
-// #include "yaml_convert.h"
-// #include "node_editor.h"
+
 
 constexpr uint32_t MAX_N_INPUTS = 4;
 
 namespace NodeEditor {
+
+
+class AbstractNode;
+
+
+
+struct NodeNetwork{
+
+    std::shared_ptr<AbstractNode> outuput_node = nullptr;
+    std::vector<std::shared_ptr<AbstractNode>> nodes;
+
+    void AddNode(std::shared_ptr<AbstractNode> _node) { nodes.push_back(_node); }
+};
 
 
 struct ParamLayoutItem{
@@ -104,12 +116,22 @@ public:
             yaml_node["inputs"].push_back("null");
             }
         }
-        for(size_t i = 0; i < GetMultiInputCount(); i++) {
-            if( GetMultiInput(i) != nullptr ){
-            yaml_node["multi_input"].push_back(GetMultiInput(i)->uuid);
+        
+        yaml_node["is_multi_input"] = IsMultiInput();
+        if( IsMultiInput() ){
+
+            for(size_t i = 0; i < GetMultiInputCount(); i++) {
+                if( GetMultiInput(i) != nullptr ){
+                yaml_node["multi_input"].push_back(GetMultiInput(i)->uuid);
+                }
             }
         }
 
+        yaml_node["is_subnet"] = IsSubnet();
+        if(IsSubnet()) {
+            yaml_node["is_subnet"] = true;
+            yaml_node["node_network"] = serialize_network(node_network);
+        }
         return yaml_node;     
     }
 
@@ -159,6 +181,9 @@ public:
     inline void ActivateMultiInput() { m_IsMultiInput = true; }
     inline bool IsMultiInput() { return m_IsMultiInput; }
 
+    inline void ActivateSubnet(){ m_IsSubnet = true; }
+    inline bool IsSubnet(){ return m_IsSubnet; }
+
     inline void SetNumAvailableInputs(uint32_t num)
     {
         if (num > MAX_N_INPUTS)
@@ -192,8 +217,11 @@ public:
 private:
     uint32_t m_NumAvailableInputs = 1;
     bool m_IsMultiInput = false;
+    bool m_IsSubnet = false;
+
 
 public:
+    NodeNetwork node_network;
     std::string uuid;
     std::string title;
     NODE_COLOR color;
@@ -216,11 +244,11 @@ template<typename T>
 class ImGuiNode : public AbstractNode
 {
 public:
-    ImGuiNode<T>(std::string _title): AbstractNode(_title)
+    ImGuiNode(std::string _title): AbstractNode(_title)
     {
         
     }
-    virtual ~ImGuiNode() = default;
+    ~ImGuiNode() = default;
 
 public:
     T m_DataCache;
@@ -228,25 +256,17 @@ public:
 };
 
 
-
-struct NodeNetwork{
-
-    std::shared_ptr<AbstractNode> outuput_node = nullptr;
-    std::vector<std::shared_ptr<AbstractNode>> nodes;
-
-    void AddNode(std::shared_ptr<AbstractNode> _node) { nodes.push_back(_node); }
-};
-
 class SubnetNode : public AbstractNode
 {
 public:
     SubnetNode():AbstractNode("no title")
     {
         SetNumAvailableInputs(4);
+        ActivateSubnet();
     }
 
-public:
-    NodeNetwork node_network;
+// public:
+//     NodeNetwork node_network;
 };
 
 
