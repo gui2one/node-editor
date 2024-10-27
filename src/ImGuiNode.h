@@ -82,7 +82,7 @@ class AbstractNode{
 
 public:
     AbstractNode(std::string _title):
-        title(_title), position(500, 500), size(100, 30), color(NODE_COLOR::DARK_GREY) 
+        title(_title), position(50, 0), size(100, 30), color(NODE_COLOR::DARK_GREY) 
     {
         uuid = generate_uuid();
     };
@@ -228,6 +228,7 @@ public:
     ImVec2 position;
     ImVec2 size;
     ParamLayout m_ParamLayout;
+    bool m_Serializable = true;
 
     bool selected = false;
     bool grabbed = false;
@@ -255,18 +256,24 @@ public:
 
 };
 
-
+template<typename T>
 class SubnetNode : public AbstractNode
 {
 public:
     SubnetNode():AbstractNode("no title")
-    {
-        SetNumAvailableInputs(4);
+    {   
+        SetNumAvailableInputs(MAX_N_INPUTS);
         ActivateSubnet();
+        for(size_t i = 0; i < MAX_N_INPUTS; i++) {
+            auto sub_node_0 = std::make_shared<SubnetInputNode<T>>();
+            if(sub_node_0 == nullptr){
+                std::cout << "Nothing Constructed" << std::endl;
+                
+            }else{
+                node_network.nodes.push_back(sub_node_0);
+            }
+        }
     }
-
-// public:
-//     NodeNetwork node_network;
 };
 
 
@@ -276,14 +283,16 @@ class SubnetInputNode : public AbstractNode
 {
 public:
     SubnetInputNode():AbstractNode("subnet_input")
-    {
+    {   
         SetNumAvailableInputs(0);
         size.x = 50.0f;
         size.y = 50.0f;
+
+        m_Serializable = false;
     }
 
-    void Update() override{}
-    void Generate() override{}    
+    virtual void Update() override{}
+    virtual void Generate() override{}    
 public:
     T m_DataCache;
 };
@@ -299,7 +308,6 @@ public:
   void Update() {
     auto node = static_cast<AbstractNode *>(this);
     auto op = static_cast<T *>(this);
-    auto subnet_ptr = dynamic_cast<SubnetNode*>(op);
     if(!node->IsMultiInput()) {
         
         for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
@@ -316,15 +324,13 @@ public:
 
     }
 
-    if(subnet_ptr != nullptr) {
-        if( subnet_ptr->node_network.outuput_node != nullptr){
+    if(node->IsSubnet()) {
+        if( node->node_network.outuput_node != nullptr){
 
-            subnet_ptr->node_network.outuput_node->Update();
-            
-            // op->m_StringCache = subnet_ptr->node_network.outuput_node->m_StringCache;
+            node->node_network.outuput_node->Update();
+
         }else{
             std::cout << "Subnet has no ouput Node" << std::endl;
-            // op->m_StringCache = "--- empty nodeNetwork ---";
         }
     }
     op->Generate();
@@ -332,9 +338,6 @@ public:
 
   T *ToOperator() { return static_cast<T *>(this); }
 };
-
-
-
 
 }; // namespace NodeEditor
 

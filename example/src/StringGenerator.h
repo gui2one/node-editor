@@ -18,7 +18,7 @@ public:
 
 };
 
-class StringSubnetOperator : public SubnetNode {
+class StringSubnetOperator : public SubnetNode<std::string> {
 public:
   StringSubnetOperator() : SubnetNode() {};
   virtual ~StringSubnetOperator() = default;

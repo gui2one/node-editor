@@ -117,10 +117,10 @@ public:
             return;
         }
         if(IsNodeHovered(m_CurrentNode)){
-            auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(m_CurrentNode);
-            if(subnet_ptr != nullptr){
+            // auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(m_CurrentNode);
+            if(m_CurrentNode->IsSubnet()){
             // std::cout << "double clickes on SUBNET : " << m_CurrentNode->title << std::endl;
-            m_CurrentNetwork = &subnet_ptr->node_network;
+                m_CurrentNetwork = &m_CurrentNode->node_network;
 
             }
         }

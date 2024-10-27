@@ -25,7 +25,10 @@ YAML::Node serialize_nodes(std::vector<std::shared_ptr<AbstractNode>> nodes) {
 
   YAML::Node output;
   for(auto node : nodes) {
-    output.push_back(node->YAMLSerialize());
+
+    if(node->m_Serializable) {
+      output.push_back(node->YAMLSerialize());
+    }
   }
 
 
@@ -87,7 +90,11 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
     if( is_subnet){      
       NodeNetwork net;
       net = deserialize_network(yaml_node["node_network"]);
-      factory_node->node_network = net;
+      // add the nodes rather than set nodes to std::vector<nodes> because this overwrites subnetinputnodes created inside node Constructor
+      for(auto node : net.nodes) {
+        factory_node->node_network.AddNode(node);
+      }
+
     }
 
     return factory_node;
