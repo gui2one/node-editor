@@ -184,6 +184,9 @@ public:
     inline void ActivateSubnet(){ m_IsSubnet = true; }
     inline bool IsSubnet(){ return m_IsSubnet; }
 
+    inline void ActivateSubnetInputNode(){ m_IsSubnetInputNode = true; }
+    inline bool IsSubnetInputNode(){ return m_IsSubnetInputNode; }
+
     inline void SetNumAvailableInputs(uint32_t num)
     {
         if (num > MAX_N_INPUTS)
@@ -218,6 +221,7 @@ private:
     uint32_t m_NumAvailableInputs = 1;
     bool m_IsMultiInput = false;
     bool m_IsSubnet = false;
+    bool m_IsSubnetInputNode = false;
 
 
 public:
@@ -266,6 +270,7 @@ public:
         ActivateSubnet();
         for(size_t i = 0; i < MAX_N_INPUTS; i++) {
             auto subnet_input = std::make_shared<SubnetInputNode<T>>();
+            subnet_input->parent_node = this;
             subnet_input->title = std::string("opinput_") + std::to_string(i);
             subnet_input->uuid = subnet_input->title;
             subnet_input->position = ImVec2((float)(i * 100), 0); 
@@ -277,25 +282,39 @@ public:
 };
 
 
-
-template <typename T> 
-class SubnetInputNode : public AbstractNode
-{
+class AbstractSubnetInputNode : public AbstractNode{
 public:
-    SubnetInputNode():AbstractNode("subnet_input")
+    AbstractSubnetInputNode():AbstractNode("subnet_input")
     {   
         SetNumAvailableInputs(0);
+        ActivateSubnetInputNode();
         size.x = 50.0f;
         size.y = 50.0f;
-
-        m_Serializable = false;
     }
 
-    virtual void Update() override{
-        std::cout << "UPDATING SubnetinputNode" << std::endl;
+    ~AbstractSubnetInputNode() = default;
+
+public : 
+    AbstractNode* parent_node = nullptr;
+};
+template <typename T> 
+class SubnetInputNode : public AbstractSubnetInputNode
+{
+public:
+    SubnetInputNode():AbstractSubnetInputNode()
+    {   
+
+    }
+
+    virtual void Update()override{
+        std::cout << "SubnetInputNode Update" << std::endl;
+        // parent_node->Update();
         
-    }
-    virtual void Generate() override{}    
+    };
+    virtual void Generate() override{
+        auto _parent_node = static_cast<SubnetNode<T> *>(this->parent_node);
+        m_DataCache = _parent_node->m_DataCache;
+    }    
 public:
     T m_DataCache;
 };
@@ -312,11 +331,16 @@ public:
     auto node = static_cast<AbstractNode *>(this);
     auto op = static_cast<T *>(this);
     if(!node->IsMultiInput()) {
-        
-        for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
-        if (node->GetInput(i) != nullptr) {
-            node->GetInput(i)->Update(); /* Important !!*/
-        }
+        if(node->IsSubnetInputNode()) {
+            std::cout << "Trying to update a Subnet Input Node" << std::endl;
+            
+        }else{  
+
+            for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
+            if (node->GetInput(i) != nullptr) {
+                node->GetInput(i)->Update(); /* Important !!*/
+            }
+            }
         }
     }else{
         for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
