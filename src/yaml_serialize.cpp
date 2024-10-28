@@ -192,6 +192,22 @@ std::vector<post_load_connection> collect_subnet_connections(YAML::Node yaml){
   return connections;
 }
 
+void apply_subnet_connections(NodeNetwork &network, std::vector<post_load_connection> connections){
+  for(auto node : network.nodes) {
+    if(node->IsSubnet()) {
+      apply_subnet_connections(node->node_network, connections);
+      for(auto subnet_node : node->node_network.nodes) {
+        for(auto conn : connections) {
+          if(conn.uuid == subnet_node->uuid) {
+            subnet_node->SetInput((uint32_t)conn.input_index, Utils::FindNodeByUUID("opinput_0", node->node_network.nodes));
+          }
+        }
+      }
+      
+    }
+  }
+}
+
 NodeNetwork load_yaml_file(std::filesystem::path path)
 {
   std::ifstream saved_file(path.string());
@@ -207,6 +223,8 @@ NodeNetwork load_yaml_file(std::filesystem::path path)
     std::cout << conn.uuid << std::endl;
     
   }
+
+  apply_subnet_connections(network, connections);
   return network;
 }
 };
