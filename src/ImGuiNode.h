@@ -22,9 +22,6 @@ namespace NodeEditor {
 
 class AbstractNode;
 
-// forward declaration
-template <typename T> 
-class Node;
 
 struct NodeNetwork{
 
@@ -272,7 +269,7 @@ public:
         SetNumAvailableInputs(MAX_N_INPUTS);
         ActivateSubnet();
         for(size_t i = 0; i < MAX_N_INPUTS; i++) {
-            auto subnet_input = std::make_shared<SubnetInputNode<T>>();
+            auto subnet_input = std::make_shared<Node<SubnetInputNode<T>>>();
             subnet_input->parent_node = this;
             subnet_input->title = std::string("opinput_") + std::to_string(i);
             subnet_input->uuid = subnet_input->title;
@@ -297,6 +294,11 @@ public:
 
     ~AbstractSubnetInputNode() = default;
 
+    // virtual void Update() override {
+    //     std::cout << "AbstractSubnetInputNode Update" << std::endl;
+    //     auto ptr = static_cast<Node<AbstractSubnetInputNode> *>(this);
+    //     // ptr->parent_node->Update();
+    // };
 public : 
     AbstractNode* parent_node = nullptr;
 };
@@ -309,11 +311,13 @@ public:
 
     }
 
-    virtual void Update() override{
-        std::cout << "SubnetInputNode Update" << std::endl;
-        // parent_node->Update();
+    // virtual void Update() override{
+    //     std::cout << "SubnetInputNode Update" << std::endl;
+    //     auto _parent_node = static_cast<SubnetNode<T> *>(this->parent_node);
+    //     // _parent_node->Update();
+    //     m_DataCache = _parent_node->m_DataCache;
         
-    };
+    // };
     virtual void Generate() override{
         auto _parent_node = static_cast<SubnetNode<T> *>(this->parent_node);
         m_DataCache = _parent_node->m_DataCache;

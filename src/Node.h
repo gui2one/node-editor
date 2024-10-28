@@ -5,8 +5,12 @@
 #include "constants.h"
 namespace NodeEditor {
 
+//forward declaration
 class AbstractNode;
-template <typename T> class Node : public T {
+class AbstractSubnetInputNode;
+
+template <typename T> 
+class Node : public T {
 
 public:
   Node(const char *_title) {
@@ -24,9 +28,16 @@ public:
         }else{  
 
             for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
-            if (node->GetInput(i) != nullptr) {
-                node->GetInput(i)->Update(); /* Important !!*/
-            }
+                if (node->GetInput(i) != nullptr) {
+                    auto inp = node->GetInput(i);
+                    auto subnet_input_ptr = static_cast<AbstractSubnetInputNode *>(inp.get());
+                    if(subnet_input_ptr != nullptr) {
+                        subnet_input_ptr->Update();
+                    }else{
+
+                        inp->Update(); /* Important !!*/
+                    }
+                }
             }
         }
     }else{
