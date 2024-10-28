@@ -433,7 +433,7 @@ void NodeManager::ApplyConnectionProcedure() {
   }
   if(m_ConnectionProcedure.is_mutli_input){
     if(m_ConnectionProcedure.input_node == nullptr){
-      std::cout << "Disconnect last ?" << std::endl;
+
       m_ConnectionProcedure.output_node->RemoveLastInput();
       ResetConnectionProcedure();
       NodeConnectionEvent event(nullptr, 0,

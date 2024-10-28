@@ -93,6 +93,7 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
       // add the nodes rather than set nodes to std::vector<nodes> because this overwrites subnetinputnodes created inside node Constructor
       for(auto node : net.nodes) {
         factory_node->node_network.AddNode(node);
+        factory_node->node_network.outuput_node = net.outuput_node;
       }
 
     }
@@ -108,7 +109,16 @@ NodeNetwork deserialize_network(YAML::Node yaml)
   std::string output_node_uuid = yaml["output_node"].as<std::string>();
   if( output_node_uuid != "null") {
     
-    network.outuput_node = Utils::FindNodeByUUID(yaml["output_node"].as<std::string>(), network.nodes);
+    auto output_node = Utils::FindNodeByUUID(output_node_uuid, network.nodes);
+    if( output_node != nullptr) {
+      
+      std::cout << "Setting output node : " << output_node->title << std::endl;
+      network.outuput_node = output_node;
+    }else{
+      std::cout << "NO OUTPUT NODE FOUND !!!!!!!!!!" << std::endl;
+      
+    }
+    
   }
   return network;
 }
@@ -146,7 +156,7 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml)
             auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
 
             if (input_node == nullptr){
-              std::cout << "Node not found. Maybe an subnet_input" << input_uuid << std::endl;
+              // std::cout << "Node not found. Maybe an subnet_input" << input_uuid << std::endl;
               continue;
             }
 
@@ -219,10 +229,6 @@ NodeNetwork load_yaml_file(std::filesystem::path path)
 
 
   auto connections = collect_subnet_connections(output);
-  for(auto conn : connections){
-    std::cout << conn.uuid << std::endl;
-    
-  }
 
   apply_subnet_connections(network, connections);
   return network;

@@ -199,27 +199,5 @@ public:
   }
 };
 
-// class StringSubnet : public StringSubnetOperator {
-// public:
-//   StringSubnet() : StringSubnetOperator() {
-//     // SetNumAvailableInputs(1);
-//   };
-//   ~StringSubnet() {};
-
-//   void Update() override {
-//     std::cout << "StringSubnet::Update" << std::endl;
-//   }
-//   void Generate() override {
-//     std::cout << "Doing nothing .... " ;
-//     std::cout << m_DataCache << std::endl;
-//     // if (GetInput(0) != nullptr) {
-//     //   // auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-//     //   // m_DataCache = "ok !!";
-
-//     // }
-//   }
-// public:
-//   
-// }; 
 };// namespace NodeEditor
 #endif
