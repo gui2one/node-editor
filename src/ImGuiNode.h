@@ -21,7 +21,9 @@ namespace NodeEditor {
 
 class AbstractNode;
 
-
+// forward declaration
+template <typename T> 
+class Node;
 
 struct NodeNetwork{
 
@@ -306,7 +308,7 @@ public:
 
     }
 
-    virtual void Update()override{
+    virtual void Update() override{
         std::cout << "SubnetInputNode Update" << std::endl;
         // parent_node->Update();
         
