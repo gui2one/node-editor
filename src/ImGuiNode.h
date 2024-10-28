@@ -265,10 +265,11 @@ public:
         SetNumAvailableInputs(MAX_N_INPUTS);
         ActivateSubnet();
         for(size_t i = 0; i < MAX_N_INPUTS; i++) {
-            auto sub_node_0 = std::make_shared<SubnetInputNode<T>>();
-            sub_node_0->title = std::string("opinput_") + std::to_string(i);
-            sub_node_0->uuid = sub_node_0->title; 
-            node_network.AddNode(sub_node_0);
+            auto subnet_input = std::make_shared<SubnetInputNode<T>>();
+            subnet_input->title = std::string("opinput_") + std::to_string(i);
+            subnet_input->uuid = subnet_input->title;
+            subnet_input->position = ImVec2((float)(i * 100), 0); 
+            node_network.AddNode(subnet_input);
         }
     }
 };

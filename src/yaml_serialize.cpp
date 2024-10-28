@@ -116,7 +116,6 @@ NodeNetwork deserialize_network(YAML::Node yaml)
 std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml)
 {
 
-    // YAML::Node output = YAML::Load(yaml);
     std::vector<std::shared_ptr<AbstractNode>> nodes;
     
     for (auto node : yaml)
@@ -141,9 +140,7 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml)
         for (size_t i = 0; i < MAX_N_INPUTS; i++)
         {
             auto input_uuid = node["inputs"][i].as<std::string>();
-            if(input_uuid == "opinput_0"){
-              std::cout << "opinput_0 !!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-            }
+
             if (input_uuid == "null")
                 continue;
             auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
@@ -170,6 +167,31 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml)
     return nodes;
 }
 
+
+struct post_load_connection{
+  std::string uuid;
+  int input_index;
+  int subnet_input_node_index;
+};
+
+std::vector<post_load_connection> collect_subnet_connections(YAML::Node yaml){
+  std::vector<post_load_connection> connections;
+  for(auto node : yaml["nodes"]) {
+    if(node["is_subnet"].as<bool>()) {
+      auto _connections = collect_subnet_connections(node["node_network"]);
+      connections.insert(connections.end(), _connections.begin(), _connections.end());
+      for(auto subnet_node : node["node_network"]["nodes"]) {
+        if(subnet_node["inputs"][0].as<std::string>() == "opinput_0") {
+          connections.push_back({subnet_node["uuid"].as<std::string>(), 0, 0});
+        }
+        
+      }
+    }
+  }
+
+  return connections;
+}
+
 NodeNetwork load_yaml_file(std::filesystem::path path)
 {
   std::ifstream saved_file(path.string());
@@ -178,7 +200,13 @@ NodeNetwork load_yaml_file(std::filesystem::path path)
   YAML::Node output = YAML::Load(content);
 
   auto network = deserialize_network(output);
-  // nodes = deserialize_nodes(output);
+
+
+  auto connections = collect_subnet_connections(output);
+  for(auto conn : connections){
+    std::cout << conn.uuid << std::endl;
+    
+  }
   return network;
 }
 };
