@@ -272,6 +272,8 @@ public:
             node_network.AddNode(subnet_input);
         }
     }
+public:
+    T m_DataCache;
 };
 
 
@@ -289,7 +291,10 @@ public:
         m_Serializable = false;
     }
 
-    virtual void Update() override{}
+    virtual void Update() override{
+        std::cout << "UPDATING SubnetinputNode" << std::endl;
+        
+    }
     virtual void Generate() override{}    
 public:
     T m_DataCache;
