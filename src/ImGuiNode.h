@@ -286,6 +286,9 @@ public:
     {   
         ActivateSubnetInputNode();
         SetNumAvailableInputs(0);
+
+        size.x = 50.0f;
+        size.y = 50.0f;
     }
 
     ~SubnetInputNode(){};
@@ -295,6 +298,9 @@ public:
         if( _parent_node != nullptr){
 
             m_DataCache = _parent_node->m_DataCache;
+        }else{
+            std::cout << "NO Parent node defined" << std::endl;
+            
         }
     }    
 public:

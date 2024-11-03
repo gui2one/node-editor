@@ -108,6 +108,7 @@ void NodeManager::BuildNodeMenuFromRegistry() {
                 double x,y;
                 glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
                 node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
+                node->parent_node = m_CurrentNetworkOwner;
                 this->m_CurrentNetwork->AddNode(node);              
               }
           }

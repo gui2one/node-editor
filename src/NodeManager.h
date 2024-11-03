@@ -88,7 +88,10 @@ public:
     }
 
     NodeNetwork& GetRootNetwork(){ return m_NodeNetwork; };
-    void GotoRootNetwork() { m_CurrentNetwork = &m_NodeNetwork; };
+    void GotoRootNetwork() { 
+        m_CurrentNetworkOwner = nullptr;
+        m_CurrentNetwork = &m_NodeNetwork; 
+    };
     void ViewFrameAll();
 
     ImVec2 ToCanvasSpace(ImVec2 pos);
@@ -120,6 +123,7 @@ public:
             // auto subnet_ptr = std::dynamic_pointer_cast<SubnetNode>(m_CurrentNode);
             if(m_CurrentNode->IsSubnet()){
             // std::cout << "double clickes on SUBNET : " << m_CurrentNode->title << std::endl;
+                m_CurrentNetworkOwner = m_CurrentNode.get();
                 m_CurrentNetwork = &m_CurrentNode->node_network;
 
             }
@@ -134,6 +138,7 @@ private:
 public:
     WindowData m_WindowData;
     ViewProperties m_ViewProps;
+    AbstractNode* m_CurrentNetworkOwner = nullptr;
     std::shared_ptr<AbstractNode> m_CurrentNode = nullptr;
     std::filesystem::path m_SavePath = "";
     bool m_OneParamChanged = false;
@@ -144,6 +149,7 @@ public:
 private:
     NodeNetwork m_NodeNetwork;
     NodeNetwork* m_CurrentNetwork;
+
     GLFWwindow* m_GLFWWindow;
     std::function<void()> m_NodesMenu = [](){};
 
