@@ -23,16 +23,21 @@ public:
     auto op = static_cast<T *>(this);
     if(!node->IsMultiInput()) {
         if(node->IsSubnetInputNode()) {
-            std::cout << "Trying to update a Subnet Input Node" << std::endl;
             
+            if(node->parent_node->GetInput(0) != nullptr){
+                std::cout << "Trying to update a Subnet Input Node" << std::endl;
+                node->parent_node->GetInput(0)->Update();
+            }
+            // node->parent_node->Generate();
         }else{  
 
             for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
                 if (node->GetInput(i) != nullptr) {
                     auto inp = node->GetInput(i);
-                    auto subnet_input_ptr = inp->parent_node;
-                    if(subnet_input_ptr != nullptr) {
-                        subnet_input_ptr->Update();
+                    if(inp->IsSubnet()){
+                        if(inp->node_network.outuput_node != nullptr){
+                            inp->node_network.outuput_node->Update();
+                        }
                     }else{
 
                         inp->Update(); /* Important !!*/
@@ -50,6 +55,7 @@ public:
     }
 
     if(node->IsSubnet()) {
+
         if( node->node_network.outuput_node != nullptr){
 
             node->node_network.outuput_node->Update();

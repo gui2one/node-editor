@@ -98,8 +98,10 @@ public:
         yaml_node["title"] = title;
         std::string type_str = typeid(*this).name();
         str_replace_all(type_str, "class ", "");
+        str_replace_all(type_str, " >", ">");
         str_replace(type_str, "NodeEditor::Node<", "");
         str_replace_last(type_str, ">", "");
+        str_replace(type_str, "std::basic_string<char,struct std::char_traits<char>,std::allocator<char>>", "std::string");
         yaml_node["type"] = type_str;
         
         yaml_node["uuid"] = uuid;
@@ -265,14 +267,6 @@ public:
     {   
         SetNumAvailableInputs(MAX_N_INPUTS);
         ActivateSubnet();
-        // for(size_t i = 0; i < MAX_N_INPUTS; i++) {
-        //     auto subnet_input = std::make_shared<Node<SubnetInputNode<T>>>();
-        //     subnet_input->parent_node = this;
-        //     subnet_input->title = std::string("opinput_") + std::to_string(i);
-        //     subnet_input->uuid = subnet_input->title;
-        //     subnet_input->position = ImVec2((float)(i * 100), 0); 
-        //     node_network.AddNode(subnet_input);
-        // }
     }
 public:
     T m_DataCache;
@@ -289,6 +283,9 @@ public:
 
         size.x = 50.0f;
         size.y = 50.0f;
+
+        input_id = std::make_shared<Param<uint32_t>>("input id", 0);
+        m_ParamLayout.items.push_back({"input_id", input_id});
     }
 
     ~SubnetInputNode(){};
@@ -297,14 +294,22 @@ public:
         auto _parent_node = static_cast<SubnetNode<T> *>(this->parent_node);
         if( _parent_node != nullptr){
 
-            m_DataCache = _parent_node->m_DataCache;
+            std::cout << "Parent Node : "<< this->parent_node->title << std::endl;
+
+            if(_parent_node->GetInput(0) != nullptr){
+                auto op = static_cast<ImGuiNode<T> *>(_parent_node->GetInput(0).get());
+                m_DataCache = op->m_DataCache;
+            }
+            
+            
         }else{
             std::cout << "NO Parent node defined" << std::endl;
-            
         }
     }    
 public:
     T m_DataCache;
+
+    std::shared_ptr<Param<uint32_t>> input_id;
 };
 
 

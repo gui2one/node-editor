@@ -36,7 +36,7 @@ public:
     // }
 
     if(node_network.outuput_node != nullptr){
-      node_network.outuput_node->Update();
+      // node_network.outuput_node->Update();
       auto op = std::dynamic_pointer_cast<StringOperator>(node_network.outuput_node);
       if(op != nullptr){
         

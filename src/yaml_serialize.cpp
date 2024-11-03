@@ -92,6 +92,7 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
       net = deserialize_network(yaml_node["node_network"]);
       // add the nodes rather than set nodes to std::vector<nodes> because this overwrites subnetinputnodes created inside node Constructor
       for(auto node : net.nodes) {
+        node->parent_node = factory_node.get();
         factory_node->node_network.AddNode(node);
         factory_node->node_network.outuput_node = net.outuput_node;
       }
