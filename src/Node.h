@@ -8,6 +8,8 @@ namespace NodeEditor {
 //forward declaration
 class AbstractNode;
 class AbstractSubnetInputNode;
+template<typename T>
+class SubnetInputNode;
 
 template <typename T> 
 class Node : public T {
@@ -23,7 +25,11 @@ public:
     auto op = static_cast<T *>(this);
     if(!node->IsMultiInput()) {
         if(node->IsSubnetInputNode()) {
-            
+            auto subnet_input_ptr = static_cast<SubnetInputNode<std::string> *>(this);
+            // if(subnet_input_ptr != nullptr){
+                std::cout << subnet_input_ptr->input_id->Eval() << std::endl;
+                
+            // }
             if(node->parent_node->GetInput(0) != nullptr){
                 std::cout << "Trying to update a Subnet Input Node" << std::endl;
                 node->parent_node->GetInput(0)->Update();
