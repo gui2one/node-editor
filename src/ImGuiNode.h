@@ -140,7 +140,6 @@ public:
         return;
     inputs[index] = node;
     }
-
     void ResetInput(uint32_t index){
         if (index < 0 || index > 3)
             return;
@@ -153,7 +152,6 @@ public:
         return inputs[index];
     }
 
-
     InputConnector* GetInputConnector(uint32_t index)
     {
         if (index < 0 || index >= GetNumAvailableInputs())
@@ -164,7 +162,6 @@ public:
         }
         return &m_InputConnectors[index];
     }
-
     void RemoveLastInput() {
         if(m_MultiInput.size() > 0){
 
@@ -223,9 +220,9 @@ private:
     bool m_IsSubnet = false;
     bool m_IsSubnetInputNode = false;
 
-
 public:
     NodeNetwork node_network;
+    AbstractNode* parent_node = nullptr;
     std::string uuid;
     std::string title;
     NODE_COLOR color;
@@ -268,63 +265,42 @@ public:
     {   
         SetNumAvailableInputs(MAX_N_INPUTS);
         ActivateSubnet();
-        for(size_t i = 0; i < MAX_N_INPUTS; i++) {
-            auto subnet_input = std::make_shared<Node<SubnetInputNode<T>>>();
-            subnet_input->parent_node = this;
-            subnet_input->title = std::string("opinput_") + std::to_string(i);
-            subnet_input->uuid = subnet_input->title;
-            subnet_input->position = ImVec2((float)(i * 100), 0); 
-            node_network.AddNode(subnet_input);
-        }
+        // for(size_t i = 0; i < MAX_N_INPUTS; i++) {
+        //     auto subnet_input = std::make_shared<Node<SubnetInputNode<T>>>();
+        //     subnet_input->parent_node = this;
+        //     subnet_input->title = std::string("opinput_") + std::to_string(i);
+        //     subnet_input->uuid = subnet_input->title;
+        //     subnet_input->position = ImVec2((float)(i * 100), 0); 
+        //     node_network.AddNode(subnet_input);
+        // }
     }
 public:
     T m_DataCache;
 };
 
-
-class AbstractSubnetInputNode : public AbstractNode{
-public:
-    AbstractSubnetInputNode():AbstractNode("subnet_input")
-    {   
-        SetNumAvailableInputs(0);
-        ActivateSubnetInputNode();
-        size.x = 50.0f;
-        size.y = 50.0f;
-    }
-
-    ~AbstractSubnetInputNode() = default;
-
-    // virtual void Update() override {
-    //     std::cout << "AbstractSubnetInputNode Update" << std::endl;
-    //     auto ptr = static_cast<Node<AbstractSubnetInputNode> *>(this);
-    //     // ptr->parent_node->Update();
-    // };
-public : 
-    AbstractNode* parent_node = nullptr;
-};
 template <typename T> 
-class SubnetInputNode : public AbstractSubnetInputNode
+class SubnetInputNode : public AbstractNode
 {
 public:
-    SubnetInputNode():AbstractSubnetInputNode()
+    SubnetInputNode():AbstractNode("subnet input")
     {   
-
+        ActivateSubnetInputNode();
+        SetNumAvailableInputs(0);
     }
 
-    // virtual void Update() override{
-    //     std::cout << "SubnetInputNode Update" << std::endl;
-    //     auto _parent_node = static_cast<SubnetNode<T> *>(this->parent_node);
-    //     // _parent_node->Update();
-    //     m_DataCache = _parent_node->m_DataCache;
-        
-    // };
-    virtual void Generate() override{
+    ~SubnetInputNode(){};
+
+    void Generate() override{
         auto _parent_node = static_cast<SubnetNode<T> *>(this->parent_node);
-        m_DataCache = _parent_node->m_DataCache;
+        if( _parent_node != nullptr){
+
+            m_DataCache = _parent_node->m_DataCache;
+        }
     }    
 public:
     T m_DataCache;
 };
+
 
 
 

@@ -48,6 +48,10 @@ private:
         Category, Label, #Type,\
     []() -> std::shared_ptr<NodeEditor::Node<Type>> { return std::make_shared<NodeEditor::Node<Type>>(Label); }\
     })
-
-
+#define STRINGIFY(x) #x
+#define CREATE_SUBNET_INPUT_NODE_CLASS(Type, Label, Category) \
+    NodeEditor::NodeFactoryRegistry::instance().registerType("NodeEditor::SubnetInputNode<" STRINGIFY(Type) ">", { \
+        Category, Label, "NodeEditor::SubnetInputNode<" STRINGIFY(Type) ">",\
+    []() -> std::shared_ptr<NodeEditor::Node<NodeEditor::SubnetInputNode<Type>>> { return std::make_shared<NodeEditor::Node<NodeEditor::SubnetInputNode<Type>>>(Label); }\
+    })
 #endif // NODE_EDITOR_NODEFACTORY_H

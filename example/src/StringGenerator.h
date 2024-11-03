@@ -49,7 +49,6 @@ public :
   
 };
 
-
 class StringGenerator : public StringOperator {
 public:
   StringGenerator() : StringOperator() {
@@ -73,12 +72,6 @@ public:
   void Generate() override {
     m_DataCache = value->Eval();
   }
-
-  // YAML::Node YAMLSerialize() override {
-  //   YAML::Node yaml_node;
-  //   yaml_node["node"] = value->Eval();
-  //   return yaml_node;
-  // }
 
   std::shared_ptr<Param<std::string>> value;
 public:

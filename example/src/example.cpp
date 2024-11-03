@@ -14,7 +14,7 @@ int main() {
   REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringNull, "null node","utility");
   REGISTER_NODE_TYPE(NodeEditor::StringSubnetOperator, "Subnetwork", "utility");
-
+  CREATE_SUBNET_INPUT_NODE_CLASS(std::string, "Subnet input", "utility");
   Application app;
 
   if (!app.Init()) {
@@ -120,10 +120,10 @@ void add_example_nodes(NodeManager &manager) {
   // manager.AddNode(concat_multi_node);
 
 
-  auto subnet = std::make_shared<Node<StringSubnetOperator>>("Subnet");
-  subnet->position = ImVec2(0, 0);
-  // subnet->SetInput(0, concat_multi_node);
-  manager.AddNode(subnet);
+  // auto subnet = std::make_shared<Node<StringSubnetOperator>>("Subnet");
+  // subnet->position = ImVec2(0, 0);
+  // // subnet->SetInput(0, concat_multi_node);
+  // manager.AddNode(subnet);
   
   // manager.SetOutputNode(output_node);
 }

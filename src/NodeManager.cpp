@@ -103,10 +103,13 @@ void NodeManager::BuildNodeMenuFromRegistry() {
         for(auto& item : items) {
           if (ImGui::MenuItem(item.label.c_str(), NULL, false, true)) {
               auto node = registry.create(item.type_name.c_str());
-              double x,y;
-              glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
-              node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
-              this->m_CurrentNetwork->AddNode(node);              
+              if(node != nullptr){
+
+                double x,y;
+                glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
+                node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
+                this->m_CurrentNetwork->AddNode(node);              
+              }
           }
         }
 

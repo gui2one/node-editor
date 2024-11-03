@@ -30,7 +30,7 @@ public:
             for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
                 if (node->GetInput(i) != nullptr) {
                     auto inp = node->GetInput(i);
-                    auto subnet_input_ptr = static_cast<AbstractSubnetInputNode *>(inp.get());
+                    auto subnet_input_ptr = inp->parent_node;
                     if(subnet_input_ptr != nullptr) {
                         subnet_input_ptr->Update();
                     }else{
