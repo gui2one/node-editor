@@ -25,11 +25,8 @@ public:
 
   void Generate() override {
     if(node_network.outuput_node != nullptr){
-      // node_network.outuput_node->Update();
       auto op = std::dynamic_pointer_cast<StringOperator>(node_network.outuput_node);
       if(op != nullptr){
-        
-        std::cout << "Generate Subnet Data cache ????" << std::endl;
         m_DataCache = op->m_DataCache;
       }
     }

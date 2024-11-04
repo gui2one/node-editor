@@ -52,7 +52,6 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
     auto factory_node = NodeFactoryRegistry::instance().create(type_name);
     if(factory_node == nullptr) {
       std::cout << "Unabled to create type: " << type_name << "" << std::endl;
-      
       return nullptr;
     }
     factory_node->position = yaml_node["position"].as<ImVec2>();
@@ -112,12 +111,9 @@ NodeNetwork deserialize_network(YAML::Node yaml)
     
     auto output_node = Utils::FindNodeByUUID(output_node_uuid, network.nodes);
     if( output_node != nullptr) {
-      
-      std::cout << "Setting output node : " << output_node->title << std::endl;
       network.outuput_node = output_node;
     }else{
       std::cout << "NO OUTPUT NODE FOUND !!!!!!!!!!" << std::endl;
-      
     }
     
   }
@@ -157,7 +153,6 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml)
             auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
 
             if (input_node == nullptr){
-              // std::cout << "Node not found. Maybe an subnet_input" << input_uuid << std::endl;
               continue;
             }
 

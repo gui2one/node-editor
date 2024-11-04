@@ -36,14 +36,7 @@ public:
         }else{  
             for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
                 if (node->GetInput(i) != nullptr) {
-                    // auto inp = node->GetInput(i);
-                    // if(inp->IsSubnet()){
-                    //     if(inp->node_network.outuput_node != nullptr){
-                    //         inp->node_network.outuput_node->Update();
-                    //     }
-                    // }else{
-                        node->GetInput(i)->Update(); /* Important !!*/
-                    // }
+                    node->GetInput(i)->Update(); /* Important !!*/
                 }
             }
         }
@@ -72,8 +65,6 @@ public:
                 node->GetInput(i)->Update();
             }
         }
-
-        // node->Generate();
     }
     op->Generate();
   }

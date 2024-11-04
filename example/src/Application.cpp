@@ -127,22 +127,22 @@ void Application::Run() {
     ImGui::BeginMainMenuBar();
     if (ImGui::BeginMenu("File")) {
       if (ImGui::MenuItem("New", "Ctrl+N")) {
-        // std::cout << "New file Not Implemented Yet" << std::endl;
-
         m_NodeManager.GetRootNetwork().nodes.clear();
         m_NodeManager.GetRootNetwork().outuput_node = nullptr;
         m_NodeManager.m_SavePath = std::filesystem::path("");
         glfwSetWindowTitle(m_NodeManager.GetGLFWWindow(), m_NodeManager.m_SavePath.string().c_str());
       }
+      
       if (ImGui::MenuItem("Save", "Ctrl+S")) {
-
         m_NodeManager.SaveAll();
-
       }
+
       if( ImGui::MenuItem("Load", "Ctrl+O")) {
         m_NodeManager.LoadAll();
       }
+
       ImGui::Separator();
+      
       if(ImGui::MenuItem("Clear All Nodes")) {
         m_NodeManager.GetNodes().clear();
       }
@@ -155,12 +155,15 @@ void Application::Run() {
       if (ImGui::MenuItem("Center All", "F")) {
         m_NodeManager.ViewFrameAll();
       }
+      
       ImGui::MenuItem("Show Grid", NULL, &m_NodeManager.m_ViewProps.display_grid);
       ImGui::MenuItem("Show Mouse Coords", NULL, &m_NodeManager.m_ViewProps.show_mouse_coords);
       ImGui::Separator();
+      
       if(ImGui::MenuItem("Goto Root")) {
         m_NodeManager.GotoRootNetwork();
       }
+      
       ImGui::EndMenu();
     }
     ImGui::EndMainMenuBar();

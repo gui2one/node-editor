@@ -81,7 +81,6 @@ void NodeManager::InitGLFWEvents() {
   dispatcher.Subscribe(EventType::DropFile,[this](const NodeEditor::Event& event){
     auto drop_ev = static_cast<const NodeEditor::DropFileEvent & >(event);
     auto path = std::filesystem::path(drop_ev.path);
-    // std::cout << path << std::endl;
     auto net = load_yaml_file(path);
     this->GetRootNetwork() = net;
 
@@ -593,8 +592,6 @@ void NodeManager::OnMouseClick(const Event &event) {
       }
     }else{
       if(IsNodeMultiInputConnectorHovered(node)){
-        std::cout << "multi input connector clicked" << std::endl;
-        
         clicked_something = true;
         m_ConnectionProcedure.started = true;
         m_ConnectionProcedure.is_mutli_input = true;
