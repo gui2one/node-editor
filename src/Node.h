@@ -25,20 +25,21 @@ public:
     auto op = static_cast<T *>(this);
     if(!node->IsMultiInput()) {
         if(node->IsSubnetInputNode()) {
-            // if(node->parent_node != nullptr){
+            // node->parent_node->Update();
+            if(node->parent_node != nullptr){
 
-            //     for(uint32_t i=0; i<node->parent_node->GetNumAvailableInputs(); i++){
+                for(uint32_t i=0; i<node->parent_node->GetNumAvailableInputs(); i++){
 
-            //         if(node->parent_node->GetInput(i) != nullptr){
-            //             // std::cout << "Trying to update a Subnet Input Node" << std::endl;
-            //             node->parent_node->GetInput(i)->Update();
-            //         }
-            //     }
-            // }
+                    if(node->parent_node->GetInput(i) != nullptr){
+                        // std::cout << "Trying to update a Subnet Input Node" << std::endl;
+                        node->parent_node->GetInput(i)->Update();
+                    }
+                }
+            }
 
         }else{  
 
-            for (uint32_t i = 0; i < MAX_N_INPUTS; i++) {
+            for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
                 if (node->GetInput(i) != nullptr) {
                     auto inp = node->GetInput(i);
                     if(inp->IsSubnet()){
@@ -62,13 +63,7 @@ public:
     }
 
     if(node->IsSubnet()) {
-        for(uint32_t i=0; i<node->GetNumAvailableInputs(); i++){
-
-            if(node->GetInput(i) != nullptr){
-                // std::cout << "Trying to update a Subnet Input Node" << std::endl;
-                node->GetInput(i)->Update();
-            }
-        }    
+   
         if( node->node_network.outuput_node != nullptr){
 
             node->node_network.outuput_node->Update();
@@ -77,7 +72,12 @@ public:
             std::cout << "Subnet has no ouput Node" << std::endl;
         }
 
-        // node->Update();
+        for(uint32_t i=0; i<node->GetNumAvailableInputs(); i++){
+
+            if(node->GetInput(i) != nullptr){
+                node->GetInput(i)->Update();
+            }
+        }  
     
     }
     op->Generate();

@@ -53,6 +53,11 @@ void NodeManager::InitGLFWEvents() {
         data->height = height;
         glViewport(0, 0, width, height);
       });  
+
+  glfwSetDropCallback(GetGLFWWindow(), [](GLFWwindow* window, int count, const char** paths){
+      DropFileEvent event(paths[0]);
+      dispatcher.Dispatch(event);
+  });
   dispatcher.Subscribe(EventType::MouseClick,
                        [this](const NodeEditor::Event &event) {
                          this->OnMouseClick(event);
@@ -73,6 +78,16 @@ void NodeManager::InitGLFWEvents() {
                        [this](const NodeEditor::Event &event) {
                          this->OnKeyPress(event);
                        });  
+  dispatcher.Subscribe(EventType::DropFile,[this](const NodeEditor::Event& event){
+    auto drop_ev = static_cast<const NodeEditor::DropFileEvent & >(event);
+    auto path = std::filesystem::path(drop_ev.path);
+    // std::cout << path << std::endl;
+    auto net = load_yaml_file(path);
+    this->GetRootNetwork() = net;
+
+    this->m_SavePath = path; 
+    glfwSetWindowTitle(this->GetGLFWWindow(), path.string().c_str());
+  });
 }
 
 std::shared_ptr<AbstractNode> NodeManager::FindNodeByUUID(std::string uuid)

@@ -27,6 +27,15 @@ int main() {
   add_example_nodes(manager);
 
   static EventDispatcher& dispatcher = EventManager::GetInstance();
+
+  // glfwSetDropCallback(manager.GetGLFWWindow(), [](GLFWwindow* window, int count, const char** paths){
+  //   for(int i = 0; i < count; i++){
+  //     std::cout << paths[i] << std::endl;
+  //       NodeNetwork net = load_yaml_file(paths[i]);
+  //       manager.m_NodeNetwork = net;
+  //   }
+  // });
+
   dispatcher.Subscribe(
       EventType::NodeConnection, [&app](const Event &event) {
         auto &manager = app.GetNodeManager();

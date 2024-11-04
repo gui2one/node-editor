@@ -16,6 +16,8 @@ enum class EventType {
     MouseRelease,
     KeyPress,
 
+    DropFile,
+
     NodeConnection,
     NodeSelected,
     NodeMoved,
@@ -78,6 +80,18 @@ public:
     }
 };
 
+
+class DropFileEvent : public Event {
+public:
+
+    const char* path;
+
+    DropFileEvent(const char* _path): path(_path){}
+
+    EventType GetType() const override {
+        return EventType::DropFile;
+    }
+};
 class KeyPressEvent : public Event {
 public:
     int key;

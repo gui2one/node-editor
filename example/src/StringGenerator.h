@@ -24,22 +24,12 @@ public:
   virtual ~StringSubnetOperator() = default;
 
   void Generate() override {
-    // if (GetInput(0) != nullptr) {
-    //   auto op0 = std::dynamic_pointer_cast<StringOperator>(GetInput(0));
-    //   if(op0 != nullptr){
-    //     // m_DataCache = op0->m_DataCache;
-    //     m_DataCache = "???";
-    //   }
-    // }else{
-
-    //   m_DataCache = "!!!";
-    // }
-
     if(node_network.outuput_node != nullptr){
       // node_network.outuput_node->Update();
       auto op = std::dynamic_pointer_cast<StringOperator>(node_network.outuput_node);
       if(op != nullptr){
         
+        std::cout << "Generate Subnet Data cache ????" << std::endl;
         m_DataCache = op->m_DataCache;
       }
     }
