@@ -294,10 +294,14 @@ public:
         auto _parent_node = static_cast<SubnetNode<T> *>(this->parent_node);
         if( _parent_node != nullptr){
 
-            // std::cout << "Parent Node : "<< this->parent_node->title << std::endl;
-
-            if(_parent_node->GetInput(input_id->Eval()) != nullptr){
-                auto op = static_cast<ImGuiNode<T> *>(_parent_node->GetInput(input_id->Eval()).get());
+            std::cout << "Parent Node : "<< this->parent_node->title << std::endl;
+            this->parent_node->Generate();
+            
+            uint32_t id = input_id->Eval();
+            if(_parent_node->GetInput(id) != nullptr){
+                std::cout << "Input " << id << "  : "<< _parent_node->GetInput(id)->title << std::endl;
+                auto op = static_cast<ImGuiNode<T> *>(_parent_node->GetInput(id).get());
+                std::cout << "Op cache   : "<< op->m_DataCache << std::endl;
                 m_DataCache = op->m_DataCache;
             }
             

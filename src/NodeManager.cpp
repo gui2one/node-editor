@@ -620,8 +620,6 @@ void NodeManager::OnMouseClick(const Event &event) {
   }
 }
 
-
-
 void NodeManager::OnMouseRelease(const Event &event) {
   
   const MouseReleaseEvent &clickEvent =
