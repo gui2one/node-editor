@@ -12,6 +12,7 @@ int main() {
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenator, "concatenator", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenatorMulti, "concatmulti", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");
+  REGISTER_NODE_TYPE(NodeEditor::StringToUpperCase, "To Upper Case", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringNull, "null node","utility");
   REGISTER_NODE_TYPE(NodeEditor::StringSubnetOperator, "Subnetwork", "utility");
   CREATE_SUBNET_INPUT_NODE_CLASS(std::string, "Subnet input", "utility");

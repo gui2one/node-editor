@@ -167,6 +167,22 @@ public:
 public:
   std::shared_ptr<Param<uint32_t>> count;
 };
+
+class StringToUpperCase : public StringModifier {
+public:
+  StringToUpperCase():StringModifier(){
+    SetNumAvailableInputs(1);
+  }
+
+  void Generate() override{
+    auto op0 = static_cast<StringOperator *>(GetInput(0).get());
+    if(op0 == nullptr) return;
+    std::string src = op0->m_DataCache;
+    std::transform(src.begin(), src.end(), src.begin(), ::toupper);
+    m_DataCache = src;
+  }
+};
+
 class StringNull : public StringModifier {
 public:
   StringNull() : StringModifier() {
