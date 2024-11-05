@@ -256,7 +256,7 @@ void NodeManager::DrawNodes() {
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
     if(node->selected) ImGui::PushFont(m_BoldFont);
-    draw_list->AddText(min + ImVec2(10.0f, 10.0f), IM_COL32(255, 255, 255, 255),
+    draw_list->AddText(max + ImVec2(5.0f, -20.0f), IM_COL32(255, 255, 255, 255),
                        node->title.c_str());
     if(node->selected) ImGui::PopFont();
 
