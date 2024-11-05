@@ -268,6 +268,8 @@ public:
     {   
         SetNumAvailableInputs(MAX_N_INPUTS);
         ActivateSubnet();
+
+        icon_name = "three_dots";
     }
 public:
     T m_DataCache;

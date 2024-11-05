@@ -25,6 +25,7 @@ int main() {
 
   auto &manager = app.GetNodeManager();
 
+  manager.AddIcon("to_upper", "example_resources/icons/to_upper.png");
   // add_example_nodes(manager);
 
   static EventDispatcher& dispatcher = EventManager::GetInstance();

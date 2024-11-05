@@ -133,6 +133,11 @@ void NodeManager::InitIcons()
   
 }
 
+void NodeManager::AddIcon(const char * name, std::filesystem::path path)
+{
+  m_Icons.insert({name, LoadTexture(path.string().c_str())});
+}
+
 std::shared_ptr<AbstractNode> NodeManager::FindNodeByUUID(std::string uuid)
 {
   for(auto node : GetNodes()) {
@@ -304,7 +309,10 @@ void NodeManager::DrawNodes() {
     // GLuint texture = LoadTexture("resources/icons/arrow_1.png");
     ImVec2 uv0(0, 0);  // Top-left of the texture
     ImVec2 uv1(1, 1);  // Bottom-right of the texture
-    draw_list->AddImage((void*)(intptr_t)m_Icons[node->icon_name], min + ImVec2(node->size.x/2.0f - 15.0f, 0.0f), min + ImVec2(node->size.x/2.0f + 15.0f, 30.0f), uv0, uv1);
+    ImVec2 node_center = min + (node->size * 0.5f);
+    ImVec2 icon_min = node_center - ImVec2(15.0f, 15.0f);
+    ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f);
+    draw_list->AddImage((void*)(intptr_t)m_Icons[node->icon_name], icon_min, icon_max, uv0, uv1);
 
     draw_list->AddText(max + ImVec2(5.0f, -20.0f), IM_COL32(255, 255, 255, 255),
                        node->title.c_str());

@@ -64,7 +64,10 @@ public:
     
 
     void InitGLFWEvents();
+    
     void InitIcons();
+    void AddIcon(const char* name, std::filesystem::path path);
+
     /// @brief Computes result for all 'parents' of m_OutputNode.
     /// does nothing if m_OutputNode == nullptr
     void Evaluate();
@@ -151,7 +154,8 @@ public:
 
     std::vector<IconResource> m_NodeIconsResources = {
         {"arrow", "resources/icons/arrow_1.png"},
-        {"empty_set", "resources/icons/empty_set.png"}
+        {"empty_set", "resources/icons/empty_set.png"},
+        {"three_dots", "resources/icons/three_dots.png"}
     };
 
     std::map<const char*, GLuint> m_Icons;
