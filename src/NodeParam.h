@@ -60,6 +60,10 @@ public:
         str_remove(type_str,"NodeEditor::");\
         yaml_node["type"] = type_str;
         yaml_node["name"] = name;
+        
+        for(auto item : items) {
+            yaml_node["params"].push_back(item->YAMLSerialize());            
+        }
         yaml_node["value"] = "null";
         return yaml_node;
     }
