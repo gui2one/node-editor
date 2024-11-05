@@ -39,7 +39,32 @@ namespace NodeEditor::Utils {
         }
         // return ImVec2();
     }
-    std::filesystem::path open_file_explorer()
+
+
+    const char* create_windows_file_explorer_Filter(std::vector<FileFilterItem> filters) {
+        std::vector<char> filter;
+
+        for(auto& item : filters){
+
+        // Append description with a null character
+        filter.insert(filter.end(), item.description.begin(), item.description.end());
+        filter.push_back('|');
+        filter.insert(filter.end(), item.extension.begin(), item.extension.end());
+        filter.push_back('\0');
+
+        // Append file extension pattern with a null character
+        filter.push_back('*');
+        filter.push_back('.');
+        filter.insert(filter.end(), item.extension.begin(), item.extension.end());
+        filter.push_back('\0');
+
+        }
+        // Append an additional null character at the end to terminate the filter
+        filter.push_back('\0');
+
+        return filter.data();
+    }    
+    std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters)
     {
 
 #ifdef _WIN32
@@ -50,7 +75,7 @@ namespace NodeEditor::Utils {
         ofn.hwndOwner = NULL;
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = 260;
-        ofn.lpstrFilter = "All\0*.*\0";
+        ofn.lpstrFilter = create_windows_file_explorer_Filter(filters);
         ofn.nFilterIndex = 1;
         ofn.lpstrFileTitle = NULL;
         ofn.nMaxFileTitle = 0;

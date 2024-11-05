@@ -6,8 +6,17 @@
 using namespace NodeEditor;
 
 void add_example_nodes(NodeManager &manager);
-int main() {
+int main(int argc, char *argv[]) {
+  std::filesystem::path file_to_load = "";
+  std::filesystem::path exe_path = argv[0];
 
+#ifdef _WIN32
+  SetCurrentDirectoryA(exe_path.parent_path().string().c_str());
+#endif
+  if(argc > 1){
+    file_to_load = argv[1];
+  }
+  
   REGISTER_NODE_TYPE(NodeEditor::StringGenerate,"generate","generator");
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenator, "concatenator", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenatorMulti, "concatmulti", "modifier");
@@ -74,7 +83,9 @@ int main() {
 
   app.GetNodeManager().Evaluate();
 
+  app.GetNodeManager().LoadFromFile(file_to_load);
   app.Run();
+
 
   std::cout << "__All Done__" << std::endl;
 

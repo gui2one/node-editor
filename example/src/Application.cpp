@@ -33,6 +33,7 @@ bool Application::Init() {
 
   glfwMakeContextCurrent(m_NativeWindow);
   m_NodeManager.SetGLFWWindow(m_NativeWindow);
+  m_NodeManager.SetFileExtension("str3000");
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;

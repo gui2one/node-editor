@@ -114,8 +114,10 @@ public:
     void ApplyConnectionProcedure();
     void ResetConnectionProcedure();
 
+    inline void SetFileExtension(const char* _ext) { m_FileExtension = _ext; }
     void SaveAll();
     void LoadAll();
+    void LoadFromFile(std::filesystem::path path);
 
     void OnMouseMove(const Event& event);
     void OnMouseClick(const Event& event);
@@ -167,7 +169,7 @@ private:
     std::function<void()> m_NodesMenu = [](){};
 
     ConnectionProcedure m_ConnectionProcedure;
-
+    const char * m_FileExtension = "ney";
 }; // end class NodeManager
 
 }; // end namespace NodeEditor

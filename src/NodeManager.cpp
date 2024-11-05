@@ -548,7 +548,8 @@ void NodeManager::ResetConnectionProcedure() {
 void NodeManager::SaveAll() {
 
   if(m_SavePath.empty()){
-    auto path = Utils::open_file_explorer();
+    
+    auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
     m_SavePath = path; 
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
   }
@@ -557,14 +558,29 @@ void NodeManager::SaveAll() {
 
 void NodeManager::LoadAll() {
   if(m_SavePath.empty()){
-    auto path = Utils::open_file_explorer();
+
+    auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
     m_SavePath = path; 
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
   }
 
-  NodeNetwork net = load_yaml_file(m_SavePath);
-  m_NodeNetwork = net;
-  ViewFrameAll();
+  if(!m_SavePath.empty()){
+    
+    NodeNetwork net = load_yaml_file(m_SavePath);
+    m_NodeNetwork = net;
+    ViewFrameAll();
+  }
+}
+
+void NodeManager::LoadFromFile(std::filesystem::path path)
+{
+  if(!path.empty()){
+    m_SavePath = path; 
+    NodeNetwork net = load_yaml_file(path);
+    m_NodeNetwork = net;
+    ViewFrameAll();
+    glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
+  }
 }
 
 void NodeManager::OnMouseMove(const Event &event) {
