@@ -185,6 +185,7 @@ public:
   StringNull() : StringModifier() {
     SetNumAvailableInputs(1);
     color = NODE_COLOR::ORANGE;
+    icon_name = "empty_set";
   };
   ~StringNull() {};
 

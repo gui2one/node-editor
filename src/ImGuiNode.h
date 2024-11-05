@@ -223,6 +223,7 @@ private:
     bool m_IsSubnetInputNode = false;
 
 public:
+    const char * icon_name = "";
     NodeNetwork node_network;
     AbstractNode* parent_node = nullptr;
     std::string uuid;
@@ -286,6 +287,8 @@ public:
 
         input_id = std::make_shared<Param<uint32_t>>("input id", 0);
         m_ParamLayout.items.push_back({"input_id", input_id});
+
+        icon_name = "arrow";
     }
 
     ~SubnetInputNode(){};

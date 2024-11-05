@@ -24,6 +24,15 @@ GLuint LoadTexture(const char* filename) {
     stbi_image_free(data);
     return texture;
 }
+
+GLuint GenerateEmptyTexture() {
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    std::vector<unsigned char> data = {0,0,0,0};
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+    return texture;
+}
 namespace NodeEditor {
 NodeManager::NodeManager() {
   SetNodesMenu([this]() {
@@ -113,6 +122,9 @@ void NodeManager::InitGLFWEvents() {
 
 void NodeManager::InitIcons()
 {
+  // empty icon
+  GLuint empty_tex_id = GenerateEmptyTexture();
+  m_Icons.insert({"", empty_tex_id});
   for(auto& res : m_NodeIconsResources){
     std::cout << res.name << std::endl;
     GLuint id = LoadTexture(res.path.string().c_str());
@@ -288,13 +300,11 @@ void NodeManager::DrawNodes() {
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
     if(node->selected) ImGui::PushFont(m_BoldFont);
-    if(node->IsSubnet()) {
-      // GLuint texture = LoadTexture("resources/icons/arrow_1.png");
-      ImVec2 uv0(0, 0);  // Top-left of the texture
-      ImVec2 uv1(1, 1);  // Bottom-right of the texture
-      draw_list->AddImage((void*)(intptr_t)m_Icons["arrow"], min + ImVec2(node->size.x/2.0f - 15.0f, 0.0f), min + ImVec2(node->size.x/2.0f + 15.0f, 30.0f), uv0, uv1);
-      // glDeleteTextures(1, &texture);
-    }
+    
+    // GLuint texture = LoadTexture("resources/icons/arrow_1.png");
+    ImVec2 uv0(0, 0);  // Top-left of the texture
+    ImVec2 uv1(1, 1);  // Bottom-right of the texture
+    draw_list->AddImage((void*)(intptr_t)m_Icons[node->icon_name], min + ImVec2(node->size.x/2.0f - 15.0f, 0.0f), min + ImVec2(node->size.x/2.0f + 15.0f, 30.0f), uv0, uv1);
 
     draw_list->AddText(max + ImVec2(5.0f, -20.0f), IM_COL32(255, 255, 255, 255),
                        node->title.c_str());

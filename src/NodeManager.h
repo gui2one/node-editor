@@ -51,7 +51,7 @@ struct ViewProperties{
 };
 
 struct IconResource{
-    std::string name;
+    const char* name;
     std::filesystem::path path;
 };
 
@@ -154,7 +154,7 @@ public:
         {"empty_set", "resources/icons/empty_set.png"}
     };
 
-    std::map<std::string, GLuint> m_Icons;
+    std::map<const char*, GLuint> m_Icons;
 private:
     NodeNetwork m_NodeNetwork;
     NodeNetwork* m_CurrentNetwork;
