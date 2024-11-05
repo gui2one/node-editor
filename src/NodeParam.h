@@ -14,8 +14,11 @@
         YAML::Node yaml_node;\
         std::string type_str = typeid(*this).name();\
         NodeEditor::str_remove_all(type_str,"class ");\
+        NodeEditor::str_remove_all(type_str,"struct ");\
         NodeEditor::str_remove(type_str,"NodeEditor::Param<");\
         NodeEditor::str_remove_last(type_str,">");\
+        NodeEditor::str_remove_last(type_str," ");\
+        if(type_str.find("std::basic_string") != std::string::npos) type_str = "std::string";\
         yaml_node["type"] = type_str;\
         yaml_node["name"] = name;\
         yaml_node["value"] = value;\
