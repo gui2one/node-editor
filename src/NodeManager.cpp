@@ -113,8 +113,11 @@ void NodeManager::InitGLFWEvents() {
 
 void NodeManager::InitIcons()
 {
-  m_NodeIcons[0].id = LoadTexture(m_NodeIcons[0].path.string().c_str());
-  std::cout << "Texture ID : " << m_NodeIcons[0].id << std::endl;
+  for(auto& res : m_NodeIconsResources){
+    std::cout << res.name << std::endl;
+    GLuint id = LoadTexture(res.path.string().c_str());
+    m_Icons.insert({res.name, id});
+  }
   
 }
 
@@ -289,9 +292,10 @@ void NodeManager::DrawNodes() {
       // GLuint texture = LoadTexture("resources/icons/arrow_1.png");
       ImVec2 uv0(0, 0);  // Top-left of the texture
       ImVec2 uv1(1, 1);  // Bottom-right of the texture
-      draw_list->AddImage((void*)(intptr_t)m_NodeIcons[0].id, min + ImVec2(node->size.x/2.0f - 15.0f, 0.0f), min + ImVec2(node->size.x/2.0f + 15.0f, 30.0f), uv0, uv1);
+      draw_list->AddImage((void*)(intptr_t)m_Icons["arrow"], min + ImVec2(node->size.x/2.0f - 15.0f, 0.0f), min + ImVec2(node->size.x/2.0f + 15.0f, 30.0f), uv0, uv1);
       // glDeleteTextures(1, &texture);
     }
+
     draw_list->AddText(max + ImVec2(5.0f, -20.0f), IM_COL32(255, 255, 255, 255),
                        node->title.c_str());
     if(node->selected) ImGui::PopFont();

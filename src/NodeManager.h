@@ -50,11 +50,11 @@ struct ViewProperties{
     ImVec2 canvasPos;    
 };
 
-struct NodeIcon{
-    GLuint id = 0;
+struct IconResource{
     std::string name;
     std::filesystem::path path;
 };
+
 
 class NodeManager{
 
@@ -149,9 +149,12 @@ public:
     ImFont * m_RegularFont;
     ImFont * m_BoldFont;
 
-    std::vector<NodeIcon> m_NodeIcons = {
-        {0, "arrow", "resources/icons/arrow_1.png"}
+    std::vector<IconResource> m_NodeIconsResources = {
+        {"arrow", "resources/icons/arrow_1.png"},
+        {"empty_set", "resources/icons/empty_set.png"}
     };
+
+    std::map<std::string, GLuint> m_Icons;
 private:
     NodeNetwork m_NodeNetwork;
     NodeNetwork* m_CurrentNetwork;

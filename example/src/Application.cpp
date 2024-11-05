@@ -34,17 +34,14 @@ bool Application::Init() {
   glfwMakeContextCurrent(m_NativeWindow);
   m_NodeManager.SetGLFWWindow(m_NativeWindow);
 
-
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return false;
   }
 
-  auto &node_manager = this->GetNodeManager();
-  static auto &dispatcher = EventManager::GetInstance();
+  m_NodeManager.InitGLFWEvents();
+  m_NodeManager.InitIcons();
 
-  node_manager.InitGLFWEvents();
-  node_manager.InitIcons();
   ImGuiInit(m_NativeWindow);
 
   glViewport(0, 0, 640, 360);
