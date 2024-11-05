@@ -51,9 +51,12 @@ class StringGenerate : public StringGenerator {
 public:
   StringGenerate(): StringGenerator() {
     value = std::make_shared<Param<std::string>>("value", "Hello");
-
+    auto grp = std::make_shared<ParamGroup>("Group");
+    auto fake_1 = std::make_shared<Param<glm::vec3>>("Fake", glm::vec3(0.0f));
+    grp->items.push_back(value);
+    grp->items.push_back(fake_1);
     m_ParamLayout.items = { 
-      {"", value}
+      {"", grp}
       };
   };
   ~StringGenerate() {};
