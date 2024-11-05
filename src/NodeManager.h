@@ -50,6 +50,11 @@ struct ViewProperties{
     ImVec2 canvasPos;    
 };
 
+struct NodeIcon{
+    GLuint id = 0;
+    std::string name;
+    std::filesystem::path path;
+};
 
 class NodeManager{
 
@@ -59,6 +64,7 @@ public:
     
 
     void InitGLFWEvents();
+    void InitIcons();
     /// @brief Computes result for all 'parents' of m_OutputNode.
     /// does nothing if m_OutputNode == nullptr
     void Evaluate();
@@ -142,6 +148,10 @@ public:
 
     ImFont * m_RegularFont;
     ImFont * m_BoldFont;
+
+    std::vector<NodeIcon> m_NodeIcons = {
+        {0, "arrow", "resources/icons/arrow_1.png"}
+    };
 private:
     NodeNetwork m_NodeNetwork;
     NodeNetwork* m_CurrentNetwork;
