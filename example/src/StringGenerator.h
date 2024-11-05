@@ -169,6 +169,7 @@ class StringToUpperCase : public StringModifier {
 public:
   StringToUpperCase():StringModifier(){
     SetNumAvailableInputs(1);
+    icon_name = "to_upper";
   }
 
   void Generate() override{

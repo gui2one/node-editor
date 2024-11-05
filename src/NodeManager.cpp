@@ -304,17 +304,16 @@ void NodeManager::DrawNodes() {
     ImVec2 max = min + (node->size  * m_ViewProps.zoom);
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
-    if(node->selected) ImGui::PushFont(m_BoldFont);
-    
-    // GLuint texture = LoadTexture("resources/icons/arrow_1.png");
+
     ImVec2 uv0(0, 0);  // Top-left of the texture
     ImVec2 uv1(1, 1);  // Bottom-right of the texture
-    ImVec2 node_center = min + (node->size * 0.5f);
-    ImVec2 icon_min = node_center - ImVec2(15.0f, 15.0f);
-    ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f);
+    ImVec2 node_center = min + (node->size * 0.5f * m_ViewProps.zoom);
+    ImVec2 icon_min = node_center - ImVec2(15.0f, 15.0f)* m_ViewProps.zoom;
+    ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
     draw_list->AddImage((void*)(intptr_t)m_Icons[node->icon_name], icon_min, icon_max, uv0, uv1);
 
-    draw_list->AddText(max + ImVec2(5.0f, -20.0f), IM_COL32(255, 255, 255, 255),
+    if(node->selected) ImGui::PushFont(m_BoldFont);
+    draw_list->AddText(max + ImVec2(5.0f, -25.0f), IM_COL32(255, 255, 255, 255),
                        node->title.c_str());
     if(node->selected) ImGui::PopFont();
 
