@@ -2,6 +2,7 @@
 #define NODEMANAGER_H
 #pragma once
 
+#include <stb_image.h>
 #include "ImGuiNode.h"
 #include "EventManager.h"
 #include "utils/node_manager_utils.h"

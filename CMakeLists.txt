@@ -57,6 +57,7 @@ add_library(${PROJECT_NAME} STATIC
   src/EventManager.cpp
   src/utils.cpp
   src/utils/node_manager_utils.cpp
+  src/stb_image.cpp
 )
 
 
@@ -83,6 +84,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 set(_include_dirs
   src/
   vendor/glad/include
+  vendor/
   ${CMAKE_SOURCE_DIR}/build/_deps/glfw-src/include
   ${CMAKE_SOURCE_DIR}/build/_deps/glm-src/
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui-src/
