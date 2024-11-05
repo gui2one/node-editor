@@ -44,6 +44,29 @@ public:
     const char* name;
 };
 
+class ParamGroup : public NodeParam{
+public:
+    ParamGroup(const char * _name): NodeParam(_name){
+        std::cout << "Constructing ParamGroup -----------" << std::endl;
+        
+    };
+    ~ParamGroup(){};
+    void Display() override;
+
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        std::string type_str = typeid(*this).name();
+        str_remove_all(type_str,"class ");\
+        str_remove(type_str,"NodeEditor::");\
+        yaml_node["type"] = type_str;
+        yaml_node["name"] = name;
+        yaml_node["value"] = "null";
+        return yaml_node;
+    }
+public:
+    std::vector<std::shared_ptr<NodeParam>> items;
+};
+
 class ParamSeparator : public NodeParam{
 public:
     ParamSeparator(const char * _name): NodeParam(_name){};

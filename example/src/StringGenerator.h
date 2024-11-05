@@ -52,7 +52,9 @@ public:
   StringGenerate(): StringGenerator() {
     value = std::make_shared<Param<std::string>>("value", "Hello");
 
-    m_ParamLayout.items = { {"Value!!", value}};
+    m_ParamLayout.items = { 
+      {"", value}
+      };
   };
   ~StringGenerate() {};
 
