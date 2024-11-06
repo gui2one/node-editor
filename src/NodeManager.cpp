@@ -126,7 +126,6 @@ void NodeManager::InitIcons()
   GLuint empty_tex_id = GenerateEmptyTexture();
   m_Icons.insert({"", empty_tex_id});
   for(auto& res : m_NodeIconsResources){
-    std::cout << res.name << std::endl;
     GLuint id = LoadTexture(res.path.string().c_str());
     m_Icons.insert({res.name, id});
   }

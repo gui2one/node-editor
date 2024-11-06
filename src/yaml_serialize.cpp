@@ -63,7 +63,13 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
     for(size_t i= 0; i<yaml_node["params"].size(); i++) {
       auto p_node = yaml_node["params"][i];
 
-      auto param_ = deserialize_param(p_node, factory_node);
+      if(p_node["type"].as<std::string>() == "ParamGroup") {
+        for(size_t j = 0; j < p_node["params"].size(); j++) {
+          deserialize_param(p_node["params"][j], factory_node);
+        }
+      }else{
+        deserialize_param(p_node, factory_node);
+      }
     }
 
     if( is_subnet){      
@@ -81,25 +87,70 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
     return factory_node;
 }
 
-std::shared_ptr<NodeParam> deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node)
+
+std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> factory_node, std::string param_name) {
+  // std::cout << "Searchin for : " << param_name << std::endl;
+  
+  for(auto& param_item : factory_node->m_ParamLayout.items) {
+    // std::cout << "\tsampling :" << param_item.param->name << std::endl;
+    
+    auto p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(param_item.param);
+    if(p_group != nullptr) {
+      // std::cout << "p_group !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"  << p_group->items.size()<< std::endl;
+      
+      for(auto group_item : p_group->items) {
+        // std::cout << "-> Param in Group : " << group_item->name << std::endl;
+        if(group_item->name == param_name) {
+          return group_item;
+        }
+      }
+    }else{
+
+      if(param_item.param->name == param_name) {
+        // std::cout << "Found Param : " << param_name << " in Node: " << factory_node->title << "" << std::endl;
+        return param_item.param;
+      }
+    }
+  }
+
+  return nullptr;
+}
+void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node)
 {
     std::string p_type_str = yaml["type"].as<std::string>(); 
     std::string p_name = yaml["name"].as<std::string>(); 
 
     std::shared_ptr<NodeParam> param = nullptr;
-    for(auto& param_item : factory_node->m_ParamLayout.items) {
-      
-      if( param_item.param->name == p_name ) {
-        param = param_item.param;
-        break;
-      }
-    }
 
-    if (param == nullptr) {
-      return nullptr;
-    }
+    param = find_param_by_name(factory_node, p_name);
 
-    std::cout << "Deserializing param: " << param->name << std::endl;
+    // for(auto& param_item : factory_node->m_ParamLayout.items) {
+    //   if(p_type_str == "ParamGroup"){
+    //     for(uint32_t i = 0; i < yaml["params"].size(); i++) {
+    //       auto name = yaml["params"][i]["name"].as<std::string>();
+    //       if(param_item.param->name == name) {
+            
+    //         std::cout << p_type_str << ":::::::::::::::::::::::::::::::::::" << std::endl;
+    //         param = param_item.param;
+    //         break;
+    //       }
+
+    //       if(param != nullptr) break;
+    //       // std::cout << "Deserializing ParamGroup : " << yaml["params"][i]["name"].as<std::string>() << std::endl;
+    //       // deserialize_param(yaml["params"][i], factory_node);
+    //     }
+    //   }
+    //   if( param_item.param->name == p_name ) {
+    //     param = param_item.param;
+    //     break;
+    //   }
+
+    //   if(param != nullptr) break;
+
+    // }
+
+
+    std::cout << "Deserializing param: " << p_type_str << std::endl;
     
     if(p_type_str == "std::string" || p_type_str.find("std::basic_string") != std::string::npos) {
       set_param_value<std::string>(param, yaml["value"].as<std::string>());
@@ -116,15 +167,19 @@ std::shared_ptr<NodeParam> deserialize_param(YAML::Node yaml, std::shared_ptr<Ab
     }else if(p_type_str.find("ParamComboBox") != std::string::npos) {
       auto combo_p = std::dynamic_pointer_cast<ParamComboBox>(param);
       combo_p->SetChoice(yaml["value"].as<int>());
-    }else if(p_type_str.find("ParamGroup") != std::string::npos) {
+    }else if(p_type_str == "ParamGroup") {
       auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
       std::cout << "deserializing ParamGroup" << std::endl;
       for(size_t j = 0; j < yaml["params"].size(); j++) {
-        std::cout << yaml["params"][j]["name"] << std::endl;
+        std::cout << yaml["params"][j]["name"] << "0000000000000000000000000000000000000000000000000000000" << std::endl;
+
+          
+        deserialize_param(yaml["params"][j], factory_node);
+        
         
       }
     } 
-  return param;
+
 }
 
 NodeNetwork deserialize_network(YAML::Node yaml)
