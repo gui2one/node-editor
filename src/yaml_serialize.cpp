@@ -115,11 +115,13 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
     std::shared_ptr<NodeParam> param = nullptr;
 
     param = find_param_by_name(factory_node, p_name);
-    
+    if( param == nullptr ) {
+      return;
+    }
     if(p_type_str == "std::string" || p_type_str.find("std::basic_string") != std::string::npos) {
       set_param_value<std::string>(param, yaml["value"].as<std::string>());
-    }else if(p_type_str == "unsignedint") {
-      set_param_value<unsigned int>(param, yaml["value"].as<unsigned int>());
+    }else if(p_type_str == "int") {
+      set_param_value<int>(param, yaml["value"].as<int>());
     }else if(p_type_str == "float") {
       set_param_value<float>(param, yaml["value"].as<float>());
     }else if(p_type_str == "bool") {
@@ -133,7 +135,7 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
       combo_p->SetChoice(yaml["value"].as<int>());
     }else if(p_type_str == "ParamGroup") {
       auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
-      std::cout << "deserializing ParamGroup" << std::endl;
+      // std::cout << "deserializing ParamGroup" << std::endl;
       for(size_t j = 0; j < yaml["params"].size(); j++) {
         deserialize_param(yaml["params"][j], factory_node);
       }

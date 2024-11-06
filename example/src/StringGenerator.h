@@ -51,15 +51,7 @@ class StringGenerate : public StringGenerator {
 public:
   StringGenerate(): StringGenerator() {
     value = std::make_shared<Param<std::string>>("value", "Hello");
-    auto grp = std::make_shared<ParamGroup>("Group");
-    auto fake_1 = std::make_shared<Param<glm::vec3>>("Fake", glm::vec3(0.0f));
-    auto fake_2 = std::make_shared<Param<glm::vec3>>("Fake2", glm::vec3(0.0f));
-    grp->items.push_back(value);
-    grp->items.push_back(fake_1);
-    grp->items.push_back(fake_2);
-    m_ParamLayout.items = { 
-      {"", grp}
-      };
+    m_ParamLayout.items = {{"", value}};
   };
   ~StringGenerate() {};
 
@@ -145,14 +137,11 @@ class StringRepeater : public StringModifier {
 public:
   StringRepeater():StringModifier() {
     SetNumAvailableInputs(1);
-    count = std::make_shared<Param<uint32_t>>("Count", 10);
+    count = std::make_shared<Param<int>>("Count", 10);
+    count->min_val = 0;
+    count->max_val = 100;
     m_ParamLayout.items = { 
-      {"count", count},
-      {"label", std::make_shared<ParamLabel>("Mega Label !")},
-      {"sep", std::make_shared<ParamSeparator>("----------")},
-      {"fake_position", std::make_shared<Param<glm::vec3>>("Fake", glm::vec3(0.0f))},
-      {"fake_position2D", std::make_shared<Param<glm::vec2>>("Fake 2", glm::vec2(0.0f))}
-      };
+      {"count", count}};
   };
   ~StringRepeater(){};
 
@@ -161,7 +150,10 @@ public:
       std::string val = "";
       auto op0 = static_cast<StringOperator *>(GetInput(0).get());
 
-      for (uint32_t i = 0; i < count->Eval(); i++) {
+      int num_copies = count->Eval();
+      if(num_copies < 0) return;
+      
+      for (int i = 0; i < num_copies; i++) {
         val += op0->m_DataCache;
       }
       m_DataCache = val;
@@ -169,7 +161,7 @@ public:
   }
 
 public:
-  std::shared_ptr<Param<uint32_t>> count;
+  std::shared_ptr<Param<int>> count;
 };
 
 class StringToUpperCase : public StringModifier {

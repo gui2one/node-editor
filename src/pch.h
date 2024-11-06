@@ -11,6 +11,7 @@
 #include <chrono>
 #include <assert.h>
 #include <random>
+#include <limits>
 
 // include windows before GLFW to avoid compilation warnings
 #if defined(_WIN32) 

@@ -182,7 +182,7 @@ void Application::Run() {
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    static bool showDemoWindow = true;
+    static bool showDemoWindow = false;
     if (showDemoWindow) {
       ImGui::ShowDemoWindow(&showDemoWindow);
     }
@@ -227,6 +227,10 @@ void Application::Run() {
         m_NodeManager.GotoRootNetwork();
       }
       
+      ImGui::EndMenu();
+    }
+    if(ImGui::BeginMenu("ImGui")) {
+      ImGui::MenuItem("Show Demo Window", NULL, &showDemoWindow);
       ImGui::EndMenu();
     }
     ImGui::EndMainMenuBar();

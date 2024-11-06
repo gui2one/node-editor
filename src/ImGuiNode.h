@@ -287,7 +287,7 @@ public:
         size.x = 50.0f;
         size.y = 50.0f;
 
-        input_id = std::make_shared<Param<uint32_t>>("input id", 0);
+        input_id = std::make_shared<Param<int>>("input id", 0);
         m_ParamLayout.items.push_back({"input_id", input_id});
 
         icon_name = "arrow";
@@ -312,7 +312,7 @@ public:
 public:
     T m_DataCache;
 
-    std::shared_ptr<Param<uint32_t>> input_id;
+    std::shared_ptr<Param<int>> input_id;
 };
 
 
