@@ -5,6 +5,7 @@
 #include <yaml-cpp/yaml.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <imgui_internal.h>
 #include "Event.h"
 #include "EventManager.h"
 #include "utils.h"
@@ -213,6 +214,69 @@ public:
         if(ImGui::DragFloat3(name, glm::value_ptr(value))){
             DISPATCH_PARAM_CHANGE_EVENT();
         }
+
+        //new Version
+        float default_value = 0.0f;
+        ImGui::PushID(name);
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, 90.f);
+
+        ImGui::Text("%s", name);
+
+        ImGui::NextColumn();
+        ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
+
+        if (ImGui::Button("X", ImVec2(30, 20)))
+        {
+            value.x = default_value;
+            DISPATCH_PARAM_CHANGE_EVENT();
+        }
+
+        ImGui::PopStyleColor(3);
+        ImGui::SameLine();
+        if(ImGui::DragFloat("##x", &value.x, 0.05f)){
+            DISPATCH_PARAM_CHANGE_EVENT();
+        }
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
+        if (ImGui::Button("Y", ImVec2(30, 20)))
+        {
+            value.y = default_value;
+        }
+        ImGui::PopStyleColor(3);
+        ImGui::SameLine();
+        if(ImGui::DragFloat("##y", &value.y, 0.05f)){
+            DISPATCH_PARAM_CHANGE_EVENT();
+        }
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.1f, 0.8f, 1.f)));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.1f, 0.9f, 1.f)));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.1f, 1.0f, 1.f)));
+        if (ImGui::Button("Z", ImVec2(30, 20)))
+        {
+            value.z = default_value;
+        }
+        ImGui::PopStyleColor(3);
+        ImGui::SameLine();
+        if(ImGui::DragFloat("##z", &value.z, 0.05f)){
+            DISPATCH_PARAM_CHANGE_EVENT();
+        }
+
+        ImGui::PopItemWidth();
+        ImGui::Columns(1);
+        ImGui::PopStyleVar();
+        ImGui::PopID();        
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 public:
