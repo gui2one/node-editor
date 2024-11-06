@@ -52,10 +52,13 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
       std::cout << "Unabled to create type: " << type_name << "" << std::endl;
       return nullptr;
     }
+
     factory_node->position = yaml_node["position"].as<ImVec2>();
     factory_node->title = yaml_node["title"].as<std::string>();
     factory_node->uuid = yaml_node["uuid"].as<std::string>();
+    
     bool is_subnet = yaml_node["is_subnet"].as<bool>();
+
     if( is_subnet ) {
       factory_node->ActivateSubnet();
     }
@@ -81,33 +84,22 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
         factory_node->node_network.AddNode(node);
         factory_node->node_network.outuput_node = net.outuput_node;
       }
-
     }
-
     return factory_node;
 }
 
 
 std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> factory_node, std::string param_name) {
-  // std::cout << "Searchin for : " << param_name << std::endl;
-  
   for(auto& param_item : factory_node->m_ParamLayout.items) {
-    // std::cout << "\tsampling :" << param_item.param->name << std::endl;
-    
     auto p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(param_item.param);
     if(p_group != nullptr) {
-      // std::cout << "p_group !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"  << p_group->items.size()<< std::endl;
-      
       for(auto group_item : p_group->items) {
-        // std::cout << "-> Param in Group : " << group_item->name << std::endl;
         if(group_item->name == param_name) {
-          return group_item;
+            return group_item;
         }
       }
     }else{
-
       if(param_item.param->name == param_name) {
-        // std::cout << "Found Param : " << param_name << " in Node: " << factory_node->title << "" << std::endl;
         return param_item.param;
       }
     }
@@ -123,34 +115,6 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
     std::shared_ptr<NodeParam> param = nullptr;
 
     param = find_param_by_name(factory_node, p_name);
-
-    // for(auto& param_item : factory_node->m_ParamLayout.items) {
-    //   if(p_type_str == "ParamGroup"){
-    //     for(uint32_t i = 0; i < yaml["params"].size(); i++) {
-    //       auto name = yaml["params"][i]["name"].as<std::string>();
-    //       if(param_item.param->name == name) {
-            
-    //         std::cout << p_type_str << ":::::::::::::::::::::::::::::::::::" << std::endl;
-    //         param = param_item.param;
-    //         break;
-    //       }
-
-    //       if(param != nullptr) break;
-    //       // std::cout << "Deserializing ParamGroup : " << yaml["params"][i]["name"].as<std::string>() << std::endl;
-    //       // deserialize_param(yaml["params"][i], factory_node);
-    //     }
-    //   }
-    //   if( param_item.param->name == p_name ) {
-    //     param = param_item.param;
-    //     break;
-    //   }
-
-    //   if(param != nullptr) break;
-
-    // }
-
-
-    std::cout << "Deserializing param: " << p_type_str << std::endl;
     
     if(p_type_str == "std::string" || p_type_str.find("std::basic_string") != std::string::npos) {
       set_param_value<std::string>(param, yaml["value"].as<std::string>());
@@ -171,12 +135,7 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
       auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
       std::cout << "deserializing ParamGroup" << std::endl;
       for(size_t j = 0; j < yaml["params"].size(); j++) {
-        std::cout << yaml["params"][j]["name"] << "0000000000000000000000000000000000000000000000000000000" << std::endl;
-
-          
         deserialize_param(yaml["params"][j], factory_node);
-        
-        
       }
     } 
 
@@ -185,7 +144,7 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
 NodeNetwork deserialize_network(YAML::Node yaml)
 {
   NodeNetwork network;
-  // network.outuput_node = "???";
+
   network.nodes = deserialize_nodes(yaml["nodes"]);
   std::string output_node_uuid = yaml["output_node"].as<std::string>();
   if( output_node_uuid != "null") {
@@ -203,12 +162,10 @@ NodeNetwork deserialize_network(YAML::Node yaml)
 
 std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml)
 {
-
     std::vector<std::shared_ptr<AbstractNode>> nodes;
     
     for (auto node : yaml)
     {
-
         auto factory_node = deserialize_node(node);
         if (factory_node != nullptr)
         {
@@ -250,7 +207,6 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml)
             my_self->AppendInput(input_node);
         }
     }
-    
     return nodes;
 }
 
@@ -271,11 +227,9 @@ std::vector<post_load_connection> collect_subnet_connections(YAML::Node yaml){
         if(subnet_node["inputs"][0].as<std::string>() == "opinput_0") {
           connections.push_back({subnet_node["uuid"].as<std::string>(), 0, 0});
         }
-        
       }
     }
   }
-
   return connections;
 }
 
@@ -290,7 +244,6 @@ void apply_subnet_connections(NodeNetwork &network, std::vector<post_load_connec
           }
         }
       }
-      
     }
   }
 }
@@ -303,11 +256,9 @@ NodeNetwork load_yaml_file(std::filesystem::path path)
   YAML::Node output = YAML::Load(content);
 
   auto network = deserialize_network(output);
-
-
   auto connections = collect_subnet_connections(output);
-
   apply_subnet_connections(network, connections);
+
   return network;
 }
 };
