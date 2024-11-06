@@ -30,8 +30,6 @@ YAML::Node serialize_nodes(std::vector<std::shared_ptr<AbstractNode>> nodes) {
       output.push_back(node->YAMLSerialize());
     }
   }
-
-
   return output;
 }
 
@@ -62,35 +60,10 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
       factory_node->ActivateSubnet();
     }
 
-
     for(size_t i= 0; i<yaml_node["params"].size(); i++) {
       auto p_node = yaml_node["params"][i];
-      std::string p_type_str = p_node["type"].as<std::string>();
-      auto param = factory_node->m_ParamLayout.items[i].param;
-      
-      if(p_type_str == "std::string" || p_type_str.find("std::basic_string") != std::string::npos) {
-        set_param_value<std::string>(param, p_node["value"].as<std::string>());
-      }else if(p_type_str == "unsigned int") {
-        set_param_value<unsigned int>(param, p_node["value"].as<unsigned int>());
-      }else if(p_type_str == "float") {
-        set_param_value<float>(param, p_node["value"].as<float>());
-      }else if(p_type_str == "bool") {
-        set_param_value<bool>(param, p_node["value"].as<bool>()); 
-      }else if(p_type_str.find("glm::vec<2,float,0>") != std::string::npos) {
-        set_param_value<glm::vec2>(param, p_node["value"].as<glm::vec2>()); 
-      }else if(p_type_str.find("glm::vec<3,float,0>") != std::string::npos) {
-        set_param_value<glm::vec3>(param, p_node["value"].as<glm::vec3>()); 
-      }else if(p_type_str.find("ParamComboBox") != std::string::npos) {
-        auto combo_p = std::dynamic_pointer_cast<ParamComboBox>(param);
-        combo_p->SetChoice(p_node["value"].as<int>());
-      }else if(p_type_str.find("ParamGroup") != std::string::npos) {
-        auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
-        std::cout << "deserializing ParamGroup" << std::endl;
-        for(size_t j = 0; j < p_node["params"].size(); j++) {
-          std::cout << p_node["params"][j]["name"] << std::endl;
-          
-        }
-      }    
+
+      auto param_ = deserialize_param(p_node, factory_node);
     }
 
     if( is_subnet){      
@@ -106,6 +79,52 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
     }
 
     return factory_node;
+}
+
+std::shared_ptr<NodeParam> deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node)
+{
+    std::string p_type_str = yaml["type"].as<std::string>(); 
+    std::string p_name = yaml["name"].as<std::string>(); 
+
+    std::shared_ptr<NodeParam> param = nullptr;
+    for(auto& param_item : factory_node->m_ParamLayout.items) {
+      
+      if( param_item.param->name == p_name ) {
+        param = param_item.param;
+        break;
+      }
+    }
+
+    if (param == nullptr) {
+      return nullptr;
+    }
+
+    std::cout << "Deserializing param: " << param->name << std::endl;
+    
+    if(p_type_str == "std::string" || p_type_str.find("std::basic_string") != std::string::npos) {
+      set_param_value<std::string>(param, yaml["value"].as<std::string>());
+    }else if(p_type_str == "unsignedint") {
+      set_param_value<unsigned int>(param, yaml["value"].as<unsigned int>());
+    }else if(p_type_str == "float") {
+      set_param_value<float>(param, yaml["value"].as<float>());
+    }else if(p_type_str == "bool") {
+      set_param_value<bool>(param, yaml["value"].as<bool>()); 
+    }else if(p_type_str.find("glm::vec<2,float,0>") != std::string::npos) {
+      set_param_value<glm::vec2>(param, yaml["value"].as<glm::vec2>()); 
+    }else if(p_type_str.find("glm::vec<3,float,0>") != std::string::npos) {
+      set_param_value<glm::vec3>(param, yaml["value"].as<glm::vec3>()); 
+    }else if(p_type_str.find("ParamComboBox") != std::string::npos) {
+      auto combo_p = std::dynamic_pointer_cast<ParamComboBox>(param);
+      combo_p->SetChoice(yaml["value"].as<int>());
+    }else if(p_type_str.find("ParamGroup") != std::string::npos) {
+      auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
+      std::cout << "deserializing ParamGroup" << std::endl;
+      for(size_t j = 0; j < yaml["params"].size(); j++) {
+        std::cout << yaml["params"][j]["name"] << std::endl;
+        
+      }
+    } 
+  return param;
 }
 
 NodeNetwork deserialize_network(YAML::Node yaml)

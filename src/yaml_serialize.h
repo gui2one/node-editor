@@ -27,6 +27,7 @@ YAML::Node serialize_network(NodeNetwork network);
 YAML::Node serialize_nodes(std::vector<std::shared_ptr<AbstractNode>> nodes);
 void save_all(std::filesystem::path path, NodeNetwork& network);
 
+std::shared_ptr<NodeParam> deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node);
 NodeNetwork deserialize_network(YAML::Node yaml);
 std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml);
 NodeNetwork load_yaml_file(std::filesystem::path path);
