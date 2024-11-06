@@ -51,7 +51,15 @@ class StringGenerate : public StringGenerator {
 public:
   StringGenerate(): StringGenerator() {
     value = std::make_shared<Param<std::string>>("value", "Hello");
-    m_ParamLayout.items = {{"", value}};
+    auto sep = std::make_shared<ParamSeparator>("");
+    auto coords = std::make_shared<Param<glm::vec2>>("coords", glm::vec2(0.0f));
+    auto position = std::make_shared<Param<glm::vec3>>("position", glm::vec3(0.0f));
+    m_ParamLayout.items = {
+      {"", value}, 
+      {"", sep},
+      {"", coords},
+      {"", position}
+    };
   };
   ~StringGenerate() {};
 

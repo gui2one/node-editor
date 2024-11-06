@@ -36,14 +36,15 @@
 #define DISPLAY_PARAM_TEMPLATE(label, func) \
     ImGui::PushID(name);\
     ImGui::Columns(2);\
-    ImGui::SetColumnWidth(0, 90.f);\
+    ImGui::SetColumnWidth(0, 150.f);\
     ImGui::Text("%s", name);\
     ImGui::NextColumn();\
     ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);\
     func();\
     ImGui::PopItemWidth();\
     ImGui::Columns(1);\
-    ImGui::PopID();
+    ImGui::PopID();\
+    ImGui::Spacing();
 
 
 namespace NodeEditor {
@@ -134,11 +135,11 @@ public:
     ParamComboBox(const char * _name): NodeParam(_name){};
     ~ParamComboBox(){};
     void Display(){
-        ImGui::Spacing();
-        if(ImGui::Combo(name, &value, choices.data(), static_cast<int>(choices.size()))){
-            // DISPATCH_PARAM_CHANGE_EVENT();
-            DISPATCH_EDITOR_UPDATE_EVENT();
-        }
+        DISPLAY_PARAM_TEMPLATE(name, [this](){
+            if(ImGui::Combo("##name", &value, choices.data(), static_cast<int>(choices.size()))){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+        })
     }
 
     inline int GetChoice() { return value; }
@@ -205,10 +206,60 @@ public:
     }
 
     void Display(){
-        if(ImGui::DragFloat2(name, glm::value_ptr(value))){
-            ParamChangedEvent event;
-            EventManager::GetInstance().Dispatch(event);
-        }
+        DISPLAY_PARAM_TEMPLATE(name, [this](){
+            float default_value = 0.0f;
+
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
+
+            float avail_x = ImGui::GetContentRegionAvail().x;
+            float spacing = ImGui::GetCurrentContext()->Style.ItemInnerSpacing.x;
+            float input_width = avail_x / 2.0f - 30.0f - spacing;
+            ImGui::PushID(0);
+            if (ImGui::Button("X", ImVec2(30, 25)))
+            {
+                value.x = default_value;
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+            ImGui::PopID();
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+
+            ImGui::PushID(1);
+            ImGui::PushItemWidth(input_width);
+            if(ImGui::DragFloat("##x", &value.x, 0.05f)){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+            ImGui::PopID();
+            ImGui::PopItemWidth();
+
+            ImGui::SameLine(0, spacing);
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
+            ImGui::PushID("label_y");
+            
+            if (ImGui::Button("Y", ImVec2(30, 25)))
+            {
+                value.y = default_value;
+            }
+            ImGui::PopID();
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushID("float_y");
+            ImGui::PushItemWidth(input_width);
+            if(ImGui::DragFloat("##y", &value.y, 0.05f)){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+            ImGui::PopID();
+            ImGui::PopItemWidth();
+
+           
+            ImGui::PopStyleVar();
+        })
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 public:
