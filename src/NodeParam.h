@@ -39,7 +39,9 @@
     ImGui::SetColumnWidth(0, 90.f);\
     ImGui::Text("%s", name);\
     ImGui::NextColumn();\
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);\
     func();\
+    ImGui::PopItemWidth();\
     ImGui::Columns(1);\
     ImGui::PopID();
 
@@ -224,7 +226,7 @@ public:
     void Display(){
         DISPLAY_PARAM_TEMPLATE(name, [this](){
             float default_value = 0.0f;
-            ImGui::PushID(name); // main ID
+
 
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
@@ -296,71 +298,7 @@ public:
             ImGui::PopItemWidth();
             ImGui::PopStyleVar();
 
-            ImGui::PopID(); // MAIN ID
         });
-
-        // //new Version
-        // float default_value = 0.0f;
-        // ImGui::PushID(name);
-        // ImGui::Columns(2);
-        // ImGui::SetColumnWidth(0, 90.f);
-
-        // ImGui::Text("%s", name);
-
-        // ImGui::NextColumn();
-        // ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-
-        // ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
-        // ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
-        // ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
-        // ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
-
-        // if (ImGui::Button("X", ImVec2(30, 20)))
-        // {
-        //     value.x = default_value;
-        //     DISPATCH_PARAM_CHANGE_EVENT();
-        // }
-
-        // ImGui::PopStyleColor(3);
-        // ImGui::SameLine();
-        // if(ImGui::DragFloat("##x", &value.x, 0.05f)){
-        //     DISPATCH_PARAM_CHANGE_EVENT();
-        // }
-        // ImGui::PopItemWidth();
-        // ImGui::SameLine();
-
-        // ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
-        // ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
-        // ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
-        // if (ImGui::Button("Y", ImVec2(30, 20)))
-        // {
-        //     value.y = default_value;
-        // }
-        // ImGui::PopStyleColor(3);
-        // ImGui::SameLine();
-        // if(ImGui::DragFloat("##y", &value.y, 0.05f)){
-        //     DISPATCH_PARAM_CHANGE_EVENT();
-        // }
-        // ImGui::PopItemWidth();
-        // ImGui::SameLine();
-
-        // ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.1f, 0.8f, 1.f)));
-        // ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.1f, 0.9f, 1.f)));
-        // ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.1f, 1.0f, 1.f)));
-        // if (ImGui::Button("Z", ImVec2(30, 20)))
-        // {
-        //     value.z = default_value;
-        // }
-        // ImGui::PopStyleColor(3);
-        // ImGui::SameLine();
-        // if(ImGui::DragFloat("##z", &value.z, 0.05f)){
-        //     DISPATCH_PARAM_CHANGE_EVENT();
-        // }
-
-        // ImGui::PopItemWidth();
-        // ImGui::PopStyleVar();
-        // ImGui::Columns(1);
-        // ImGui::PopID();        
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 public:
@@ -379,15 +317,18 @@ public:
     }
 
     void Display(){
-      char buffer[2048];
-      if(value.length() > 2048) value = value.substr(0, 2048);
-      std::copy(value.begin(), value.end(), buffer);
-      buffer[value.length()] = 0;
-      if (ImGui::InputText(name, buffer, 2048)) {
+        DISPLAY_PARAM_TEMPLATE(name, [this]() {
+            char buffer[2048];
+            if(value.length() > 2048) value = value.substr(0, 2048);
+            std::copy(value.begin(), value.end(), buffer);
+            buffer[value.length()] = 0;
+            if (ImGui::InputText("##name", buffer, 2048)) {
 
-        value = std::string(buffer);
-        DISPATCH_PARAM_CHANGE_EVENT();
-      }
+                value = std::string(buffer);
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+        });
+
     }
 
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
@@ -458,21 +399,6 @@ public:
     bool value;
 };
 
-
-// class ParamTransform3d : public NodeParam{
-// public:
-//     ParamTransform3d(const char * _name): NodeParam(_name){};
-//     ~ParamTransform3d(){};
-
-//     void Display(){
-        
-        
-//     }
-
-
-// public:
-
-// };
 //utils
 template<typename T>
 T get_param_value(std::shared_ptr<NodeParam> param){
