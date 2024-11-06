@@ -164,7 +164,7 @@ public :
 template<typename T>
 class Param : public NodeParam{
 public:
-    Param(const char * _name, T _value): NodeParam(_name), value(_value){};
+    Param(const char * _name, T _value, T _min_val, T _max_val): NodeParam(_name), value(_value), min_val(_min_val), max_val(_max_val){};
     ~Param(){};
 
     T Eval()
@@ -186,6 +186,8 @@ public:
 
 public : 
     T value;
+    T min_val;
+    T max_val;
 
 private:
 
@@ -227,7 +229,6 @@ public:
         DISPLAY_PARAM_TEMPLATE(name, [this](){
             float default_value = 0.0f;
 
-
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
             ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
@@ -255,7 +256,6 @@ public:
             ImGui::PopItemWidth();
 
             ImGui::SameLine(0, spacing);
-            
 
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
             ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
@@ -297,10 +297,11 @@ public:
             ImGui::PopID();
             ImGui::PopItemWidth();
             ImGui::PopStyleVar();
-
         });
     }
+
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+
 public:
     glm::vec3 value;
 };
@@ -338,24 +339,29 @@ public :
 };
 
 template<>
-class Param<uint32_t> : public NodeParam{
+class Param<int> : public NodeParam{
 public:
-    Param(const char * _name, uint32_t _value): NodeParam(_name), value(_value){};
+    Param(const char * _name, int _value): NodeParam(_name), value(_value){};
     ~Param(){};
 
-    uint32_t Eval(){
+    int Eval(){
         return value;
     }
 
     void Display(){
-        if(ImGui::SliderInt(name, (int *)&value, 0, 100)){
-            DISPATCH_PARAM_CHANGE_EVENT();
-        }
+        DISPLAY_PARAM_TEMPLATE(name, [this]() {
+            
+            if(ImGui::DragInt("##name", &value, 1.0f, min_val, max_val, "%d", ImGuiSliderFlags_AlwaysClamp)){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+        })
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();    
 
 public:
-    uint32_t value;
+    int value;
+    int min_val = INT_MIN;
+    int max_val = INT_MAX;
 };
 template<>
 
@@ -369,9 +375,12 @@ public:
     }
 
     void Display(){
-        if(ImGui::SliderFloat(name, &value, 0, 100)){
-            DISPATCH_PARAM_CHANGE_EVENT();
-        }
+        DISPLAY_PARAM_TEMPLATE(name, [this]() {
+            
+            if(ImGui::SliderFloat("##name", &value, 0, 100)){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+        });
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();    
 
@@ -390,9 +399,11 @@ public:
     }
 
     void Display(){
-        if(ImGui::Checkbox(name, &value)){
-            DISPATCH_PARAM_CHANGE_EVENT();
-        }
+        DISPLAY_PARAM_TEMPLATE(name, [this]() {
+            if(ImGui::Checkbox("##name", &value)){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+        });
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 public:
