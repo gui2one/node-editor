@@ -76,14 +76,21 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
         set_param_value<float>(param, p_node["value"].as<float>());
       }else if(p_type_str == "bool") {
         set_param_value<bool>(param, p_node["value"].as<bool>()); 
-      }else if(p_type_str.find("struct glm::vec<2,float,0>") != std::string::npos) {
+      }else if(p_type_str.find("glm::vec<2,float,0>") != std::string::npos) {
         set_param_value<glm::vec2>(param, p_node["value"].as<glm::vec2>()); 
-      }else if(p_type_str.find("struct glm::vec<3,float,0>") != std::string::npos) {
+      }else if(p_type_str.find("glm::vec<3,float,0>") != std::string::npos) {
         set_param_value<glm::vec3>(param, p_node["value"].as<glm::vec3>()); 
       }else if(p_type_str.find("ParamComboBox") != std::string::npos) {
         auto combo_p = std::dynamic_pointer_cast<ParamComboBox>(param);
         combo_p->SetChoice(p_node["value"].as<int>());
-      }  
+      }else if(p_type_str.find("ParamGroup") != std::string::npos) {
+        auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
+        std::cout << "deserializing ParamGroup" << std::endl;
+        for(size_t j = 0; j < p_node["params"].size(); j++) {
+          std::cout << p_node["params"][j]["name"] << std::endl;
+          
+        }
+      }    
     }
 
     if( is_subnet){      
