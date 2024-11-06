@@ -33,6 +33,17 @@
     ManagerUpdateEvent event;\
     EventManager::GetInstance().Dispatch(event);
 
+#define DISPLAY_PARAM_TEMPLATE(label, func) \
+    ImGui::PushID(name);\
+    ImGui::Columns(2);\
+    ImGui::SetColumnWidth(0, 90.f);\
+    ImGui::Text("%s", name);\
+    ImGui::NextColumn();\
+    func();\
+    ImGui::Columns(1);\
+    ImGui::PopID();
+
+
 namespace NodeEditor {
 
 class NodeParam{
@@ -211,72 +222,145 @@ public:
     }
 
     void Display(){
-        if(ImGui::DragFloat3(name, glm::value_ptr(value))){
-            DISPATCH_PARAM_CHANGE_EVENT();
-        }
+        DISPLAY_PARAM_TEMPLATE(name, [this](){
+            float default_value = 0.0f;
+            ImGui::PushID(name); // main ID
 
-        //new Version
-        float default_value = 0.0f;
-        ImGui::PushID(name);
-        ImGui::Columns(2);
-        ImGui::SetColumnWidth(0, 90.f);
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
 
-        ImGui::Text("%s", name);
+            float avail_x = ImGui::GetContentRegionAvail().x;
+            float spacing = ImGui::GetCurrentContext()->Style.ItemInnerSpacing.x;
+            float input_width = avail_x / 3.0f - 30.0f - spacing;
+            ImGui::PushID(0);
+            if (ImGui::Button("X", ImVec2(30, 25)))
+            {
+                value.x = default_value;
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+            ImGui::PopID();
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
 
-        ImGui::NextColumn();
-        ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+            ImGui::PushID(1);
+            ImGui::PushItemWidth(input_width);
+            if(ImGui::DragFloat("##x", &value.x, 0.05f)){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+            ImGui::PopID();
+            ImGui::PopItemWidth();
 
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
+            ImGui::SameLine(0, spacing);
+            
 
-        if (ImGui::Button("X", ImVec2(30, 20)))
-        {
-            value.x = default_value;
-            DISPATCH_PARAM_CHANGE_EVENT();
-        }
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
+            ImGui::PushID("label_y");
+            
+            if (ImGui::Button("Y", ImVec2(30, 25)))
+            {
+                value.y = default_value;
+            }
+            ImGui::PopID();
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushID("float_y");
+            ImGui::PushItemWidth(input_width);
+            if(ImGui::DragFloat("##y", &value.y, 0.05f)){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+            ImGui::PopID();
+            ImGui::PopItemWidth();
 
-        ImGui::PopStyleColor(3);
-        ImGui::SameLine();
-        if(ImGui::DragFloat("##x", &value.x, 0.05f)){
-            DISPATCH_PARAM_CHANGE_EVENT();
-        }
-        ImGui::PopItemWidth();
-        ImGui::SameLine();
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.1f, 0.8f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.1f, 0.9f, 1.f)));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.1f, 1.0f, 1.f)));
+            ImGui::SameLine(0, spacing);
+            ImGui::PushID("label_z");
+            if (ImGui::Button("Z", ImVec2(30, 25)))
+            {
+                value.z = default_value;
+            }
+            ImGui::PopID();
+            ImGui::PopStyleColor(3);
+            ImGui::SameLine();
+            ImGui::PushID("float_z");
+            ImGui::PushItemWidth(input_width);
+            if(ImGui::DragFloat("##z", &value.z, 0.05f)){
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+            ImGui::PopID();
+            ImGui::PopItemWidth();
+            ImGui::PopStyleVar();
 
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
-        if (ImGui::Button("Y", ImVec2(30, 20)))
-        {
-            value.y = default_value;
-        }
-        ImGui::PopStyleColor(3);
-        ImGui::SameLine();
-        if(ImGui::DragFloat("##y", &value.y, 0.05f)){
-            DISPATCH_PARAM_CHANGE_EVENT();
-        }
-        ImGui::PopItemWidth();
-        ImGui::SameLine();
+            ImGui::PopID(); // MAIN ID
+        });
 
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.1f, 0.8f, 1.f)));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.1f, 0.9f, 1.f)));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.1f, 1.0f, 1.f)));
-        if (ImGui::Button("Z", ImVec2(30, 20)))
-        {
-            value.z = default_value;
-        }
-        ImGui::PopStyleColor(3);
-        ImGui::SameLine();
-        if(ImGui::DragFloat("##z", &value.z, 0.05f)){
-            DISPATCH_PARAM_CHANGE_EVENT();
-        }
+        // //new Version
+        // float default_value = 0.0f;
+        // ImGui::PushID(name);
+        // ImGui::Columns(2);
+        // ImGui::SetColumnWidth(0, 90.f);
 
-        ImGui::PopItemWidth();
-        ImGui::Columns(1);
-        ImGui::PopStyleVar();
-        ImGui::PopID();        
+        // ImGui::Text("%s", name);
+
+        // ImGui::NextColumn();
+        // ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+
+        // ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
+        // ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
+        // ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
+        // ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
+
+        // if (ImGui::Button("X", ImVec2(30, 20)))
+        // {
+        //     value.x = default_value;
+        //     DISPATCH_PARAM_CHANGE_EVENT();
+        // }
+
+        // ImGui::PopStyleColor(3);
+        // ImGui::SameLine();
+        // if(ImGui::DragFloat("##x", &value.x, 0.05f)){
+        //     DISPATCH_PARAM_CHANGE_EVENT();
+        // }
+        // ImGui::PopItemWidth();
+        // ImGui::SameLine();
+
+        // ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
+        // ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
+        // ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
+        // if (ImGui::Button("Y", ImVec2(30, 20)))
+        // {
+        //     value.y = default_value;
+        // }
+        // ImGui::PopStyleColor(3);
+        // ImGui::SameLine();
+        // if(ImGui::DragFloat("##y", &value.y, 0.05f)){
+        //     DISPATCH_PARAM_CHANGE_EVENT();
+        // }
+        // ImGui::PopItemWidth();
+        // ImGui::SameLine();
+
+        // ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.1f, 0.8f, 1.f)));
+        // ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.1f, 0.9f, 1.f)));
+        // ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.1f, 1.0f, 1.f)));
+        // if (ImGui::Button("Z", ImVec2(30, 20)))
+        // {
+        //     value.z = default_value;
+        // }
+        // ImGui::PopStyleColor(3);
+        // ImGui::SameLine();
+        // if(ImGui::DragFloat("##z", &value.z, 0.05f)){
+        //     DISPATCH_PARAM_CHANGE_EVENT();
+        // }
+
+        // ImGui::PopItemWidth();
+        // ImGui::PopStyleVar();
+        // ImGui::Columns(1);
+        // ImGui::PopID();        
     }
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 public:
