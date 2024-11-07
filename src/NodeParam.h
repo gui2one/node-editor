@@ -519,16 +519,6 @@ public:
                 auto path = Utils::open_file_explorer();
                 if(path != ""){
                     value = path.wstring();
-                    // std::ifstream file;
-                    // file.open(value, std::ios::in);
-                    // if (file.is_open()) {
-                    //     std::stringstream buffer;
-                    //     buffer << file.rdbuf();
-                    //     std::string content = buffer.str();
-                    //     file.close();
-                    // } else {
-                    //     std::cerr << "Unable to open file" << std::endl;
-                    // }
                     DISPATCH_PARAM_CHANGE_EVENT();
                 } 
             }
