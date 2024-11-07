@@ -519,24 +519,25 @@ public:
                 auto path = Utils::open_file_explorer();
                 if(path != ""){
                     value = path.wstring();
-                    std::ifstream file;
-                    file.open(value, std::ios::in);
-                    if (file.is_open()) {
-                        std::stringstream buffer;
-                        buffer << file.rdbuf();
-                        std::string content = buffer.str();
-                        file.close();
-                        std::cout << "File content:\n" << content << std::endl;
-                    } else {
-                        std::cerr << "Unable to open file" << std::endl;
-                    }
+                    // std::ifstream file;
+                    // file.open(value, std::ios::in);
+                    // if (file.is_open()) {
+                    //     std::stringstream buffer;
+                    //     buffer << file.rdbuf();
+                    //     std::string content = buffer.str();
+                    //     file.close();
+                    // } else {
+                    //     std::cerr << "Unable to open file" << std::endl;
+                    // }
                     DISPATCH_PARAM_CHANGE_EVENT();
                 } 
             }
             ImGui::PopItemWidth();
         });
     }
+    // unable to use the MACRO here because of wide_to_utf8() call
     YAML::Node YAMLSerialize() override {
+
         YAML::Node yaml_node;
         std::string type_str = typeid(*this).name();
         NodeEditor::str_remove_all(type_str,"class ");
@@ -545,7 +546,6 @@ public:
         NodeEditor::str_remove(type_str,"NodeEditor::");
         NodeEditor::str_remove_last(type_str,">");
         NodeEditor::str_remove_last(type_str," ");
-        std::cout << "    ---> TYPE : " << type_str << std::endl;
         if(type_str.find("std::basic_string") != std::string::npos) type_str = "std::string";
         yaml_node["type"] = type_str;
         yaml_node["name"] = name;

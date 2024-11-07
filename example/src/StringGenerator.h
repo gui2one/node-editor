@@ -92,7 +92,6 @@ public:
       buffer << file.rdbuf();
       std::string content = buffer.str();
       file.close();
-      std::cout << "File content:\n" << content << std::endl;
       m_DataCache = content;
   } else {
       std::cerr << "Unable to open file" << std::endl;
