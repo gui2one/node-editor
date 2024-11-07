@@ -89,7 +89,7 @@ namespace NodeEditor::Utils {
             std::string converted = wide_to_utf8(ofn.lpstrFile);
             std::cout << "File Selected : " << converted << std::endl;
             
-            return std::filesystem::path(converted);
+            return std::filesystem::path(ofn.lpstrFile);
         }
         else
         {

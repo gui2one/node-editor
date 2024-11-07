@@ -484,7 +484,19 @@ public:
                 std::cout << "Browse" << std::endl;
                 auto path = Utils::open_file_explorer();
                 if(path != ""){
-                    value = path.string();
+                    value = wide_to_utf8(path.wstring());
+                    auto w_value = path.wstring();
+                    std::ifstream file;
+                    file.open(w_value, std::ios::in);
+                    if (file.is_open()) {
+                        std::stringstream buffer;
+                        buffer << file.rdbuf();
+                        std::string content = buffer.str();
+                        file.close();
+                        std::cout << "File content:\n" << content << std::endl;
+                    } else {
+                        std::cerr << "Unable to open file" << std::endl;
+                    }
                     DISPATCH_PARAM_CHANGE_EVENT();
                 } 
             }
