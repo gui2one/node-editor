@@ -496,6 +496,8 @@ public:
 
 class ParamFile : public Param<std::wstring>{
 public:
+    std::vector<Utils::FileFilterItem> filters = { { "All Files", "*" }, { "Text Files", "txt" } };
+public:
     ParamFile(const char * _name, std::wstring _value): Param(_name, _value){};
     ~ParamFile(){};
 
@@ -516,7 +518,7 @@ public:
             ImGui::SameLine();
             ImGui::PushItemWidth(50.0f);
             if(ImGui::Button("Browse")){
-                auto path = Utils::open_file_explorer();
+                auto path = Utils::open_file_explorer(filters);
                 if(path != ""){
                     value = path.wstring();
                     DISPATCH_PARAM_CHANGE_EVENT();

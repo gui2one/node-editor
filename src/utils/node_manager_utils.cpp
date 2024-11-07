@@ -41,33 +41,33 @@ namespace NodeEditor::Utils {
     }
 
 
-    const char* create_windows_file_explorer_Filter(std::vector<FileFilterItem> filters) {
-        std::vector<char> filter;
+    const std::wstring create_windows_file_explorer_Filter(const std::vector<FileFilterItem>& filters) {
+        std::wstring filter;
 
-        for(auto& item : filters){
+        for (const auto& item : filters) {
+            // Append description followed by a null character
+            auto desc_w = utf8_to_wide(item.description);
+            auto ext_w = utf8_to_wide(item.extension);
 
-        // Append description with a null character
-        filter.insert(filter.end(), item.description.begin(), item.description.end());
-        filter.push_back('|');
-        filter.insert(filter.end(), item.extension.begin(), item.extension.end());
-        filter.push_back('\0');
+            filter.append(desc_w);
+            filter.push_back(L'\0');
 
-        // Append file extension pattern with a null character
-        filter.push_back('*');
-        filter.push_back('.');
-        filter.insert(filter.end(), item.extension.begin(), item.extension.end());
-        filter.push_back('\0');
-
+            // Append pattern with a wildcard * and a null character
+            filter.append(L"*.");
+            filter.append(ext_w);
+            filter.push_back(L'\0');
         }
-        // Append an additional null character at the end to terminate the filter
-        filter.push_back('\0');
 
-        return filter.data();
-    }    
+        // Append an additional null character to terminate the filter
+        filter.push_back(L'\0');
+
+        return filter;
+    }
     std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters)
     {
 
 #ifdef _WIN32
+        SetConsoleOutputCP(CP_UTF8);
         OPENFILENAMEW ofn;
         wchar_t szFile[260] = L"";
         ZeroMemory(&ofn, sizeof(OPENFILENAME));
@@ -75,21 +75,21 @@ namespace NodeEditor::Utils {
         ofn.hwndOwner = NULL;
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = 260;
-        // std::string filters_string = std::string(create_windows_file_explorer_Filter(filters));
-        // std::wstring filter = utf8_to_wide(filters_string);
-        // ofn.lpstrFilter = filter.c_str();
+        std::wstring filter = create_windows_file_explorer_Filter(filters);
+        ofn.lpstrFilter = filter.c_str();
         ofn.nFilterIndex = 1;
         ofn.lpstrFileTitle = NULL;
         ofn.nMaxFileTitle = 0;
         ofn.lpstrInitialDir = NULL;
-        ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_CREATEPROMPT;
+        ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_CREATEPROMPT;
 
-        if (GetOpenFileNameW(&ofn) == TRUE) // Changed to GetOpenFileNameW
+        if (GetSaveFileNameW(&ofn) == TRUE) // Changed to GetOpenFileNameW
         {
-            std::string converted = wide_to_utf8(ofn.lpstrFile);
+            auto result_path = std::filesystem::path(ofn.lpstrFile);
+            std::string converted = wide_to_utf8(result_path.wstring());
             std::cout << "File Selected : " << converted << std::endl;
             
-            return std::filesystem::path(ofn.lpstrFile);
+            return result_path;
         }
         else
         {
