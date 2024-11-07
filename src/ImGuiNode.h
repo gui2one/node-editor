@@ -253,7 +253,7 @@ public:
     {
         
     }
-    ~ImGuiNode() = default;
+    virtual ~ImGuiNode() = default;
 
 public:
     T m_DataCache;

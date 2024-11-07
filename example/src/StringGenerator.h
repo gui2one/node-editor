@@ -9,6 +9,11 @@
 #include <string>
 #include <type_traits>
 
+template <typename T>
+std::shared_ptr<T> clone_shared(const T& object) {
+    return std::shared_ptr<T>(object.clone());
+}
+
 namespace NodeEditor {
 
 class StringOperator : public ImGuiNode<std::string> {
@@ -21,7 +26,7 @@ public:
 class StringSubnetOperator : public SubnetNode<std::string> {
 public:
   StringSubnetOperator() : SubnetNode() {};
-  virtual ~StringSubnetOperator() = default;
+  ~StringSubnetOperator(){};
 
   void Generate() override {
     if(node_network.outuput_node != nullptr){
