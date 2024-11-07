@@ -156,8 +156,7 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
       }
     
     }else if(p_type_str == "ParamFile") {
-    
-      std::cout << "-- deserializing ParamFile " << std::endl;
+
       auto file_p = std::dynamic_pointer_cast<ParamFile>(param);
       file_p->value = utf8_to_wide(yaml["value"].as<std::string>());
     }
