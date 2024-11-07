@@ -558,7 +558,8 @@ void NodeManager::SaveAll() {
 void NodeManager::LoadAll() {
   if(m_SavePath.empty()){
 
-    auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
+    // auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
+    auto path = Utils::open_file_explorer();
     m_SavePath = path; 
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
   }

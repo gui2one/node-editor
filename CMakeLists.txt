@@ -5,6 +5,7 @@ include(FetchContent)
 set(FETCHCONTENT_QUIET FALSE)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_definitions(-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 
 option(NODE_EDITOR_BUILD_EXAMPLE "Build node editor example" ON)
 
@@ -78,7 +79,6 @@ add_library(${PROJECT_NAME} STATIC
 target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 # target_link_libraries(${PROJECT_NAME} PUBLIC serialize_lib)
-
 
 
 set(_include_dirs

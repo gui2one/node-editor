@@ -119,28 +119,45 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
     if( param == nullptr ) {
       return;
     }
-    if(p_type_str == "std::string" || p_type_str.find("std::basic_string") != std::string::npos) {
+    if(p_type_str == "std::string") {
+      
       set_param_value<std::string>(param, yaml["value"].as<std::string>());
+    
     }else if(p_type_str == "int") {
+      
       set_param_value<int>(param, yaml["value"].as<int>());
+    
     }else if(p_type_str == "float") {
+    
       set_param_value<float>(param, yaml["value"].as<float>());
+    
     }else if(p_type_str == "bool") {
+    
       set_param_value<bool>(param, yaml["value"].as<bool>()); 
-    }else if(p_type_str.find("glm::vec<2,float,0>") != std::string::npos) {
+    
+    }else if(p_type_str == "glm::vec<2,float,0>") {
+    
       set_param_value<glm::vec2>(param, yaml["value"].as<glm::vec2>()); 
-    }else if(p_type_str.find("glm::vec<3,float,0>") != std::string::npos) {
+    
+    }else if(p_type_str == "glm::vec<3,float,0>") {
+    
       set_param_value<glm::vec3>(param, yaml["value"].as<glm::vec3>()); 
-    }else if(p_type_str.find("ParamComboBox") != std::string::npos) {
+    
+    }else if(p_type_str == "ParamComboBox") {
+    
       auto combo_p = std::dynamic_pointer_cast<ParamComboBox>(param);
       combo_p->SetChoice(yaml["value"].as<int>());
+    
     }else if(p_type_str == "ParamGroup") {
+    
       auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
       for(size_t j = 0; j < yaml["params"].size(); j++) {
         deserialize_param(yaml["params"][j], factory_node);
       }
+    
     }else if(p_type_str == "ParamFile") {
-      std::cout << "-- deserializing ParamFile --" << std::endl;
+    
+      std::cout << "-- deserializing ParamFile " << std::endl;
       auto file_p = std::dynamic_pointer_cast<ParamFile>(param);
       file_p->value = yaml["value"].as<std::string>();
     }

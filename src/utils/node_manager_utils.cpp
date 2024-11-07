@@ -68,27 +68,32 @@ namespace NodeEditor::Utils {
     {
 
 #ifdef _WIN32
-        OPENFILENAMEA ofn;
-        char szFile[260] = "";
+        OPENFILENAMEW ofn;
+        wchar_t szFile[260] = L"";
         ZeroMemory(&ofn, sizeof(OPENFILENAME));
         ofn.lStructSize = sizeof(OPENFILENAME);
         ofn.hwndOwner = NULL;
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = 260;
-        ofn.lpstrFilter = create_windows_file_explorer_Filter(filters);
+        std::string filters_string = std::string(create_windows_file_explorer_Filter(filters));
+        std::wstring filter = utf8_to_wide(filters_string);
+        ofn.lpstrFilter = filter.c_str();
         ofn.nFilterIndex = 1;
         ofn.lpstrFileTitle = NULL;
         ofn.nMaxFileTitle = 0;
         ofn.lpstrInitialDir = NULL;
         ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_CREATEPROMPT;
 
-        if (GetSaveFileNameA(&ofn) == TRUE)
+        if (GetSaveFileNameW(&ofn) == TRUE)
         {
-            return std::filesystem::path(ofn.lpstrFile);
+            std::string converted = wide_to_utf8(ofn.lpstrFile);
+            std::cout << "File Selected : " << converted << std::endl;
+            
+            return std::filesystem::path(converted);
         }
         else
         {
-            return std::filesystem::path("");
+            return std::filesystem::path(L"");
         }
 #else
         return std::filesystem::path("");

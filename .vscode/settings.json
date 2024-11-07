@@ -2,6 +2,7 @@
     "files.associations": {
         "*.qss": "css",
         "*.spec": "python",
+        "*.str3000": "yaml",
         "algorithm": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -82,7 +83,8 @@
         "unordered_set": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "filesystem": "cpp"
+        "filesystem": "cpp",
+        "codecvt": "cpp"
     },
     "codeium.enableCodeLens": false,
     "clang-format.executable": "C:/Program Files/LLVM/bin/clang-format"
