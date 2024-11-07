@@ -74,6 +74,18 @@ public:
 private:
 };
 
+class TextFileLoader : public StringGenerator {
+public:
+  TextFileLoader() : StringGenerator() {
+    auto value = std::make_shared<ParamFile>("File", "Hello");
+    m_ParamLayout.items = { {"", value} };
+  }
+  ~TextFileLoader() {};
+
+  void Generate() override {
+    m_DataCache = "text file loader";
+  }
+};
 class StringModifier : public StringOperator {
 public:
   StringModifier() : StringOperator() { color = NODE_COLOR::DARK_GREEN; };

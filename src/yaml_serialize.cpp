@@ -107,6 +107,7 @@ std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> fact
 
   return nullptr;
 }
+
 void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node)
 {
     std::string p_type_str = yaml["type"].as<std::string>(); 
@@ -135,11 +136,14 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
       combo_p->SetChoice(yaml["value"].as<int>());
     }else if(p_type_str == "ParamGroup") {
       auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
-      // std::cout << "deserializing ParamGroup" << std::endl;
       for(size_t j = 0; j < yaml["params"].size(); j++) {
         deserialize_param(yaml["params"][j], factory_node);
       }
-    } 
+    }else if(p_type_str == "ParamFile") {
+      std::cout << "-- deserializing ParamFile --" << std::endl;
+      auto file_p = std::dynamic_pointer_cast<ParamFile>(param);
+      file_p->value = yaml["value"].as<std::string>();
+    }
 
 }
 

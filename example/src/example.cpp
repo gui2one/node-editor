@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
   }
   
   REGISTER_NODE_TYPE(NodeEditor::StringGenerate,"generate","generator");
+  REGISTER_NODE_TYPE(NodeEditor::TextFileLoader,"Load Text File","generator");
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenator, "concatenator", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenatorMulti, "concatmulti", "modifier");
   REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");

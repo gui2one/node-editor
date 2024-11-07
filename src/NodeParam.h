@@ -8,6 +8,7 @@
 #include <imgui_internal.h>
 #include "Event.h"
 #include "EventManager.h"
+#include "utils/node_manager_utils.h"
 #include "utils.h"
 
 #define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC() \
@@ -17,6 +18,7 @@
         NodeEditor::str_remove_all(type_str,"class ");\
         NodeEditor::str_remove_all(type_str,"struct ");\
         NodeEditor::str_remove(type_str,"NodeEditor::Param<");\
+        NodeEditor::str_remove(type_str,"NodeEditor::");\
         NodeEditor::str_remove_last(type_str,">");\
         NodeEditor::str_remove_last(type_str," ");\
         if(type_str.find("std::basic_string") != std::string::npos) type_str = "std::string";\
@@ -193,7 +195,6 @@ public :
 private:
 
 };
-
 
 template<>
 class Param<glm::vec2> : public NodeParam{
@@ -459,6 +460,38 @@ public:
     NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 public:
     bool value;
+};
+
+
+class ParamFile : public Param<std::string>{
+public:
+    ParamFile(const char * _name, std::string _value): Param(_name, _value){};
+    ~ParamFile(){};
+
+    std::string Eval(){
+        return value;
+    }
+    void Display(){
+        DISPLAY_PARAM_TEMPLATE(name, [this]() {
+            // ImGui::Text("ParamFile Not implemented yet ...");
+            float avail_x = ImGui::GetContentRegionAvail().x;
+            ImGui::PushItemWidth(avail_x- 50.0f);
+            ImGui::InputText("##name", &value);
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+            ImGui::PushItemWidth(50.0f);
+            if(ImGui::Button("Browse")){
+                std::cout << "Browse" << std::endl;
+                auto path = Utils::open_file_explorer();
+                if(path != ""){
+                    value = path.string();
+                    DISPATCH_PARAM_CHANGE_EVENT();
+                } 
+            }
+            ImGui::PopItemWidth();
+        });
+    }
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 };
 
 //utils
