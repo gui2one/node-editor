@@ -149,3 +149,10 @@ include_directories(
 if(${NODE_EDITOR_BUILD_EXAMPLE})
   add_subdirectory(example)
 endif()
+
+
+add_custom_command(
+  TARGET ${PROJECT_NAME} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_CURRENT_SOURCE_DIR} doxygen.exe ${CMAKE_CURRENT_SOURCE_DIR}/doxygen_config.txt
+)
+
