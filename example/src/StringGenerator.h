@@ -77,14 +77,30 @@ private:
 class TextFileLoader : public StringGenerator {
 public:
   TextFileLoader() : StringGenerator() {
-    auto value = std::make_shared<ParamFile>("File", "Hello");
-    m_ParamLayout.items = { {"", value} };
+    file_path_param = std::make_shared<ParamFile>("File", L"");
+    m_ParamLayout.items = { {"", file_path_param} };
   }
   ~TextFileLoader() {};
 
   void Generate() override {
-    m_DataCache = "text file loader";
+
+  
+  std::ifstream file;
+  file.open(file_path_param->Eval(), std::ios::in);
+  if (file.is_open()) {
+      std::stringstream buffer;
+      buffer << file.rdbuf();
+      std::string content = buffer.str();
+      file.close();
+      std::cout << "File content:\n" << content << std::endl;
+      m_DataCache = content;
+  } else {
+      std::cerr << "Unable to open file" << std::endl;
+      m_DataCache = "NO DATA";
+  }    
   }
+public:
+  std::shared_ptr<ParamFile> file_path_param;
 };
 class StringModifier : public StringOperator {
 public:

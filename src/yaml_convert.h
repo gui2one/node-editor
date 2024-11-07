@@ -10,6 +10,24 @@
 namespace YAML {
 
 template<>
+struct convert<std::wstring> {
+  static Node encode(const std::wstring& rhs) {
+    // std::cout << "Encoding Wstring to yaml" << std::endl;
+    
+    Node node;
+    node["value"] = rhs;
+
+    return node;
+  }
+
+  static bool decode(const Node& node, std::wstring& rhs) {
+
+    rhs = node["value"].as<std::wstring>();
+    return true;
+  }
+};
+
+template<>
 struct convert<ImVec2> {
   static Node encode(const ImVec2& rhs) {
     Node node;

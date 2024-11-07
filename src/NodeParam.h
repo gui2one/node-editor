@@ -389,6 +389,37 @@ public:
 public :
     std::string value;
 };
+template<>
+class Param<std::wstring> : public NodeParam{
+public:
+    Param(const char * _name, std::wstring _value): NodeParam(_name), value(_value){};
+    ~Param(){};
+
+    std::wstring Eval(){
+        return value;
+    }
+
+    void Display(){
+        DISPLAY_PARAM_TEMPLATE(name, [this]() {
+            std::string converted = wide_to_utf8(value); 
+            char buffer[2048];
+            if(converted.length() > 2048) converted = converted.substr(0, 2048);
+            std::copy(converted.begin(), converted.end(), buffer);
+            buffer[converted.length()] = 0;
+            if (ImGui::InputText("##name", (char*)buffer, 2048)) {
+
+                // value = std::wstring(buffer);
+                DISPATCH_PARAM_CHANGE_EVENT();
+            }
+        });
+
+    }
+
+    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+
+public :
+    std::wstring value;
+};
 
 template<>
 class Param<int> : public NodeParam{
@@ -463,12 +494,12 @@ public:
 };
 
 
-class ParamFile : public Param<std::string>{
+class ParamFile : public Param<std::wstring>{
 public:
-    ParamFile(const char * _name, std::string _value): Param(_name, _value){};
+    ParamFile(const char * _name, std::wstring _value): Param(_name, _value){};
     ~ParamFile(){};
 
-    std::string Eval(){
+    std::wstring Eval(){
         return value;
     }
     void Display(){
@@ -476,18 +507,20 @@ public:
             // ImGui::Text("ParamFile Not implemented yet ...");
             float avail_x = ImGui::GetContentRegionAvail().x;
             ImGui::PushItemWidth(avail_x- 50.0f);
-            ImGui::InputText("##name", &value);
+            
+            // ImGui::InputText("##name", &value);
+            std::string converted = wide_to_utf8(value);
+            ImGui::InputText("##name", &converted, 2048);
+            
             ImGui::PopItemWidth();
             ImGui::SameLine();
             ImGui::PushItemWidth(50.0f);
             if(ImGui::Button("Browse")){
-                std::cout << "Browse" << std::endl;
                 auto path = Utils::open_file_explorer();
                 if(path != ""){
-                    value = wide_to_utf8(path.wstring());
-                    auto w_value = path.wstring();
+                    value = path.wstring();
                     std::ifstream file;
-                    file.open(w_value, std::ios::in);
+                    file.open(value, std::ios::in);
                     if (file.is_open()) {
                         std::stringstream buffer;
                         buffer << file.rdbuf();
@@ -503,7 +536,22 @@ public:
             ImGui::PopItemWidth();
         });
     }
-    NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+    YAML::Node YAMLSerialize() override {
+        YAML::Node yaml_node;
+        std::string type_str = typeid(*this).name();
+        NodeEditor::str_remove_all(type_str,"class ");
+        NodeEditor::str_remove_all(type_str,"struct ");
+        NodeEditor::str_remove(type_str,"NodeEditor::Param<");
+        NodeEditor::str_remove(type_str,"NodeEditor::");
+        NodeEditor::str_remove_last(type_str,">");
+        NodeEditor::str_remove_last(type_str," ");
+        std::cout << "    ---> TYPE : " << type_str << std::endl;
+        if(type_str.find("std::basic_string") != std::string::npos) type_str = "std::string";
+        yaml_node["type"] = type_str;
+        yaml_node["name"] = name;
+        yaml_node["value"] = wide_to_utf8(value);
+        return yaml_node;
+    }
 };
 
 //utils
