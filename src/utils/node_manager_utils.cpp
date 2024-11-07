@@ -75,6 +75,7 @@ namespace NodeEditor::Utils {
         ofn.hwndOwner = NULL;
         ofn.lpstrFile = szFile;
         ofn.nMaxFile = 260;
+        ofn.lpstrTitle = L"Select a file";
         std::wstring filter = create_windows_file_explorer_Filter(filters);
         ofn.lpstrFilter = filter.c_str();
         ofn.nFilterIndex = 1;
@@ -95,6 +96,7 @@ namespace NodeEditor::Utils {
         {
             return std::filesystem::path(L"");
         }
+
 #else
         return std::filesystem::path("");
 #endif
