@@ -13,22 +13,14 @@
 #include "utils.h"
 #include "utils/node_manager_utils.h"
 
-
-#define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC()                                            \
-  YAML::Node YAMLSerialize() override {                                                    \
-    YAML::Node yaml_node;                                                                  \
-    std::string type_str = typeid(*this).name();                                           \
-    NodeEditor::str_remove_all(type_str, "class ");                                        \
-    NodeEditor::str_remove_all(type_str, "struct ");                                       \
-    NodeEditor::str_remove(type_str, "NodeEditor::Param<");                                \
-    NodeEditor::str_remove(type_str, "NodeEditor::");                                      \
-    NodeEditor::str_remove_last(type_str, ">");                                            \
-    NodeEditor::str_remove_last(type_str, " ");                                            \
-    if (type_str.find("std::basic_string") != std::string::npos) type_str = "std::string"; \
-    yaml_node["type"] = type_str;                                                          \
-    yaml_node["name"] = name;                                                              \
-    yaml_node["value"] = value;                                                            \
-    return yaml_node;                                                                      \
+#define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC()                                     \
+  YAML::Node YAMLSerialize() override {                                             \
+    YAML::Node yaml_node;                                                           \
+    std::string type_str = NodeEditor::clean_param_type_name(typeid(*this).name()); \
+    yaml_node["type"] = type_str;                                                   \
+    yaml_node["name"] = name;                                                       \
+    yaml_node["value"] = value;                                                     \
+    return yaml_node;                                                               \
   }
 
 #define DISPATCH_PARAM_CHANGE_EVENT() \
@@ -55,7 +47,7 @@ namespace NodeEditor {
 
 class NodeParam {
  public:
-  NodeParam(){ name = "no name"; };
+  NodeParam() { name = "no name"; };
   NodeParam(const char* _name) : name(_name) {}
   virtual ~NodeParam() = default;
   virtual void Display() = 0;
@@ -67,16 +59,14 @@ class NodeParam {
 
 class ParamGroup : public NodeParam {
  public:
-  ParamGroup():NodeParam(){};
+  ParamGroup() : NodeParam() {};
   ParamGroup(const char* _name) : NodeParam(_name) { std::cout << "Constructing ParamGroup -----------" << std::endl; };
   ~ParamGroup() {};
   void Display() override;
 
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = typeid(*this).name();
-    str_remove_all(type_str, "class ");
-    str_remove(type_str, "NodeEditor::");
+    std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
     yaml_node["name"] = name;
 
@@ -93,7 +83,7 @@ class ParamGroup : public NodeParam {
 
 class ParamSeparator : public NodeParam {
  public:
-  ParamSeparator():NodeParam() {};
+  ParamSeparator() : NodeParam() {};
   ParamSeparator(const char* _name) : NodeParam(_name) {};
   ~ParamSeparator() {};
   void Display() {
@@ -103,9 +93,7 @@ class ParamSeparator : public NodeParam {
   }
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = typeid(*this).name();
-    str_remove_all(type_str, "class ");
-    str_remove(type_str, "NodeEditor::");
+    std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
     yaml_node["name"] = name;
     yaml_node["value"] = "null";
@@ -115,7 +103,7 @@ class ParamSeparator : public NodeParam {
 
 class ParamLabel : public NodeParam {
  public:
-  ParamLabel():NodeParam() {};
+  ParamLabel() : NodeParam() {};
   ParamLabel(const char* _name) : NodeParam(_name) {};
   ~ParamLabel() {};
   void Display() {
@@ -124,9 +112,7 @@ class ParamLabel : public NodeParam {
   }
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = typeid(*this).name();
-    str_remove_all(type_str, "class ");
-    str_remove(type_str, "NodeEditor::");
+    std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
     yaml_node["name"] = name;
     yaml_node["value"] = "null";
@@ -136,7 +122,7 @@ class ParamLabel : public NodeParam {
 
 class ParamComboBox : public NodeParam {
  public:
-  ParamComboBox():NodeParam() {};
+  ParamComboBox() : NodeParam() {};
   ParamComboBox(const char* _name) : NodeParam(_name) {};
   ~ParamComboBox() {};
   void Display() {
@@ -153,9 +139,7 @@ class ParamComboBox : public NodeParam {
 
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = typeid(*this).name();
-    str_remove_all(type_str, "class ");
-    str_remove(type_str, "NodeEditor::");
+    std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
     yaml_node["name"] = name;
     yaml_node["value"] = value;
@@ -170,7 +154,7 @@ class ParamComboBox : public NodeParam {
 template <typename T>
 class Param : public NodeParam {
  public:
-  Param():NodeParam() {};
+  Param() : NodeParam() {};
   Param(const char* _name, T _value, T _min_val, T _max_val)
       : NodeParam(_name), value(_value), min_val(_min_val), max_val(_max_val) {};
   ~Param() {};
@@ -374,7 +358,7 @@ class Param<std::string> : public NodeParam {
 template <>
 class Param<std::wstring> : public NodeParam {
  public:
-  Param():NodeParam(){};
+  Param() : NodeParam() {};
   Param(const char* _name, std::wstring _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -444,7 +428,6 @@ class Param<float> : public NodeParam {
 template <>
 class Param<bool> : public NodeParam {
  public:
-  
   Param(const char* _name, bool _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -468,7 +451,7 @@ class ParamFile : public Param<std::wstring> {
   std::vector<Utils::FileFilterItem> filters = {{"All Files", "*"}, {"Text Files", "txt"}};
 
  public:
-  ParamFile():Param<std::wstring>() {};
+  ParamFile() : Param<std::wstring>() {};
   ParamFile(const char* _name, std::wstring _value) : Param(_name, _value) {};
   ~ParamFile() {};
 
@@ -499,14 +482,7 @@ class ParamFile : public Param<std::wstring> {
   // unable to use the MACRO here because of wide_to_utf8() call
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = typeid(*this).name();
-    NodeEditor::str_remove_all(type_str, "class ");
-    NodeEditor::str_remove_all(type_str, "struct ");
-    NodeEditor::str_remove(type_str, "NodeEditor::Param<");
-    NodeEditor::str_remove(type_str, "NodeEditor::");
-    NodeEditor::str_remove_last(type_str, ">");
-    NodeEditor::str_remove_last(type_str, " ");
-    if (type_str.find("std::basic_string") != std::string::npos) type_str = "std::string";
+    std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
     yaml_node["name"] = name;
     yaml_node["value"] = wide_to_utf8(value);
