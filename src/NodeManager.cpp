@@ -38,7 +38,10 @@ NodeManager::NodeManager() {
   SetNodesMenu([this]() { this->BuildNodeMenuFromRegistry(); });
 
   m_CurrentNetwork = &m_NodeNetwork;
-
+  REGISTER_PARAM_TYPE(NodeEditor::ParamLabel);
+  REGISTER_PARAM_TYPE(NodeEditor::ParamGroup);
+  REGISTER_PARAM_TYPE(NodeEditor::ParamComboBox);
+  REGISTER_PARAM_TYPE(NodeEditor::ParamFile);
 
 }
 

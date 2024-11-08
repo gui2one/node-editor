@@ -25,6 +25,7 @@ class ParamFactoryRegistry {
 }  // namespace NodeEditor
 
 #define REGISTER_PARAM_TYPE(Type)                            \
+  std::cout << "Registering " << #Type << std::endl;         \
   NodeEditor::ParamFactoryRegistry::instance().registerType( \
       #Type, {#Type, []() -> std::shared_ptr<Type> { return std::make_shared<Type>(); }})
 
