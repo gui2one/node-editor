@@ -48,11 +48,16 @@ class StringGenerator : public StringOperator {
 class StringGenerate : public StringGenerator {
  public:
   StringGenerate() : StringGenerator() {
+
     value = std::make_shared<Param<std::string>>("value", "Hello");
-    auto sep = std::make_shared<ParamSeparator>("");
+    auto sep = std::make_shared<ParamSeparator>("sep name");
+    auto label = std::make_shared<ParamLabel>("name", "this is the label ");
+
     auto coords = std::make_shared<Param<glm::vec2>>("coords", glm::vec2(0.0f));
     auto position = std::make_shared<Param<glm::vec3>>("position", glm::vec3(0.0f));
-    m_ParamLayout.items = {{"", value}, {"", sep}, {"", coords}, {"", position}};
+    auto grp = std::make_shared<ParamGroup>("Group Test");
+    grp->items = {label, coords, position};
+    m_ParamLayout.items = {{"", value},{"", grp}};
   };
   ~StringGenerate() {};
 

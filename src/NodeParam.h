@@ -51,105 +51,17 @@ class NodeParam {
   NodeParam(const char* _name) : name(_name) {}
   virtual ~NodeParam() = default;
   virtual void Display() = 0;
+  // virtual void Eval() = 0;
   virtual YAML::Node YAMLSerialize() = 0;
 
  public:
   const char* name;
+  int value = -1;
 };
 
-class ParamGroup : public NodeParam {
- public:
-  ParamGroup() : NodeParam() {};
-  ParamGroup(const char* _name) : NodeParam(_name) { std::cout << "Constructing ParamGroup -----------" << std::endl; };
-  ~ParamGroup() {};
-  void Display() override;
 
-  YAML::Node YAMLSerialize() override {
-    YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
-    yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
 
-    for (auto item : items) {
-      yaml_node["params"].push_back(item->YAMLSerialize());
-    }
-    yaml_node["value"] = "null";
-    return yaml_node;
-  }
 
- public:
-  std::vector<std::shared_ptr<NodeParam>> items;
-};
-
-class ParamSeparator : public NodeParam {
- public:
-  ParamSeparator() : NodeParam() {};
-  ParamSeparator(const char* _name) : NodeParam(_name) {};
-  ~ParamSeparator() {};
-  void Display() {
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::Spacing();
-  }
-  YAML::Node YAMLSerialize() override {
-    YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
-    yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
-    yaml_node["value"] = "null";
-    return yaml_node;
-  }
-};
-
-class ParamLabel : public NodeParam {
- public:
-  ParamLabel() : NodeParam() {};
-  ParamLabel(const char* _name) : NodeParam(_name) {};
-  ~ParamLabel() {};
-  void Display() {
-    ImGui::Spacing();
-    ImGui::Text("%s", name);
-  }
-  YAML::Node YAMLSerialize() override {
-    YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
-    yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
-    yaml_node["value"] = "null";
-    return yaml_node;
-  }
-};
-
-class ParamComboBox : public NodeParam {
- public:
-  ParamComboBox() : NodeParam() {};
-  ParamComboBox(const char* _name) : NodeParam(_name) {};
-  ~ParamComboBox() {};
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(name, [this]() {
-      if (ImGui::Combo("##name", &value, choices.data(), static_cast<int>(choices.size()))) {
-        DISPATCH_PARAM_CHANGE_EVENT();
-      }
-    })
-  }
-
-  inline int GetChoice() { return value; }
-  inline void SetChoice(int choice) { value = choice; }
-  inline void SetChoices(std::vector<const char*> _choices) { choices = _choices; }
-
-  YAML::Node YAMLSerialize() override {
-    YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
-    yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
-    yaml_node["value"] = value;
-    return yaml_node;
-  }
-
- public:
-  int value = 0;
-  std::vector<const char*> choices = {"first", "second", "third"};
-};
 
 template <typename T>
 class Param : public NodeParam {
@@ -182,6 +94,7 @@ class Param : public NodeParam {
 template <>
 class Param<glm::vec2> : public NodeParam {
  public:
+  Param(): NodeParam() {};
   Param(const char* _name, glm::vec2 _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -246,6 +159,7 @@ class Param<glm::vec2> : public NodeParam {
 template <>
 class Param<glm::vec3> : public NodeParam {
  public:
+  Param(): NodeParam() {};
   Param(const char* _name, glm::vec3 _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -331,7 +245,9 @@ class Param<glm::vec3> : public NodeParam {
 
 template <>
 class Param<std::string> : public NodeParam {
- public:
+public:
+  Param(): NodeParam() {};
+  Param(const char* _name) : NodeParam(_name), value("no value") {};
   Param(const char* _name, std::string _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -387,6 +303,7 @@ class Param<std::wstring> : public NodeParam {
 template <>
 class Param<int> : public NodeParam {
  public:
+  Param(): NodeParam() {};
   Param(const char* _name, int _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -403,10 +320,11 @@ class Param<int> : public NodeParam {
   int min_val = INT_MIN;
   int max_val = INT_MAX;
 };
-template <>
 
+template <>
 class Param<float> : public NodeParam {
  public:
+  Param(): NodeParam() {};
   Param(const char* _name, float _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -428,6 +346,7 @@ class Param<float> : public NodeParam {
 template <>
 class Param<bool> : public NodeParam {
  public:
+  Param(): NodeParam() {};
   Param(const char* _name, bool _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -488,6 +407,103 @@ class ParamFile : public Param<std::wstring> {
     yaml_node["value"] = wide_to_utf8(value);
     return yaml_node;
   }
+};
+
+
+class ParamLabel : public Param<std::string> {
+ public:
+  ParamLabel() : Param<std::string>("aaaa", "no value"){};
+  ParamLabel(std::string _value) : Param<std::string>("", _value){};
+  ParamLabel(const char* _name, std::string _value) : Param<std::string>(_name, _value){};
+  ~ParamLabel() {};
+  void Display() {
+    ImGui::Spacing();
+    ImGui::Text("%s", value.c_str());
+  }
+  YAML::Node YAMLSerialize() override {
+    YAML::Node yaml_node;
+    std::string type_str = clean_param_type_name(typeid(*this).name());
+    yaml_node["type"] = type_str;
+    yaml_node["name"] = name;
+    yaml_node["value"] = value;
+    return yaml_node;
+  }
+
+};
+
+class ParamComboBox : public Param<int> {
+ public:
+  ParamComboBox() : Param<int>("name", 0) {};
+  ParamComboBox(const char* _name) : Param<int>(_name, 0) {};
+  ~ParamComboBox() {};
+  void Display() {
+    DISPLAY_PARAM_TEMPLATE(name, [this]() {
+      if (ImGui::Combo("##name", &value, choices.data(), static_cast<int>(choices.size()))) {
+        DISPATCH_PARAM_CHANGE_EVENT();
+      }
+    })
+  }
+
+  inline int GetChoice() { return value; }
+  inline void SetChoice(int choice) { value = choice; }
+  inline void SetChoices(std::vector<const char*> _choices) { choices = _choices; }
+
+  YAML::Node YAMLSerialize() override {
+    YAML::Node yaml_node;
+    std::string type_str = clean_param_type_name(typeid(*this).name());
+    yaml_node["type"] = type_str;
+    yaml_node["name"] = name;
+    yaml_node["value"] = value;
+    return yaml_node;
+  }
+
+ public:
+  std::vector<const char*> choices = {"first", "second", "third"};
+};
+
+class ParamSeparator : public Param<std::string> {
+ public:
+  ParamSeparator() : Param<std::string>("separator") {};
+  ParamSeparator(const char* _name) : Param<std::string>(_name) {};
+  ~ParamSeparator() {};
+  void Display() {
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+  }
+  YAML::Node YAMLSerialize() override {
+    YAML::Node yaml_node;
+    std::string type_str = clean_param_type_name(typeid(*this).name());
+    yaml_node["type"] = type_str;
+    yaml_node["name"] = name;
+    yaml_node["value"] = "null";
+    return yaml_node;
+  }
+};
+
+
+class ParamGroup : public Param<int> {
+ public:
+  ParamGroup() : Param<int>("", 0) {};
+  ParamGroup(const char* _name) : Param<int>(_name, 0) { std::cout << "Constructing ParamGroup -----------" << std::endl; };
+  ~ParamGroup() {};
+  void Display() override;
+
+  YAML::Node YAMLSerialize() override {
+    YAML::Node yaml_node;
+    std::string type_str = clean_param_type_name(typeid(*this).name());
+    yaml_node["type"] = type_str;
+    yaml_node["name"] = name;
+
+    for (auto item : items) {
+      yaml_node["params"].push_back(item->YAMLSerialize());
+    }
+    yaml_node["value"] = "null";
+    return yaml_node;
+  }
+
+ public:
+  std::vector<std::shared_ptr<NodeParam>> items;
 };
 
 // utils

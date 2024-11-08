@@ -42,6 +42,12 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NodeEditor::ParamGroup);
   REGISTER_PARAM_TYPE(NodeEditor::ParamComboBox);
   REGISTER_PARAM_TYPE(NodeEditor::ParamFile);
+  REGISTER_PARAM_TYPE(NodeEditor::Param<std::string>);
+  REGISTER_PARAM_TYPE(NodeEditor::Param<std::wstring>);
+  REGISTER_PARAM_TYPE(NodeEditor::Param<int>);
+  REGISTER_PARAM_TYPE(NodeEditor::Param<float>);
+  REGISTER_PARAM_TYPE(NodeEditor::Param<glm::vec2>);
+  REGISTER_PARAM_TYPE(NodeEditor::Param<glm::vec3>);
 
 }
 
@@ -404,6 +410,8 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   ImGui::Begin("Params");
   ImGui::InputText("Node Name", &node->title);
   ImGui::Separator();
+  ImGui::Spacing();
+  ImGui::Spacing();
   for (auto item : node->m_ParamLayout.items) {
     item.param->Display();
   }

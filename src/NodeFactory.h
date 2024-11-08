@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "ImGuiNode.h"
+#include "ParamFactory.h"
 
 namespace NodeEditor {
 struct NodeFactoryRegistryItem {

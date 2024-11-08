@@ -32,11 +32,10 @@ std::string clean_param_type_name(const char *dirty_type) {
   std::string type_str = std::string(dirty_type);                                           
   NodeEditor::str_remove_all(type_str, "class ");                                        
   NodeEditor::str_remove_all(type_str, "struct ");                                       
-  NodeEditor::str_remove(type_str, "NodeEditor::Param<");                                
-  NodeEditor::str_remove(type_str, "NodeEditor::");                                      
-  NodeEditor::str_remove_last(type_str, ">");                                            
+  // NodeEditor::str_remove_all(type_str, "NodeEditor::");                                                               
+  NodeEditor::str_replace_all(type_str, " >", ">");                                            
   NodeEditor::str_remove_last(type_str, " ");                                            
-  if (type_str.find("std::basic_string") != std::string::npos) type_str = "std::string";   
+  if (type_str.find("std::basic_string") != std::string::npos) type_str = "NodeEditor::Param<std::string>";   
 
   return type_str; 
 }

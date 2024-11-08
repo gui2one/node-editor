@@ -104,6 +104,10 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
   std::string p_type_str = yaml["type"].as<std::string>();
   std::string p_name = yaml["name"].as<std::string>();
 
+  str_replace_all(p_type_str, "NodeEditor::Param<", "");
+  str_remove_last(p_type_str, ">");
+  str_replace_all(p_type_str, "NodeEditor::", "");
+
   std::shared_ptr<NodeParam> param = nullptr;
 
   param = find_param_by_name(factory_node, p_name);
