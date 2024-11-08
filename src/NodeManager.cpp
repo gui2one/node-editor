@@ -129,6 +129,35 @@ std::shared_ptr<AbstractNode> NodeManager::FindNodeByUUID(std::string uuid) {
   return nullptr;
 }
 
+void NodeManager::CreateAllNodes() {
+  static NodeFactoryRegistry &registry = NodeFactoryRegistry::instance();
+
+  std::unordered_map<std::string, std::vector<NodeFactoryRegistryItem>> whole_thing;
+  // collect items by category
+  for (auto &factory : registry.getFactories()) {
+    whole_thing[factory.second.category_name].push_back(factory.second);
+  }
+
+  float x = 0.0f;
+  float y = 0.0f;
+  for (auto &[category_name, items] : whole_thing) {
+    
+    for (auto &item : items) {
+
+      auto node = registry.create(item.type_name.c_str());
+      if (node != nullptr) {
+
+        node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
+        node->parent_node = m_CurrentNetworkOwner;
+        this->m_CurrentNetwork->AddNode(node);
+      }
+      y += 60.0f;  
+    }
+    y = 0.0f;
+    x += 300.0f;
+  }
+}
+
 void NodeManager::SetNodesMenu(std::function<void()> func) { m_NodesMenu = func; }
 
 void NodeManager::BuildNodeMenuFromRegistry() {

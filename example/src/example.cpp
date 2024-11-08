@@ -79,6 +79,8 @@ int main(int argc, char *argv[]) {
     }
   });
 
+  app.GetNodeManager().CreateAllNodes();
+  app.GetNodeManager().ViewFrameAll();
   app.GetNodeManager().Evaluate();
 
   app.GetNodeManager().LoadFromFile(file_to_load);

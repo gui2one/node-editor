@@ -136,6 +136,7 @@ class NodeManager {
     m_BoldFont = _bold;
   }
 
+  void CreateAllNodes();
  private:
   void SetNodesMenu(std::function<void()> func);
   void BuildNodeMenuFromRegistry();
