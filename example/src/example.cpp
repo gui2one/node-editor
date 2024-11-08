@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
     file_to_load = argv[1];
   }
 
+  REGISTER_PARAM_TYPE(NodeEditor::ParamFile);
+
   REGISTER_NODE_TYPE(NodeEditor::StringGenerate, "generate", "generator");
   REGISTER_NODE_TYPE(NodeEditor::TextFileLoader, "Load Text File", "generator");
   REGISTER_NODE_TYPE(NodeEditor::StringConcatenator, "concatenator", "modifier");

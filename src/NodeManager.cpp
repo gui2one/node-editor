@@ -38,6 +38,8 @@ NodeManager::NodeManager() {
   SetNodesMenu([this]() { this->BuildNodeMenuFromRegistry(); });
 
   m_CurrentNetwork = &m_NodeNetwork;
+
+
 }
 
 NodeManager::~NodeManager() {}

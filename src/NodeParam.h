@@ -55,6 +55,7 @@ namespace NodeEditor {
 
 class NodeParam {
  public:
+  NodeParam(){ name = "no name"; };
   NodeParam(const char* _name) : name(_name) {}
   virtual ~NodeParam() = default;
   virtual void Display() = 0;
@@ -66,6 +67,7 @@ class NodeParam {
 
 class ParamGroup : public NodeParam {
  public:
+  ParamGroup():NodeParam(){};
   ParamGroup(const char* _name) : NodeParam(_name) { std::cout << "Constructing ParamGroup -----------" << std::endl; };
   ~ParamGroup() {};
   void Display() override;
@@ -91,6 +93,7 @@ class ParamGroup : public NodeParam {
 
 class ParamSeparator : public NodeParam {
  public:
+  ParamSeparator():NodeParam() {};
   ParamSeparator(const char* _name) : NodeParam(_name) {};
   ~ParamSeparator() {};
   void Display() {
@@ -112,6 +115,7 @@ class ParamSeparator : public NodeParam {
 
 class ParamLabel : public NodeParam {
  public:
+  ParamLabel():NodeParam() {};
   ParamLabel(const char* _name) : NodeParam(_name) {};
   ~ParamLabel() {};
   void Display() {
@@ -132,6 +136,7 @@ class ParamLabel : public NodeParam {
 
 class ParamComboBox : public NodeParam {
  public:
+  ParamComboBox():NodeParam() {};
   ParamComboBox(const char* _name) : NodeParam(_name) {};
   ~ParamComboBox() {};
   void Display() {
@@ -165,6 +170,7 @@ class ParamComboBox : public NodeParam {
 template <typename T>
 class Param : public NodeParam {
  public:
+  Param():NodeParam() {};
   Param(const char* _name, T _value, T _min_val, T _max_val)
       : NodeParam(_name), value(_value), min_val(_min_val), max_val(_max_val) {};
   ~Param() {};
@@ -368,6 +374,7 @@ class Param<std::string> : public NodeParam {
 template <>
 class Param<std::wstring> : public NodeParam {
  public:
+  Param():NodeParam(){};
   Param(const char* _name, std::wstring _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -437,6 +444,7 @@ class Param<float> : public NodeParam {
 template <>
 class Param<bool> : public NodeParam {
  public:
+  
   Param(const char* _name, bool _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -460,6 +468,7 @@ class ParamFile : public Param<std::wstring> {
   std::vector<Utils::FileFilterItem> filters = {{"All Files", "*"}, {"Text Files", "txt"}};
 
  public:
+  ParamFile():Param<std::wstring>() {};
   ParamFile(const char* _name, std::wstring _value) : Param(_name, _value) {};
   ~ParamFile() {};
 

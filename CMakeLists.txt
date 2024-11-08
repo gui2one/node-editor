@@ -50,6 +50,7 @@ add_library(${PROJECT_NAME} STATIC
 
   src/yaml_serialize.cpp
   src/NodeFactory.cpp
+  src/ParamFactory.cpp
   src/NodeParam.cpp
   src/ImGuiNode.cpp
   src/NodeManager.cpp
