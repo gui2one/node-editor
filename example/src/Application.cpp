@@ -206,12 +206,9 @@ void Application::Run() {
     if (ImGui::BeginMenu("Edit")) {
       if (ImGui::MenuItem("Clone")) {
         if (m_NodeManager.m_CurrentNode != nullptr) {
-          auto type_str = typeid(*m_NodeManager.m_CurrentNode.get()).name();
-          auto clean_name = clean_node_type_name(type_str);
-          // m_NodeManager.AddNode(clone);
-          auto factory_node = NodeFactoryRegistry::instance().create(clean_name);
+          auto factory_node = NodeFactoryRegistry::instance().clone(m_NodeManager.m_CurrentNode);
           m_NodeManager.AddNode(factory_node);
-          std::cout << clean_name << std::endl;
+          // std::cout << clean_name << std::endl;
         } else {
           std::cout << "Select a node to be cloned" << std::endl;
         }

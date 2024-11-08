@@ -18,20 +18,12 @@ class NodeFactoryRegistry {
  public:
   using FactoryFunc = std::function<std::shared_ptr<AbstractNode>()>;
 
-  static NodeFactoryRegistry& instance() {
-    static NodeFactoryRegistry registry;
-    return registry;
-  }
+  static NodeFactoryRegistry& instance();
 
-  void registerType(const std::string& typeName, NodeFactoryRegistryItem item) { factories[typeName] = item; }
+  inline void registerType(const std::string& typeName, NodeFactoryRegistryItem item) { factories[typeName] = item; }
 
-  std::shared_ptr<AbstractNode> create(const std::string& typeName) const {
-    auto it = factories.find(typeName);
-    if (it != factories.end()) {
-      return it->second.factory_func();
-    }
-    return nullptr;  // Type not found
-  }
+  std::shared_ptr<AbstractNode> create(const std::string& typeName) const;
+  std::shared_ptr<AbstractNode> clone(std::shared_ptr<AbstractNode> other) const;
 
   inline std::unordered_map<std::string, NodeFactoryRegistryItem> getFactories() const { return factories; }
 
