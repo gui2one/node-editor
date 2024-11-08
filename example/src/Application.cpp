@@ -72,7 +72,7 @@ void Application::ImGuiInit(GLFWwindow *window) {
 
   ImVec4 *colors = ImGui::GetStyle().Colors;
   colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-  colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+  colors[ImGuiCol_TextDisabled] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
   colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
   colors[ImGuiCol_ChildBg] = ImVec4(0.45f, 0.03f, 0.03f, 0.00f);
   colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
@@ -204,14 +204,9 @@ void Application::Run() {
       ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Edit")) {
-      if (ImGui::MenuItem("Clone")) {
-        if (m_NodeManager.m_CurrentNode != nullptr) {
-          auto factory_node = NodeFactoryRegistry::instance().clone(m_NodeManager.m_CurrentNode);
-          m_NodeManager.AddNode(factory_node);
-          // std::cout << clean_name << std::endl;
-        } else {
-          std::cout << "Select a node to be cloned" << std::endl;
-        }
+      if (ImGui::MenuItem("Clone", "Ctrl+D", false, m_NodeManager.m_CurrentNode != nullptr)) {
+        auto factory_node = NodeFactoryRegistry::instance().clone(m_NodeManager.m_CurrentNode);
+        m_NodeManager.AddNode(factory_node);
       }
       ImGui::EndMenu();
     }
