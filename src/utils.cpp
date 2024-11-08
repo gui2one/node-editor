@@ -18,6 +18,16 @@ std::string generate_uuid() {
     return res;
 }
 
+std::string clean_node_type_name(const char * dirty_type) { 
+    std::string clean = std::string(dirty_type); 
+    str_replace_all(clean, "class ", "");
+    str_replace_all(clean, " >", ">");
+    str_replace(clean, "NodeEditor::Node<", "");
+    str_replace_last(clean, ">", "");
+    str_replace(clean, "std::basic_string<char,struct std::char_traits<char>,std::allocator<char>>", "std::string");    
+    return clean;     
+}
+
 bool str_replace(std::string& str, const std::string& from, const std::string& to) {
     size_t start_pos = str.find(from);
     if(start_pos == std::string::npos)

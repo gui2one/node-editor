@@ -182,6 +182,7 @@ void Application::Run() {
             if (ImGui::MenuItem("New", "Ctrl+N")) {
                 m_NodeManager.GetRootNetwork().nodes.clear();
                 m_NodeManager.GetRootNetwork().outuput_node = nullptr;
+                m_NodeManager.m_CurrentNode = nullptr;
                 m_NodeManager.m_SavePath = std::filesystem::path("");
                 glfwSetWindowTitle(m_NodeManager.GetGLFWWindow(), m_NodeManager.m_SavePath.string().c_str());
             }
@@ -204,9 +205,18 @@ void Application::Run() {
         }
         if (ImGui::BeginMenu("Edit")) {
             if (ImGui::MenuItem("Clone")) {
-                // auto clone = clone_shared(m_NodeManager.m_CurrentNode.get());
-                // m_NodeManager.AddNode(clone);
-                // std::cout << typeid(*clone).name() << std::endl;
+                if(m_NodeManager.m_CurrentNode != nullptr) {
+                  
+                  auto type_str = typeid(*m_NodeManager.m_CurrentNode.get()).name();
+                  auto clean_name = clean_node_type_name(type_str);
+                  // m_NodeManager.AddNode(clone);
+                  auto factory_node = NodeFactoryRegistry::instance().create(clean_name);
+                  m_NodeManager.AddNode(factory_node);
+                  std::cout << clean_name << std::endl;
+                }else{
+                  std::cout << "Select a node to be cloned" << std::endl;
+                  
+                }
             }
             ImGui::EndMenu();
         }

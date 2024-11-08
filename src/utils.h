@@ -8,6 +8,8 @@
 
 namespace NodeEditor {
     std::string generate_uuid();
+    std::string clean_node_type_name(const char * dirty_type);
+
 
     bool str_replace(std::string& str, const std::string& from, const std::string& to);
     bool str_replace_all(std::string& str, const std::string& from, const std::string& to);

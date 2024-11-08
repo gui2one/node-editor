@@ -10,6 +10,7 @@
 #include <filesystem>
 #include "yaml_serialize.h"
 #include "StringGenerator.h"
+#include "utils.h"
 namespace NodeEditor {
 
 class Application
