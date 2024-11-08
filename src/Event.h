@@ -10,132 +10,111 @@ namespace NodeEditor {
 class AbstractNode;
 
 enum class EventType {
-    MouseMove,
-    MouseClick,
-    MouseDoubleClick,
-    MouseRelease,
-    KeyPress,
+  MouseMove,
+  MouseClick,
+  MouseDoubleClick,
+  MouseRelease,
+  KeyPress,
 
-    DropFile,
+  DropFile,
 
-    NodeConnection,
-    NodeSelected,
-    NodeMoved,
+  NodeConnection,
+  NodeSelected,
+  NodeMoved,
 
-    ParamChanged,
-    ManagerUpdate
+  ParamChanged,
+  ManagerUpdate
 };
 
 class Event {
-public:
-    virtual ~Event() = default;
-    virtual EventType GetType() const = 0;
+ public:
+  virtual ~Event() = default;
+  virtual EventType GetType() const = 0;
 };
 
 class MouseMoveEvent : public Event {
-public:
-    float x, y;
-    
-    MouseMoveEvent(float x, float y) : x(x), y(y) {}
+ public:
+  float x, y;
 
-    EventType GetType() const override {
-        return EventType::MouseMove;
-    }
+  MouseMoveEvent(float x, float y) : x(x), y(y) {}
+
+  EventType GetType() const override { return EventType::MouseMove; }
 };
 
 class MouseClickEvent : public Event {
-public:
-    int button;
+ public:
+  int button;
 
-    MouseClickEvent(int button, float x, float y) : button(button), x(x), y(y) {}
+  MouseClickEvent(int button, float x, float y) : button(button), x(x), y(y) {}
 
-    EventType GetType() const override {
-        return EventType::MouseClick;
-    }
+  EventType GetType() const override { return EventType::MouseClick; }
 
-    float x, y;
+  float x, y;
 };
 
 class MouseDoubleClickEvent : public Event {
-public:
-    int button;
+ public:
+  int button;
 
-    MouseDoubleClickEvent(int button, float x, float y) : button(button), x(x), y(y) {}
+  MouseDoubleClickEvent(int button, float x, float y) : button(button), x(x), y(y) {}
 
-    EventType GetType() const override {
-        return EventType::MouseDoubleClick;
-    }
+  EventType GetType() const override { return EventType::MouseDoubleClick; }
 
-    float x,y;
+  float x, y;
 };
 
 class MouseReleaseEvent : public Event {
-public:
-    int button;
+ public:
+  int button;
 
-    MouseReleaseEvent(int button) : button(button) {}
+  MouseReleaseEvent(int button) : button(button) {}
 
-    EventType GetType() const override {
-        return EventType::MouseRelease;
-    }
+  EventType GetType() const override { return EventType::MouseRelease; }
 };
-
 
 class DropFileEvent : public Event {
-public:
+ public:
+  const char* path;
 
-    const char* path;
+  DropFileEvent(const char* _path) : path(_path) {}
 
-    DropFileEvent(const char* _path): path(_path){}
-
-    EventType GetType() const override {
-        return EventType::DropFile;
-    }
+  EventType GetType() const override { return EventType::DropFile; }
 };
 class KeyPressEvent : public Event {
-public:
-    int key;
-    int mods;
+ public:
+  int key;
+  int mods;
 
-    KeyPressEvent(int key, int mods) : key(key), mods(mods) {}
+  KeyPressEvent(int key, int mods) : key(key), mods(mods) {}
 
-    EventType GetType() const override {
-        return EventType::KeyPress;
-    }
+  EventType GetType() const override { return EventType::KeyPress; }
 };
 
 class NodeConnectionEvent : public Event {
-public:
-    std::shared_ptr<AbstractNode> input_node;
-    uint32_t input_index;
-    std::shared_ptr<AbstractNode> output_node;
-    uint32_t output_index;
+ public:
+  std::shared_ptr<AbstractNode> input_node;
+  uint32_t input_index;
+  std::shared_ptr<AbstractNode> output_node;
+  uint32_t output_index;
 
-    NodeConnectionEvent(std::shared_ptr<AbstractNode> input_node, uint32_t input_index, std::shared_ptr<AbstractNode> output_node, uint32_t output_index) {}
-    EventType GetType() const override {
-        return EventType::NodeConnection;
-    }    
+  NodeConnectionEvent(std::shared_ptr<AbstractNode> input_node, uint32_t input_index,
+                      std::shared_ptr<AbstractNode> output_node, uint32_t output_index) {}
+  EventType GetType() const override { return EventType::NodeConnection; }
 };
-
 
 class ParamChangedEvent : public Event {
-public:
-    ParamChangedEvent() : Event() {}
+ public:
+  ParamChangedEvent() : Event() {}
 
-    EventType GetType() const override {
-        return EventType::ParamChanged;
-    }
+  EventType GetType() const override { return EventType::ParamChanged; }
 };
 class ManagerUpdateEvent : public Event {
-public:
-    ManagerUpdateEvent() : Event() {}
+ public:
+  ManagerUpdateEvent() : Event() {}
 
-    EventType GetType() const override {
-        return EventType::ManagerUpdate;
-    }
+  EventType GetType() const override { return EventType::ManagerUpdate; }
 };
 
-
-};
+};  // namespace NodeEditor
 
 #endif

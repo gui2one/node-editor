@@ -1,22 +1,22 @@
 #include "NodeParam.h"
 
 namespace NodeEditor {
-void ParamGroup::Display(){
-    ImGui::Spacing();
-    ImGui::Text("%s", name);
-    
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::Spacing();
+void ParamGroup::Display() {
+  ImGui::Spacing();
+  ImGui::Text("%s", name);
 
-    ImGui::Indent(10.0f);
-    ImGui::BeginGroup();
+  ImGui::Spacing();
+  ImGui::Separator();
+  ImGui::Spacing();
 
-    for(auto item : items){
-        item->Display();
-    }
+  ImGui::Indent(10.0f);
+  ImGui::BeginGroup();
 
-    ImGui::EndGroup();
-    ImGui::Indent(-10.0f);
+  for (auto item : items) {
+    item->Display();
+  }
+
+  ImGui::EndGroup();
+  ImGui::Indent(-10.0f);
 }
-};
+};  // namespace NodeEditor

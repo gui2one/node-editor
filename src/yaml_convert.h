@@ -2,18 +2,21 @@
 #define NODE_EDITOR_YAML_CONVERT_H
 #pragma once
 
-#include <yaml-cpp/yaml.h>
 #include <imgui.h>
+#include <yaml-cpp/yaml.h>
+
 #include <glm/glm.hpp>
+
 #include "ImGuiNode.h"
+
 
 namespace YAML {
 
-template<>
+template <>
 struct convert<std::wstring> {
   static Node encode(const std::wstring& rhs) {
     // std::cout << "Encoding Wstring to yaml" << std::endl;
-    
+
     Node node;
     node["value"] = rhs;
 
@@ -21,13 +24,12 @@ struct convert<std::wstring> {
   }
 
   static bool decode(const Node& node, std::wstring& rhs) {
-
     rhs = node["value"].as<std::wstring>();
     return true;
   }
 };
 
-template<>
+template <>
 struct convert<ImVec2> {
   static Node encode(const ImVec2& rhs) {
     Node node;
@@ -37,7 +39,7 @@ struct convert<ImVec2> {
   }
 
   static bool decode(const Node& node, ImVec2& rhs) {
-    if(!node.IsMap() || node.size() != 2) {
+    if (!node.IsMap() || node.size() != 2) {
       return false;
     }
 
@@ -47,7 +49,7 @@ struct convert<ImVec2> {
   }
 };
 
-template<>
+template <>
 struct convert<glm::vec2> {
   static Node encode(const glm::vec2& rhs) {
     Node node;
@@ -57,7 +59,7 @@ struct convert<glm::vec2> {
   }
 
   static bool decode(const Node& node, glm::vec2& rhs) {
-    if(!node.IsMap() || node.size() != 2) {
+    if (!node.IsMap() || node.size() != 2) {
       return false;
     }
 
@@ -67,7 +69,7 @@ struct convert<glm::vec2> {
   }
 };
 
-template<>
+template <>
 struct convert<glm::vec3> {
   static Node encode(const glm::vec3& rhs) {
     Node node;
@@ -78,7 +80,7 @@ struct convert<glm::vec3> {
   }
 
   static bool decode(const Node& node, glm::vec3& rhs) {
-    if(!node.IsMap() || node.size() != 3) {
+    if (!node.IsMap() || node.size() != 3) {
       return false;
     }
 
@@ -89,7 +91,7 @@ struct convert<glm::vec3> {
   }
 };
 
-template<>
+template <>
 struct convert<std::shared_ptr<NodeEditor::AbstractNode>> {
   static Node encode(const std::shared_ptr<NodeEditor::AbstractNode>& rhs) {
     Node node;
@@ -100,7 +102,7 @@ struct convert<std::shared_ptr<NodeEditor::AbstractNode>> {
   }
 
   static bool decode(const Node& node, std::shared_ptr<NodeEditor::AbstractNode>& rhs) {
-    if(!node.IsMap() || node.size() != 3) {
+    if (!node.IsMap() || node.size() != 3) {
       return false;
     }
 
@@ -111,7 +113,7 @@ struct convert<std::shared_ptr<NodeEditor::AbstractNode>> {
   }
 };
 
-template<>
+template <>
 struct convert<std::shared_ptr<NodeEditor::NodeParam>> {
   static Node encode(const std::shared_ptr<NodeEditor::NodeParam>& rhs) {
     Node node;
@@ -121,17 +123,17 @@ struct convert<std::shared_ptr<NodeEditor::NodeParam>> {
   }
 
   static bool decode(const Node& node, std::shared_ptr<NodeEditor::NodeParam>& rhs) {
-    if(!node.IsMap() || node.size() != 2) {
+    if (!node.IsMap() || node.size() != 2) {
       return false;
     }
 
-    rhs->name = node["name"].as<std::string>().c_str();  
+    rhs->name = node["name"].as<std::string>().c_str();
     // rhs->value = node["value"];
     return true;
   }
 };
 
-template<>
+template <>
 struct convert<NodeEditor::ParamLayoutItem> {
   static Node encode(const NodeEditor::ParamLayoutItem& rhs) {
     Node node;
@@ -141,15 +143,15 @@ struct convert<NodeEditor::ParamLayoutItem> {
   }
 
   static bool decode(const Node& node, NodeEditor::ParamLayoutItem& rhs) {
-    if(!node.IsMap() || node.size() != 2) {
+    if (!node.IsMap() || node.size() != 2) {
       return false;
     }
 
-    rhs.name = node["name"].as<std::string>();  
+    rhs.name = node["name"].as<std::string>();
     rhs.param = node["param"].as<std::shared_ptr<NodeEditor::NodeParam>>();
     return true;
   }
 };
-}//END namespace YAML
+}  // END namespace YAML
 
-#endif // NODE_EDITOR_YAML_CONVERT_H
+#endif  // NODE_EDITOR_YAML_CONVERT_H

@@ -5,12 +5,12 @@
 #include "EventDispatcher.h"
 namespace NodeEditor {
 class EventManager {
-public:
+ public:
   static EventDispatcher &GetInstance() {
     static EventDispatcher dispatcher;
     return dispatcher;
   }
 };
-}; // namespace NodeEditor
+};  // namespace NodeEditor
 
 #endif

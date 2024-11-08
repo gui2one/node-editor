@@ -1,43 +1,42 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <thread>
 #include <imgui.h>
-#include "node_editor.h"
 
-#include "params.h"
-#include <fstream>
 #include <filesystem>
-#include "yaml_serialize.h"
+#include <fstream>
+#include <thread>
+
 #include "StringGenerator.h"
+#include "node_editor.h"
+#include "params.h"
 #include "utils.h"
+#include "yaml_serialize.h"
+
 namespace NodeEditor {
 
-class Application
-{
-public:
-    Application();
-    ~Application();
+class Application {
+ public:
+  Application();
+  ~Application();
 
-    inline NodeManager& GetNodeManager() { return m_NodeManager; }
-    bool Init();
-    void Run();
+  inline NodeManager& GetNodeManager() { return m_NodeManager; }
+  bool Init();
+  void Run();
 
-public :
+ public:
+  ImFont* m_RegularFont;
+  ImFont* m_BoldFont;
 
-    ImFont* m_RegularFont;
-    ImFont* m_BoldFont;    
+ private:
+  void ImGuiInit(GLFWwindow* window);
+  void ImGuiBeginFrame();
+  void ImGuiEndFrame();
 
-private:
-    void ImGuiInit(GLFWwindow* window);
-    void ImGuiBeginFrame();
-    void ImGuiEndFrame();
-
-private:
-    GLFWwindow* m_NativeWindow;
-    NodeManager m_NodeManager;
-
+ private:
+  GLFWwindow* m_NativeWindow;
+  NodeManager m_NodeManager;
 };
 
-};
+};  // namespace NodeEditor
 #endif

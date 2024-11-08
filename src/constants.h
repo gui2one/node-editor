@@ -4,5 +4,4 @@
 
 constexpr unsigned int MAX_N_INPUTS = 4;
 
-
-#endif // NODE_EDITOR_CONSTANTS_H
+#endif  // NODE_EDITOR_CONSTANTS_H
