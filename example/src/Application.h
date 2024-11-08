@@ -9,6 +9,7 @@
 #include <fstream>
 #include <filesystem>
 #include "yaml_serialize.h"
+#include "StringGenerator.h"
 namespace NodeEditor {
 
 class Application
