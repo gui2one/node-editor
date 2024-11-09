@@ -39,7 +39,7 @@ void save_all(std::filesystem::path path, NodeNetwork& network) {
 std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
   std::string type_name = yaml_node["type"].as<std::string>();
 
-  auto factory_node = NodeFactoryRegistry::instance().create(type_name);
+  auto factory_node = NodeFactoryRegistry::GetInstance().Create(type_name);
   if (factory_node == nullptr) {
     std::cout << "Unabled to create type: " << type_name << "" << std::endl;
     return nullptr;

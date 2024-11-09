@@ -205,7 +205,7 @@ void Application::Run() {
     }
     if (ImGui::BeginMenu("Edit")) {
       if (ImGui::MenuItem("Clone", "Ctrl+D", false, m_NodeManager.m_CurrentNode != nullptr)) {
-        auto factory_node = NodeFactoryRegistry::instance().clone(m_NodeManager.m_CurrentNode);
+        auto factory_node = NodeFactoryRegistry::GetInstance().Clone(m_NodeManager.m_CurrentNode);
         m_NodeManager.AddNode(factory_node);
       }
       ImGui::EndMenu();

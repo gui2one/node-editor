@@ -136,11 +136,11 @@ std::shared_ptr<AbstractNode> NodeManager::FindNodeByUUID(std::string uuid) {
 }
 
 void NodeManager::CreateAllNodes() {
-  static NodeFactoryRegistry &registry = NodeFactoryRegistry::instance();
+  static NodeFactoryRegistry &registry = NodeFactoryRegistry::GetInstance();
 
   std::unordered_map<std::string, std::vector<NodeFactoryRegistryItem>> whole_thing;
   // collect items by category
-  for (auto &factory : registry.getFactories()) {
+  for (auto &factory : registry.GetFactories()) {
     whole_thing[factory.second.category_name].push_back(factory.second);
   }
 
@@ -150,7 +150,7 @@ void NodeManager::CreateAllNodes() {
     
     for (auto &item : items) {
 
-      auto node = registry.create(item.type_name.c_str());
+      auto node = registry.Create(item.type_name.c_str());
       if (node != nullptr) {
 
         node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
@@ -167,11 +167,11 @@ void NodeManager::CreateAllNodes() {
 void NodeManager::SetNodesMenu(std::function<void()> func) { m_NodesMenu = func; }
 
 void NodeManager::BuildNodeMenuFromRegistry() {
-  static NodeFactoryRegistry &registry = NodeFactoryRegistry::instance();
+  static NodeFactoryRegistry &registry = NodeFactoryRegistry::GetInstance();
 
   std::unordered_map<std::string, std::vector<NodeFactoryRegistryItem>> whole_thing;
   // collect items by category
-  for (auto &factory : registry.getFactories()) {
+  for (auto &factory : registry.GetFactories()) {
     whole_thing[factory.second.category_name].push_back(factory.second);
   }
 
@@ -179,7 +179,7 @@ void NodeManager::BuildNodeMenuFromRegistry() {
     if (ImGui::BeginMenu(category_name.c_str())) {
       for (auto &item : items) {
         if (ImGui::MenuItem(item.label.c_str(), NULL, false, true)) {
-          auto node = registry.create(item.type_name.c_str());
+          auto node = registry.Create(item.type_name.c_str());
           if (node != nullptr) {
             double x, y;
             glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);

@@ -19,14 +19,16 @@ class NodeFactoryRegistry {
  public:
   using FactoryFunc = std::function<std::shared_ptr<AbstractNode>()>;
 
-  static NodeFactoryRegistry& instance();
+  static NodeFactoryRegistry& GetInstance();
 
-  inline void registerType(const std::string& typeName, NodeFactoryRegistryItem item) { factories[typeName] = item; }
+  inline void RegisterType(const std::string& typeName, NodeFactoryRegistryItem item) { factories[typeName] = item; }
 
-  std::shared_ptr<AbstractNode> create(const std::string& typeName) const;
-  std::shared_ptr<AbstractNode> clone(std::shared_ptr<AbstractNode> other) const;
+  std::shared_ptr<AbstractNode> Create(const std::string& typeName) const;
+  std::shared_ptr<AbstractNode> Clone(std::shared_ptr<AbstractNode> other) const;
+  void CloneParam(std::shared_ptr<NodeParam> src, std::shared_ptr<NodeParam> dst) const;
 
-  inline std::unordered_map<std::string, NodeFactoryRegistryItem> getFactories() const { return factories; }
+
+  inline std::unordered_map<std::string, NodeFactoryRegistryItem> GetFactories() const { return factories; }
 
  private:
   std::unordered_map<std::string, NodeFactoryRegistryItem> factories;
@@ -34,13 +36,13 @@ class NodeFactoryRegistry {
 };  // namespace NodeEditor
 
 #define REGISTER_NODE_TYPE(Type, Label, Category)                                       \
-  NodeEditor::NodeFactoryRegistry::instance().registerType(                             \
+  NodeEditor::NodeFactoryRegistry::GetInstance().RegisterType(                             \
       #Type, {Category, Label, #Type, []() -> std::shared_ptr<NodeEditor::Node<Type>> { \
                 return std::make_shared<NodeEditor::Node<Type>>(Label);                 \
               }})
 #define STRINGIFY(x) #x
 #define CREATE_SUBNET_INPUT_NODE_CLASS(Type, Label, Category)                                 \
-  NodeEditor::NodeFactoryRegistry::instance().registerType(                                   \
+  NodeEditor::NodeFactoryRegistry::GetInstance().RegisterType(                                   \
       "NodeEditor::SubnetInputNode<" STRINGIFY(Type) ">",                                     \
       {Category, Label, "NodeEditor::SubnetInputNode<" STRINGIFY(Type) ">",                   \
        []() -> std::shared_ptr<NodeEditor::Node<NodeEditor::SubnetInputNode<Type>>> {         \

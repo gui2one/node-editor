@@ -1,55 +1,136 @@
 #include "NodeFactory.h"
 
 namespace NodeEditor {
-NodeFactoryRegistry& NodeEditor::NodeFactoryRegistry::instance() {
-  
+NodeFactoryRegistry& NodeEditor::NodeFactoryRegistry::GetInstance() {
   static NodeFactoryRegistry registry;
   return registry;
-
 }
-std::shared_ptr<AbstractNode> NodeFactoryRegistry::create(const std::string& typeName) const {
+std::shared_ptr<AbstractNode> NodeFactoryRegistry::Create(const std::string& typeName) const {
   auto it = factories.find(typeName);
   if (it != factories.end()) {
     return it->second.factory_func();
   }
 
- 
-  
   return nullptr;  // Type not found
 }
-std::shared_ptr<AbstractNode> NodeFactoryRegistry::clone(std::shared_ptr<AbstractNode> other) const {
+std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<AbstractNode> other) const {
   auto type_str = typeid(*other.get()).name();
   auto clean_name = clean_node_type_name(type_str);
-  auto factory_node = NodeFactoryRegistry::instance().create(clean_name);  
+  auto factory_node = NodeFactoryRegistry::GetInstance().Create(clean_name);
   factory_node->title = other->title + "_clone";
   factory_node->position = other->position + ImVec2(10, 10);
 
-  for(size_t i = 0; i < other->m_ParamLayout.items.size(); i++) {
+  for (size_t i = 0; i < other->m_ParamLayout.items.size(); i++) {
     auto param = other->m_ParamLayout.items[i].param;
     std::string clean_name = clean_param_type_name(typeid(*param).name());
     std::cout << "Cloning param: " << clean_name << std::endl;
     auto factory_param = factory_node->m_ParamLayout.items[i].param;
-    if(param != nullptr) {
+    if (param != nullptr) {
+      auto p_label = std::dynamic_pointer_cast<NodeEditor::ParamLabel>(param);
       auto p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(param);
       auto p_file = std::dynamic_pointer_cast<NodeEditor::ParamFile>(param);
-      if(p_group != nullptr) {
+      auto p_int = std::dynamic_pointer_cast<NodeEditor::Param<int>>(param);
+      auto p_float = std::dynamic_pointer_cast<NodeEditor::Param<float>>(param);
+      auto p_string = std::dynamic_pointer_cast<NodeEditor::Param<std::string>>(param);
+      auto p_bool = std::dynamic_pointer_cast<NodeEditor::Param<bool>>(param);
+      auto p_vec2 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec2>>(param);
+      auto p_vec3 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec3>>(param);
+      if (p_label != nullptr) {
+        auto factory_p_label = std::dynamic_pointer_cast<NodeEditor::ParamLabel>(factory_param);
+        factory_p_label->value = p_label->value;
+        // std::cout << "Duplicating ParamGroup: " << clean_name << "" << std::endl;
+
+      } else if (p_group != nullptr) {
+        auto factory_p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(factory_param);
+        factory_p_group->value = p_group->value;
+        for (size_t j = 0; j < p_group->items.size(); j++) {
+          std::cout << "WORK TODO HERE" << std::endl;
+        }
         std::cout << "Duplicating ParamGroup: " << clean_name << "" << std::endl;
-        
-      }else if(p_file != nullptr) {
+
+      } else if (p_file != nullptr) {
         std::cout << "Duplicating ParamFile: " << clean_name << "" << std::endl;
         // std::wcout << p_file->Eval() << std::endl;
         auto factory_p_file = std::dynamic_pointer_cast<NodeEditor::ParamFile>(factory_param);
         factory_p_file->value = p_file->value;
-        // param = factory_p_file;
+
+      } else if (p_int != nullptr) {
+        auto factory_p_int = std::dynamic_pointer_cast<NodeEditor::Param<int>>(factory_param);
+        factory_p_int->value = p_int->value;
+      } else if (p_float != nullptr) {
+        auto factory_p_float = std::dynamic_pointer_cast<NodeEditor::Param<float>>(factory_param);
+        factory_p_float->value = p_float->value;
+      } else if (p_string != nullptr) {
+        auto factory_p_string = std::dynamic_pointer_cast<NodeEditor::Param<std::string>>(factory_param);
+        factory_p_string->value = p_string->value;
+      } else if (p_bool != nullptr) {
+        auto factory_p_bool = std::dynamic_pointer_cast<NodeEditor::Param<bool>>(factory_param);
+        factory_p_bool->value = p_bool->value;
+      } else if (p_vec2 != nullptr) {
+        auto factory_p_vec2 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec2>>(factory_param);
+        factory_p_vec2->value = p_vec2->value;
+      } else if (p_vec3 != nullptr) {
+        auto factory_p_vec3 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec3>>(factory_param);
+        factory_p_vec3->value = p_vec3->value;
       }
       // std::cout << "\tfactory param: " << clean_param_type_name(typeid(*factory_param).name()) << "" << std::endl;
-    }else{
+    } else {
       std::cout << "problem with: " << clean_param_type_name(typeid(*param).name()) << "" << std::endl;
-      
     }
-    
-    
   }
   return factory_node;
+}
+void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::shared_ptr<NodeParam> dst_param) const {
+  if (src_param != nullptr) {
+      auto p_label = std::dynamic_pointer_cast<NodeEditor::ParamLabel>(src_param);
+      auto p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(src_param);
+      auto p_file = std::dynamic_pointer_cast<NodeEditor::ParamFile>(src_param);
+      auto p_int = std::dynamic_pointer_cast<NodeEditor::Param<int>>(src_param);
+      auto p_float = std::dynamic_pointer_cast<NodeEditor::Param<float>>(src_param);
+      auto p_string = std::dynamic_pointer_cast<NodeEditor::Param<std::string>>(src_param);
+      auto p_bool = std::dynamic_pointer_cast<NodeEditor::Param<bool>>(src_param);
+      auto p_vec2 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec2>>(src_param);
+      auto p_vec3 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec3>>(src_param);
+      if (p_label != nullptr) {
+        auto factory_p_label = std::dynamic_pointer_cast<NodeEditor::ParamLabel>(dst_param);
+        factory_p_label->value = p_label->value;
+        std::cout << "Duplicating ParamLabel: " << std::endl;
+
+      } else if (p_group != nullptr) {
+        auto factory_p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(dst_param);
+        factory_p_group->value = p_group->value;
+        for (size_t j = 0; j < p_group->items.size(); j++) {
+          std::cout << "WORK TODO HERE" << std::endl;
+        }
+        std::cout << "Duplicating ParamGroup: " << std::endl;
+
+      } else if (p_file != nullptr) {
+        std::cout << "Duplicating ParamFile: " << "" << std::endl;
+        auto factory_p_file = std::dynamic_pointer_cast<NodeEditor::ParamFile>(dst_param);
+        factory_p_file->value = p_file->value;
+
+      } else if (p_int != nullptr) {
+        auto factory_p_int = std::dynamic_pointer_cast<NodeEditor::Param<int>>(dst_param);
+        factory_p_int->value = p_int->value;
+      } else if (p_float != nullptr) {
+        auto factory_p_float = std::dynamic_pointer_cast<NodeEditor::Param<float>>(dst_param);
+        factory_p_float->value = p_float->value;
+      } else if (p_string != nullptr) {
+        auto factory_p_string = std::dynamic_pointer_cast<NodeEditor::Param<std::string>>(dst_param);
+        factory_p_string->value = p_string->value;
+      } else if (p_bool != nullptr) {
+        auto factory_p_bool = std::dynamic_pointer_cast<NodeEditor::Param<bool>>(dst_param);
+        factory_p_bool->value = p_bool->value;
+      } else if (p_vec2 != nullptr) {
+        auto factory_p_vec2 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec2>>(dst_param);
+        factory_p_vec2->value = p_vec2->value;
+      } else if (p_vec3 != nullptr) {
+        auto factory_p_vec3 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec3>>(dst_param);
+        factory_p_vec3->value = p_vec3->value;
+      }
+      // std::cout << "\tfactory param: " << clean_param_type_name(typeid(*dst_param).name()) << "" << std::endl;
+    } else {
+      std::cout << "problem with: " << clean_param_type_name(typeid(*dst_param).name()) << "" << std::endl;
+    }
 }
 };  // namespace NodeEditor
