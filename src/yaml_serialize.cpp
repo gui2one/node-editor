@@ -83,13 +83,18 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
 
 std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> factory_node, std::string param_name) {
   for (auto& param_item : factory_node->m_ParamLayout.items) {
-    auto p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(param_item.param);
+    auto p_group = std::dynamic_pointer_cast<ParamGroup>(param_item.param);
     if (p_group != nullptr) {
+      if(p_group->name == param_name) {
+        return p_group;
+      }
       for (auto group_item : p_group->items) {
         if (group_item->name == param_name) {
           return group_item;
         }
       }
+
+      
     } else {
       if (param_item.param->name == param_name) {
         return param_item.param;
