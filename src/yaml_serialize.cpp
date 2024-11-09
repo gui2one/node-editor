@@ -112,6 +112,8 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
 
   param = find_param_by_name(factory_node, p_name);
   if (param == nullptr) {
+    std::cout << "Could not find param: " << p_name << "" << std::endl;
+    
     return;
   }
   if (p_type_str == "std::string") {
