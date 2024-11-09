@@ -28,10 +28,21 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::clone(std::shared_ptr<Abstrac
     auto param = other->m_ParamLayout.items[i].param;
     std::string clean_name = clean_param_type_name(typeid(*param).name());
     std::cout << "Cloning param: " << clean_name << std::endl;
-    auto factory_param = ParamFactoryRegistry::instance().create(clean_name);
-    if(factory_param != nullptr) {
-      
-      std::cout << "\tfactory param: " << clean_param_type_name(typeid(*factory_param).name()) << "" << std::endl;
+    auto factory_param = factory_node->m_ParamLayout.items[i].param;
+    if(param != nullptr) {
+      auto p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(param);
+      auto p_file = std::dynamic_pointer_cast<NodeEditor::ParamFile>(param);
+      if(p_group != nullptr) {
+        std::cout << "Duplicating ParamGroup: " << clean_name << "" << std::endl;
+        
+      }else if(p_file != nullptr) {
+        std::cout << "Duplicating ParamFile: " << clean_name << "" << std::endl;
+        // std::wcout << p_file->Eval() << std::endl;
+        auto factory_p_file = std::dynamic_pointer_cast<NodeEditor::ParamFile>(factory_param);
+        factory_p_file->value = p_file->value;
+        // param = factory_p_file;
+      }
+      // std::cout << "\tfactory param: " << clean_param_type_name(typeid(*factory_param).name()) << "" << std::endl;
     }else{
       std::cout << "problem with: " << clean_param_type_name(typeid(*param).name()) << "" << std::endl;
       
