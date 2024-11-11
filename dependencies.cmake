@@ -1,7 +1,7 @@
 include(FetchContent)   
 
 set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
-set(FETCHCONTENT_QUIET FALSE)
+set(FETCHCONTENT_QUIET OFF)
 
 
 function(FetchDependencyAndMakeAvailable NAME URL TAG)
