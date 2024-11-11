@@ -485,7 +485,7 @@ class ParamSeparator : public Param<std::string> {
 class ParamGroup : public Param<int> {
  public:
   ParamGroup() : Param<int>("", 0) {};
-  ParamGroup(const char* _name) : Param<int>(_name, 0) { std::cout << "Constructing ParamGroup -----------" << std::endl; };
+  ParamGroup(const char* _name) : Param<int>(_name, 0) {};
   ~ParamGroup() {};
   void Display() override;
 
