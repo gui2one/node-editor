@@ -90,7 +90,7 @@ class NodeManager {
       return nullptr;
     }
   }
-
+  NodeNetwork* GetCurrentNetwork() { return m_CurrentNetwork; }
   NodeNetwork& GetRootNetwork() { return m_NodeNetwork; };
   void GotoRootNetwork() {
     m_CurrentNetworkOwner = nullptr;
