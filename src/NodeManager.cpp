@@ -146,9 +146,9 @@ void NodeManager::CreateAllNodes() {
 
   float x = 0.0f;
   float y = 0.0f;
-  for (auto &[category_name, items] : whole_thing) {
+  for (auto &[category_name, params] : whole_thing) {
     
-    for (auto &item : items) {
+    for (auto &item : params) {
 
       auto node = registry.Create(item.type_name.c_str());
       if (node != nullptr) {
@@ -412,8 +412,8 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   ImGui::Separator();
   ImGui::Spacing();
   ImGui::Spacing();
-  for (auto item : node->m_ParamLayout.items) {
-    item.param->Display();
+  for (auto param : node->m_ParamLayout.params) {
+    param->Display();
   }
 
   ImGui::End();

@@ -25,13 +25,9 @@ struct NodeNetwork {
   void AddNode(std::shared_ptr<AbstractNode> _node) { nodes.push_back(_node); }
 };
 
-struct ParamLayoutItem {
-  std::string name;
-  std::shared_ptr<NodeParam> param;
-};
 struct ParamLayout {
-  std::vector<ParamLayoutItem> items;
-  ParamLayoutItem& Get(size_t idx) { return items[idx]; }
+  std::vector<std::shared_ptr<NodeParam>> params;
+  std::shared_ptr<NodeParam> Get(size_t idx) { return params[idx]; }
 };
 struct InputConnector {
   ImVec2 relative_pos;
@@ -90,8 +86,8 @@ class AbstractNode {
     yaml_node["uuid"] = uuid;
     yaml_node["position"] = position;
     yaml_node["size"] = size;
-    for (auto item : m_ParamLayout.items) {
-      yaml_node["params"].push_back(item.param->YAMLSerialize());
+    for (auto item : m_ParamLayout.params) {
+      yaml_node["params"].push_back(item->YAMLSerialize());
     }
 
     for (size_t i = 0; i < MAX_N_INPUTS; i++) {
@@ -249,7 +245,7 @@ class SubnetInputNode : public AbstractNode {
     size.y = 50.0f;
 
     input_id = std::make_shared<Param<int>>("input id", 0);
-    m_ParamLayout.items.push_back({"input_id", input_id});
+    m_ParamLayout.params.push_back(input_id);
 
     icon_name = "arrow";
   }

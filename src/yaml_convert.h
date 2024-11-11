@@ -133,25 +133,25 @@ struct convert<std::shared_ptr<NodeEditor::NodeParam>> {
   }
 };
 
-template <>
-struct convert<NodeEditor::ParamLayoutItem> {
-  static Node encode(const NodeEditor::ParamLayoutItem& rhs) {
-    Node node;
-    node["name"] = rhs.name;
-    node["param"] = rhs.param;
-    return node;
-  }
+// template <>
+// struct convert<NodeEditor::ParamLayoutItem> {
+//   static Node encode(const NodeEditor::ParamLayoutItem& rhs) {
+//     Node node;
+//     node["name"] = rhs.name;
+//     node["param"] = rhs.param;
+//     return node;
+//   }
 
-  static bool decode(const Node& node, NodeEditor::ParamLayoutItem& rhs) {
-    if (!node.IsMap() || node.size() != 2) {
-      return false;
-    }
+//   static bool decode(const Node& node, NodeEditor::ParamLayoutItem& rhs) {
+//     if (!node.IsMap() || node.size() != 2) {
+//       return false;
+//     }
 
-    rhs.name = node["name"].as<std::string>();
-    rhs.param = node["param"].as<std::shared_ptr<NodeEditor::NodeParam>>();
-    return true;
-  }
-};
+//     rhs.name = node["name"].as<std::string>();
+//     rhs.param = node["param"].as<std::shared_ptr<NodeEditor::NodeParam>>();
+//     return true;
+//   }
+// };
 }  // END namespace YAML
 
 #endif  // NODE_EDITOR_YAML_CONVERT_H

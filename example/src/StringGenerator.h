@@ -57,7 +57,7 @@ class StringGenerate : public StringGenerator {
     auto position = std::make_shared<Param<glm::vec3>>("position", glm::vec3(0.0f));
     auto grp = std::make_shared<ParamGroup>("GroupTest");
     grp->items = {label, coords, position};
-    m_ParamLayout.items = {{"", value},{"", grp}};
+    m_ParamLayout.params = {value, grp};
   };
   ~StringGenerate() {};
 
@@ -73,7 +73,7 @@ class TextFileLoader : public StringGenerator {
  public:
   TextFileLoader() : StringGenerator() {
     file_path_param = std::make_shared<ParamFile>("File", L"");
-    m_ParamLayout.items = {{"", file_path_param}};
+    m_ParamLayout.params = {file_path_param};
   }
   ~TextFileLoader() {};
 
@@ -108,7 +108,7 @@ class StringConcatenator : public StringModifier {
   StringConcatenator() : StringModifier() {
     SetNumAvailableInputs(2);
     add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
-    m_ParamLayout.items = {{"Separator", add_separator_param}};
+    m_ParamLayout.params = {add_separator_param};
   }
   ~StringConcatenator() {};
 
@@ -136,7 +136,7 @@ class StringConcatenatorMulti : public StringModifier {
     add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
     auto combo_test = std::make_shared<ParamComboBox>("Combo Test");
     combo_test->SetChoices({"A", "B", "C"});
-    m_ParamLayout.items = {{"Separator", add_separator_param}, {"Combo", combo_test}};
+    m_ParamLayout.params = {add_separator_param, combo_test};
   }
   ~StringConcatenatorMulti() {};
 
@@ -164,7 +164,7 @@ class StringRepeater : public StringModifier {
     count = std::make_shared<Param<int>>("Count", 10);
     count->min_val = 0;
     count->max_val = 100;
-    m_ParamLayout.items = {{"count", count}};
+    m_ParamLayout.params = {count};
   };
   ~StringRepeater() {};
 

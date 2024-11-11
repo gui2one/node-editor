@@ -20,11 +20,11 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
   factory_node->title = other->title + "_clone";
   factory_node->position = other->position + ImVec2(10, 10);
 
-  for (size_t i = 0; i < other->m_ParamLayout.items.size(); i++) {
-    auto param = other->m_ParamLayout.items[i].param;
+  for (size_t i = 0; i < other->m_ParamLayout.params.size(); i++) {
+    auto param = other->m_ParamLayout.params[i];
     std::string clean_name = clean_param_type_name(typeid(*param).name());
     // std::cout << "Cloning param: " << clean_name << std::endl;
-    auto factory_param = factory_node->m_ParamLayout.items[i].param;
+    auto factory_param = factory_node->m_ParamLayout.params[i];
     CloneParam(param, factory_param);
     // if (param != nullptr) {
     //   auto p_label = std::dynamic_pointer_cast<NodeEditor::ParamLabel>(param);
