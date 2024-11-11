@@ -42,6 +42,11 @@ struct ViewProperties {
   float zoom = 1.0f;
 
   bool canvasHovered = false;
+  
+  bool rectangleSelectionStarted = false;
+  ImVec2 rectangleSelectionStartPoint;
+  ImVec2 rectangleSelectionEndPoint;
+
   ImVec2 canvasSize;
   ImVec2 canvasPos;
 };

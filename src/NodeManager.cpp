@@ -313,7 +313,7 @@ void NodeManager::DrawNodes() {
     ImVec2 node_center = min + (node->size * 0.5f * m_ViewProps.zoom);
     ImVec2 icon_min = node_center - ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
     ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
-    draw_list->AddImage((void *)(intptr_t)m_Icons[node->icon_name], icon_min, icon_max, uv0, uv1);
+    draw_list->AddImage((ImTextureID)(intptr_t)m_Icons[node->icon_name], icon_min, icon_max, uv0, uv1);
 
     if (node->selected) ImGui::PushFont(m_BoldFont);
     draw_list->AddText(max + ImVec2(5.0f, -25.0f), IM_COL32(255, 255, 255, 255), node->title.c_str());
@@ -392,6 +392,10 @@ void NodeManager::DrawCanvas() {
 
   DrawNodes();
 
+  // selection rectangle
+  if(m_ViewProps.rectangleSelectionStarted) {
+    draw_list->AddRect(ToScreenSpace(m_ViewProps.rectangleSelectionStartPoint), ToScreenSpace(m_ViewProps.rectangleSelectionEndPoint), NODE_COLOR::YELLOW, 3.0f);
+  }
   // debug draw
   ImVec2 raw_pos = io.MousePos;
   if (m_ViewProps.show_mouse_coords) {
@@ -567,6 +571,11 @@ void NodeManager::OnMouseMove(const Event &event) {
   if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
     m_ViewProps.scrolling += delta;
   }
+
+  if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && m_ViewProps.rectangleSelectionStarted) {
+    m_ViewProps.rectangleSelectionEndPoint = ToCanvasSpace(ImVec2(moveEvent.x, moveEvent.y));
+  }
+
   for (auto node : GetNodes()) {
     node->highlighted = false;
     if (node->selected && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
@@ -653,6 +662,10 @@ void NodeManager::OnMouseClick(const Event &event) {
         ResetConnectionProcedure();
       }
     }
+
+    m_ViewProps.rectangleSelectionStarted = true;
+    m_ViewProps.rectangleSelectionStartPoint = ToCanvasSpace(ImVec2(clickEvent.x, clickEvent.y));
+    m_ViewProps.rectangleSelectionEndPoint = m_ViewProps.rectangleSelectionStartPoint;
   }
 }
 
@@ -685,6 +698,8 @@ void NodeManager::OnMouseRelease(const Event &event) {
     ManagerUpdateEvent event;
     EventManager::GetInstance().Dispatch(event);
   }
+
+  m_ViewProps.rectangleSelectionStarted = false;
 }
 
 void NodeManager::OnKeyPress(const Event &event) {

@@ -1,6 +1,6 @@
 include(FetchContent)   
 
-set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+set(FETCHCONTENT_UPDATES_DISCONNECTED OFF)
 set(FETCHCONTENT_QUIET FALSE)
 
 
@@ -38,7 +38,7 @@ FetchDependencyAndMakeAvailable(
 FetchDependencyAndMakeAvailable(
   imgui
   https://github.com/ocornut/imgui
-  v1.91.2-docking
+  v1.91.5-docking
 )
 
 set(imgui_sources 
