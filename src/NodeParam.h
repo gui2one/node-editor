@@ -51,17 +51,13 @@ class NodeParam {
   NodeParam(const char* _name) : name(_name) {}
   virtual ~NodeParam() = default;
   virtual void Display() = 0;
-  // virtual void Eval() = 0;
+
   virtual YAML::Node YAMLSerialize() = 0;
 
  public:
   const char* name;
   int value = -1;
 };
-
-
-
-
 
 template <typename T>
 class Param : public NodeParam {
