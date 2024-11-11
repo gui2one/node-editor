@@ -7,5 +7,6 @@
 - Duplicate nodes ( almost done )
 - "Navigation Bar"
 - Cloning a subnet node should clone it's content too ( recursively ??!!!! )
+- Factory Should be able to do a dynamic_pointer_cast from type name string !
 
 # Bugs to fix
