@@ -58,9 +58,9 @@ void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::
       } else if (p_group != nullptr) {
         auto factory_p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(dst_param);
         factory_p_group->value = p_group->value;
-        for (size_t j = 0; j < p_group->items.size(); j++) {
+        for (size_t j = 0; j < p_group->params.size(); j++) {
           std::cout << "WORK TODO HERE" << std::endl;
-          CloneParam(p_group->items[j], factory_p_group->items[j]);
+          CloneParam(p_group->params[j], factory_p_group->params[j]);
         }
         std::cout << "Duplicating ParamGroup: " << std::endl;
 

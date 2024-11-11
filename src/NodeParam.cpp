@@ -12,7 +12,7 @@ void ParamGroup::Display() {
   ImGui::Indent(10.0f);
   ImGui::BeginGroup();
 
-  for (auto item : items) {
+  for (auto item : params) {
     item->Display();
   }
 

@@ -88,7 +88,7 @@ std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> fact
       if(p_group->name == param_name) {
         return p_group;
       }
-      for (auto group_item : p_group->items) {
+      for (auto group_item : p_group->params) {
         if (group_item->name == param_name) {
           return group_item;
         }

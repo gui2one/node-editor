@@ -56,7 +56,7 @@ class StringGenerate : public StringGenerator {
     auto coords = std::make_shared<Param<glm::vec2>>("coords", glm::vec2(0.0f));
     auto position = std::make_shared<Param<glm::vec3>>("position", glm::vec3(0.0f));
     auto grp = std::make_shared<ParamGroup>("GroupTest");
-    grp->items = {label, coords, position};
+    grp->params = {label, coords, position};
     m_ParamLayout.params = {value, grp};
   };
   ~StringGenerate() {};

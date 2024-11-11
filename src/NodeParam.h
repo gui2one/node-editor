@@ -495,7 +495,7 @@ class ParamGroup : public Param<int> {
     yaml_node["type"] = type_str;
     yaml_node["name"] = name;
 
-    for (auto item : items) {
+    for (auto item : params) {
       yaml_node["params"].push_back(item->YAMLSerialize());
     }
     yaml_node["value"] = "null";
@@ -503,7 +503,7 @@ class ParamGroup : public Param<int> {
   }
 
  public:
-  std::vector<std::shared_ptr<NodeParam>> items;
+  std::vector<std::shared_ptr<NodeParam>> params;
 };
 
 // utils
