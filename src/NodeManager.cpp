@@ -394,7 +394,7 @@ void NodeManager::DrawCanvas() {
 
   // selection rectangle
   if(m_ViewProps.rectangleSelectionStarted) {
-    draw_list->AddRect(ToScreenSpace(m_ViewProps.rectangleSelectionStartPoint), ToScreenSpace(m_ViewProps.rectangleSelectionEndPoint), NODE_COLOR::YELLOW, 3.0f);
+    draw_list->AddRect(ToScreenSpace(m_ViewProps.rectangleSelectionStartPoint), ToScreenSpace(m_ViewProps.rectangleSelectionEndPoint), NODE_COLOR::YELLOW);
   }
   // debug draw
   ImVec2 raw_pos = io.MousePos;
@@ -578,7 +578,7 @@ void NodeManager::OnMouseMove(const Event &event) {
 
   for (auto node : GetNodes()) {
     node->highlighted = false;
-    if (node->selected && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+    if (node->selected && ImGui::IsMouseDown(ImGuiMouseButton_Left) && !m_ViewProps.rectangleSelectionStarted) {
       node->position += delta;
     }
     if (IsNodeHovered(node)) {
@@ -596,6 +596,15 @@ void NodeManager::OnMouseMove(const Event &event) {
   if (hovered_node != nullptr) {
     hovered_node->highlighted = true;
   }
+
+  if(m_ViewProps.rectangleSelectionStarted) {
+    for(auto node : GetNodes()) {
+      if(node->position.x >= m_ViewProps.rectangleSelectionStartPoint.x && node->position.x <= m_ViewProps.rectangleSelectionEndPoint.x &&
+        node->position.y >= m_ViewProps.rectangleSelectionStartPoint.y && node->position.y <= m_ViewProps.rectangleSelectionEndPoint.y) {
+        node->selected = true;
+      }
+    }
+  }  
 }
 
 void NodeManager::OnMouseClick(const Event &event) {
@@ -611,7 +620,7 @@ void NodeManager::OnMouseClick(const Event &event) {
     } else {
     }
 
-    if (node_hovered && node->selected == false) {
+    if (node_hovered && node->selected == false && m_ViewProps.rectangleSelectionStarted == false) {
       if (ImGui::GetIO().KeyCtrl == false) {
         Utils::deselect_all(GetNodes());
       }
@@ -698,6 +707,7 @@ void NodeManager::OnMouseRelease(const Event &event) {
     ManagerUpdateEvent event;
     EventManager::GetInstance().Dispatch(event);
   }
+
 
   m_ViewProps.rectangleSelectionStarted = false;
 }
