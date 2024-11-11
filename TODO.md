@@ -6,8 +6,6 @@
 - Data infos panel, to get a quick preview of the data processed by the current node.
 - Duplicate nodes ( almost done )
 - "Navigation Bar"
-
+- Cloning a subnet node should clone it's content too ( recursively ??!!!! )
 
 # Bugs to fix
-
-- When cloning a SubnetInput node, parent_node is left unset

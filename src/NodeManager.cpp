@@ -179,7 +179,7 @@ void NodeManager::BuildNodeMenuFromRegistry() {
     if (ImGui::BeginMenu(category_name.c_str())) {
       for (auto &item : items) {
         if (ImGui::MenuItem(item.label.c_str(), NULL, false, true)) {
-          auto node = registry.Create(item.type_name.c_str());
+          auto node = registry.Create(item.type_name.c_str(), m_CurrentNetworkOwner);
           if (node != nullptr) {
             double x, y;
             glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);

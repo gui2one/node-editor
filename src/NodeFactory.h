@@ -23,7 +23,7 @@ class NodeFactoryRegistry {
 
   inline void RegisterType(const std::string& typeName, NodeFactoryRegistryItem item) { factories[typeName] = item; }
 
-  std::shared_ptr<AbstractNode> Create(const std::string& typeName) const;
+  std::shared_ptr<AbstractNode> Create(const std::string& typeName, AbstractNode* parent_node = nullptr) const;
   std::shared_ptr<AbstractNode> Clone(std::shared_ptr<AbstractNode> other) const;
   void CloneParam(std::shared_ptr<NodeParam> src, std::shared_ptr<NodeParam> dst) const;
 
