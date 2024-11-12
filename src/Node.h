@@ -7,9 +7,6 @@ namespace NodeEditor {
 
 // forward declaration
 class AbstractNode;
-class AbstractSubnetInputNode;
-template <typename T>
-class SubnetInputNode;
 
 template <typename T>
 class Node : public T {
