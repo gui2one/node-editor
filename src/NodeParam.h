@@ -199,6 +199,7 @@ class Param<glm::vec3> : public NodeParam {
 
       if (ImGui::Button("Y", ImVec2(30, 25))) {
         value.y = default_value;
+        DISPATCH_PARAM_CHANGE_EVENT();
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -218,6 +219,7 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::PushID("label_z");
       if (ImGui::Button("Z", ImVec2(30, 25))) {
         value.z = default_value;
+        DISPATCH_PARAM_CHANGE_EVENT();
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
