@@ -63,8 +63,8 @@ template <typename T>
 class Param : public NodeParam {
  public:
   Param() : NodeParam() {};
-  Param(const char* _name, T _value, T _min_val, T _max_val)
-      : NodeParam(_name), value(_value), min_val(_min_val), max_val(_max_val) {};
+  Param(const char* _name, T _value, T _min_val, T _max_val, T _default_val)
+      : NodeParam(_name), value(_value), min_val(_min_val), max_val(_max_val), default_val(_default_val) {};
   ~Param() {};
 
   T Eval() { return value; };
@@ -83,6 +83,7 @@ class Param : public NodeParam {
   T value;
   T min_val;
   T max_val;
+  T default_val;
 
  private:
 };
@@ -96,8 +97,7 @@ class Param<glm::vec2> : public NodeParam {
 
   glm::vec2 Eval() { return value; }
 
-  void Display(){DISPLAY_PARAM_TEMPLATE(name, [this]() {
-    float default_value = 0.0f;
+  void Display(){DISPLAY_PARAM_TEMPLATE(name, [this]() {;
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
@@ -109,7 +109,7 @@ class Param<glm::vec2> : public NodeParam {
     float input_width = avail_x / 2.0f - 30.0f - spacing;
     ImGui::PushID(0);
     if (ImGui::Button("X", ImVec2(30, 25))) {
-      value.x = default_value;
+      value.x = default_val.x;
       DISPATCH_PARAM_CHANGE_EVENT();
     }
     ImGui::PopID();
@@ -132,7 +132,8 @@ class Param<glm::vec2> : public NodeParam {
     ImGui::PushID("label_y");
 
     if (ImGui::Button("Y", ImVec2(30, 25))) {
-      value.y = default_value;
+      value.y = default_val.y;
+      DISPATCH_PARAM_CHANGE_EVENT();
     }
     ImGui::PopID();
     ImGui::PopStyleColor(3);
@@ -150,6 +151,7 @@ class Param<glm::vec2> : public NodeParam {
 
  public:
   glm::vec2 value;
+  glm::vec2 default_val = glm::vec2(0.0f);
 };
 
 template <>
@@ -163,7 +165,7 @@ class Param<glm::vec3> : public NodeParam {
 
   void Display() {
     DISPLAY_PARAM_TEMPLATE(name, [this]() {
-      float default_value = 0.0f;
+      // float default_value = 0.0f;
 
       ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
       ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
@@ -175,7 +177,7 @@ class Param<glm::vec3> : public NodeParam {
       float input_width = avail_x / 3.0f - 30.0f - spacing;
       ImGui::PushID(0);
       if (ImGui::Button("X", ImVec2(30, 25))) {
-        value.x = default_value;
+        value.x = default_val.x;
         DISPATCH_PARAM_CHANGE_EVENT();
       }
       ImGui::PopID();
@@ -198,7 +200,7 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::PushID("label_y");
 
       if (ImGui::Button("Y", ImVec2(30, 25))) {
-        value.y = default_value;
+        value.y = default_val.y;
         DISPATCH_PARAM_CHANGE_EVENT();
       }
       ImGui::PopID();
@@ -218,7 +220,7 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::SameLine(0, spacing);
       ImGui::PushID("label_z");
       if (ImGui::Button("Z", ImVec2(30, 25))) {
-        value.z = default_value;
+        value.z = default_val.z;
         DISPATCH_PARAM_CHANGE_EVENT();
       }
       ImGui::PopID();
@@ -239,6 +241,7 @@ class Param<glm::vec3> : public NodeParam {
 
  public:
   glm::vec3 value;
+  glm::vec3 default_val = glm::vec3(0.0f);
 };
 
 template <>
