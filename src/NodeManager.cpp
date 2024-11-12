@@ -144,8 +144,8 @@ void NodeManager::CreateAllNodes() {
     whole_thing[factory.second.category_name].push_back(factory.second);
   }
 
-  float x = 0.0f;
-  float y = 0.0f;
+  float x = 10.0f;
+  float y = 10.0f;
   for (auto &[category_name, params] : whole_thing) {
     
     for (auto &item : params) {
@@ -640,6 +640,9 @@ void NodeManager::OnMouseMove(const Event &event) {
       }else if(start_x > end_x) {
         selection_rect.width = std::abs(start_x - end_x);
         selection_rect.x = end_x;
+      }else{
+        selection_rect.x = start_x;
+        selection_rect.width = 1.0f;
       }
 
       if(start_y < end_y ) {
@@ -648,6 +651,9 @@ void NodeManager::OnMouseMove(const Event &event) {
       }else if(start_y > end_y) {
         selection_rect.height = std::abs(start_y - end_y);
         selection_rect.y = end_y;
+      }else{
+        selection_rect.y = start_y;
+        selection_rect.height = 1.0f;
       }
 
       node->selected = rectOverlap(node_rect, selection_rect);
