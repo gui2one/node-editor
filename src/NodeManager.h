@@ -33,6 +33,13 @@ struct ConnectionProcedure {
   bool is_mutli_input = false;
 };
 
+struct Rect{
+  float x;
+  float y;
+  float width;
+  float height;
+};
+
 struct ViewProperties {
   bool display_grid = true;
   bool nodes_menu_opened = false;

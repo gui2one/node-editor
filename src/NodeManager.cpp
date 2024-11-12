@@ -560,6 +560,20 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
   }
 }
 
+bool valueInRange(float value, float min, float max)
+{ return (value >= min) && (value <= max); }
+
+bool rectOverlap(Rect A, Rect B)
+{
+    bool xOverlap = valueInRange(A.x, B.x, B.x + B.width) ||
+                    valueInRange(B.x, A.x, A.x + A.width);
+
+    bool yOverlap = valueInRange(A.y, B.y, B.y + B.height) ||
+                    valueInRange(B.y, A.y, A.y + A.height);
+
+    return xOverlap && yOverlap;
+}
+
 void NodeManager::OnMouseMove(const Event &event) {
   if (!m_ViewProps.canvasHovered) return;
 
@@ -596,30 +610,48 @@ void NodeManager::OnMouseMove(const Event &event) {
   if (hovered_node != nullptr) {
     hovered_node->highlighted = true;
   }
-
+  
   float start_x = m_ViewProps.rectangleSelectionStartPoint.x;
   float start_y = m_ViewProps.rectangleSelectionStartPoint.y;
   float end_x = m_ViewProps.rectangleSelectionEndPoint.x;
   float end_y = m_ViewProps.rectangleSelectionEndPoint.y;
-  // FIXME: node is selected only if it's origin (top left corner) is inside the rectangle. FIX that
+
   if(m_ViewProps.rectangleSelectionStarted) {
     for(auto node : GetNodes()) {
       bool inside_x = false;
       bool inside_y = false;
+      
+      float node_x = node->position.x;
+      float node_y = node->position.y;
+      float node_w = node->size.x;
+      float node_h = node->size.y;
+
+      Rect node_rect;
+      node_rect.x = node->position.x;
+      node_rect.y = node->position.y;
+      node_rect.width = node->size.x;
+      node_rect.height = node->size.y;
+
+      Rect selection_rect;
+      
       if(start_x < end_x ) {
-        inside_x = node->position.x >= start_x && node->position.x <= end_x;
+        selection_rect.x = start_x;
+        selection_rect.width = std::abs(end_x - start_x);
       }else if(start_x > end_x) {
-        inside_x = node->position.x <= start_x && node->position.x >= end_x;
+        selection_rect.width = std::abs(start_x - end_x);
+        selection_rect.x = end_x;
       }
+
       if(start_y < end_y ) {
-        inside_y = node->position.y >= start_y && node->position.y <= end_y;
+        selection_rect.y = start_y;
+        selection_rect.height = std::abs(end_y - start_y);
       }else if(start_y > end_y) {
-        inside_y = node->position.y <= start_y && node->position.y >= end_y;
+        selection_rect.height = std::abs(start_y - end_y);
+        selection_rect.y = end_y;
       }
-        
-      if(inside_x && inside_y) {
-            node->selected = true;
-      }
+
+      node->selected = rectOverlap(node_rect, selection_rect);
+      
     }
   }
    
@@ -726,7 +758,12 @@ void NodeManager::OnMouseRelease(const Event &event) {
     EventManager::GetInstance().Dispatch(event);
   }
 
-
+  for(auto node : GetNodes()) {
+    if(node->selected) {
+      m_CurrentNode = node;
+      break;
+    }
+  }
   m_ViewProps.rectangleSelectionStarted = false;
 }
 
