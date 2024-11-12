@@ -597,14 +597,31 @@ void NodeManager::OnMouseMove(const Event &event) {
     hovered_node->highlighted = true;
   }
 
+  float start_x = m_ViewProps.rectangleSelectionStartPoint.x;
+  float start_y = m_ViewProps.rectangleSelectionStartPoint.y;
+  float end_x = m_ViewProps.rectangleSelectionEndPoint.x;
+  float end_y = m_ViewProps.rectangleSelectionEndPoint.y;
   if(m_ViewProps.rectangleSelectionStarted) {
     for(auto node : GetNodes()) {
-      if(node->position.x >= m_ViewProps.rectangleSelectionStartPoint.x && node->position.x <= m_ViewProps.rectangleSelectionEndPoint.x &&
-        node->position.y >= m_ViewProps.rectangleSelectionStartPoint.y && node->position.y <= m_ViewProps.rectangleSelectionEndPoint.y) {
-        node->selected = true;
+      bool inside_x = false;
+      bool inside_y = false;
+      if(start_x < end_x ) {
+        inside_x = node->position.x >= start_x && node->position.x <= end_x;
+      }else if(start_x > end_x) {
+        inside_x = node->position.x <= start_x && node->position.x >= end_x;
+      }
+      if(start_y < end_y ) {
+        inside_y = node->position.y >= start_y && node->position.y <= end_y;
+      }else if(start_y > end_y) {
+        inside_y = node->position.y <= start_y && node->position.y >= end_y;
+      }
+        
+      if(inside_x && inside_y) {
+            node->selected = true;
       }
     }
-  }  
+  }
+   
 }
 
 void NodeManager::OnMouseClick(const Event &event) {
