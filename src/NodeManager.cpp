@@ -601,6 +601,7 @@ void NodeManager::OnMouseMove(const Event &event) {
   float start_y = m_ViewProps.rectangleSelectionStartPoint.y;
   float end_x = m_ViewProps.rectangleSelectionEndPoint.x;
   float end_y = m_ViewProps.rectangleSelectionEndPoint.y;
+  // FIXME: node is selected only if it's origin (top left corner) is inside the rectangle. FIX that
   if(m_ViewProps.rectangleSelectionStarted) {
     for(auto node : GetNodes()) {
       bool inside_x = false;
