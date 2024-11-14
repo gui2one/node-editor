@@ -69,7 +69,7 @@ class AbstractNode {
   };
   virtual ~AbstractNode() = default;
 
-  virtual void Update() = 0;    // implemented lower, in the Node<T> class
+  virtual void Update() = 0;    // implemented in Node.h, in the Node<T> class
   virtual void Generate() = 0;  // user defined method. i.e the work the node is doint for the user app
 
   YAML::Node YAMLSerialize() {
