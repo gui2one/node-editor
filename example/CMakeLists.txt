@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
     src/example.cpp
     src/Application.cpp
     src/StringGenerator.cpp
+    src/NumberOperator.cpp
 )
 
 include_directories(
