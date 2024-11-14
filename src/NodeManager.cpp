@@ -313,6 +313,7 @@ void NodeManager::DrawNodes() {
     ImVec2 node_center = min + (node->size * 0.5f * m_ViewProps.zoom);
     ImVec2 icon_min = node_center - ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
     ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
+    glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)m_Icons[node->icon_name]);
     draw_list->AddImage((ImTextureID)(intptr_t)m_Icons[node->icon_name], icon_min, icon_max, uv0, uv1);
 
     if (node->selected) ImGui::PushFont(m_BoldFont);

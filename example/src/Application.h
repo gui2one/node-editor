@@ -14,7 +14,10 @@
 #include "yaml_serialize.h"
 
 namespace NodeEditor {
-
+struct DebugData
+{
+    int value;
+};
 class Application {
  public:
   Application();
@@ -36,6 +39,8 @@ class Application {
  private:
   GLFWwindow* m_NativeWindow;
   NodeManager m_NodeManager;
+
+  DebugData* m_DebugData;
 };
 
 };  // namespace NodeEditor

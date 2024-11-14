@@ -7,7 +7,6 @@
 
 using namespace NodeEditor;
 
-void add_example_nodes(NodeManager &manager);
 int main(int argc, char *argv[]) {
   std::filesystem::path file_to_load = "";
   std::filesystem::path exe_path = argv[0];
