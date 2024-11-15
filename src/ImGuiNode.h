@@ -18,25 +18,6 @@ namespace NodeEditor {
 
 class AbstractNode;
 
-struct NodeNetwork {
-  std::shared_ptr<AbstractNode> outuput_node = nullptr;
-  std::vector<std::shared_ptr<AbstractNode>> nodes;
-
-  void AddNode(std::shared_ptr<AbstractNode> _node) { nodes.push_back(_node); }
-};
-
-struct ParamLayout {
-  std::vector<std::shared_ptr<NodeParam>> params;
-  std::shared_ptr<NodeParam> Get(size_t idx) { return params[idx]; }
-};
-struct InputConnector {
-  ImVec2 relative_pos;
-  uint32_t index;
-  float width = 5.0f;
-  bool hovered = false;
-  bool grabbed = false;
-};
-
 enum NODE_COLOR {
   BLACK = (ImU32)IM_COL32(0, 0, 0, 255),
   BLUE = (ImU32)IM_COL32(0, 0, 255, 255),
@@ -61,6 +42,27 @@ enum NODE_COLOR {
   WHITE = (ImU32)IM_COL32(255, 255, 255, 255),
   YELLOW = (ImU32)IM_COL32(255, 255, 0, 255)
 };
+
+
+struct NodeNetwork {
+  std::shared_ptr<AbstractNode> outuput_node = nullptr;
+  std::vector<std::shared_ptr<AbstractNode>> nodes;
+
+  void AddNode(std::shared_ptr<AbstractNode> _node) { nodes.push_back(_node); }
+};
+
+struct ParamLayout {
+  std::vector<std::shared_ptr<NodeParam>> params;
+  std::shared_ptr<NodeParam> Get(size_t idx) { return params[idx]; }
+};
+struct InputConnector {
+  ImVec2 relative_pos;
+  uint32_t index;
+  float width = 5.0f;
+  bool hovered = false;
+  bool grabbed = false;
+};
+
 
 class AbstractNode {
  public:
