@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 
 option(NODE_EDITOR_BUILD_EXAMPLE "Build node editor example" ON)
-option(NODE_EDITOR_BUILD_DOC "Build node editor documentation" ON)
+option(NODE_EDITOR_BUILD_DOC "Build node editor documentation" OFF)
 
 project(node_editor)
 
