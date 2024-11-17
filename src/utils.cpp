@@ -18,16 +18,6 @@ std::string generate_uuid() {
   return res;
 }
 
-std::string clean_node_type_name(const char *dirty_type) {
-  std::string clean = std::string(dirty_type);
-  str_replace_all(clean, "class ", "");
-  str_replace_all(clean, " >", ">");
-  str_replace(clean, "NED::Node<", "");
-  str_replace_last(clean, ">", "");
-  str_replace(clean, "std::basic_string<char,struct std::char_traits<char>,std::allocator<char>>", "std::string");
-  return clean;
-}
-
 std::string clean_param_type_name(const char *dirty_type) { 
   std::string type_str = std::string(dirty_type);                                           
   NED::str_remove_all(type_str, "class ");                                        
