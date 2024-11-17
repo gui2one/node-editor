@@ -92,8 +92,8 @@ struct convert<glm::vec3> {
 };
 
 template <>
-struct convert<std::shared_ptr<NodeEditor::AbstractNode>> {
-  static Node encode(const std::shared_ptr<NodeEditor::AbstractNode>& rhs) {
+struct convert<std::shared_ptr<NED::AbstractNode>> {
+  static Node encode(const std::shared_ptr<NED::AbstractNode>& rhs) {
     Node node;
     node["title"] = rhs->title;
     node["position"] = rhs->position;
@@ -101,7 +101,7 @@ struct convert<std::shared_ptr<NodeEditor::AbstractNode>> {
     return node;
   }
 
-  static bool decode(const Node& node, std::shared_ptr<NodeEditor::AbstractNode>& rhs) {
+  static bool decode(const Node& node, std::shared_ptr<NED::AbstractNode>& rhs) {
     if (!node.IsMap() || node.size() != 3) {
       return false;
     }
@@ -114,15 +114,15 @@ struct convert<std::shared_ptr<NodeEditor::AbstractNode>> {
 };
 
 template <>
-struct convert<std::shared_ptr<NodeEditor::NodeParam>> {
-  static Node encode(const std::shared_ptr<NodeEditor::NodeParam>& rhs) {
+struct convert<std::shared_ptr<NED::NodeParam>> {
+  static Node encode(const std::shared_ptr<NED::NodeParam>& rhs) {
     Node node;
     node["name"] = std::string(rhs->name);
     // node["value"] = rhs->Eval();
     return node;
   }
 
-  static bool decode(const Node& node, std::shared_ptr<NodeEditor::NodeParam>& rhs) {
+  static bool decode(const Node& node, std::shared_ptr<NED::NodeParam>& rhs) {
     if (!node.IsMap() || node.size() != 2) {
       return false;
     }

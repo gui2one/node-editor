@@ -22,8 +22,8 @@
 
 // #include "yaml_convert.h"
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const std::shared_ptr<NodeEditor::AbstractNode>& node);
-namespace NodeEditor {
+YAML::Emitter& operator<<(YAML::Emitter& out, const std::shared_ptr<NED::AbstractNode>& node);
+namespace NED {
 
 // forward declaration
 struct NodeNetwork;

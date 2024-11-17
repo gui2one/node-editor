@@ -7,7 +7,7 @@
 #include "ImGuiNode.h"
 #include "ParamFactory.h"
 
-namespace NodeEditor {
+namespace NED {
 struct NodeFactoryRegistryItem {
   std::string category_name;
   std::string label;
@@ -33,19 +33,19 @@ class NodeFactoryRegistry {
  private:
   std::unordered_map<std::string, NodeFactoryRegistryItem> factories;
 };
-};  // namespace NodeEditor
+};  // namespace NED
 
 #define REGISTER_NODE_TYPE(Type, Label, Category)                                       \
-  NodeEditor::NodeFactoryRegistry::GetInstance().RegisterType(                             \
-      #Type, {Category, Label, #Type, []() -> std::shared_ptr<NodeEditor::Node<Type>> { \
-                return std::make_shared<NodeEditor::Node<Type>>(Label);                 \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                             \
+      #Type, {Category, Label, #Type, []() -> std::shared_ptr<NED::Node<Type>> { \
+                return std::make_shared<NED::Node<Type>>(Label);                 \
               }})
 #define STRINGIFY(x) #x
 #define CREATE_SUBNET_INPUT_NODE_CLASS(Type, Label, Category)                                 \
-  NodeEditor::NodeFactoryRegistry::GetInstance().RegisterType(                                   \
-      "NodeEditor::SubnetInputNode<" STRINGIFY(Type) ">",                                     \
-      {Category, Label, "NodeEditor::SubnetInputNode<" STRINGIFY(Type) ">",                   \
-       []() -> std::shared_ptr<NodeEditor::Node<NodeEditor::SubnetInputNode<Type>>> {         \
-         return std::make_shared<NodeEditor::Node<NodeEditor::SubnetInputNode<Type>>>(Label); \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                   \
+      "NED::SubnetInputNode<" STRINGIFY(Type) ">",                                     \
+      {Category, Label, "NED::SubnetInputNode<" STRINGIFY(Type) ">",                   \
+       []() -> std::shared_ptr<NED::Node<NED::SubnetInputNode<Type>>> {         \
+         return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>(Label); \
        }})
 #endif  // NODE_EDITOR_NODEFACTORY_H

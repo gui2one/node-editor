@@ -9,6 +9,6 @@
 #include "NodeParam.h"
 
 
-namespace NodeEditor {};
+namespace NED {};
 
 #endif

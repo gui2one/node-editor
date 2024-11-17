@@ -1,5 +1,5 @@
 #include "Application.h"
-namespace NodeEditor {
+namespace NED {
 
 Application::Application() {}
 
@@ -328,4 +328,4 @@ void Application::Run() {
   }
 }
 
-};  // namespace NodeEditor
+};  // namespace NED

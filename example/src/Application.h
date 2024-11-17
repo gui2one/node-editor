@@ -13,7 +13,7 @@
 #include "utils.h"
 #include "yaml_serialize.h"
 
-namespace NodeEditor {
+namespace NED {
 struct DebugData
 {
     int value;
@@ -43,5 +43,5 @@ class Application {
   DebugData* m_DebugData;
 };
 
-};  // namespace NodeEditor
+};  // namespace NED
 #endif

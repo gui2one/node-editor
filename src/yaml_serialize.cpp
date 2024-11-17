@@ -1,10 +1,10 @@
 #include "yaml_serialize.h"
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const std::shared_ptr<NodeEditor::AbstractNode>& node) {
+YAML::Emitter& operator<<(YAML::Emitter& out, const std::shared_ptr<NED::AbstractNode>& node) {
   out << node->YAMLSerialize();
   return out;
 }
-namespace NodeEditor {
+namespace NED {
 
 YAML::Node serialize_network(NodeNetwork network) {
   YAML::Node output;

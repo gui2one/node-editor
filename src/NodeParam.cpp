@@ -1,6 +1,6 @@
 #include "NodeParam.h"
 
-namespace NodeEditor {
+namespace NED {
 void ParamGroup::Display() {
   ImGui::Spacing();
   ImGui::Text("%s", name);

@@ -1,7 +1,7 @@
 #include "NodeFactory.h"
 
-namespace NodeEditor {
-NodeFactoryRegistry& NodeEditor::NodeFactoryRegistry::GetInstance() {
+namespace NED {
+NodeFactoryRegistry& NED::NodeFactoryRegistry::GetInstance() {
   static NodeFactoryRegistry registry;
   return registry;
 }
@@ -41,22 +41,22 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
 }
 void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::shared_ptr<NodeParam> dst_param) const {
   if (src_param != nullptr) {
-      auto p_label = std::dynamic_pointer_cast<NodeEditor::ParamLabel>(src_param);
-      auto p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(src_param);
-      auto p_file = std::dynamic_pointer_cast<NodeEditor::ParamFile>(src_param);
-      auto p_int = std::dynamic_pointer_cast<NodeEditor::Param<int>>(src_param);
-      auto p_float = std::dynamic_pointer_cast<NodeEditor::Param<float>>(src_param);
-      auto p_string = std::dynamic_pointer_cast<NodeEditor::Param<std::string>>(src_param);
-      auto p_bool = std::dynamic_pointer_cast<NodeEditor::Param<bool>>(src_param);
-      auto p_vec2 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec2>>(src_param);
-      auto p_vec3 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec3>>(src_param);
+      auto p_label = std::dynamic_pointer_cast<NED::ParamLabel>(src_param);
+      auto p_group = std::dynamic_pointer_cast<NED::ParamGroup>(src_param);
+      auto p_file = std::dynamic_pointer_cast<NED::ParamFile>(src_param);
+      auto p_int = std::dynamic_pointer_cast<NED::Param<int>>(src_param);
+      auto p_float = std::dynamic_pointer_cast<NED::Param<float>>(src_param);
+      auto p_string = std::dynamic_pointer_cast<NED::Param<std::string>>(src_param);
+      auto p_bool = std::dynamic_pointer_cast<NED::Param<bool>>(src_param);
+      auto p_vec2 = std::dynamic_pointer_cast<NED::Param<glm::vec2>>(src_param);
+      auto p_vec3 = std::dynamic_pointer_cast<NED::Param<glm::vec3>>(src_param);
       if (p_label != nullptr) {
-        auto factory_p_label = std::dynamic_pointer_cast<NodeEditor::ParamLabel>(dst_param);
+        auto factory_p_label = std::dynamic_pointer_cast<NED::ParamLabel>(dst_param);
         factory_p_label->value = p_label->value;
         std::cout << "Duplicating ParamLabel: " << std::endl;
 
       } else if (p_group != nullptr) {
-        auto factory_p_group = std::dynamic_pointer_cast<NodeEditor::ParamGroup>(dst_param);
+        auto factory_p_group = std::dynamic_pointer_cast<NED::ParamGroup>(dst_param);
         factory_p_group->value = p_group->value;
         for (size_t j = 0; j < p_group->params.size(); j++) {
           std::cout << "WORK TODO HERE" << std::endl;
@@ -66,26 +66,26 @@ void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::
 
       } else if (p_file != nullptr) {
         std::cout << "Duplicating ParamFile: " << "" << std::endl;
-        auto factory_p_file = std::dynamic_pointer_cast<NodeEditor::ParamFile>(dst_param);
+        auto factory_p_file = std::dynamic_pointer_cast<NED::ParamFile>(dst_param);
         factory_p_file->value = p_file->value;
 
       } else if (p_int != nullptr) {
-        auto factory_p_int = std::dynamic_pointer_cast<NodeEditor::Param<int>>(dst_param);
+        auto factory_p_int = std::dynamic_pointer_cast<NED::Param<int>>(dst_param);
         factory_p_int->value = p_int->value;
       } else if (p_float != nullptr) {
-        auto factory_p_float = std::dynamic_pointer_cast<NodeEditor::Param<float>>(dst_param);
+        auto factory_p_float = std::dynamic_pointer_cast<NED::Param<float>>(dst_param);
         factory_p_float->value = p_float->value;
       } else if (p_string != nullptr) {
-        auto factory_p_string = std::dynamic_pointer_cast<NodeEditor::Param<std::string>>(dst_param);
+        auto factory_p_string = std::dynamic_pointer_cast<NED::Param<std::string>>(dst_param);
         factory_p_string->value = p_string->value;
       } else if (p_bool != nullptr) {
-        auto factory_p_bool = std::dynamic_pointer_cast<NodeEditor::Param<bool>>(dst_param);
+        auto factory_p_bool = std::dynamic_pointer_cast<NED::Param<bool>>(dst_param);
         factory_p_bool->value = p_bool->value;
       } else if (p_vec2 != nullptr) {
-        auto factory_p_vec2 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec2>>(dst_param);
+        auto factory_p_vec2 = std::dynamic_pointer_cast<NED::Param<glm::vec2>>(dst_param);
         factory_p_vec2->value = p_vec2->value;
       } else if (p_vec3 != nullptr) {
-        auto factory_p_vec3 = std::dynamic_pointer_cast<NodeEditor::Param<glm::vec3>>(dst_param);
+        auto factory_p_vec3 = std::dynamic_pointer_cast<NED::Param<glm::vec3>>(dst_param);
         factory_p_vec3->value = p_vec3->value;
       }
       // std::cout << "\tfactory param: " << clean_param_type_name(typeid(*dst_param).name()) << "" << std::endl;

@@ -15,7 +15,7 @@
 #include "EventManager.h"
 
 template <typename T>
-void node_menu_item(NodeEditor::NodeManager& manager, const char* label) {
+void node_menu_item(NED::NodeManager& manager, const char* label) {
   if (ImGui::MenuItem(label, NULL, false, true)) {
     auto node = std::make_shared<T>(label);
     double x, y;

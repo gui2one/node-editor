@@ -5,7 +5,7 @@
 #include "params.h"
 
 
-using namespace NodeEditor;
+using namespace NED;
 
 int main(int argc, char *argv[]) {
   std::filesystem::path file_to_load = "";
@@ -20,18 +20,18 @@ int main(int argc, char *argv[]) {
 
 
 
-  REGISTER_NODE_TYPE(NodeEditor::StringGenerate, "generate", "generator");
-  REGISTER_NODE_TYPE(NodeEditor::TextFileLoader, "Load Text File", "generator");
-  REGISTER_NODE_TYPE(NodeEditor::StringConcatenator, "concatenator", "modifier");
-  REGISTER_NODE_TYPE(NodeEditor::StringConcatenatorMulti, "concatmulti", "modifier");
-  REGISTER_NODE_TYPE(NodeEditor::StringRepeater, "repeater", "modifier");
-  REGISTER_NODE_TYPE(NodeEditor::StringToUpperCase, "To Upper Case", "modifier");
-  REGISTER_NODE_TYPE(NodeEditor::StringNull, "null node", "utility");
-  REGISTER_NODE_TYPE(NodeEditor::StringSubnetOperator, "Subnetwork", "utility");
+  REGISTER_NODE_TYPE(NED::StringGenerate, "generate", "generator");
+  REGISTER_NODE_TYPE(NED::TextFileLoader, "Load Text File", "generator");
+  REGISTER_NODE_TYPE(NED::StringConcatenator, "concatenator", "modifier");
+  REGISTER_NODE_TYPE(NED::StringConcatenatorMulti, "concatmulti", "modifier");
+  REGISTER_NODE_TYPE(NED::StringRepeater, "repeater", "modifier");
+  REGISTER_NODE_TYPE(NED::StringToUpperCase, "To Upper Case", "modifier");
+  REGISTER_NODE_TYPE(NED::StringNull, "null node", "utility");
+  REGISTER_NODE_TYPE(NED::StringSubnetOperator, "Subnetwork", "utility");
   CREATE_SUBNET_INPUT_NODE_CLASS(std::string, "Subnet input", "utility");
 
-  REGISTER_NODE_TYPE(NodeEditor::Add, "add", "operator");
-  REGISTER_NODE_TYPE(NodeEditor::NumberConstant, "constant", "operator");
+  REGISTER_NODE_TYPE(NED::Add, "add", "operator");
+  REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "operator");
   Application app;
 
   if (!app.Init()) {

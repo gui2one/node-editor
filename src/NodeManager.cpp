@@ -33,21 +33,21 @@ GLuint GenerateEmptyTexture() {
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
   return texture;
 }
-namespace NodeEditor {
+namespace NED {
 NodeManager::NodeManager() {
   SetNodesMenu([this]() { this->BuildNodeMenuFromRegistry(); });
 
   m_CurrentNetwork = &m_NodeNetwork;
-  REGISTER_PARAM_TYPE(NodeEditor::ParamLabel);
-  REGISTER_PARAM_TYPE(NodeEditor::ParamGroup);
-  REGISTER_PARAM_TYPE(NodeEditor::ParamComboBox);
-  REGISTER_PARAM_TYPE(NodeEditor::ParamFile);
-  REGISTER_PARAM_TYPE(NodeEditor::Param<std::string>);
-  REGISTER_PARAM_TYPE(NodeEditor::Param<std::wstring>);
-  REGISTER_PARAM_TYPE(NodeEditor::Param<int>);
-  REGISTER_PARAM_TYPE(NodeEditor::Param<float>);
-  REGISTER_PARAM_TYPE(NodeEditor::Param<glm::vec2>);
-  REGISTER_PARAM_TYPE(NodeEditor::Param<glm::vec3>);
+  REGISTER_PARAM_TYPE(NED::ParamLabel);
+  REGISTER_PARAM_TYPE(NED::ParamGroup);
+  REGISTER_PARAM_TYPE(NED::ParamComboBox);
+  REGISTER_PARAM_TYPE(NED::ParamFile);
+  REGISTER_PARAM_TYPE(NED::Param<std::string>);
+  REGISTER_PARAM_TYPE(NED::Param<std::wstring>);
+  REGISTER_PARAM_TYPE(NED::Param<int>);
+  REGISTER_PARAM_TYPE(NED::Param<float>);
+  REGISTER_PARAM_TYPE(NED::Param<glm::vec2>);
+  REGISTER_PARAM_TYPE(NED::Param<glm::vec3>);
 
 }
 
@@ -94,15 +94,15 @@ void NodeManager::InitGLFWEvents() {
     DropFileEvent event(paths[0]);
     dispatcher.Dispatch(event);
   });
-  dispatcher.Subscribe(EventType::MouseClick, [this](const NodeEditor::Event &event) { this->OnMouseClick(event); });
+  dispatcher.Subscribe(EventType::MouseClick, [this](const NED::Event &event) { this->OnMouseClick(event); });
   dispatcher.Subscribe(EventType::MouseDoubleClick,
-                       [this](const NodeEditor::Event &event) { this->OnMouseDoubleClick(event); });
+                       [this](const NED::Event &event) { this->OnMouseDoubleClick(event); });
   dispatcher.Subscribe(EventType::MouseRelease,
-                       [this](const NodeEditor::Event &event) { this->OnMouseRelease(event); });
-  dispatcher.Subscribe(EventType::MouseMove, [this](const NodeEditor::Event &event) { this->OnMouseMove(event); });
-  dispatcher.Subscribe(EventType::KeyPress, [this](const NodeEditor::Event &event) { this->OnKeyPress(event); });
-  dispatcher.Subscribe(EventType::DropFile, [this](const NodeEditor::Event &event) {
-    auto drop_ev = static_cast<const NodeEditor::DropFileEvent &>(event);
+                       [this](const NED::Event &event) { this->OnMouseRelease(event); });
+  dispatcher.Subscribe(EventType::MouseMove, [this](const NED::Event &event) { this->OnMouseMove(event); });
+  dispatcher.Subscribe(EventType::KeyPress, [this](const NED::Event &event) { this->OnKeyPress(event); });
+  dispatcher.Subscribe(EventType::DropFile, [this](const NED::Event &event) {
+    auto drop_ev = static_cast<const NED::DropFileEvent &>(event);
     auto path = std::filesystem::path(drop_ev.path);
     auto net = load_yaml_file(path);
     this->GetRootNetwork() = net;

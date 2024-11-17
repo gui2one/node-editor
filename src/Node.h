@@ -3,7 +3,7 @@
 #pragma once
 #include "ImGuiNode.h"
 #include "constants.h"
-namespace NodeEditor {
+namespace NED {
 
 // forward declaration
 class AbstractNode;

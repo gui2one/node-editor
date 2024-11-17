@@ -14,7 +14,7 @@
 #include "utils.h"
 #include "yaml_serialize.h"
 
-namespace NodeEditor {
+namespace NED {
 
 class AbstractNode;
 
@@ -80,7 +80,7 @@ class AbstractNode {
     std::string type_str = typeid(*this).name();
     str_replace_all(type_str, "class ", "");
     str_replace_all(type_str, " >", ">");
-    str_replace(type_str, "NodeEditor::Node<", "");
+    str_replace(type_str, "NED::Node<", "");
     str_replace_last(type_str, ">", "");
     str_replace(type_str, "std::basic_string<char,struct std::char_traits<char>,std::allocator<char>>", "std::string");
     yaml_node["type"] = type_str;
@@ -275,6 +275,6 @@ class SubnetInputNode : public AbstractNode {
   std::shared_ptr<Param<int>> input_id;
 };
 
-};  // namespace NodeEditor
+};  // namespace NED
 
 #endif

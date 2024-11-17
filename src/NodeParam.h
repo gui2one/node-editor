@@ -16,7 +16,7 @@
 #define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC()                                     \
   YAML::Node YAMLSerialize() override {                                             \
     YAML::Node yaml_node;                                                           \
-    std::string type_str = NodeEditor::clean_param_type_name(typeid(*this).name()); \
+    std::string type_str = NED::clean_param_type_name(typeid(*this).name()); \
     yaml_node["type"] = type_str;                                                   \
     yaml_node["name"] = name;                                                       \
     yaml_node["value"] = value;                                                     \
@@ -43,7 +43,7 @@
   ImGui::PopID();                                         \
   ImGui::Spacing();
 
-namespace NodeEditor {
+namespace NED {
 
 class NodeParam {
  public:

@@ -7,7 +7,7 @@
 
 #include "Event.h"
 
-namespace NodeEditor {
+namespace NED {
 
 class EventDispatcher {
  public:
@@ -25,6 +25,6 @@ class EventDispatcher {
  private:
   std::unordered_map<EventType, std::vector<EventCallback>> listeners;
 };
-};  // namespace NodeEditor
+};  // namespace ned
 
 #endif

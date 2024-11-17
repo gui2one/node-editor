@@ -1,6 +1,6 @@
 #include "node_manager_utils.h"
 
-namespace NodeEditor::Utils {
+namespace NED::Utils {
 std::shared_ptr<AbstractNode> FindNodeByUUID(std::string uuid, std::vector<std::shared_ptr<AbstractNode>> nodes) {
   for (auto node : nodes) {
     if (node->uuid == uuid) {

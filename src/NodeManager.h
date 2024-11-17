@@ -9,7 +9,7 @@
 #include "ParamFactory.h"
 #include "utils/node_manager_utils.h"
 
-namespace NodeEditor {
+namespace NED {
 
 struct WindowData {
   int width = 1280;

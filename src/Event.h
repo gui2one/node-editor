@@ -4,7 +4,7 @@
 
 #include "ImGuiNode.h"
 
-namespace NodeEditor {
+namespace NED {
 
 // forward declarations
 class AbstractNode;
@@ -115,6 +115,6 @@ class ManagerUpdateEvent : public Event {
   EventType GetType() const override { return EventType::ManagerUpdate; }
 };
 
-};  // namespace NodeEditor
+};  // namespace ned
 
 #endif

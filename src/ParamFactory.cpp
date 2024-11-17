@@ -1,7 +1,7 @@
 #include "ParamFactory.h"
 
-namespace NodeEditor {
-ParamFactoryRegistry& NodeEditor::ParamFactoryRegistry::instance() {
+namespace NED {
+ParamFactoryRegistry& NED::ParamFactoryRegistry::instance() {
   {
 
     static ParamFactoryRegistry registry;

@@ -5,7 +5,7 @@
 #include "NodeParam.h"
 #include "params.h"
 
-namespace NodeEditor {
+namespace NED {
 class NumberOperator : public ImGuiNode<float> {
     public:
         NumberOperator() : ImGuiNode("default Number Op") {}
@@ -23,7 +23,7 @@ class NumberConstant: public NumberOperator {
         void Generate() override { m_DataCache = value->Eval(); }
 
     public:
-        std::shared_ptr<NodeEditor::Param<float>> value;
+        std::shared_ptr<NED::Param<float>> value;
 };
 
 class Add : public NumberOperator {

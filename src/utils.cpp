@@ -1,5 +1,5 @@
 #include "utils.h"
-namespace NodeEditor {
+namespace NED {
 std::string generate_uuid() {
   static std::random_device dev;
   static std::mt19937 rng(dev());
@@ -22,7 +22,7 @@ std::string clean_node_type_name(const char *dirty_type) {
   std::string clean = std::string(dirty_type);
   str_replace_all(clean, "class ", "");
   str_replace_all(clean, " >", ">");
-  str_replace(clean, "NodeEditor::Node<", "");
+  str_replace(clean, "NED::Node<", "");
   str_replace_last(clean, ">", "");
   str_replace(clean, "std::basic_string<char,struct std::char_traits<char>,std::allocator<char>>", "std::string");
   return clean;
@@ -30,12 +30,12 @@ std::string clean_node_type_name(const char *dirty_type) {
 
 std::string clean_param_type_name(const char *dirty_type) { 
   std::string type_str = std::string(dirty_type);                                           
-  NodeEditor::str_remove_all(type_str, "class ");                                        
-  NodeEditor::str_remove_all(type_str, "struct ");                                       
-  // NodeEditor::str_remove_all(type_str, "NodeEditor::");                                                               
-  NodeEditor::str_replace_all(type_str, " >", ">");                                            
-  NodeEditor::str_remove_last(type_str, " ");                                            
-  if (type_str.find("std::basic_string") != std::string::npos) type_str = "NodeEditor::Param<std::string>";   
+  NED::str_remove_all(type_str, "class ");                                        
+  NED::str_remove_all(type_str, "struct ");                                       
+  // NED::str_remove_all(type_str, "NED::");                                                               
+  NED::str_replace_all(type_str, " >", ">");                                            
+  NED::str_remove_last(type_str, " ");                                            
+  if (type_str.find("std::basic_string") != std::string::npos) type_str = "NED::Param<std::string>";   
 
   return type_str; 
 }
@@ -76,4 +76,4 @@ std::wstring utf8_to_wide(const std::string &utf8_source_string) {
   std::wstring wide = converter.from_bytes(utf8_source_string);
   return wide;
 }
-};  // namespace NodeEditor
+};  // namespace NED

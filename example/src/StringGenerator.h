@@ -9,7 +9,7 @@
 #include "NodeParam.h"
 #include "params.h"
 
-namespace NodeEditor {
+namespace NED {
 
 class StringOperator : public ImGuiNode<std::string> {
  public:
@@ -222,5 +222,5 @@ class StringNull : public StringModifier {
   }
 };
 
-};  // namespace NodeEditor
+};  // namespace NED
 #endif

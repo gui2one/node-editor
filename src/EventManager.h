@@ -3,7 +3,7 @@
 #pragma once
 
 #include "EventDispatcher.h"
-namespace NodeEditor {
+namespace NED {
 class EventManager {
  public:
   static EventDispatcher &GetInstance() {
@@ -11,6 +11,6 @@ class EventManager {
     return dispatcher;
   }
 };
-};  // namespace NodeEditor
+};  // namespace ned
 
 #endif

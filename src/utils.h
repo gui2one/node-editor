@@ -6,7 +6,7 @@
 #include <locale>
 #include <string>
 
-namespace NodeEditor {
+namespace NED {
 std::string generate_uuid();
 std::string clean_node_type_name(const char* dirty_type);
 std::string clean_param_type_name(const char* dirty_type);
