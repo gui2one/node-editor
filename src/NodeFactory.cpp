@@ -14,9 +14,9 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Create(const std::string& typ
   return nullptr;  // Type not found
 }
 std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<AbstractNode> other) const {
-  auto type_str = typeid(*other.get()).name();
-  auto clean_name = clean_node_type_name(type_str);
-  auto factory_node = NodeFactoryRegistry::GetInstance().Create(clean_name);
+  // auto type_str = typeid(*other.get()).name();
+  // auto clean_name = clean_node_type_name(type_str);
+  auto factory_node = NodeFactoryRegistry::GetInstance().Create(other->m_TypeName);
   factory_node->title = other->title + "_clone";
   factory_node->position = other->position + ImVec2(10, 10);
   factory_node->parent_node = other->parent_node;

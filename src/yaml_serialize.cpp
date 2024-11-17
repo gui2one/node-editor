@@ -109,9 +109,9 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
   std::string p_type_str = yaml["type"].as<std::string>();
   std::string p_name = yaml["name"].as<std::string>();
 
-  str_replace_all(p_type_str, "NodeEditor::Param<", "");
+  str_replace_all(p_type_str, "NED::Param<", "");
   str_remove_last(p_type_str, ">");
-  str_replace_all(p_type_str, "NodeEditor::", "");
+  str_replace_all(p_type_str, "NED::", "");
 
   std::shared_ptr<NodeParam> param = nullptr;
 
@@ -262,4 +262,4 @@ NodeNetwork load_yaml_file(std::filesystem::path path) {
 
   return network;
 }
-};  // namespace NodeEditor
+};  // namespace NED

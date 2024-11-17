@@ -77,14 +77,8 @@ class AbstractNode {
   YAML::Node YAMLSerialize() {
     YAML::Node yaml_node;
     yaml_node["title"] = title;
-    std::string type_str = typeid(*this).name();
-    str_replace_all(type_str, "class ", "");
-    str_replace_all(type_str, " >", ">");
-    str_replace(type_str, "NED::Node<", "");
-    str_replace_last(type_str, ">", "");
-    str_replace(type_str, "std::basic_string<char,struct std::char_traits<char>,std::allocator<char>>", "std::string");
+    std::string type_str = std::string(m_TypeName);
     yaml_node["type"] = type_str;
-
     yaml_node["uuid"] = uuid;
     yaml_node["position"] = position;
     yaml_node["size"] = size;
