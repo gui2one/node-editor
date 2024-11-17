@@ -193,6 +193,7 @@ class AbstractNode {
 
  public:
   const char* icon_name = "";
+  const char* m_TypeName = "no_type";
   NodeNetwork node_network;
   AbstractNode* parent_node = nullptr;
   std::string uuid;

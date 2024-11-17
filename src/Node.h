@@ -11,9 +11,12 @@ class AbstractNode;
 template <typename T>
 class Node : public T {
  public:
-  Node(const char *_title) {
+  Node(const char *_title, const char *_type_name) {
     auto node = static_cast<AbstractNode *>(this);
     node->title = _title;
+    node->m_TypeName = _type_name;
+    std::cout << "Constructor for : " << node->m_TypeName << std::endl;
+    
   }
 
   void Update() {

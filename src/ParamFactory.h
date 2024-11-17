@@ -22,7 +22,7 @@ class ParamFactoryRegistry {
  private:
   std::unordered_map<std::string, ParamFactoryRegistryItem> factories;
 };
-}  // namespace NodeEditor
+}  // namespace NED
 
 #define REGISTER_PARAM_TYPE(Type)                            \
   std::cout << "Registering " << #Type << std::endl;         \
