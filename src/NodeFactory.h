@@ -35,16 +35,15 @@ class NodeFactoryRegistry {
 };
 };  // namespace NED
 
-#define REGISTER_NODE_TYPE(Type, Label, Category)                                       \
-  NED::NodeFactoryRegistry::GetInstance().RegisterType(                             \
-      #Type, {Category, Label, #Type, []() -> std::shared_ptr<NED::Node<Type>> { \
-                return std::make_shared<NED::Node<Type>>(Label, #Type);                 \
-              }})
-#define CREATE_SUBNET_INPUT_NODE_CLASS(Type, Label, Category)                                 \
-  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                   \
-      "NED::SubnetInputNode<"#Type">",                                     \
-      {Category, Label, "NED::SubnetInputNode<"#Type">",                   \
-       []() -> std::shared_ptr<NED::Node<NED::SubnetInputNode<Type>>> {         \
-         return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>(Label, "NED::SubnetInputNode<"#Type">"); \
-       }})
+#define REGISTER_NODE_TYPE(Type, Label, Category)       \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType( \
+      #Type, {Category, Label, #Type,                   \
+              []() -> std::shared_ptr<NED::Node<Type>> { return std::make_shared<NED::Node<Type>>(Label, #Type); }})
+#define CREATE_SUBNET_INPUT_NODE_CLASS(Type, Label, Category)                                               \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
+      "NED::SubnetInputNode<" #Type ">", {Category, Label, "NED::SubnetInputNode<" #Type ">",               \
+                                          []() -> std::shared_ptr<NED::Node<NED::SubnetInputNode<Type>>> {  \
+                                            return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>( \
+                                                Label, "NED::SubnetInputNode<" #Type ">");                  \
+                                          }})
 #endif  // NODE_EDITOR_NODEFACTORY_H
