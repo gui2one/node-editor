@@ -14,8 +14,6 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Create(const std::string& typ
   return nullptr;  // Type not found
 }
 std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<AbstractNode> other) const {
-  // auto type_str = typeid(*other.get()).name();
-  // auto clean_name = clean_node_type_name(type_str);
   auto factory_node = NodeFactoryRegistry::GetInstance().Create(other->m_TypeName);
   factory_node->title = other->title + "_clone";
   factory_node->position = other->position + ImVec2(10, 10);
@@ -32,7 +30,6 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
   for (size_t i = 0; i < other->m_ParamLayout.params.size(); i++) {
     auto param = other->m_ParamLayout.params[i];
     std::string clean_name = clean_param_type_name(typeid(*param).name());
-    // std::cout << "Cloning param: " << clean_name << std::endl;
     auto factory_param = factory_node->m_ParamLayout.params[i];
     CloneParam(param, factory_param);
    
@@ -53,19 +50,17 @@ void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::
       if (p_label != nullptr) {
         auto factory_p_label = std::dynamic_pointer_cast<NED::ParamLabel>(dst_param);
         factory_p_label->value = p_label->value;
-        std::cout << "Duplicating ParamLabel: " << std::endl;
-
       } else if (p_group != nullptr) {
         auto factory_p_group = std::dynamic_pointer_cast<NED::ParamGroup>(dst_param);
         factory_p_group->value = p_group->value;
         for (size_t j = 0; j < p_group->params.size(); j++) {
-          std::cout << "WORK TODO HERE" << std::endl;
+
           CloneParam(p_group->params[j], factory_p_group->params[j]);
         }
-        std::cout << "Duplicating ParamGroup: " << std::endl;
+        // std::cout << "Duplicating ParamGroup: " << std::endl;
 
       } else if (p_file != nullptr) {
-        std::cout << "Duplicating ParamFile: " << "" << std::endl;
+        // std::cout << "Duplicating ParamFile: " << "" << std::endl;
         auto factory_p_file = std::dynamic_pointer_cast<NED::ParamFile>(dst_param);
         factory_p_file->value = p_file->value;
 
@@ -88,7 +83,6 @@ void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::
         auto factory_p_vec3 = std::dynamic_pointer_cast<NED::Param<glm::vec3>>(dst_param);
         factory_p_vec3->value = p_vec3->value;
       }
-      // std::cout << "\tfactory param: " << clean_param_type_name(typeid(*dst_param).name()) << "" << std::endl;
     } else {
       std::cout << "problem with: " << clean_param_type_name(typeid(*dst_param).name()) << "" << std::endl;
     }
