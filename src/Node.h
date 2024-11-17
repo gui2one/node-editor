@@ -15,8 +15,6 @@ class Node : public T {
     auto node = static_cast<AbstractNode *>(this);
     node->title = _title;
     node->m_TypeName = _type_name;
-    std::cout << "Constructor for : " << node->m_TypeName << std::endl;
-    
   }
 
   void Update() {
