@@ -34,6 +34,18 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
     CloneParam(param, factory_param);
    
   }
+
+  // TODO : clone subnet inner Nodes
+  if(factory_node->IsSubnet()) {
+    // std::cout << "Cloning Subnet: " << other->title << std::endl;
+    for(auto child : other->node_network.nodes) {
+      auto factory_child = NodeFactoryRegistry::GetInstance().Clone(child);
+      factory_node->node_network.nodes.push_back(factory_child);
+      // std::cout << "Cloning Node: " << child->title << std::endl;
+      
+    }
+    
+  }
   return factory_node;
 }
 void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::shared_ptr<NodeParam> dst_param) const {
@@ -54,7 +66,6 @@ void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::
         auto factory_p_group = std::dynamic_pointer_cast<NED::ParamGroup>(dst_param);
         factory_p_group->value = p_group->value;
         for (size_t j = 0; j < p_group->params.size(); j++) {
-
           CloneParam(p_group->params[j], factory_p_group->params[j]);
         }
         // std::cout << "Duplicating ParamGroup: " << std::endl;
