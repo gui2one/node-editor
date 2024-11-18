@@ -241,7 +241,8 @@ class SubnetInputNode : public AbstractNode {
     size.x = 50.0f;
     size.y = 50.0f;
 
-    input_id = std::make_shared<Param<int>>("input id", 0);
+    input_id = CREATE_PARAM(NED::Param<int>, "input id");
+    input_id->value = 0;
     m_ParamLayout.params.push_back(input_id);
 
     icon_name = "arrow";

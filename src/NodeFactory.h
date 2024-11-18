@@ -39,11 +39,13 @@ class NodeFactoryRegistry {
   NED::NodeFactoryRegistry::GetInstance().RegisterType( \
       #Type, {Category, Label, #Type,                   \
               []() -> std::shared_ptr<NED::Node<Type>> { return std::make_shared<NED::Node<Type>>(Label, #Type); }})
+#define STRINGIFY(x) #x
 #define CREATE_SUBNET_INPUT_NODE_CLASS(Type, Label, Category)                                               \
   NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
-      "NED::SubnetInputNode<" #Type ">", {Category, Label, "NED::SubnetInputNode<" #Type ">",               \
+      "NED::SubnetInputNode<"STRINGIFY(Type)">", {Category, Label, "NED::SubnetInputNode<"STRINGIFY(Type)">",               \
                                           []() -> std::shared_ptr<NED::Node<NED::SubnetInputNode<Type>>> {  \
+                                            std::cout << "SubnetInputNode<"STRINGIFY(Type)">" << std::endl; \
                                             return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>( \
-                                                Label, "NED::SubnetInputNode<" #Type ">");                  \
+                                                Label, "NED::SubnetInputNode<"STRINGIFY(Type)">");                  \
                                           }})
 #endif  // NODE_EDITOR_NODEFACTORY_H

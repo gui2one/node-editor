@@ -315,7 +315,9 @@ class Param<int> : public NodeParam {
     if (ImGui::DragInt("##m_Label", &value, 1.0f, min_val, max_val, "%d", ImGuiSliderFlags_AlwaysClamp)) {
       DISPATCH_PARAM_CHANGE_EVENT();
     }
-  })} NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+  })} 
+  
+  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 
  public:
   int value;
