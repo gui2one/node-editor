@@ -9,8 +9,6 @@
 namespace NED {
 std::string generate_uuid();
 
-std::string clean_param_type_name(const char* dirty_type);
-
 bool str_replace(std::string& str, const std::string& from, const std::string& to);
 bool str_replace_all(std::string& str, const std::string& from, const std::string& to);
 bool str_replace_last(std::string& str, const std::string& from, const std::string& to);

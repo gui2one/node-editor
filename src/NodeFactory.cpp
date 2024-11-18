@@ -29,7 +29,7 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
 
   for (size_t i = 0; i < other->m_ParamLayout.params.size(); i++) {
     auto param = other->m_ParamLayout.params[i];
-    std::string clean_name = clean_param_type_name(typeid(*param).name());
+
     auto factory_param = factory_node->m_ParamLayout.params[i];
     CloneParam(param, factory_param);
    
@@ -84,7 +84,7 @@ void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::
         factory_p_vec3->value = p_vec3->value;
       }
     } else {
-      std::cout << "problem with: " << clean_param_type_name(typeid(*dst_param).name()) << "" << std::endl;
+      std::cout << "problem with: " << dst_param->m_TypeName << "" << std::endl;
     }
 }
 };  // namespace NodeEditor

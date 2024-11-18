@@ -134,10 +134,10 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
   } else if (p_type_str == "bool") {
     set_param_value<bool>(param, yaml["value"].as<bool>());
 
-  } else if (p_type_str == "glm::vec<2,float,0>") {
+  } else if (p_type_str == "glm::vec2") {
     set_param_value<glm::vec2>(param, yaml["value"].as<glm::vec2>());
 
-  } else if (p_type_str == "glm::vec<3,float,0>") {
+  } else if (p_type_str == "glm::vec3") {
     set_param_value<glm::vec3>(param, yaml["value"].as<glm::vec3>());
 
   } else if (p_type_str == "ParamComboBox") {
@@ -219,38 +219,6 @@ struct post_load_connection {
   int subnet_input_node_index;
 };
 
-std::vector<post_load_connection> collect_subnet_connections(YAML::Node yaml) {
-  std::vector<post_load_connection> connections;
-  for (auto node : yaml["nodes"]) {
-    if (node["is_subnet"].as<bool>()) {
-      auto _connections = collect_subnet_connections(node["node_network"]);
-      connections.insert(connections.end(), _connections.begin(), _connections.end());
-      for (auto subnet_node : node["node_network"]["nodes"]) {
-        if (subnet_node["inputs"][0].as<std::string>() == "opinput_0") {
-          connections.push_back({subnet_node["uuid"].as<std::string>(), 0, 0});
-        }
-      }
-    }
-  }
-  return connections;
-}
-
-void apply_subnet_connections(NodeNetwork& network, std::vector<post_load_connection> connections) {
-  for (auto node : network.nodes) {
-    if (node->IsSubnet()) {
-      apply_subnet_connections(node->node_network, connections);
-      for (auto subnet_node : node->node_network.nodes) {
-        for (auto conn : connections) {
-          if (conn.uuid == subnet_node->uuid) {
-            subnet_node->SetInput((uint32_t)conn.input_index,
-                                  Utils::FindNodeByUUID("opinput_0", node->node_network.nodes));
-          }
-        }
-      }
-    }
-  }
-}
-
 NodeNetwork load_yaml_file(std::filesystem::path path) {
   std::ifstream saved_file(path.string());
   std::string content((std::istreambuf_iterator<char>(saved_file)), std::istreambuf_iterator<char>());
@@ -258,8 +226,6 @@ NodeNetwork load_yaml_file(std::filesystem::path path) {
   YAML::Node output = YAML::Load(content);
 
   auto network = deserialize_network(output);
-  auto connections = collect_subnet_connections(output);
-  apply_subnet_connections(network, connections);
 
   return network;
 }

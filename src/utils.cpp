@@ -18,17 +18,6 @@ std::string generate_uuid() {
   return res;
 }
 
-std::string clean_param_type_name(const char *dirty_type) { 
-  std::string type_str = std::string(dirty_type);                                           
-  NED::str_remove_all(type_str, "class ");                                        
-  NED::str_remove_all(type_str, "struct ");                                       
-  // NED::str_remove_all(type_str, "NED::");                                                               
-  NED::str_replace_all(type_str, " >", ">");                                            
-  NED::str_remove_last(type_str, " ");                                            
-  if (type_str.find("std::basic_string") != std::string::npos) type_str = "NED::Param<std::string>";   
-
-  return type_str; 
-}
 
 bool str_replace(std::string &str, const std::string &from, const std::string &to) {
   size_t start_pos = str.find(from);
@@ -58,7 +47,6 @@ bool str_remove_last(std::string &str, const std::string &target) { return str_r
 std::string wide_to_utf8(const std::wstring &wide_utf16_source_string) {
   std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
   std::string narrow = converter.to_bytes(wide_utf16_source_string);
-  // std::wstring wide = converter.from_bytes(narrow_utf8_source_string);
   return narrow;
 }
 std::wstring utf8_to_wide(const std::string &utf8_source_string) {
