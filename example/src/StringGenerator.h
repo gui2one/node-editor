@@ -56,9 +56,11 @@ class StringGenerate : public StringGenerator {
     label->value = "Is this the label ?";
 
     auto coords = CREATE_PARAM(NED::Param<glm::vec2>, "coords");
+    coords->value = glm::vec2(0.0f);
     coords->default_val = glm::vec2(2.0f);
 
     auto position = CREATE_PARAM(NED::Param<glm::vec3>, "position");
+    position->value = glm::vec3(1.0f);
     position->default_val = glm::vec3(1.0f);
 
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest");

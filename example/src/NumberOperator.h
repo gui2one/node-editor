@@ -16,7 +16,9 @@ class NumberConstant: public NumberOperator {
     public:
         NumberConstant() : NumberOperator() {
             SetNumAvailableInputs(0);
-            value = std::make_shared<Param<float>>("Value", 1.0f);
+
+            value = CREATE_PARAM(NED::Param<float>, "Value");
+            value->value = 1.0f;
             m_ParamLayout.params = {value};
         }
         ~NumberConstant(){}

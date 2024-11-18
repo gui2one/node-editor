@@ -28,7 +28,6 @@ class ParamFactoryRegistry {
 }  // namespace NED
 
 #define REGISTER_PARAM_TYPE(Type)                                                                     \
-  std::cout << "Registering " << #Type << std::endl;                                                  \
   NED::ParamFactoryRegistry::instance().registerType(#Type, {#Type, []() -> std::shared_ptr<Type> {   \
                                                                auto param = std::make_shared<Type>(); \
                                                                param->m_TypeName = #Type;             \
