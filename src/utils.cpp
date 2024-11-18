@@ -1,5 +1,23 @@
 #include "utils.h"
 namespace NED {
+std::string generate_unique_name(const std::string& baseName, const std::unordered_set<std::string>& existingNames) {
+    // If the base name does not exist in the list, return it as-is.
+    if (existingNames.find(baseName) == existingNames.end()) {
+        return baseName;
+    }
+
+    // Otherwise, try appending numbers until we find a unique name.
+    int suffix = 2;
+    std::string uniqueName;
+    do {
+        std::ostringstream ss;
+        ss << baseName << suffix++;
+        uniqueName = ss.str();
+    } while (existingNames.find(uniqueName) != existingNames.end());
+
+    return uniqueName;
+}
+
 std::string generate_uuid() {
   static std::random_device dev;
   static std::mt19937 rng(dev());

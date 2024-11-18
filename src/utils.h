@@ -5,8 +5,11 @@
 #include <codecvt>
 #include <locale>
 #include <string>
+#include <unordered_set>
+#include <sstream>
 
 namespace NED {
+std::string generate_unique_name(const std::string& baseName, const std::unordered_set<std::string>& existingNames);
 std::string generate_uuid();
 
 bool str_replace(std::string& str, const std::string& from, const std::string& to);

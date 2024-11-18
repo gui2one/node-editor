@@ -48,7 +48,7 @@ struct NodeNetwork {
   std::shared_ptr<AbstractNode> outuput_node = nullptr;
   std::vector<std::shared_ptr<AbstractNode>> nodes;
 
-  void AddNode(std::shared_ptr<AbstractNode> _node) { nodes.push_back(_node); }
+  void AddNode(std::shared_ptr<AbstractNode> _node);
 };
 
 struct ParamLayout {

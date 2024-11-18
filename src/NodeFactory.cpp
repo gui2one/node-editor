@@ -15,7 +15,7 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Create(const std::string& typ
 }
 std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<AbstractNode> other) const {
   auto factory_node = NodeFactoryRegistry::GetInstance().Create(other->m_TypeName);
-  factory_node->title = other->title + "_clone";
+  factory_node->title = other->title;
   factory_node->position = other->position + ImVec2(10, 10);
   factory_node->parent_node = other->parent_node;
 
@@ -40,7 +40,7 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
     // std::cout << "Cloning Subnet: " << other->title << std::endl;
     for(auto child : other->node_network.nodes) {
       auto factory_child = NodeFactoryRegistry::GetInstance().Clone(child);
-      factory_node->node_network.nodes.push_back(factory_child);
+      factory_node->node_network.AddNode(factory_child);
       // std::cout << "Cloning Node: " << child->title << std::endl;
       
     }

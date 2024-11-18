@@ -78,7 +78,7 @@ class NodeManager {
   void Evaluate();
 
   inline void SetNodes(std::vector<std::shared_ptr<AbstractNode>> _nodes) { m_NodeNetwork.nodes = _nodes; }
-  inline void AddNode(std::shared_ptr<AbstractNode> _node) { m_NodeNetwork.nodes.push_back(_node); }
+  inline void AddNode(std::shared_ptr<AbstractNode> _node) { m_NodeNetwork.AddNode(_node); }
 
   inline std::vector<std::shared_ptr<AbstractNode>>& GetNodes() { return m_CurrentNetwork->nodes; }
   inline const std::vector<std::shared_ptr<AbstractNode>>& GetNodes() const { return m_CurrentNetwork->nodes; }
