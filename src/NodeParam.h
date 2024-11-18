@@ -16,7 +16,7 @@
 #define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC()                                     \
   YAML::Node YAMLSerialize() override {                                             \
     YAML::Node yaml_node;                                                           \
-    std::string type_str = NED::clean_param_type_name(typeid(*this).name()); \
+    std::string type_str = std::string(m_TypeName); \
     yaml_node["type"] = type_str;                                                   \
     yaml_node["label"] = m_Label;                                                       \
     yaml_node["value"] = value;                                                     \
@@ -56,6 +56,7 @@ class NodeParam {
 
  public:
   const char* m_Label;
+  const char* m_TypeName;
   int value = -1;
 };
 
@@ -402,7 +403,7 @@ class ParamFile : public Param<std::wstring> {
   // unable to use the MACRO here because of wide_to_utf8() call
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
+    std::string type_str = std::string(m_TypeName);
     yaml_node["type"] = type_str;
     yaml_node["label"] = m_Label;
     yaml_node["value"] = wide_to_utf8(value);
@@ -423,7 +424,7 @@ class ParamLabel : public Param<std::string> {
   }
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
+    std::string type_str = std::string(m_TypeName);
     yaml_node["type"] = type_str;
     yaml_node["label"] = m_Label;
     yaml_node["value"] = value;
@@ -451,7 +452,7 @@ class ParamComboBox : public Param<int> {
 
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
+    std::string type_str = std::string(m_TypeName);
     yaml_node["type"] = type_str;
     yaml_node["label"] = m_Label;
     yaml_node["value"] = value;
@@ -474,7 +475,7 @@ class ParamSeparator : public Param<std::string> {
   }
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
+    std::string type_str = std::string(m_TypeName);
     yaml_node["type"] = type_str;
     yaml_node["label"] = m_Label;
     yaml_node["value"] = "null";
@@ -492,7 +493,7 @@ class ParamGroup : public Param<int> {
 
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    std::string type_str = clean_param_type_name(typeid(*this).name());
+    std::string type_str = std::string(m_TypeName);
     yaml_node["type"] = type_str;
     yaml_node["label"] = m_Label;
 
