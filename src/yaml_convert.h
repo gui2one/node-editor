@@ -117,7 +117,7 @@ template <>
 struct convert<std::shared_ptr<NED::NodeParam>> {
   static Node encode(const std::shared_ptr<NED::NodeParam>& rhs) {
     Node node;
-    node["name"] = std::string(rhs->name);
+    node["name"] = std::string(rhs->m_Label);
     // node["value"] = rhs->Eval();
     return node;
   }
@@ -127,7 +127,7 @@ struct convert<std::shared_ptr<NED::NodeParam>> {
       return false;
     }
 
-    rhs->name = node["name"].as<std::string>().c_str();
+    rhs->m_Label = node["name"].as<std::string>().c_str();
     // rhs->value = node["value"];
     return true;
   }

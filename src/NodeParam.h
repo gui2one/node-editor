@@ -18,7 +18,7 @@
     YAML::Node yaml_node;                                                           \
     std::string type_str = NED::clean_param_type_name(typeid(*this).name()); \
     yaml_node["type"] = type_str;                                                   \
-    yaml_node["name"] = name;                                                       \
+    yaml_node["label"] = m_Label;                                                       \
     yaml_node["value"] = value;                                                     \
     return yaml_node;                                                               \
   }
@@ -31,10 +31,10 @@
   EventManager::GetInstance().Dispatch(event);
 
 #define DISPLAY_PARAM_TEMPLATE(label, func)               \
-  ImGui::PushID(name);                                    \
+  ImGui::PushID(m_Label);                                    \
   ImGui::Columns(2);                                      \
   ImGui::SetColumnWidth(0, 150.f);                        \
-  ImGui::Text("%s", name);                                \
+  ImGui::Text("%s", m_Label);                                \
   ImGui::NextColumn();                                    \
   ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x); \
   func();                                                 \
@@ -47,15 +47,15 @@ namespace NED {
 
 class NodeParam {
  public:
-  NodeParam() { name = "no name"; };
-  NodeParam(const char* _name) : name(_name) {}
+  NodeParam() { m_Label = "no m_Label"; };
+  NodeParam(const char* _name) : m_Label(_name) {}
   virtual ~NodeParam() = default;
   virtual void Display() = 0;
 
   virtual YAML::Node YAMLSerialize() = 0;
 
  public:
-  const char* name;
+  const char* m_Label;
   int value = -1;
 };
 
@@ -69,12 +69,12 @@ class Param : public NodeParam {
 
   T Eval() { return value; };
 
-  void Display() { ImGui::Text("%s -- not implemented", name); }
+  void Display() { ImGui::Text("%s -- not implemented", m_Label); }
 
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    yaml_node["type"] = typeid(*this).name();
-    yaml_node["name"] = name;
+    yaml_node["type"] = typeid(*this).m_Label();
+    yaml_node["label"] = m_Label;
     yaml_node["value"] = value;
     return yaml_node;
   }
@@ -97,7 +97,7 @@ class Param<glm::vec2> : public NodeParam {
 
   glm::vec2 Eval() { return value; }
 
-  void Display(){DISPLAY_PARAM_TEMPLATE(name, [this]() {;
+  void Display(){DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {;
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
@@ -164,7 +164,7 @@ class Param<glm::vec3> : public NodeParam {
   glm::vec3 Eval() { return value; }
 
   void Display() {
-    DISPLAY_PARAM_TEMPLATE(name, [this]() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       // float default_value = 0.0f;
 
       ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
@@ -255,12 +255,12 @@ public:
   std::string Eval() { return value; }
 
   void Display() {
-    DISPLAY_PARAM_TEMPLATE(name, [this]() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       char buffer[2048];
       if (value.length() > 2048) value = value.substr(0, 2048);
       std::copy(value.begin(), value.end(), buffer);
       buffer[value.length()] = 0;
-      if (ImGui::InputText("##name", buffer, 2048)) {
+      if (ImGui::InputText("##m_Label", buffer, 2048)) {
         value = std::string(buffer);
         DISPATCH_PARAM_CHANGE_EVENT();
       }
@@ -282,13 +282,13 @@ class Param<std::wstring> : public NodeParam {
   std::wstring Eval() { return value; }
 
   void Display() {
-    DISPLAY_PARAM_TEMPLATE(name, [this]() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       std::string converted = wide_to_utf8(value);
       char buffer[2048];
       if (converted.length() > 2048) converted = converted.substr(0, 2048);
       std::copy(converted.begin(), converted.end(), buffer);
       buffer[converted.length()] = 0;
-      if (ImGui::InputText("##name", (char*)buffer, 2048)) {
+      if (ImGui::InputText("##m_Label", (char*)buffer, 2048)) {
         // value = std::wstring(buffer);
         DISPATCH_PARAM_CHANGE_EVENT();
       }
@@ -310,8 +310,8 @@ class Param<int> : public NodeParam {
 
   int Eval() { return value; }
 
-  void Display(){DISPLAY_PARAM_TEMPLATE(name, [this]() {
-    if (ImGui::DragInt("##name", &value, 1.0f, min_val, max_val, "%d", ImGuiSliderFlags_AlwaysClamp)) {
+  void Display(){DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+    if (ImGui::DragInt("##m_Label", &value, 1.0f, min_val, max_val, "%d", ImGuiSliderFlags_AlwaysClamp)) {
       DISPATCH_PARAM_CHANGE_EVENT();
     }
   })} NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
@@ -332,8 +332,8 @@ class Param<float> : public NodeParam {
   float Eval() { return value; }
 
   void Display() {
-    DISPLAY_PARAM_TEMPLATE(name, [this]() {
-      if (ImGui::SliderFloat("##name", &value, 0, 100)) {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      if (ImGui::SliderFloat("##m_Label", &value, 0, 100)) {
         DISPATCH_PARAM_CHANGE_EVENT();
       }
     });
@@ -354,8 +354,8 @@ class Param<bool> : public NodeParam {
   bool Eval() { return value; }
 
   void Display() {
-    DISPLAY_PARAM_TEMPLATE(name, [this]() {
-      if (ImGui::Checkbox("##name", &value)) {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      if (ImGui::Checkbox("##m_Label", &value)) {
         DISPATCH_PARAM_CHANGE_EVENT();
       }
     });
@@ -377,14 +377,14 @@ class ParamFile : public Param<std::wstring> {
 
   std::wstring Eval() { return value; }
   void Display() {
-    DISPLAY_PARAM_TEMPLATE(name, [this]() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       // ImGui::Text("ParamFile Not implemented yet ...");
       float avail_x = ImGui::GetContentRegionAvail().x;
       ImGui::PushItemWidth(avail_x - 50.0f);
 
-      // ImGui::InputText("##name", &value);
+      // ImGui::InputText("##m_Label", &value);
       std::string converted = wide_to_utf8(value);
-      ImGui::InputText("##name", &converted, 2048);
+      ImGui::InputText("##m_Label", &converted, 2048);
 
       ImGui::PopItemWidth();
       ImGui::SameLine();
@@ -404,7 +404,7 @@ class ParamFile : public Param<std::wstring> {
     YAML::Node yaml_node;
     std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
+    yaml_node["label"] = m_Label;
     yaml_node["value"] = wide_to_utf8(value);
     return yaml_node;
   }
@@ -425,7 +425,7 @@ class ParamLabel : public Param<std::string> {
     YAML::Node yaml_node;
     std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
+    yaml_node["label"] = m_Label;
     yaml_node["value"] = value;
     return yaml_node;
   }
@@ -434,12 +434,12 @@ class ParamLabel : public Param<std::string> {
 
 class ParamComboBox : public Param<int> {
  public:
-  ParamComboBox() : Param<int>("name", 0) {};
+  ParamComboBox() : Param<int>("m_Label", 0) {};
   ParamComboBox(const char* _name) : Param<int>(_name, 0) {};
   ~ParamComboBox() {};
   void Display() {
-    DISPLAY_PARAM_TEMPLATE(name, [this]() {
-      if (ImGui::Combo("##name", &value, choices.data(), static_cast<int>(choices.size()))) {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      if (ImGui::Combo("##m_Label", &value, choices.data(), static_cast<int>(choices.size()))) {
         DISPATCH_PARAM_CHANGE_EVENT();
       }
     })
@@ -453,7 +453,7 @@ class ParamComboBox : public Param<int> {
     YAML::Node yaml_node;
     std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
+    yaml_node["label"] = m_Label;
     yaml_node["value"] = value;
     return yaml_node;
   }
@@ -476,7 +476,7 @@ class ParamSeparator : public Param<std::string> {
     YAML::Node yaml_node;
     std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
+    yaml_node["label"] = m_Label;
     yaml_node["value"] = "null";
     return yaml_node;
   }
@@ -494,7 +494,7 @@ class ParamGroup : public Param<int> {
     YAML::Node yaml_node;
     std::string type_str = clean_param_type_name(typeid(*this).name());
     yaml_node["type"] = type_str;
-    yaml_node["name"] = name;
+    yaml_node["label"] = m_Label;
 
     for (auto item : params) {
       yaml_node["params"].push_back(item->YAMLSerialize());

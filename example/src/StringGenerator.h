@@ -8,6 +8,7 @@
 #include "ImguiNode.h"
 #include "NodeParam.h"
 #include "params.h"
+#include "ParamFactory.h"
 
 namespace NED {
 
@@ -49,9 +50,12 @@ class StringGenerate : public StringGenerator {
  public:
   StringGenerate() : StringGenerator() {
 
-    value = std::make_shared<Param<std::string>>("value", "Hello");
-    auto sep = std::make_shared<ParamSeparator>("sep name");
-    auto label = std::make_shared<ParamLabel>("name", "this is the label ");
+    // value = std::make_shared<Param<std::string>>("value", "Hello");
+    value = CREATE_PARAM(NED::Param<std::string>, "String Value");
+    value->value = "Hello ???";
+
+    auto label = CREATE_PARAM(NED::ParamLabel, "label1");
+    label->value = "Is this the label ?";
 
     auto coords = std::make_shared<Param<glm::vec2>>("coords", glm::vec2(0.0f));
     coords->default_val = glm::vec2(2.0f);
@@ -74,7 +78,8 @@ class StringGenerate : public StringGenerator {
 class TextFileLoader : public StringGenerator {
  public:
   TextFileLoader() : StringGenerator() {
-    file_path_param = std::make_shared<ParamFile>("File", L"");
+    
+    file_path_param = CREATE_PARAM(NED::ParamFile, "File Path");
     m_ParamLayout.params = {file_path_param};
   }
   ~TextFileLoader() {};

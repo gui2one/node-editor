@@ -86,18 +86,18 @@ std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> fact
   for (auto& param_item : factory_node->m_ParamLayout.params) {
     auto p_group = std::dynamic_pointer_cast<ParamGroup>(param_item);
     if (p_group != nullptr) {
-      if(p_group->name == param_name) {
+      if(p_group->m_Label == param_name) {
         return p_group;
       }
       for (auto group_item : p_group->params) {
-        if (group_item->name == param_name) {
+        if (group_item->m_Label == param_name) {
           return group_item;
         }
       }
 
       
     } else {
-      if (param_item->name == param_name) {
+      if (param_item->m_Label == param_name) {
         return param_item;
       }
     }
@@ -108,7 +108,7 @@ std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> fact
 
 void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node) {
   std::string p_type_str = yaml["type"].as<std::string>();
-  std::string p_name = yaml["name"].as<std::string>();
+  std::string p_name = yaml["label"].as<std::string>();
 
   str_replace_all(p_type_str, "NED::Param<", "");
   str_remove_last(p_type_str, ">");

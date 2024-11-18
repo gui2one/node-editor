@@ -3,7 +3,7 @@
 namespace NED {
 void ParamGroup::Display() {
   ImGui::Spacing();
-  ImGui::Text("%s", name);
+  ImGui::Text("%s", m_Label);
 
   ImGui::Spacing();
   ImGui::Separator();
