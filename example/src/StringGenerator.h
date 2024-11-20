@@ -5,7 +5,7 @@
 #include <string>
 #include <type_traits>
 
-#include "ImguiNode.h"
+#include "ImGuiNode.h"
 #include "NodeParam.h"
 #include "params.h"
 #include "ParamFactory.h"
@@ -89,7 +89,7 @@ class TextFileLoader : public StringGenerator {
 
   void Generate() override {
     std::ifstream file;
-    file.open(file_path_param->Eval(), std::ios::in);
+    file.open(std::filesystem::path(file_path_param->Eval()), std::ios::in);
     if (file.is_open()) {
       std::stringstream buffer;
       buffer << file.rdbuf();
