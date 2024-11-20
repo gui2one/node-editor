@@ -104,6 +104,7 @@ std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters) {
     }
 
     std::cout << "File Selected: " << result << std::endl;
+    auto result_path = std::filesystem::path(result);
     std::string converted = wide_to_utf8(result_path.wstring());
     return std::filesystem::path(converted);  // Return the selected file path
   } else {
