@@ -27,6 +27,7 @@ FetchDependencyAndMakeAvailable(
 )
 
 # GLFW
+set(GLFW_BUILD_WAYLAND OFF)
 set(GLFW_BUILD_SHARED_LIBRARY ON)
 FetchDependencyAndMakeAvailable(
   glfw
