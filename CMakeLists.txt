@@ -41,7 +41,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${_include_dirs})
 include_directories(${_include_dirs})
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC src/pch.h)
-target_compile_options(${PROJECT_NAME} PUBLIC /W3)
+# target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC imgui)
 
 target_include_directories(${PROJECT_NAME} PUBLIC build/_deps/yaml-cpp-src/include)

@@ -74,7 +74,7 @@ class Param : public NodeParam {
 
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
-    yaml_node["type"] = typeid(*this).m_Label();
+    yaml_node["type"] = std::string(m_TypeName);
     yaml_node["label"] = m_Label;
     yaml_node["value"] = value;
     return yaml_node;

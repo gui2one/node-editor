@@ -31,7 +31,7 @@ include_directories(
   src/
 )
 
-target_compile_options(${PROJECT_NAME} PUBLIC /W3)
+# target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC node_editor)
 
 add_custom_command(
