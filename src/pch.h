@@ -23,7 +23,7 @@
 
 #define GLFW_INCLUDE_NONE
 #include <glad/glad.h>
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #define GLFW_MOD_CTRL_SHIFT 0x0003
 #define GLFW_MOD_SHIFT_ALT 0x0005
