@@ -83,6 +83,35 @@ std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters) {
   } else {
     return std::filesystem::path(L"");
   }
+#elif __linux__
+  // For Linux, use GTK for file dialog
+  GtkWidget *dialog;
+  gtk_init(0, nullptr); // Initialize GTK
+  dialog = gtk_file_chooser_dialog_new("Select a file",
+                                       NULL,
+                                       GTK_FILE_CHOOSER_ACTION_OPEN,
+                                       "_Cancel", GTK_RESPONSE_CANCEL,
+                                       "_Open", GTK_RESPONSE_ACCEPT,
+                                       NULL);
+
+  // Apply filters
+  for (const auto& filter : filters) {
+    GtkFileFilter *gtk_filter = gtk_file_filter_new();
+    gtk_file_filter_set_name(gtk_filter, filter.name.c_str());
+    gtk_file_filter_add_pattern(gtk_filter, filter.pattern.c_str());
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), gtk_filter);
+  }
+
+  std::filesystem::path result_path;
+  if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+    char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+    result_path = std::filesystem::path(filename);
+    std::cout << "File Selected : " << result_path << std::endl;
+    g_free(filename);
+  }
+
+  gtk_widget_destroy(dialog);
+  return result_path;
 
 #else
   return std::filesystem::path("");
