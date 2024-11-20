@@ -1,5 +1,8 @@
 #include "node_manager_utils.h"
-
+#ifdef __linux__
+// #include <unistd.h>
+#include <gtk/gtk.h>
+#endif
 namespace NED::Utils {
 std::shared_ptr<AbstractNode> FindNodeByUUID(std::string uuid, std::vector<std::shared_ptr<AbstractNode>> nodes) {
   for (auto node : nodes) {
