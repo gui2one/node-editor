@@ -59,7 +59,7 @@ struct ViewProperties {
 };
 
 struct IconResource {
-  const char* name;
+  std::string name;
   std::filesystem::path path;
 };
 
@@ -71,7 +71,7 @@ class NodeManager {
   void InitGLFWEvents();
 
   void InitIcons();
-  void AddIcon(const char* name, std::filesystem::path path);
+  void AddIcon(std::string name, std::filesystem::path path);
 
   /// @brief Computes result for all 'parents' of m_OutputNode.
   /// does nothing if m_OutputNode == nullptr
@@ -169,7 +169,7 @@ class NodeManager {
                                                     {"empty_set", "resources/icons/empty_set.png"},
                                                     {"three_dots", "resources/icons/three_dots.png"}};
 
-  std::map<const char*, GLuint> m_Icons;
+  std::map<std::string, GLuint> m_Icons;
 
  private:
   NodeNetwork m_NodeNetwork;

@@ -141,7 +141,7 @@ void NodeManager::InitIcons() {
   }
 }
 
-void NodeManager::AddIcon(const char *name, std::filesystem::path path) {
+void NodeManager::AddIcon(std::string name, std::filesystem::path path) {
   m_Icons.insert({name, LoadTexture(path.string().c_str())});
 }
 
@@ -334,8 +334,10 @@ void NodeManager::DrawNodes() {
       ImVec2 icon_min = node_center - ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
       ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
       // glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)m_Icons[node->icon_name]);
-
-      draw_list->AddImage((ImTextureID)(intptr_t)m_Icons[node->icon_name], icon_min, icon_max, uv0, uv1);
+      // m_Icons.at(node->icon_name);
+      if(m_Icons.at((const char*)node->icon_name) != 0){
+        draw_list->AddImage((ImTextureID)(intptr_t)m_Icons.at((const char*)node->icon_name), icon_min, icon_max, uv0, uv1);
+      }
     }
 
     if (node->selected) ImGui::PushFont(m_BoldFont);
