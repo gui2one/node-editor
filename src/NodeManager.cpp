@@ -1,6 +1,18 @@
 // #include "NodeParam.h"
 #include "NodeManager.h"
 
+
+GLuint GenerateEmptyTexture() {
+  std::cout << "EMPTY TEXTURE !!!!" << std::endl;
+  
+  GLuint texture;
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+  std::vector<unsigned char> data = {0, 0, 0, 0};
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
+  return texture;
+}
+
 GLuint LoadTexture(const char *filename) {
   int width, height, channels;
   // std::cout << "!!!!!!!!!!!!!!!! " << filename << std::endl;
@@ -9,7 +21,7 @@ GLuint LoadTexture(const char *filename) {
   if (!data) {
     std::cout << "STBI Unable to load " << filename << std::endl;
 
-    return 0;
+    return GenerateEmptyTexture();
   }
 
   GLuint texture;
@@ -25,14 +37,6 @@ GLuint LoadTexture(const char *filename) {
   return texture;
 }
 
-GLuint GenerateEmptyTexture() {
-  GLuint texture;
-  glGenTextures(1, &texture);
-  glBindTexture(GL_TEXTURE_2D, texture);
-  std::vector<unsigned char> data = {0, 0, 0, 0};
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
-  return texture;
-}
 namespace NED {
 NodeManager::NodeManager() {
   SetNodesMenu([this]() { this->BuildNodeMenuFromRegistry(); });
@@ -314,8 +318,8 @@ void NodeManager::DrawNodes() {
     ImVec2 node_center = min + (node->size * 0.5f * m_ViewProps.zoom);
     ImVec2 icon_min = node_center - ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
     ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
-    glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)m_Icons[node->icon_name]);
-    draw_list->AddImage((ImTextureID)(intptr_t)m_Icons[node->icon_name], icon_min, icon_max, uv0, uv1);
+    // glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)m_Icons[node->icon_name]);
+    draw_list->AddImage((ImTextureID)(intptr_t)(GLuint)m_Icons[node->icon_name], icon_min, icon_max);
 
     if (node->selected) ImGui::PushFont(m_BoldFont);
     draw_list->AddText(max + ImVec2(5.0f, -25.0f), IM_COL32(255, 255, 255, 255), node->title.c_str());
