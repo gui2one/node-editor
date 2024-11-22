@@ -1,15 +1,4 @@
 #include "Application.h"
-namespace NED {
-
-Application::Application() {}
-
-Application::~Application() {
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-  glfwDestroyWindow(m_NativeWindow);
-  glfwTerminate();
-}
 void APIENTRY glDebugOutput(GLenum source, 
                             GLenum type, 
                             unsigned int id, 
@@ -65,14 +54,27 @@ void APIENTRY glDebugOutput(GLenum source,
 
 #endif
 }
+
+namespace NED {
+
+Application::Application() {}
+
+Application::~Application() {
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+  glfwDestroyWindow(m_NativeWindow);
+  glfwTerminate();
+}
+
 bool Application::Init() {
   if (!glfwInit()) {
     printf("problem with GLFW\n");
     return false;
   }
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
   m_NativeWindow = glfwCreateWindow(1280, 720, "no title yet", NULL, NULL);
@@ -92,7 +94,7 @@ bool Application::Init() {
     return false;
   }
   #define MODERN_OGL_DEBUG
-  #ifdef MODERN_OGL_DEBUG
+  #if 1
       m_DebugData = new DebugData();
 
       // check debug context
@@ -107,6 +109,13 @@ bool Application::Init() {
           glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 
           std::cout << "---- DEBUG Context created ----" << std::endl;
+
+          int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+        if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+        {
+            // initialize debug output 
+
+        }
       }     
   #endif
   m_NodeManager.InitGLFWEvents();
