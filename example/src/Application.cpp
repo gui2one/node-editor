@@ -11,8 +11,8 @@ void APIENTRY glDebugOutput(GLenum source,
     const char* file = __FILE__;
     int line = __LINE__;    
     // ignore non-significant error/warning codes
-    if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return ; //LOG_WARN("OpenGL Warning id {}", id);
-
+    // if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return ; //LOG_WARN("OpenGL Warning id {}", id);
+    if( id == 131185 /* level : Notification */) return;
     std::cout << "\nOpenGL Error" << std::endl;
     std::cout << "Debug message (" << id << "): " <<  message << std::endl;
     switch (source)
@@ -47,7 +47,7 @@ void APIENTRY glDebugOutput(GLenum source,
     } std::cout << std::endl;
     std::cout << std::endl;
 
-#define EXIT_ON_OPENGL_ERROR
+// #define EXIT_ON_OPENGL_ERROR
 #ifdef EXIT_ON_OPENGL_ERROR
 
     std::exit(EXIT_FAILURE);
@@ -74,7 +74,7 @@ bool Application::Init() {
   }
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
   m_NativeWindow = glfwCreateWindow(1280, 720, "no title yet", NULL, NULL);
@@ -94,7 +94,7 @@ bool Application::Init() {
     return false;
   }
   #define MODERN_OGL_DEBUG
-  #if 1
+  #ifdef MODERN_OGL_DEBUG
       m_DebugData = new DebugData();
 
       // check debug context
