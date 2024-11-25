@@ -217,6 +217,30 @@ class ImGuiNode : public AbstractNode {
   T m_DataCache;
 };
 
+template<typename T>
+class NullNode : public ImGuiNode<T> {
+ public:
+  NullNode() : ImGuiNode<T>("no title") {
+    this->SetNumAvailableInputs(1);
+  }
+
+  void Generate() override {
+    if (this->GetInput(0) != nullptr) {
+      auto op0 = std::dynamic_pointer_cast<ImGuiNode<T>>(this->GetInput(0));
+      auto subnetinput_op = std::dynamic_pointer_cast<SubnetInputNode<T>>(this->GetInput(0));
+      auto subnet_op = std::dynamic_pointer_cast<SubnetNode<T>>(this->GetInput(0));
+      
+      if (op0 != nullptr) {
+        this->m_DataCache = op0->m_DataCache;
+      }else if (subnetinput_op != nullptr) {
+        this->m_DataCache = subnetinput_op->m_DataCache;
+      }else if (subnet_op != nullptr) {
+        this->m_DataCache = subnet_op->m_DataCache;
+      }
+    }
+  }
+
+};
 template <typename T>
 class SubnetNode : public AbstractNode {
  public:
@@ -226,7 +250,14 @@ class SubnetNode : public AbstractNode {
 
     icon_name = "three_dots";
   }
-
+  void Generate() override {
+    if (node_network.outuput_node != nullptr) {
+      auto op = std::dynamic_pointer_cast<ImGuiNode<T>>(node_network.outuput_node);
+      if (op != nullptr) {
+        this->m_DataCache = op->m_DataCache;
+      }
+    }
+  }
  public:
   T m_DataCache;
 };

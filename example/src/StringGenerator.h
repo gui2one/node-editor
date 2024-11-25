@@ -18,23 +18,6 @@ class StringOperator : public ImGuiNode<std::string> {
   virtual ~StringOperator() = default;
 };
 
-class StringSubnetOperator : public SubnetNode<std::string> {
- public:
-  StringSubnetOperator() : SubnetNode() {};
-  ~StringSubnetOperator() {};
-
-  void Generate() override {
-    if (node_network.outuput_node != nullptr) {
-      auto op = std::dynamic_pointer_cast<StringOperator>(node_network.outuput_node);
-      if (op != nullptr) {
-        m_DataCache = op->m_DataCache;
-      }
-    }
-  }
-
- public:
-};
-
 class StringGenerator : public StringOperator {
  public:
   StringGenerator() : StringOperator() {
@@ -217,23 +200,6 @@ class StringToUpperCase : public StringModifier {
     std::string src = op0->m_DataCache;
     std::transform(src.begin(), src.end(), src.begin(), ::toupper);
     m_DataCache = src;
-  }
-};
-
-class StringNull : public StringModifier {
- public:
-  StringNull() : StringModifier() {
-    SetNumAvailableInputs(1);
-    color = NODE_COLOR::ORANGE;
-    icon_name = "empty_set";
-  };
-  ~StringNull() {};
-
-  void Generate() override {
-    if (GetInput(0) != nullptr) {
-      auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-      m_DataCache = op0->m_DataCache;
-    }
   }
 };
 

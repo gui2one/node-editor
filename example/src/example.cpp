@@ -20,15 +20,14 @@ int main(int argc, char *argv[]) {
 
 
 
+  CREATE_UTILITY_CLASSES(std::string, "utility");
   REGISTER_NODE_TYPE(NED::StringGenerate, "generate", "generator");
   REGISTER_NODE_TYPE(NED::TextFileLoader, "Load Text File", "generator");
   REGISTER_NODE_TYPE(NED::StringConcatenator, "concatenator", "modifier");
   REGISTER_NODE_TYPE(NED::StringConcatenatorMulti, "concatmulti", "modifier");
   REGISTER_NODE_TYPE(NED::StringRepeater, "repeater", "modifier");
   REGISTER_NODE_TYPE(NED::StringToUpperCase, "To Upper Case", "modifier");
-  REGISTER_NODE_TYPE(NED::StringNull, "null node", "utility");
-  REGISTER_NODE_TYPE(NED::StringSubnetOperator, "Subnetwork", "utility");
-  CREATE_SUBNET_INPUT_NODE_CLASS(std::string, "Subnet input", "utility");
+
 
   REGISTER_NODE_TYPE(NED::Add, "add", "operator");
   REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "operator");
@@ -68,7 +67,7 @@ int main(int argc, char *argv[]) {
     auto &manager = app.GetNodeManager();
     manager.Evaluate();
     if (manager.GetOutputNode() != nullptr) {
-      auto subnet_op = std::dynamic_pointer_cast<StringSubnetOperator>(manager.GetOutputNode());
+      auto subnet_op = std::dynamic_pointer_cast<NED::SubnetNode<std::string>>(manager.GetOutputNode());
       auto subnet_input_op = std::dynamic_pointer_cast<SubnetInputNode<std::string>>(manager.GetOutputNode());
 
       auto number_op = std::dynamic_pointer_cast<NumberOperator>(manager.GetOutputNode());
@@ -79,7 +78,7 @@ int main(int argc, char *argv[]) {
           std::cout << "m_DataCache -> " << output_op->m_DataCache << std::endl;
         }
       } else if (op != nullptr) {
-        std::cout << "ManagerUpdate Event -> " << op->m_DataCache << std::endl;
+        std::cout << "ManagerUpdate Event !!-> " << op->m_DataCache << std::endl;
       } else if (subnet_input_op != nullptr) {
         auto op2 = static_cast<ImGuiNode<std::string> *>(subnet_input_op->parent_node->GetInput(0).get());
         std::cout << "Subnet input Operator -> " << op2->m_DataCache << std::endl;

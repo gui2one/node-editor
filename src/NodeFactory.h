@@ -46,4 +46,27 @@ class NodeFactoryRegistry {
                                             return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>( \
                                                 Label, "NED::SubnetInputNode<"#Type">");                  \
                                           }})
+#define CREATE_UTILITY_CLASSES(Type, Category)                                               \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
+      "NED::SubnetInputNode<"#Type">", {Category, "Subnet Input", "NED::SubnetInputNode<"#Type">",               \
+                                          []() -> std::shared_ptr<NED::Node<NED::SubnetInputNode<Type>>> {  \
+                                            return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>( \
+                                                "Subnet Input", "NED::SubnetInputNode<"#Type">");                  \
+                                          }}); \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
+      "NED::SubnetNode<"#Type">", {Category, "Subnet", "NED::SubnetNode<"#Type">",               \
+                                          []() -> std::shared_ptr<NED::Node<NED::SubnetNode<Type>>> {  \
+                                            return std::make_shared<NED::Node<NED::SubnetNode<Type>>>( \
+                                                "Subnet", "NED::SubnetNode<"#Type">");                  \
+                                          }}); \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
+      "NED::NullNode<"#Type">", {Category, "Null", "NED::NullNode<"#Type">",               \
+                                          []() -> std::shared_ptr<NED::Node<NED::NullNode<Type>>> {  \
+                                            return std::make_shared<NED::Node<NED::NullNode<Type>>>( \
+                                                "Null", "NED::NullNode<"#Type">");                  \
+                                          }})
+
+
+
+
 #endif  // NODE_EDITOR_NODEFACTORY_H
