@@ -22,19 +22,44 @@ set(_include_dirs
   ${CMAKE_SOURCE_DIR}/build/_deps/imgui_node_editor-src
 )
 
+# Define the source directory
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
+# Recursively collect all .cpp and .h files
+file(GLOB_RECURSE SOURCES
+    "${SOURCE_DIR}/*.cpp"
+    "${SOURCE_DIR}/*.h"
+)
+# Organize files into folders in Visual Studio
+foreach(FILE_PATH IN LISTS SOURCES)
+    # Get the directory relative to the source directory
+    file(RELATIVE_PATH REL_PATH "${SOURCE_DIR}" "${FILE_PATH}")
+    
+    # Extract the directory part of the relative path
+    get_filename_component(FOLDER_PATH "${REL_PATH}" DIRECTORY)
+
+    # Replace "/" with "\\" to ensure compatibility with Visual Studio
+    string(REPLACE "/" "\\" FOLDER_PATH "src/${FOLDER_PATH}")
+
+    # Assign the file to a source group
+    source_group("${FOLDER_PATH}" FILES "${FILE_PATH}")
+endforeach()
+
 add_library(${PROJECT_NAME} STATIC
-  src/yaml_serialize.cpp
-  src/NodeFactory.cpp
-  src/ParamFactory.cpp
-  src/NodeParam.cpp
-  src/ImGuiNode.cpp
-  src/NodeManager.cpp
-  src/Event.cpp
-  src/EventDispatcher.cpp
-  src/EventManager.cpp
-  src/utils.cpp
-  src/utils/node_manager_utils.cpp
-  src/stb_image.cpp
+  
+    ${SOURCES}
+    # src/yaml_serialize.cpp
+  # src/NodeFactory.cpp
+  # src/ParamFactory.cpp
+  # src/NodeParam.cpp
+  # src/ImGuiNode.cpp
+  # src/NodeManager.cpp
+  # src/Event.cpp
+  # src/EventDispatcher.cpp
+  # src/EventManager.cpp
+  # src/utils.cpp
+  # src/utils/node_manager_utils.cpp
+  # src/stb_image.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${_include_dirs})

@@ -18,13 +18,35 @@ endfunction()
 
 project(node_editor_example)
 
+# Define the source directory
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
+# Recursively collect all .cpp and .h files
+file(GLOB_RECURSE SOURCES
+    "${SOURCE_DIR}/*.cpp"
+    "${SOURCE_DIR}/*.h"
+)
+# Organize files into folders in Visual Studio
+foreach(FILE_PATH IN LISTS SOURCES)
+    # Get the directory relative to the source directory
+    file(RELATIVE_PATH REL_PATH "${SOURCE_DIR}" "${FILE_PATH}")
+    
+    # Extract the directory part of the relative path
+    get_filename_component(FOLDER_PATH "${REL_PATH}" DIRECTORY)
+
+    # Replace "/" with "\\" to ensure compatibility with Visual Studio
+    string(REPLACE "/" "\\" FOLDER_PATH "src/${FOLDER_PATH}")
+
+    # Assign the file to a source group
+    source_group("${FOLDER_PATH}" FILES "${FILE_PATH}")
+endforeach()
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 add_executable(${PROJECT_NAME} 
-    src/example.cpp
-    src/Application.cpp
-    src/StringGenerator.cpp
-    src/NumberOperator.cpp
+    ${SOURCES}
+    # src/example.cpp
+    # src/Application.cpp
+    # src/StringGenerator.cpp
+    # src/NumberOperator.cpp
 )
 
 include_directories(
