@@ -29,6 +29,8 @@ FetchDependencyAndMakeAvailable(
 # GLFW
 set(GLFW_BUILD_WAYLAND OFF)
 set(GLFW_BUILD_SHARED_LIBRARY ON)
+set(GLFW_BUILD_DOCS OFF)
+set(GLFW_BUILD_EXAMPLES OFF)
 FetchDependencyAndMakeAvailable(
   glfw
   https://github.com/glfw/glfw
