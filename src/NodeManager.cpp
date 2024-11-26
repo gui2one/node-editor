@@ -1,18 +1,14 @@
 // #include "NodeParam.h"
 #include "NodeManager.h"
 
-
 GLuint GenerateEmptyTexture() {
   std::cout << "EMPTY TEXTURE !!!!" << std::endl;
-  
+
   GLuint texture;
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
-  std::vector<unsigned char> data = {
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0,
-    0, 0, 0, 0
+  std::vector<unsigned char> data = {0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                     0, 0, 0, 0, 0, 0, 0
 
   };
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data());
@@ -44,7 +40,6 @@ GLuint LoadTexture(const char *filename) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
   glGenerateMipmap(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, 0);
   stbi_image_free(data);
@@ -67,7 +62,6 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NED::Param<bool>);
   REGISTER_PARAM_TYPE(NED::Param<glm::vec2>);
   REGISTER_PARAM_TYPE(NED::Param<glm::vec3>);
-
 }
 
 NodeManager::~NodeManager() {}
@@ -116,8 +110,7 @@ void NodeManager::InitGLFWEvents() {
   dispatcher.Subscribe(EventType::MouseClick, [this](const NED::Event &event) { this->OnMouseClick(event); });
   dispatcher.Subscribe(EventType::MouseDoubleClick,
                        [this](const NED::Event &event) { this->OnMouseDoubleClick(event); });
-  dispatcher.Subscribe(EventType::MouseRelease,
-                       [this](const NED::Event &event) { this->OnMouseRelease(event); });
+  dispatcher.Subscribe(EventType::MouseRelease, [this](const NED::Event &event) { this->OnMouseRelease(event); });
   dispatcher.Subscribe(EventType::MouseMove, [this](const NED::Event &event) { this->OnMouseMove(event); });
   dispatcher.Subscribe(EventType::KeyPress, [this](const NED::Event &event) { this->OnKeyPress(event); });
   dispatcher.Subscribe(EventType::DropFile, [this](const NED::Event &event) {
@@ -166,12 +159,9 @@ void NodeManager::CreateAllNodes() {
   float x = 10.0f;
   float y = 10.0f;
   for (auto &[category_name, params] : whole_thing) {
-    
     for (auto &item : params) {
-
       auto node = registry.Create(item.type_name.c_str());
       if (node != nullptr) {
-
         node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
         node->parent_node = m_CurrentNetworkOwner;
         this->m_CurrentNetwork->AddNode(node);
@@ -354,7 +344,7 @@ void NodeManager::DrawNodes() {
     ImVec2 max = min + (node->size * m_ViewProps.zoom);
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
-    if(node->icon_name != ""){
+    if (node->icon_name != "") {
       ImVec2 uv0(0, 0);  // Top-left of the texture
       ImVec2 uv1(1, 1);  // Bottom-right of the texture
       ImVec2 node_center = min + (node->size * 0.5f * m_ViewProps.zoom);
@@ -362,8 +352,9 @@ void NodeManager::DrawNodes() {
       ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
       // glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)m_Icons[node->icon_name]);
       // m_Icons.at(node->icon_name);
-      if(m_Icons.at((const char*)node->icon_name) != 0){
-        draw_list->AddImage((ImTextureID)(intptr_t)m_Icons.at((const char*)node->icon_name), icon_min, icon_max, uv0, uv1);
+      if (m_Icons.at((const char *)node->icon_name) != 0) {
+        draw_list->AddImage((ImTextureID)(intptr_t)m_Icons.at((const char *)node->icon_name), icon_min, icon_max, uv0,
+                            uv1);
       }
     }
 
@@ -445,8 +436,9 @@ void NodeManager::DrawCanvas() {
   DrawNodes();
 
   // selection rectangle
-  if(m_ViewProps.rectangleSelectionStarted) {
-    draw_list->AddRect(ToScreenSpace(m_ViewProps.rectangleSelectionStartPoint), ToScreenSpace(m_ViewProps.rectangleSelectionEndPoint), NODE_COLOR::YELLOW);
+  if (m_ViewProps.rectangleSelectionStarted) {
+    draw_list->AddRect(ToScreenSpace(m_ViewProps.rectangleSelectionStartPoint),
+                       ToScreenSpace(m_ViewProps.rectangleSelectionEndPoint), NODE_COLOR::YELLOW);
   }
   // debug draw
   ImVec2 raw_pos = io.MousePos;
@@ -464,7 +456,20 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   if (node == nullptr) return;
 
   ImGui::Begin("Params");
-  ImGui::InputText("Node Name", &node->title);
+  std::string temp_name = node->title;
+  std::string name_copy = node->title;
+
+  ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+  if (ImGui::InputText("Node Name", &name_copy, 0)) {
+    std::unordered_set<std::string> names;
+
+    for (auto other_node : m_CurrentNetwork->nodes) {
+
+        names.insert(other_node->title);
+      
+    }
+    node->title = generate_unique_name(name_copy, names);
+  }
   ImGui::Separator();
   ImGui::Spacing();
   ImGui::Spacing();
@@ -612,18 +617,14 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
   }
 }
 
-bool valueInRange(float value, float min, float max)
-{ return (value >= min) && (value <= max); }
+bool valueInRange(float value, float min, float max) { return (value >= min) && (value <= max); }
 
-bool rectOverlap(Rect A, Rect B)
-{
-    bool xOverlap = valueInRange(A.x, B.x, B.x + B.width) ||
-                    valueInRange(B.x, A.x, A.x + A.width);
+bool rectOverlap(Rect A, Rect B) {
+  bool xOverlap = valueInRange(A.x, B.x, B.x + B.width) || valueInRange(B.x, A.x, A.x + A.width);
 
-    bool yOverlap = valueInRange(A.y, B.y, B.y + B.height) ||
-                    valueInRange(B.y, A.y, A.y + A.height);
+  bool yOverlap = valueInRange(A.y, B.y, B.y + B.height) || valueInRange(B.y, A.y, A.y + A.height);
 
-    return xOverlap && yOverlap;
+  return xOverlap && yOverlap;
 }
 
 void NodeManager::OnMouseMove(const Event &event) {
@@ -662,17 +663,17 @@ void NodeManager::OnMouseMove(const Event &event) {
   if (hovered_node != nullptr) {
     hovered_node->highlighted = true;
   }
-  
+
   float start_x = m_ViewProps.rectangleSelectionStartPoint.x;
   float start_y = m_ViewProps.rectangleSelectionStartPoint.y;
   float end_x = m_ViewProps.rectangleSelectionEndPoint.x;
   float end_y = m_ViewProps.rectangleSelectionEndPoint.y;
 
-  if(m_ViewProps.rectangleSelectionStarted) {
-    for(auto node : GetNodes()) {
+  if (m_ViewProps.rectangleSelectionStarted) {
+    for (auto node : GetNodes()) {
       bool inside_x = false;
       bool inside_y = false;
-      
+
       float node_x = node->position.x;
       float node_y = node->position.y;
       float node_w = node->size.x;
@@ -685,34 +686,32 @@ void NodeManager::OnMouseMove(const Event &event) {
       node_rect.height = node->size.y;
 
       Rect selection_rect;
-      
-      if(start_x < end_x ) {
+
+      if (start_x < end_x) {
         selection_rect.x = start_x;
         selection_rect.width = std::abs(end_x - start_x);
-      }else if(start_x > end_x) {
+      } else if (start_x > end_x) {
         selection_rect.width = std::abs(start_x - end_x);
         selection_rect.x = end_x;
-      }else{
+      } else {
         selection_rect.x = start_x;
         selection_rect.width = 1.0f;
       }
 
-      if(start_y < end_y ) {
+      if (start_y < end_y) {
         selection_rect.y = start_y;
         selection_rect.height = std::abs(end_y - start_y);
-      }else if(start_y > end_y) {
+      } else if (start_y > end_y) {
         selection_rect.height = std::abs(start_y - end_y);
         selection_rect.y = end_y;
-      }else{
+      } else {
         selection_rect.y = start_y;
         selection_rect.height = 1.0f;
       }
 
       node->selected = rectOverlap(node_rect, selection_rect);
-      
     }
   }
-   
 }
 
 void NodeManager::OnMouseClick(const Event &event) {
@@ -816,8 +815,8 @@ void NodeManager::OnMouseRelease(const Event &event) {
     EventManager::GetInstance().Dispatch(event);
   }
 
-  for(auto node : GetNodes()) {
-    if(node->selected) {
+  for (auto node : GetNodes()) {
+    if (node->selected) {
       m_CurrentNode = node;
       break;
     }
@@ -866,4 +865,4 @@ void NodeManager::ViewFrameAll() {
   m_ViewProps.scrolling = -center + m_ViewProps.canvasSize / 2.0f;
 }
 
-};  // namespace NodeEditor
+};  // namespace NED
