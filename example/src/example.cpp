@@ -20,17 +20,17 @@ int main(int argc, char *argv[]) {
 
 
 
-  CREATE_UTILITY_CLASSES(std::string, "utility");
-  REGISTER_NODE_TYPE(NED::StringGenerate, "generate", "generator");
-  REGISTER_NODE_TYPE(NED::TextFileLoader, "Load Text File", "generator");
-  REGISTER_NODE_TYPE(NED::StringConcatenator, "concatenator", "modifier");
-  REGISTER_NODE_TYPE(NED::StringConcatenatorMulti, "concatmulti", "modifier");
-  REGISTER_NODE_TYPE(NED::StringRepeater, "repeater", "modifier");
-  REGISTER_NODE_TYPE(NED::StringToUpperCase, "To Upper Case", "modifier");
+  CREATE_UTILITY_CLASSES(std::string, "string/utility");
+  REGISTER_NODE_TYPE(NED::StringGenerate, "generate", "string/generator");
+  REGISTER_NODE_TYPE(NED::StringConcatenator, "concatenator", "string/modifier");
+  REGISTER_NODE_TYPE(NED::TextFileLoader, "Load Text File", "string/generator");
+  REGISTER_NODE_TYPE(NED::StringConcatenatorMulti, "concatmulti", "string/modifier");
+  REGISTER_NODE_TYPE(NED::StringRepeater, "repeater", "string/modifier");
+  REGISTER_NODE_TYPE(NED::StringToUpperCase, "To Upper Case", "string/modifier");
 
 
-  REGISTER_NODE_TYPE(NED::Add, "add", "operator");
-  REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "operator");
+  REGISTER_NODE_TYPE(NED::Add, "add", "number/math");
+  REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "number");
   Application app;
 
   if (!app.Init()) {

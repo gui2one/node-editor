@@ -189,28 +189,55 @@ void NodeManager::BuildNodeMenuFromRegistry() {
   static NodeFactoryRegistry &registry = NodeFactoryRegistry::GetInstance();
 
   std::unordered_map<std::string, std::vector<NodeFactoryRegistryItem>> whole_thing;
-  // collect items by category
+
+  // Collect items by category
   for (auto &factory : registry.GetFactories()) {
     whole_thing[factory.second.category_name].push_back(factory.second);
   }
 
-  for (auto &[category_name, items] : whole_thing) {
-    if (ImGui::BeginMenu(category_name.c_str())) {
-      for (auto &item : items) {
-        if (ImGui::MenuItem(item.label.c_str(), NULL, false, true)) {
-          auto node = registry.Create(item.type_name.c_str(), m_CurrentNetworkOwner);
-          if (node != nullptr) {
-            double x, y;
-            glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
-            node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
-            node->parent_node = m_CurrentNetworkOwner;
-            this->m_CurrentNetwork->AddNode(node);
+  // Helper lambda to split category strings
+  auto split_category = [](const std::string &category) -> std::vector<std::string> {
+    std::vector<std::string> parts;
+    std::stringstream ss(category);
+    std::string part;
+    while (std::getline(ss, part, '/')) {
+      parts.push_back(part);
+    }
+    return parts;
+  };
+
+  // Recursive function to create hierarchical menus
+  std::function<void(const std::vector<std::string> &, const std::vector<NodeFactoryRegistryItem> &)> create_menu;
+  create_menu = [&](const std::vector<std::string> &path, const std::vector<NodeFactoryRegistryItem> &items) {
+    if (path.empty()) return;
+
+    if (ImGui::BeginMenu(path.front().c_str())) {
+      if (path.size() == 1) {
+        // Add items to this menu
+        for (const auto &item : items) {
+          if (ImGui::MenuItem(item.label.c_str(), nullptr, false, true)) {
+            auto node = registry.Create(item.type_name.c_str(), m_CurrentNetworkOwner);
+            if (node != nullptr) {
+              double x, y;
+              glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
+              node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
+              node->parent_node = m_CurrentNetworkOwner;
+              this->m_CurrentNetwork->AddNode(node);
+            }
           }
         }
+      } else {
+        // Continue creating submenus
+        create_menu({path.begin() + 1, path.end()}, items);
       }
-
       ImGui::EndMenu();
     }
+  };
+
+  // Process each category
+  for (auto &[category_name, items] : whole_thing) {
+    std::vector<std::string> path = split_category(category_name);
+    create_menu(path, items);
   }
 }
 
