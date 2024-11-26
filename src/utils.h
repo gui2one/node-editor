@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_set>
 #include <sstream>
+#include <regex>
 
 namespace NED {
 std::string generate_unique_name(const std::string& baseName, const std::unordered_set<std::string>& existingNames);

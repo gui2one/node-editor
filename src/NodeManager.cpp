@@ -176,10 +176,10 @@ void NodeManager::CreateAllNodes() {
         node->parent_node = m_CurrentNetworkOwner;
         this->m_CurrentNetwork->AddNode(node);
       }
-      y += 60.0f;  
+      y += node->size.y + 40.0f;
     }
     y = 0.0f;
-    x += 300.0f;
+    x += 200.0f;
   }
 }
 
