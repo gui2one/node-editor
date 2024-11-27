@@ -1,4 +1,4 @@
-// #include "NodeParam.h"
+// #include "NodeParam.h") {
 #include "NodeManager.h"
 
 GLuint GenerateEmptyTexture() {
@@ -878,10 +878,11 @@ void NodeManager::OnMouseRelease(const Event &event) {
     //           << std::endl;
     // std::cout << "End pos : " << m_ViewProps.node_clicked->position.x << ", " << m_ViewProps.node_clicked->position.y
     //           << std::endl;
-
-    auto move_action = std::make_unique<MoveNodeAction>(m_ViewProps.node_clicked, m_ViewProps.node_clicked_position,
-                                                        m_ViewProps.node_clicked->position);
-    m_ActionManager.executeCommand(std::move(move_action));
+    if (m_ViewProps.node_clicked_position != m_ViewProps.node_clicked->position) {
+      auto move_action = std::make_unique<MoveNodeAction>(m_ViewProps.node_clicked, m_ViewProps.node_clicked_position,
+                                                          m_ViewProps.node_clicked->position);
+      m_ActionManager.executeCommand(std::move(move_action));
+    }
   }
   for (auto node : GetNodes()) {
     if (m_ConnectionProcedure.started && IsNodeHovered(node)) {
