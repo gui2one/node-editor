@@ -1,4 +1,4 @@
-# another imGui Node Editor ... !
+# another imGui Node Editor ... ?
 
 Frankly, this is born only from my inability to build [imgui-node-editor](https://github.com/thedmd/imgui-node-editor)
 If you are looking for a robust node editor, you should look at [imgui-node-editor](https://github.com/thedmd/imgui-node-editor)
