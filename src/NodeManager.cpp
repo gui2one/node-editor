@@ -457,18 +457,20 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
 
   ImGui::Begin("Params");
   std::string temp_name = node->title;
-  std::string name_copy = node->title;
+  std::string name_copy = std::string(node->title);
 
   ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-  if (ImGui::InputText("Node Name", &name_copy, 0)) {
+  if (ImGui::InputText("Node Name", &name_copy, flags)) {
     std::unordered_set<std::string> names;
 
     for (auto other_node : m_CurrentNetwork->nodes) {
-
+      if (other_node != node) {
         names.insert(other_node->title);
+      }
       
     }
     node->title = generate_unique_name(name_copy, names);
+    //std::cout << "Node name changed to " << node->title << std::endl;
   }
   ImGui::Separator();
   ImGui::Spacing();
