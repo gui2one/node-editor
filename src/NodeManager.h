@@ -4,11 +4,12 @@
 
 #include <stb_image.h>
 
+#include "ActionManager.h"
 #include "EventManager.h"
 #include "ImGuiNode.h"
 #include "ParamFactory.h"
-#include "utils/node_manager_utils.h"
 #include "utils.h"
+#include "utils/node_manager_utils.h"
 
 namespace NED {
 
@@ -34,7 +35,7 @@ struct ConnectionProcedure {
   bool is_mutli_input = false;
 };
 
-struct Rect{
+struct Rect {
   float x;
   float y;
   float width;
@@ -45,12 +46,14 @@ struct ViewProperties {
   bool display_grid = true;
   bool nodes_menu_opened = false;
   bool show_mouse_coords = false;
-  ImVec2 scrolling;
 
+  ImVec2 scrolling;
   float zoom = 1.0f;
 
+  std::shared_ptr<AbstractNode> node_clicked = nullptr;
+  ImVec2 node_clicked_position;
   bool canvasHovered = false;
-  
+
   bool rectangleSelectionStarted = false;
   ImVec2 rectangleSelectionStartPoint;
   ImVec2 rectangleSelectionEndPoint;
@@ -150,11 +153,13 @@ class NodeManager {
   }
 
   void CreateAllNodes();
+
  private:
   void SetNodesMenu(std::function<void()> func);
   void BuildNodeMenuFromRegistry();
 
  public:
+  ActionManager m_ActionManager;
   WindowData m_WindowData;
   ViewProperties m_ViewProps;
   AbstractNode* m_CurrentNetworkOwner = nullptr;
@@ -183,6 +188,6 @@ class NodeManager {
   const char* m_FileExtension = "ney";
 };  // end class NodeManager
 
-};  // end namespace NodeEditor
+};  // namespace NED
 
 #endif

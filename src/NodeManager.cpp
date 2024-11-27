@@ -467,10 +467,9 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
       if (other_node != node) {
         names.insert(other_node->title);
       }
-      
     }
     node->title = generate_unique_name(name_copy, names);
-    //std::cout << "Node name changed to " << node->title << std::endl;
+    // std::cout << "Node name changed to " << node->title << std::endl;
   }
   ImGui::Separator();
   ImGui::Spacing();
@@ -637,6 +636,14 @@ void NodeManager::OnMouseMove(const Event &event) {
   ImVec2 delta = ImVec2(moveEvent.x, moveEvent.y) - old_pos;
   std::shared_ptr<AbstractNode> hovered_node = nullptr;
 
+  // if (m_ViewProps.node_clicked != nullptr) {
+  //   // m_ViewProps.node_clicked->position += delta;
+  //   std::cout << "Moving node : " << m_ViewProps.node_clicked->title << "";
+  //   std::cout << "-- Start pos = " << m_ViewProps.node_clicked_position.x << ", " <<
+  //   m_ViewProps.node_clicked_position.y
+  //             << std::endl;
+  // }
+
   if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
     m_ViewProps.scrolling += delta;
   }
@@ -726,7 +733,9 @@ void NodeManager::OnMouseClick(const Event &event) {
     if (node_hovered) {
       m_CurrentNode = node;
       clicked_something = true;
-    } else {
+      m_ViewProps.node_clicked = node;
+      m_ViewProps.node_clicked_position = node->position;
+      // std::cout << "Node clicked: " << m_ViewProps.node_clicked->title << std::endl;
     }
 
     if (node_hovered && node->selected == false && m_ViewProps.rectangleSelectionStarted == false) {
@@ -801,6 +810,17 @@ void NodeManager::OnMouseRelease(const Event &event) {
   }
   m_LastCLickReleaseTime = now;
 
+  if (m_ViewProps.node_clicked != nullptr) {
+    // std::cout << "Node released: " << m_ViewProps.node_clicked->title << std::endl;
+    // std::cout << "Start pos : " << m_ViewProps.node_clicked_position.x << ", " << m_ViewProps.node_clicked_position.y
+    //           << std::endl;
+    // std::cout << "End pos : " << m_ViewProps.node_clicked->position.x << ", " << m_ViewProps.node_clicked->position.y
+    //           << std::endl;
+
+    auto move_action = std::make_unique<MoveNodeAction>(m_ViewProps.node_clicked, m_ViewProps.node_clicked_position,
+                                                        m_ViewProps.node_clicked->position);
+    m_ActionManager.executeCommand(std::move(move_action));
+  }
   for (auto node : GetNodes()) {
     if (m_ConnectionProcedure.started && IsNodeHovered(node)) {
       m_ConnectionProcedure.input_node = node;
@@ -824,6 +844,7 @@ void NodeManager::OnMouseRelease(const Event &event) {
     }
   }
   m_ViewProps.rectangleSelectionStarted = false;
+  m_ViewProps.node_clicked = nullptr;
 }
 
 void NodeManager::OnKeyPress(const Event &event) {
