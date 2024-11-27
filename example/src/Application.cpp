@@ -287,66 +287,9 @@ void Application::Run() {
       ImGui::ShowDemoWindow(&showDemoWindow);
     }
 
+    // main menu bar
     ImGui::BeginMainMenuBar();
-    if (ImGui::BeginMenu("File")) {
-      if (ImGui::MenuItem("New", "Ctrl+N")) {
-        m_NodeManager.GetRootNetwork().nodes.clear();
-        m_NodeManager.GetRootNetwork().outuput_node = nullptr;
-        m_NodeManager.m_CurrentNode = nullptr;
-        m_NodeManager.m_SavePath = std::filesystem::path("");
-        glfwSetWindowTitle(m_NodeManager.GetGLFWWindow(), m_NodeManager.m_SavePath.string().c_str());
-      }
-
-      if (ImGui::MenuItem("Save", "Ctrl+S")) {
-        m_NodeManager.SaveAll();
-      }
-
-      if (ImGui::MenuItem("Load", "Ctrl+O")) {
-        m_NodeManager.LoadAll();
-      }
-
-      ImGui::Separator();
-
-      if (ImGui::MenuItem("Clear All Nodes")) {
-        m_NodeManager.GetNodes().clear();
-      }
-
-      ImGui::EndMenu();
-    }
-    if (ImGui::BeginMenu("Edit")) {
-      if (ImGui::MenuItem("Undo", "Ctrl+Z")) {
-        m_NodeManager.m_ActionManager.undo();
-      }
-      if (ImGui::MenuItem("Redo", "Ctrl+Y")) {
-        m_NodeManager.m_ActionManager.redo();
-      }
-      ImGui::Separator();
-      if (ImGui::MenuItem("Clone", "Ctrl+D", false, m_NodeManager.m_CurrentNode != nullptr)) {
-        auto factory_node = NodeFactoryRegistry::GetInstance().Clone(m_NodeManager.m_CurrentNode);
-        m_NodeManager.GetCurrentNetwork()->AddNode(factory_node);
-        // m_NodeManager.AddNode(factory_node);
-      }
-      ImGui::EndMenu();
-    }
-    if (ImGui::BeginMenu("View")) {
-      if (ImGui::MenuItem("Center All", "F")) {
-        m_NodeManager.ViewFrameAll();
-      }
-
-      ImGui::MenuItem("Show Grid", NULL, &m_NodeManager.m_ViewProps.display_grid);
-      ImGui::MenuItem("Show Mouse Coords", NULL, &m_NodeManager.m_ViewProps.show_mouse_coords);
-      ImGui::Separator();
-
-      if (ImGui::MenuItem("Goto Root")) {
-        m_NodeManager.GotoRootNetwork();
-      }
-
-      ImGui::EndMenu();
-    }
-    if (ImGui::BeginMenu("ImGui")) {
-      ImGui::MenuItem("Show Demo Window", NULL, &showDemoWindow);
-      ImGui::EndMenu();
-    }
+    m_NodeManager.BuildImGuiMainMenuBar();
     ImGui::EndMainMenuBar();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f, 10.0f));

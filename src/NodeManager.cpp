@@ -173,6 +173,68 @@ void NodeManager::CreateAllNodes() {
   }
 }
 
+void NodeManager::BuildImGuiMainMenuBar() {
+  if (ImGui::BeginMenu("File")) {
+    if (ImGui::MenuItem("New", "Ctrl+N")) {
+      GetRootNetwork().nodes.clear();
+      GetRootNetwork().outuput_node = nullptr;
+      m_CurrentNode = nullptr;
+      m_SavePath = std::filesystem::path("");
+      glfwSetWindowTitle(GetGLFWWindow(), m_SavePath.string().c_str());
+    }
+
+    if (ImGui::MenuItem("Save", "Ctrl+S")) {
+      SaveAll();
+    }
+
+    if (ImGui::MenuItem("Load", "Ctrl+O")) {
+      LoadAll();
+    }
+
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Clear All Nodes")) {
+      GetNodes().clear();
+    }
+
+    ImGui::EndMenu();
+  }
+  if (ImGui::BeginMenu("Edit")) {
+    if (ImGui::MenuItem("Undo", "Ctrl+Z")) {
+      m_ActionManager.undo();
+    }
+    if (ImGui::MenuItem("Redo", "Ctrl+Y")) {
+      m_ActionManager.redo();
+    }
+    ImGui::Separator();
+    if (ImGui::MenuItem("Clone", "Ctrl+D", false, m_CurrentNode != nullptr)) {
+      auto factory_node = NodeFactoryRegistry::GetInstance().Clone(m_CurrentNode);
+      GetCurrentNetwork()->AddNode(factory_node);
+      // AddNode(factory_node);
+    }
+    ImGui::EndMenu();
+  }
+  if (ImGui::BeginMenu("View")) {
+    if (ImGui::MenuItem("Center All", "F")) {
+      ViewFrameAll();
+    }
+
+    ImGui::MenuItem("Show Grid", NULL, &m_ViewProps.display_grid);
+    ImGui::MenuItem("Show Mouse Coords", NULL, &m_ViewProps.show_mouse_coords);
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Goto Root")) {
+      GotoRootNetwork();
+    }
+
+    ImGui::EndMenu();
+  }
+  // if (ImGui::BeginMenu("ImGui")) {
+  //   ImGui::MenuItem("Show Demo Window", NULL, &showDemoWindow);
+  //   ImGui::EndMenu();
+  // }
+}
+
 void NodeManager::SetNodesMenu(std::function<void()> func) { m_NodesMenu = func; }
 
 void NodeManager::BuildNodeMenuFromRegistry() {

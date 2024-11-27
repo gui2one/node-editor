@@ -153,6 +153,7 @@ class NodeManager {
   }
 
   void CreateAllNodes();
+  void BuildImGuiMainMenuBar();
 
  private:
   void SetNodesMenu(std::function<void()> func);
