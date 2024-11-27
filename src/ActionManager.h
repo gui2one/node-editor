@@ -11,7 +11,20 @@ class ActionManager {
   std::stack<std::unique_ptr<Action>> undoStack;
   std::stack<std::unique_ptr<Action>> redoStack;
 
+ private:
+  // Private constructor for Singleton
+  ActionManager() = default;
+
  public:
+  // Delete copy constructor and assignment operator to enforce singleton properties
+  ActionManager(const ActionManager&) = delete;
+  ActionManager& operator=(const ActionManager&) = delete;
+
+  // Get the singleton instance
+  static ActionManager& GetInstance() {
+    static ActionManager instance;  // Thread-safe in C++11 and later
+    return instance;
+  }
   void executeCommand(std::unique_ptr<Action> command) {
     command->Do();
     undoStack.push(std::move(command));

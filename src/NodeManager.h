@@ -160,7 +160,6 @@ class NodeManager {
   void BuildNodeMenuFromRegistry();
 
  public:
-  ActionManager m_ActionManager;
   WindowData m_WindowData;
   ViewProperties m_ViewProps;
   AbstractNode* m_CurrentNetworkOwner = nullptr;

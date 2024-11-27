@@ -201,10 +201,10 @@ void NodeManager::BuildImGuiMainMenuBar() {
   }
   if (ImGui::BeginMenu("Edit")) {
     if (ImGui::MenuItem("Undo", "Ctrl+Z")) {
-      m_ActionManager.undo();
+      ActionManager::GetInstance().undo();
     }
     if (ImGui::MenuItem("Redo", "Ctrl+Y")) {
-      m_ActionManager.redo();
+      ActionManager::GetInstance().redo();
     }
     ImGui::Separator();
     if (ImGui::MenuItem("Clone", "Ctrl+D", false, m_CurrentNode != nullptr)) {
@@ -876,7 +876,7 @@ void NodeManager::OnMouseRelease(const Event &event) {
     if (m_ViewProps.node_clicked_position != m_ViewProps.node_clicked->position) {
       auto move_action = std::make_unique<MoveNodeAction>(m_ViewProps.node_clicked, m_ViewProps.node_clicked_position,
                                                           m_ViewProps.node_clicked->position);
-      m_ActionManager.executeCommand(std::move(move_action));
+      ActionManager::GetInstance().executeCommand(std::move(move_action));
     }
   }
   for (auto node : GetNodes()) {
