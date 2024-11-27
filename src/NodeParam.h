@@ -13,14 +13,14 @@
 #include "utils.h"
 #include "utils/node_manager_utils.h"
 
-#define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC()                                     \
-  YAML::Node YAMLSerialize() override {                                             \
-    YAML::Node yaml_node;                                                           \
+#define NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC()     \
+  YAML::Node YAMLSerialize() override {             \
+    YAML::Node yaml_node;                           \
     std::string type_str = std::string(m_TypeName); \
-    yaml_node["type"] = type_str;                                                   \
-    yaml_node["label"] = m_Label;                                                       \
-    yaml_node["value"] = value;                                                     \
-    return yaml_node;                                                               \
+    yaml_node["type"] = type_str;                   \
+    yaml_node["label"] = m_Label;                   \
+    yaml_node["value"] = value;                     \
+    return yaml_node;                               \
   }
 
 #define DISPATCH_PARAM_CHANGE_EVENT() \
@@ -31,10 +31,10 @@
   EventManager::GetInstance().Dispatch(event);
 
 #define DISPLAY_PARAM_TEMPLATE(label, func)               \
-  ImGui::PushID(m_Label);                                    \
+  ImGui::PushID(m_Label);                                 \
   ImGui::Columns(2);                                      \
   ImGui::SetColumnWidth(0, 150.f);                        \
-  ImGui::Text("%s", m_Label);                                \
+  ImGui::Text("%s", m_Label);                             \
   ImGui::NextColumn();                                    \
   ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x); \
   func();                                                 \
@@ -92,13 +92,14 @@ class Param : public NodeParam {
 template <>
 class Param<glm::vec2> : public NodeParam {
  public:
-  Param(): NodeParam() {};
+  Param() : NodeParam() {};
   Param(const char* _name, glm::vec2 _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
   glm::vec2 Eval() { return value; }
 
-  void Display(){DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {;
+  void Display(){DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+    ;
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
@@ -158,7 +159,7 @@ class Param<glm::vec2> : public NodeParam {
 template <>
 class Param<glm::vec3> : public NodeParam {
  public:
-  Param(): NodeParam() {};
+  Param() : NodeParam() {};
   Param(const char* _name, glm::vec3 _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -247,8 +248,8 @@ class Param<glm::vec3> : public NodeParam {
 
 template <>
 class Param<std::string> : public NodeParam {
-public:
-  Param(): NodeParam() {};
+ public:
+  Param() : NodeParam() {};
   Param(const char* _name) : NodeParam(_name), value("no value") {};
   Param(const char* _name, std::string _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
@@ -305,18 +306,20 @@ class Param<std::wstring> : public NodeParam {
 template <>
 class Param<int> : public NodeParam {
  public:
-  Param(): NodeParam() {};
+  Param() : NodeParam() {};
   Param(const char* _name, int _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
   int Eval() { return value; }
 
-  void Display(){DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-    if (ImGui::DragInt("##m_Label", &value, 1.0f, min_val, max_val, "%d", ImGuiSliderFlags_AlwaysClamp)) {
-      DISPATCH_PARAM_CHANGE_EVENT();
-    }
-  })} 
-  
+  void Display(){DISPLAY_PARAM_TEMPLATE(m_Label,
+                                        [this]() {
+                                          if (ImGui::DragInt("##m_Label", &value, 1.0f, min_val, max_val, "%d",
+                                                             ImGuiSliderFlags_AlwaysClamp)) {
+                                            DISPATCH_PARAM_CHANGE_EVENT();
+                                          }
+                                        })}
+
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 
  public:
@@ -328,7 +331,7 @@ class Param<int> : public NodeParam {
 template <>
 class Param<float> : public NodeParam {
  public:
-  Param(): NodeParam() {};
+  Param() : NodeParam() {};
   Param(const char* _name, float _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -350,7 +353,7 @@ class Param<float> : public NodeParam {
 template <>
 class Param<bool> : public NodeParam {
  public:
-  Param(): NodeParam() {};
+  Param() : NodeParam() {};
   Param(const char* _name, bool _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -413,12 +416,11 @@ class ParamFile : public Param<std::wstring> {
   }
 };
 
-
 class ParamLabel : public Param<std::string> {
  public:
-  ParamLabel() : Param<std::string>("aaaa", "no value"){};
-  ParamLabel(std::string _value) : Param<std::string>("", _value){};
-  ParamLabel(const char* _name, std::string _value) : Param<std::string>(_name, _value){};
+  ParamLabel() : Param<std::string>("aaaa", "no value") {};
+  ParamLabel(std::string _value) : Param<std::string>("", _value) {};
+  ParamLabel(const char* _name, std::string _value) : Param<std::string>(_name, _value) {};
   ~ParamLabel() {};
   void Display() {
     ImGui::Spacing();
@@ -432,7 +434,6 @@ class ParamLabel : public Param<std::string> {
     yaml_node["value"] = value;
     return yaml_node;
   }
-
 };
 
 class ParamComboBox : public Param<int> {
@@ -485,7 +486,6 @@ class ParamSeparator : public Param<std::string> {
   }
 };
 
-
 class ParamGroup : public Param<int> {
  public:
   ParamGroup() : Param<int>("", 0) {};
@@ -520,5 +520,5 @@ void set_param_value(std::shared_ptr<NodeParam> param, T value) {
   static_cast<Param<T>*>(param.get())->value = value;
 };
 
-};  // namespace NodeEditor
+};  // namespace NED
 #endif
