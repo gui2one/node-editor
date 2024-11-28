@@ -1,5 +1,7 @@
 #include "yaml_serialize.h"
 
+#include "utils/node_manager_utils.h"
+
 YAML::Emitter& operator<<(YAML::Emitter& out, const std::shared_ptr<NED::AbstractNode>& node) {
   out << node->YAMLSerialize();
   return out;
@@ -82,28 +84,28 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
   return factory_node;
 }
 
-std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> factory_node, std::string param_name) {
-  for (auto& param_item : factory_node->m_ParamLayout.params) {
-    auto p_group = std::dynamic_pointer_cast<ParamGroup>(param_item);
-    if (p_group != nullptr) {
-      if (p_group->m_Label == param_name) {
-        return p_group;
-      }
-      for (auto group_item : p_group->params) {
-        if (group_item->m_Label == param_name) {
-          return group_item;
-        }
-      }
-
-    } else {
-      if (param_item->m_Label == param_name) {
-        return param_item;
-      }
-    }
-  }
-
-  return nullptr;
-}
+// std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> factory_node, std::string param_name) {
+//   for (auto& param_item : factory_node->m_ParamLayout.params) {
+//     auto p_group = std::dynamic_pointer_cast<ParamGroup>(param_item);
+//     if (p_group != nullptr) {
+//       if (p_group->m_Label == param_name) {
+//         return p_group;
+//       }
+//       for (auto group_item : p_group->params) {
+//         if (group_item->m_Label == param_name) {
+//           return group_item;
+//         }
+//       }
+//
+//     } else {
+//       if (param_item->m_Label == param_name) {
+//         return param_item;
+//       }
+//     }
+//   }
+//
+//   return nullptr;
+// }
 
 void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node) {
   std::string p_type_str = yaml["type"].as<std::string>();
@@ -115,7 +117,7 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
 
   std::shared_ptr<NodeParam> param = nullptr;
 
-  param = find_param_by_name(factory_node, p_name);
+  param = Utils::FindParamByName(factory_node, p_name);
 
   if (param == nullptr) {
     std::cout << "Could not find param: " << p_name << "" << std::endl;

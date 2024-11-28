@@ -1,5 +1,6 @@
 #include "node_manager_utils.h"
 
+#include "NodeParam.h"
 namespace NED::Utils {
 std::shared_ptr<AbstractNode> FindNodeByUUID(std::string uuid, std::vector<std::shared_ptr<AbstractNode>> nodes) {
   for (auto node : nodes) {
@@ -10,7 +11,31 @@ std::shared_ptr<AbstractNode> FindNodeByUUID(std::string uuid, std::vector<std::
   return nullptr;
 }
 
-ImVec2 get_nodes_center(std::vector<std::shared_ptr<AbstractNode>>& nodes) {
+std::shared_ptr<NED::NodeParam> FindParamByName(std::shared_ptr<NED::AbstractNode> factory_node,
+                                                std::string param_name) {
+  for (auto& param_item : factory_node->m_ParamLayout.params) {
+    auto p_group = std::dynamic_pointer_cast<NED::ParamGroup>(param_item);
+    if (p_group != nullptr) {
+      if (p_group->m_Label == param_name) {
+        return p_group;
+      }
+      for (auto group_item : p_group->params) {
+        if (group_item->m_Label == param_name) {
+          return group_item;
+        }
+      }
+
+    } else {
+      if (param_item->m_Label == param_name) {
+        return param_item;
+      }
+    }
+  }
+
+  return nullptr;
+}
+
+ImVec2 get_nodes_center(std::vector<std::shared_ptr<NED::AbstractNode>>& nodes) {
   if (nodes.size() == 0) return ImVec2(0, 0);
   float minx = 999999999.f, miny = 999999999.f, maxx = -999999999.f, maxy = -999999999.f;
 
@@ -25,7 +50,7 @@ ImVec2 get_nodes_center(std::vector<std::shared_ptr<AbstractNode>>& nodes) {
   centery = (miny + maxy) / 2.0f + nodes[0]->size.y / 2.0f;
   return ImVec2(centerx, centery);
 }
-void deselect_all(std::vector<std::shared_ptr<AbstractNode>>& nodes) {
+void deselect_all(std::vector<std::shared_ptr<NED::AbstractNode>>& nodes) {
   for (auto node : nodes) {
     node->selected = false;
   }
@@ -94,13 +119,13 @@ std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters) {
 
   if (fp) {
     while (fgets(buffer, sizeof(buffer), fp)) {
-        result += buffer;
+      result += buffer;
     }
     fclose(fp);
 
     // Remove any trailing newlines or extra spaces
     if (!result.empty() && result[result.size() - 1] == '\n') {
-        result.erase(result.size() - 1);
+      result.erase(result.size() - 1);
     }
 
     std::cout << "File Selected: " << result << std::endl;
@@ -108,11 +133,11 @@ std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters) {
     // std::string converted = wide_to_utf8(result_path.string());
     return std::filesystem::path(result_path.string());  // Return the selected file path
   } else {
-      std::cerr << "Failed to open file picker!" << std::endl;
-      return std::filesystem::path("");  // Return empty path on failure
+    std::cerr << "Failed to open file picker!" << std::endl;
+    return std::filesystem::path("");  // Return empty path on failure
   }
 #else
   return std::filesystem::path("");
 #endif
 }
-};  // namespace NodeEditor::Utils
+};  // namespace NED::Utils
