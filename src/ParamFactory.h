@@ -3,10 +3,11 @@
 #pragma once
 
 #include <unordered_map>
+#include <variant>
 
 #include "NodeParam.h"
-
 namespace NED {
+
 struct ParamFactoryRegistryItem {
   std::string type_name;
   std::function<std::shared_ptr<NodeParam>()> factory_func;
@@ -15,10 +16,12 @@ class ParamFactoryRegistry {
  public:
   static ParamFactoryRegistry& instance();
   inline void registerType(const std::string& typeName, ParamFactoryRegistryItem item) { factories[typeName] = item; }
-  std::shared_ptr<NodeParam> create(const std::string& typeName, const char * label = "no label yet") const;
+  std::shared_ptr<NodeParam> create(const std::string& typeName, const char* label = "no label yet") const;
 
-  template<typename T>
-  std::shared_ptr<T> create2(std::string typeName, const char * label) { return std::dynamic_pointer_cast<T>(create(typeName, label)); }
+  template <typename T>
+  std::shared_ptr<T> create2(std::string typeName, const char* label) {
+    return std::dynamic_pointer_cast<T>(create(typeName, label));
+  }
 
   inline std::unordered_map<std::string, ParamFactoryRegistryItem> getFactories() const { return factories; }
 
@@ -34,6 +37,5 @@ class ParamFactoryRegistry {
                                                                return param;                          \
                                                              }})
 
-#define CREATE_PARAM(Type, Label) \
-  NED::ParamFactoryRegistry::instance().create2<Type>(std::string(#Type), Label)
+#define CREATE_PARAM(Type, Label) NED::ParamFactoryRegistry::instance().create2<Type>(std::string(#Type), Label)
 #endif

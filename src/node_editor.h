@@ -25,4 +25,5 @@ void node_menu_item(NED::NodeManager& manager, const char* label) {
     manager.AddNode(node);
   }
 };
+
 #endif

@@ -12,8 +12,8 @@
 #include <random>
 #include <string>
 #include <typeinfo>
+#include <variant>
 #include <vector>
-
 
 // include windows before GLFW to avoid compilation warnings
 #if defined(_WIN32)
@@ -22,8 +22,8 @@
 #endif
 
 #define GLFW_INCLUDE_NONE
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 #define GLFW_MOD_CTRL_SHIFT 0x0003
 #define GLFW_MOD_SHIFT_ALT 0x0005
@@ -36,7 +36,6 @@
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h> /* for std::string in ImGui::InputText() */
 
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -45,5 +44,6 @@
 #include "constants.h"
 #include "yaml_convert.h"
 
+typedef std::variant<std::string, std::wstring, int, float, bool, glm::vec2, glm::vec3> VARIANT_TYPE;
 
 #endif

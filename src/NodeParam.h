@@ -10,6 +10,7 @@
 
 #include "Event.h"
 #include "EventManager.h"
+#include "pch.h"
 #include "utils.h"
 #include "utils/node_manager_utils.h"
 
@@ -44,7 +45,7 @@
   ImGui::Spacing();
 
 namespace NED {
-
+typedef std::variant<std::string, std::wstring, int, float, bool, glm::vec2, glm::vec3> VARIANT_TYPE;
 class NodeParam {
  public:
   NodeParam() { m_Label = "no m_Label"; };
@@ -52,6 +53,7 @@ class NodeParam {
   virtual ~NodeParam() = default;
   virtual void Display() = 0;
 
+  virtual VARIANT_TYPE EvalVariant() = 0;
   virtual YAML::Node YAMLSerialize() = 0;
 
  public:
@@ -69,7 +71,7 @@ class Param : public NodeParam {
   ~Param() {};
 
   T Eval() { return value; };
-
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display() { ImGui::Text("%s -- not implemented", m_Label); }
 
   YAML::Node YAMLSerialize() override {
@@ -97,7 +99,7 @@ class Param<glm::vec2> : public NodeParam {
   ~Param() {};
 
   glm::vec2 Eval() { return value; }
-
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display(){DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
     ;
 
@@ -164,7 +166,7 @@ class Param<glm::vec3> : public NodeParam {
   ~Param() {};
 
   glm::vec3 Eval() { return value; }
-
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       // float default_value = 0.0f;
@@ -255,7 +257,7 @@ class Param<std::string> : public NodeParam {
   ~Param() {};
 
   std::string Eval() { return value; }
-
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       char buffer[2048];
@@ -282,7 +284,7 @@ class Param<std::wstring> : public NodeParam {
   ~Param() {};
 
   std::wstring Eval() { return value; }
-
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       std::string converted = wide_to_utf8(value);
@@ -311,7 +313,7 @@ class Param<int> : public NodeParam {
   ~Param() {};
 
   int Eval() { return value; }
-
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display(){DISPLAY_PARAM_TEMPLATE(m_Label,
                                         [this]() {
                                           if (ImGui::DragInt("##m_Label", &value, 1.0f, min_val, max_val, "%d",
@@ -336,7 +338,7 @@ class Param<float> : public NodeParam {
   ~Param() {};
 
   float Eval() { return value; }
-
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       if (ImGui::SliderFloat("##m_Label", &value, 0, 100)) {
@@ -358,7 +360,7 @@ class Param<bool> : public NodeParam {
   ~Param() {};
 
   bool Eval() { return value; }
-
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       if (ImGui::Checkbox("##m_Label", &value)) {
@@ -374,6 +376,7 @@ class Param<bool> : public NodeParam {
 
 class ParamFile : public Param<std::wstring> {
  public:
+  std::wstring value;
   std::vector<Utils::FileFilterItem> filters = {{"All Files", "*"}, {"Text Files", "txt"}};
 
  public:
@@ -382,6 +385,7 @@ class ParamFile : public Param<std::wstring> {
   ~ParamFile() {};
 
   std::wstring Eval() { return value; }
+  VARIANT_TYPE EvalVariant() override { return value; }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       // ImGui::Text("ParamFile Not implemented yet ...");
