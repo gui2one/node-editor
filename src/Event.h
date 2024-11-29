@@ -92,19 +92,26 @@ class KeyPressEvent : public Event {
 
 class NodeConnectionEvent : public Event {
  public:
-  std::shared_ptr<AbstractNode> input_node;
-  uint32_t input_index;
-  std::shared_ptr<AbstractNode> output_node;
-  uint32_t output_index;
+  std::shared_ptr<AbstractNode> input_node = nullptr;
+  uint32_t input_index = 0;
+  std::shared_ptr<AbstractNode> output_node = nullptr;
+  uint32_t output_index = 0;
 
-  NodeConnectionEvent(std::shared_ptr<AbstractNode> input_node, uint32_t input_index,
-                      std::shared_ptr<AbstractNode> output_node, uint32_t output_index) {}
+  NodeConnectionEvent(std::shared_ptr<AbstractNode> input_node = nullptr, uint32_t input_index = 0,
+                      std::shared_ptr<AbstractNode> output_node = nullptr, uint32_t output_index = 0)
+      : input_node(input_node), input_index(input_index), output_node(output_node), output_index(output_index) {}
   EventType GetType() const override { return EventType::NodeConnection; }
 };
 
 class ParamChangedEvent : public Event {
  public:
-  ParamChangedEvent() : Event() {}
+  std::shared_ptr<AbstractNode> node;
+  std::string param_name;
+
+ public:
+  ParamChangedEvent() : node(nullptr), param_name(""), Event() {}
+  ParamChangedEvent(std::shared_ptr<AbstractNode> node, std::string param_name)
+      : node(node), param_name(param_name), Event() {}
 
   EventType GetType() const override { return EventType::ParamChanged; }
 };
@@ -115,6 +122,6 @@ class ManagerUpdateEvent : public Event {
   EventType GetType() const override { return EventType::ManagerUpdate; }
 };
 
-};  // namespace ned
+};  // namespace NED
 
 #endif
