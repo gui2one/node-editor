@@ -19,11 +19,17 @@ tree = parser.parse(bytes(SOURCE_CODE, "utf-8"))
 # print(tree)
 
 query = CPP_LANGUAGE.query("""
-
-      ((identifier) @name
-        (field_identifier) @function_call
-                           (#eq? @name "dispatcher")
-      )
+(call_expression
+  (field_expression
+    (identifier) @object
+    field: (field_identifier) @method)
+  arguments: (argument_list
+    (qualified_identifier) @event_type
+    (lambda_expression
+      (compound_statement) @body))
+  (#eq? @object "dispatcher")
+  (#eq? @method "Subscribe")
+  (#eq? @event_type "EventType::ParamChanged"))
     
 """)
 
@@ -33,7 +39,8 @@ captures = query.captures(tree.root_node)
 # Filter for "dispatcher"
 for entry in captures:
     nodes = captures[entry] 
-    for node in nodes:
-        identifier_name = SOURCE_CODE[node.start_byte:node.end_byte]
-        if identifier_name == "dispatcher":
-            print(f"Found dispatcher at position: {node.start_point}")
+    if entry == "body":
+        for node in nodes:
+            identifier_name = SOURCE_CODE[node.start_byte:node.end_byte]
+            # if identifier_name == "dispatcher":
+            print(f"Found {identifier_name} at position: {node.start_point}")
