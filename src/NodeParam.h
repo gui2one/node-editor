@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "ActionManager.h"
 #include "Event.h"
 #include "EventManager.h"
 #include "pch.h"
@@ -58,6 +59,7 @@ class NodeParam {
  public:
   const char* m_Label;
   const char* m_TypeName;
+  AbstractNode* m_Node = nullptr;
   int value = -1;
 };
 
@@ -259,12 +261,9 @@ class Param<std::string> : public NodeParam {
 
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      char buffer[2048];
-      if (value.length() > 2048) value = value.substr(0, 2048);
-      std::copy(value.begin(), value.end(), buffer);
-      buffer[value.length()] = 0;
-      if (ImGui::InputText("##m_Label", buffer, 2048)) {
-        value = std::string(buffer);
+      ImGuiInputTextFlags flags = 0;
+      flags |= ImGuiInputTextFlags_EnterReturnsTrue;
+      if (ImGui::InputText("##m_Label", &value, flags)) {
         DISPATCH_PARAM_CHANGE_EVENT();
       }
     });
@@ -340,7 +339,9 @@ class Param<float> : public NodeParam {
 
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      if (ImGui::SliderFloat("##m_Label", &value, 0, 100)) {
+      ImGuiSliderFlags flags = 0;
+
+      if (ImGui::SliderFloat("##m_Label", &value, 0, 100, "%.3f", flags)) {
         DISPATCH_PARAM_CHANGE_EVENT();
       }
     });

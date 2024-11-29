@@ -19,8 +19,10 @@ class ParamFactoryRegistry {
   std::shared_ptr<NodeParam> create(const std::string& typeName, const char* label = "no label yet") const;
 
   template <typename T>
-  std::shared_ptr<T> create2(std::string typeName, const char* label) {
-    return std::dynamic_pointer_cast<T>(create(typeName, label));
+  std::shared_ptr<T> create2(std::string typeName, const char* label, AbstractNode* node) {
+    auto ptr = std::dynamic_pointer_cast<T>(create(typeName, label));
+    ptr->m_Node = node;
+    return ptr;
   }
 
   inline std::unordered_map<std::string, ParamFactoryRegistryItem> getFactories() const { return factories; }
@@ -37,5 +39,6 @@ class ParamFactoryRegistry {
                                                                return param;                          \
                                                              }})
 
-#define CREATE_PARAM(Type, Label) NED::ParamFactoryRegistry::instance().create2<Type>(std::string(#Type), Label)
+#define CREATE_PARAM(Type, Label, NodeRef) \
+  NED::ParamFactoryRegistry::instance().create2<Type>(std::string(#Type), Label, NodeRef)
 #endif

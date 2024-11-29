@@ -43,7 +43,6 @@ enum NODE_COLOR {
   YELLOW = (ImU32)IM_COL32(255, 255, 0, 255)
 };
 
-
 struct NodeNetwork {
   std::shared_ptr<AbstractNode> outuput_node = nullptr;
   std::vector<std::shared_ptr<AbstractNode>> nodes;
@@ -62,7 +61,6 @@ struct InputConnector {
   bool hovered = false;
   bool grabbed = false;
 };
-
 
 class AbstractNode {
  public:
@@ -217,7 +215,6 @@ class ImGuiNode : public AbstractNode {
   T m_DataCache;
 };
 
-
 template <typename T>
 class SubnetNode : public AbstractNode {
  public:
@@ -235,6 +232,7 @@ class SubnetNode : public AbstractNode {
       }
     }
   }
+
  public:
   T m_DataCache;
 };
@@ -249,7 +247,7 @@ class SubnetInputNode : public AbstractNode {
     size.x = 50.0f;
     size.y = 50.0f;
 
-    input_id = CREATE_PARAM(NED::Param<int>, "input id");
+    input_id = CREATE_PARAM(NED::Param<int>, "input id", this);
     input_id->value = 0;
     m_ParamLayout.params.push_back(input_id);
 
