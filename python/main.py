@@ -1,3 +1,7 @@
+### This scripts try to check if all types are present in some code block
+### I am using treesitter to parse C++ code and make some pretty specific queries
+### which is a little scary, but if my code doesn't change to much I should be ok 
+
 from pathlib import Path
 import sys
 import tree_sitter_cpp as ts_cpp
@@ -21,22 +25,21 @@ TYPE_LIST = [
     "glm::vec3",
 ]
 
-print(Fore.WHITE + "Selecting function body" + Style.RESET_ALL)
-str_template = f"""\
-{Fore.YELLOW}\
-Seaching for types:{Style.RESET_ALL}\
-{[type_str for type_str in TYPE_LIST]    }"""
-print(str_template)
+
+
 
 
 def select_function_body() ->str:
 
-    with open(SOURCE_FILE, "r") as f:
-        # print(f.read())
-        SOURCE_CODE = f.read()
+    try:
+        with open(SOURCE_FILE, "r") as f:
+            # print(f.read())
+            SOURCE_CODE = f.read()
+    except FileNotFoundError as e:
+        print(f"{Fore.RED}Cound not find file {SOURCE_FILE}")
+        sys.exit(0)
 
-    # sys.exit(0)
-
+    print(Fore.WHITE + f"Searching for function body in {Style.BRIGHT}{SOURCE_FILE}" + Style.RESET_ALL)
     parser = Parser(CPP_LANGUAGE)
 
     tree = parser.parse(bytes(SOURCE_CODE, "utf-8"))
@@ -75,6 +78,13 @@ def select_function_body() ->str:
     return function_body
 
 def check_function_body(source_code : str):
+    str_template = f"""\
+{Fore.YELLOW}\
+Seaching for types:{Style.RESET_ALL}\
+{[type_str for type_str in TYPE_LIST]    }"""
+    
+    print(str_template)
+
     parser = Parser(CPP_LANGUAGE)
     tree = parser.parse(bytes(source_code, "utf-8"))
 
@@ -97,6 +107,10 @@ def check_function_body(source_code : str):
 
     types_in_code : list[str] = []
     for code in code_chunks:
+        '''
+            tree-sitter has gone far enough, 
+            finish the job using str.split()
+        '''
         type_str = code.split("<const ParamChangedEvent<")[1].split(">")[0]
         types_in_code.append(type_str)
 
@@ -104,7 +118,7 @@ def check_function_body(source_code : str):
     for type in TYPE_LIST:
         if type not in types_in_code:
             found_missing_type = True
-            print(f"Type {type} not found in code")
+            print(f"{Fore.RED + Style.BRIGHT}Type{Fore.RESET} {Back.WHITE + Fore.RED}{type}{Back.RESET + Fore.RED} not found in code")
     if not found_missing_type:
         # print(Style.BRIGHT + Fore.WHITE+ Back.GREEN  + "All types found in code")
         print(Fore.GREEN + Style.BRIGHT + "All types found in code")
@@ -113,5 +127,5 @@ if FUNCTION_BODY is None:
     print(f"{Fore.RED}Cound not find function body in {SOURCE_FILE}")
     sys.exit(0)
 else:
-    print(f"{Fore.GREEN}Found Function Body in {SOURCE_FILE}")
+    print(f"{Fore.GREEN + Style.BRIGHT}Found Function Body\n")
     check_function_body(FUNCTION_BODY)
