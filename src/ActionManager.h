@@ -10,7 +10,7 @@ template <typename T>
 class ExposedStack : public std::stack<T> {
  public:
   // Expose the underlying container (c is a protected member of std::stack)
-  const auto& getContainer() const { return this->c; }
+  const auto& GetContainer() const { return this->c; }
 };
 namespace NED {
 
@@ -28,7 +28,7 @@ class ActionManager {
 
   template <typename Stack>
   std::vector<std::string_view> GetStackMessages(const Stack& stack) const {
-    auto container = stack.getContainer();  // Access the underlying container
+    auto container = stack.GetContainer();  // Access the underlying container
     std::vector<std::string_view> messages;
     for (const auto& action : container) {
       messages.push_back(action->message);
