@@ -580,7 +580,7 @@ void NodeManager::DisplayActionManager() {
     auto &mngr = ActionManager::GetInstance();
 
     for (auto &undo_message : mngr.GetUndoMessages()) {
-      ImGui::Text("%s", undo_message.c_str());
+      ImGui::Text("%s", undo_message.data());
     }
     ImGui::End();
   }

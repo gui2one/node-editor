@@ -3,6 +3,7 @@
 #pragma once
 #include <memory>
 #include <stack>
+#include <string_view>
 
 #include "Action.h"
 template <typename T>
@@ -18,17 +19,17 @@ class ActionManager {
   ExposedStack<std::shared_ptr<Action>> undoStack;
   ExposedStack<std::shared_ptr<Action>> redoStack;
 
-  std::vector<std::string> GetUndoMessages() { return GetStackMessages(undoStack); }
-  std::vector<std::string> GetRedoMessages() { return GetStackMessages(redoStack); }
+  std::vector<std::string_view> GetUndoMessages() { return GetStackMessages(undoStack); }
+  std::vector<std::string_view> GetRedoMessages() { return GetStackMessages(redoStack); }
 
  private:
   // Private constructor for Singleton
   ActionManager() = default;
 
   template <typename Stack>
-  std::vector<std::string> GetStackMessages(const Stack& stack) const {
+  std::vector<std::string_view> GetStackMessages(const Stack& stack) const {
     auto container = stack.getContainer();  // Access the underlying container
-    std::vector<std::string> messages;
+    std::vector<std::string_view> messages;
     for (const auto& action : container) {
       messages.push_back(action->message);
     }
