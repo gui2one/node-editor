@@ -122,6 +122,37 @@ void NodeManager::InitGLFWEvents() {
     this->m_SavePath = path;
     glfwSetWindowTitle(this->GetGLFWWindow(), path.string().c_str());
   });
+  dispatcher.Subscribe(EventType::ParamChanged, [this](const Event &event) {
+    // auto &manager = *this;
+    auto ev_string = dynamic_cast<const ParamChangedEvent<std::string> *>(&event);
+    auto ev_wstring = dynamic_cast<const ParamChangedEvent<std::wstring> *>(&event);
+    auto ev_bool = dynamic_cast<const ParamChangedEvent<bool> *>(&event);
+    auto ev_float = dynamic_cast<const ParamChangedEvent<float> *>(&event);
+    auto ev_int = dynamic_cast<const ParamChangedEvent<int> *>(&event);
+    auto ev_vec2 = dynamic_cast<const ParamChangedEvent<glm::vec2> *>(&event);
+    auto ev_vec3 = dynamic_cast<const ParamChangedEvent<glm::vec3> *>(&event);
+    if (ev_string != nullptr) {
+      std::cout << "Param Changed : " << ev_string->param_name << "\nNew Value : " << ev_string->new_value << std::endl;
+    } else if (ev_wstring != nullptr) {
+      std::string utf8_str = wide_to_utf8(ev_wstring->new_value);
+      std::cout << "Param Changed : " << ev_wstring->param_name << "\nNew Value : " << utf8_str << std::endl;
+    } else if (ev_bool != nullptr) {
+      std::cout << "Param Changed : " << ev_bool->param_name
+                << "\nNew Value : " << (ev_bool->new_value ? "true" : "false") << std::endl;
+    } else if (ev_float != nullptr) {
+      std::cout << "Param Changed : " << ev_float->param_name << "\nNew Value : " << ev_float->new_value << std::endl;
+    } else if (ev_int != nullptr) {
+      std::cout << "Param Changed : " << ev_int->param_name << "\nNew Value : " << ev_int->new_value << std::endl;
+    } else if (ev_vec2 != nullptr) {
+      std::cout << "Param Changed : " << ev_vec2->param_name << "\nNew Value : " << ev_vec2->new_value.x << ", "
+                << ev_vec2->new_value.y << std::endl;
+    } else if (ev_vec3 != nullptr) {
+      std::cout << "Param Changed : " << ev_vec3->param_name << "\nNew Value : " << ev_vec3->new_value.x << ", "
+                << ev_vec3->new_value.y << ", " << ev_vec3->new_value.z << std::endl;
+    }
+    // auto ev = dynamic_cast<const ParamChangedEvent *>(&event);
+    m_OneParamChanged = true;
+  });
 }
 
 void NodeManager::InitIcons() {

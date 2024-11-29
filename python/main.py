@@ -2,9 +2,14 @@ from pathlib import Path
 import sys
 import tree_sitter_cpp as ts_cpp
 from tree_sitter import Language, Parser
+from colorama import Fore, Back, Style
+import colorama
+
+colorama.init(autoreset=True)
+
 CPP_LANGUAGE = Language(ts_cpp.language())
 
-SOURCE_FILE = Path()/ "../example/src/example.cpp"
+SOURCE_FILE = Path()/ "../src/NodeManager.cpp"
 SOURCE_CODE = ""
 TYPE_LIST = [
     "int",
@@ -15,6 +20,15 @@ TYPE_LIST = [
     "glm::vec2",
     "glm::vec3",
 ]
+
+print(Fore.WHITE + "Selecting function body" + Style.RESET_ALL)
+str_template = f"""\
+{Fore.YELLOW}\
+Seaching for types:{Style.RESET_ALL}\
+{[type_str for type_str in TYPE_LIST]    }"""
+print(str_template)
+
+
 def select_function_body() ->str:
 
     with open(SOURCE_FILE, "r") as f:
@@ -47,7 +61,7 @@ def select_function_body() ->str:
     # Apply the query to the syntax tree
     captures = query.captures(tree.root_node)
 
-    function_body = ""
+    function_body = None
     # Filter for "dispatcher"
     for entry in captures:
         nodes = captures[entry] 
@@ -86,8 +100,18 @@ def check_function_body(source_code : str):
         type_str = code.split("<const ParamChangedEvent<")[1].split(">")[0]
         types_in_code.append(type_str)
 
+    found_missing_type = False
     for type in TYPE_LIST:
         if type not in types_in_code:
+            found_missing_type = True
             print(f"Type {type} not found in code")
+    if not found_missing_type:
+        # print(Style.BRIGHT + Fore.WHITE+ Back.GREEN  + "All types found in code")
+        print(Fore.GREEN + Style.BRIGHT + "All types found in code")
 FUNCTION_BODY = select_function_body()
-check_function_body(FUNCTION_BODY)
+if FUNCTION_BODY is None:
+    print(f"{Fore.RED}Cound not find function body in {SOURCE_FILE}")
+    sys.exit(0)
+else:
+    print(f"{Fore.GREEN}Found Function Body in {SOURCE_FILE}")
+    check_function_body(FUNCTION_BODY)
