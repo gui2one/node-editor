@@ -6,8 +6,8 @@
 
 namespace NED {
 
-// forward declarations
-class AbstractNode;
+//// forward declarations
+// class AbstractNode;
 
 enum class EventType {
   MouseMove,
@@ -113,7 +113,9 @@ class ParamChangedEvent : public Event {
  public:
   ParamChangedEvent() : node(nullptr), param_name(""), Event() {}
   ParamChangedEvent(AbstractNode* node, std::string param_name, T new_value)
-      : node(node), param_name(param_name), new_value(new_value), Event() {}
+      : node(node), param_name(param_name), new_value(new_value), Event() {
+    std::cout << "ParamChanged Event : " << param_name << std::endl;
+  }
 
   EventType GetType() const override { return EventType::ParamChanged; }
 };
