@@ -33,17 +33,17 @@ class StringGenerate : public StringGenerator {
  public:
   StringGenerate() : StringGenerator() {
     value = CREATE_PARAM(NED::Param<std::string>, "String Value", this);
-    value->value = "Hello ???";
+    value->Set("Hello ???");
 
     auto label = CREATE_PARAM(NED::ParamLabel, "label1", this);
-    label->value = "Is this the label ?";
+    label->Set("Is this the label ?");
 
     auto coords = CREATE_PARAM(NED::Param<glm::vec2>, "coords", this);
-    coords->value = glm::vec2(0.0f);
+    coords->Set(glm::vec2(0.0f));
     coords->default_val = glm::vec2(2.0f);
 
-    auto position = CREATE_PARAM(NED::Param<glm::vec3>, "position", this);
-    position->value = glm::vec3(1.0f);
+    auto position = CREATE_PARAM(NED::ParamVec3, "position", this);
+    position->Set(glm::vec3(1.0f));
     position->default_val = glm::vec3(1.0f);
 
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);

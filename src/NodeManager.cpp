@@ -61,7 +61,8 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NED::Param<float>);
   REGISTER_PARAM_TYPE(NED::Param<bool>);
   REGISTER_PARAM_TYPE(NED::Param<glm::vec2>);
-  REGISTER_PARAM_TYPE(NED::Param<glm::vec3>);
+  // REGISTER_PARAM_TYPE(NED::Param<glm::vec3>);
+  REGISTER_PARAM_TYPE(NED::ParamVec3);
 }
 
 NodeManager::~NodeManager() {}

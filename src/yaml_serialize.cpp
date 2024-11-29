@@ -142,6 +142,9 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
   } else if (p_type_str == "glm::vec3") {
     set_param_value<glm::vec3>(param, yaml["value"].as<glm::vec3>());
 
+  } else if (p_type_str == "ParamVec3") {
+    set_param_value<glm::vec3>(param, yaml["value"].as<glm::vec3>());
+
   } else if (p_type_str == "ParamComboBox") {
     auto combo_p = std::dynamic_pointer_cast<ParamComboBox>(param);
     combo_p->SetChoice(yaml["value"].as<int>());
