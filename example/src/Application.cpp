@@ -109,7 +109,7 @@ bool Application::Init() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-  m_NativeWindow = glfwCreateWindow(1280, 720, "no title yet", NULL, NULL);
+  m_NativeWindow = glfwCreateWindow(1920, 800, "no title yet", NULL, NULL);
 
   if (m_NativeWindow == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
@@ -153,7 +153,7 @@ bool Application::Init() {
 
   ImGuiInit(m_NativeWindow);
 
-  glViewport(0, 0, 640, 360);
+  glViewport(0, 0, 1920, 1500);
   glfwSwapInterval(0);
 
   return true;
@@ -294,6 +294,7 @@ void Application::Run() {
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f, 10.0f));
     m_NodeManager.DisplayNodeParams(m_NodeManager.m_CurrentNode);
+    m_NodeManager.DisplayActionManager();
     ImGui::PopStyleVar();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));

@@ -5,15 +5,36 @@
 #include <stack>
 
 #include "Action.h"
+template <typename T>
+class ExposedStack : public std::stack<T> {
+ public:
+  // Expose the underlying container (c is a protected member of std::stack)
+  const auto& getContainer() const { return this->c; }
+};
 namespace NED {
+
 class ActionManager {
- private:
-  std::stack<std::unique_ptr<Action>> undoStack;
-  std::stack<std::unique_ptr<Action>> redoStack;
+ public:
+  ExposedStack<std::shared_ptr<Action>> undoStack;
+  ExposedStack<std::shared_ptr<Action>> redoStack;
+
+  std::vector<std::string> GetUndoMessages() { return GetStackMessages(undoStack); }
+  std::vector<std::string> GetRedoMessages() { return GetStackMessages(redoStack); }
 
  private:
   // Private constructor for Singleton
   ActionManager() = default;
+
+  template <typename Stack>
+  std::vector<std::string> GetStackMessages(const Stack& stack) const {
+    auto container = stack.getContainer();  // Access the underlying container
+    std::vector<std::string> messages;
+    for (const auto& action : container) {
+      messages.push_back(action->message);
+    }
+
+    return messages;
+  }
 
  public:
   // Delete copy constructor and assignment operator to enforce singleton properties
@@ -25,7 +46,7 @@ class ActionManager {
     static ActionManager instance;  // Thread-safe in C++11 and later
     return instance;
   }
-  void executeCommand(std::unique_ptr<Action> command) {
+  void executeCommand(std::shared_ptr<Action> command) {
     command->Do();
     undoStack.push(std::move(command));
     while (!redoStack.empty()) redoStack.pop();

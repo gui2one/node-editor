@@ -2,6 +2,8 @@
 #define NODE_EDITOR_ACTION_H
 #pragma once
 
+#include <format>
+
 #include "ImGuiNode.h"
 #include "NodeParam.h"
 #include "utils/node_manager_utils.h"
@@ -12,6 +14,9 @@ class Action {
   virtual ~Action() = default;
   virtual void Do() {}
   virtual void Undo() {}
+
+ public:
+  std::string message = "no message";
 };
 
 class MoveNodeAction : public Action {

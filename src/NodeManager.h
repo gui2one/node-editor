@@ -94,6 +94,8 @@ class NodeManager {
   void DrawNodes();
   void DrawCanvas();
 
+  void DisplayActionManager();
+
   inline void SetGLFWWindow(GLFWwindow* _window) { m_GLFWWindow = _window; }
   inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
 

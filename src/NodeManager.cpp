@@ -574,6 +574,18 @@ void NodeManager::DrawCanvas() {
   draw_list->PopClipRect();
 }
 
+void NodeManager::DisplayActionManager() {
+  static bool ActionManager_opened = true;
+  if (ImGui::Begin("Action Manager", &ActionManager_opened)) {
+    auto &mngr = ActionManager::GetInstance();
+
+    for (auto &undo_message : mngr.GetUndoMessages()) {
+      ImGui::Text("%s", undo_message.c_str());
+    }
+    ImGui::End();
+  }
+}
+
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   if (node == nullptr) return;
 
@@ -934,7 +946,7 @@ void NodeManager::OnMouseRelease(const Event &event) {
 
   if (m_ViewProps.node_clicked != nullptr) {
     if (m_ViewProps.node_clicked_position != m_ViewProps.node_clicked->position) {
-      auto move_action = std::make_unique<MoveNodeAction>(m_ViewProps.node_clicked, m_ViewProps.node_clicked_position,
+      auto move_action = std::make_shared<MoveNodeAction>(m_ViewProps.node_clicked, m_ViewProps.node_clicked_position,
                                                           m_ViewProps.node_clicked->position);
       ActionManager::GetInstance().executeCommand(std::move(move_action));
     }

@@ -2,12 +2,13 @@
 
 namespace NED {
 MoveNodeAction::MoveNodeAction(std::shared_ptr<AbstractNode> node, ImVec2 from_pos, ImVec2 to_pos)
-    : from_pos(from_pos), to_pos(to_pos), m_Node(node) {}
+    : from_pos(from_pos), to_pos(to_pos), m_Node(node) {
+  message = std::format("Moved Node from {},{} to {},{}", from_pos.x, from_pos.y, to_pos.x, to_pos.y);
+}
 
 void MoveNodeAction::Do() {
   m_Node->position = to_pos;
-  std::cout << "[Action]Moved \"" << m_Node->title << "\" to " << m_Node->position.x << ", " << m_Node->position.y
-            << std::endl;
+  std::cout << message << std::endl;
 }
 void MoveNodeAction::Undo() { m_Node->position = from_pos; }
 
