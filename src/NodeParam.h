@@ -25,8 +25,8 @@
     return yaml_node;                               \
   }
 
-#define DISPATCH_PARAM_CHANGE_EVENT(Type, Node, ParamName, NewValue) \
-  ParamChangedEvent<Type> event(Node, ParamName, NewValue);          \
+#define DISPATCH_PARAM_CHANGE_EVENT(Type, Node, ParamName, NewValue, OldValue) \
+  ParamChangedEvent<Type> event(Node, ParamName, NewValue, OldValue);          \
   EventManager::GetInstance().Dispatch(event);
 
 #define DISPATCH_EDITOR_UPDATE_EVENT() \
@@ -90,6 +90,7 @@ class Param : public NodeParam {
   T min_val;
   T max_val;
   T default_val;
+  T old_value;
 
  private:
 };
@@ -118,7 +119,6 @@ class Param<glm::vec2> : public NodeParam {
       if (ImGui::Button("X", ImVec2(30, 25))) {
         value_changed = true;
         value.x = default_val.x;
-        // DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, Eval());
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -128,7 +128,6 @@ class Param<glm::vec2> : public NodeParam {
       ImGui::PushItemWidth(input_width);
       if (ImGui::DragFloat("##x", &value.x, 0.05f)) {
         value_changed = true;
-        // DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, Eval());
       }
       ImGui::PopID();
       ImGui::PopItemWidth();
@@ -143,7 +142,6 @@ class Param<glm::vec2> : public NodeParam {
       if (ImGui::Button("Y", ImVec2(30, 25))) {
         value_changed = true;
         value.y = default_val.y;
-        // DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, Eval());
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -152,14 +150,13 @@ class Param<glm::vec2> : public NodeParam {
       ImGui::PushItemWidth(input_width);
       if (ImGui::DragFloat("##y", &value.y, 0.05f)) {
         value_changed = true;
-        // DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, Eval());
       }
       ImGui::PopID();
       ImGui::PopItemWidth();
 
       ImGui::PopStyleVar();
       if (value_changed) {
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, Eval());
+        DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, Eval(), Eval());
       }
     });
   }
@@ -252,7 +249,7 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::PopStyleVar();
 
       if (value_changed) {
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval());
+        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval(), Eval());
       }
     });
   }
@@ -276,10 +273,14 @@ class Param<std::string> : public NodeParam {
 
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      std::string temp_value = std::string(value);
       ImGuiInputTextFlags flags = 0;
       flags |= ImGuiInputTextFlags_EnterReturnsTrue;
-      if (ImGui::InputText("##m_Label", &value, flags)) {
-        DISPATCH_PARAM_CHANGE_EVENT(std::string, m_Node, m_Label, Eval());
+
+      if (ImGui::InputText("##m_Label", &temp_value, flags)) {
+        this->old_value = std::string(value);
+        this->value = temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(std::string, m_Node, m_Label, this->value, this->old_value);
       }
     });
   }
@@ -288,6 +289,7 @@ class Param<std::string> : public NodeParam {
 
  public:
   std::string value;
+  std::string old_value;
 };
 template <>
 class Param<std::wstring> : public NodeParam {
@@ -306,8 +308,7 @@ class Param<std::wstring> : public NodeParam {
       std::copy(converted.begin(), converted.end(), buffer);
       buffer[converted.length()] = 0;
       if (ImGui::InputText("##m_Label", (char*)buffer, 2048)) {
-        // value = std::wstring(buffer);
-        DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, Eval());
+        DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, Eval(), Eval());
       }
     });
   }
@@ -329,8 +330,10 @@ class Param<int> : public NodeParam {
 
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      if (ImGui::DragInt("##m_Label", &value, 1.0f, min_val, max_val, "%d", ImGuiSliderFlags_AlwaysClamp)) {
-        DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, Eval());
+      ImGuiSliderFlags flags = 0;
+      flags |= ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_ClampOnInput;
+      if (ImGui::DragInt("##m_Label", &value, 1.0f, min_val, max_val, "%d", flags)) {
+        DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, Eval(), Eval());
       }
     });
   }
@@ -357,7 +360,7 @@ class Param<float> : public NodeParam {
       ImGuiSliderFlags flags = 0;
 
       if (ImGui::SliderFloat("##m_Label", &value, 0, 100, "%.3f", flags)) {
-        DISPATCH_PARAM_CHANGE_EVENT(float, m_Node, m_Label, Eval());
+        DISPATCH_PARAM_CHANGE_EVENT(float, m_Node, m_Label, Eval(), Eval());
       }
     });
   }
@@ -379,7 +382,7 @@ class Param<bool> : public NodeParam {
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       if (ImGui::Checkbox("##m_Label", &value)) {
-        DISPATCH_PARAM_CHANGE_EVENT(bool, m_Node, m_Label, Eval());
+        DISPATCH_PARAM_CHANGE_EVENT(bool, m_Node, m_Label, Eval(), Eval());
       }
     });
   }
@@ -418,7 +421,7 @@ class ParamFile : public Param<std::wstring> {
         auto path = Utils::open_file_explorer(filters);
         if (path != "") {
           value = path.wstring();
-          DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, Eval());
+          DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, Eval(), Eval());
         }
       }
       ImGui::PopItemWidth();
@@ -463,7 +466,7 @@ class ParamComboBox : public Param<int> {
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       if (ImGui::Combo("##m_Label", &value, choices.data(), static_cast<int>(choices.size()))) {
-        DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, Eval());
+        DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, Eval(), Eval());
       }
     })
   }

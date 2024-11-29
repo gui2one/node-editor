@@ -108,12 +108,13 @@ class ParamChangedEvent : public Event {
  public:
   AbstractNode* node;
   std::string param_name;
+  T old_value;
   T new_value;
 
  public:
   ParamChangedEvent() : node(nullptr), param_name(""), Event() {}
-  ParamChangedEvent(AbstractNode* node, std::string param_name, T new_value)
-      : node(node), param_name(param_name), new_value(new_value), Event() {
+  ParamChangedEvent(AbstractNode* node, std::string param_name, T new_value, T old_value)
+      : node(node), param_name(param_name), new_value(new_value), old_value(old_value), Event() {
     // std::cout << "ParamChanged Event : " << param_name << std::endl;
   }
 

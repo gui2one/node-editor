@@ -132,7 +132,9 @@ void NodeManager::InitGLFWEvents() {
     auto ev_vec2 = dynamic_cast<const ParamChangedEvent<glm::vec2> *>(&event);
     auto ev_vec3 = dynamic_cast<const ParamChangedEvent<glm::vec3> *>(&event);
     if (ev_string != nullptr) {
-      std::cout << "Param Changed : " << ev_string->param_name << "\nNew Value : " << ev_string->new_value << std::endl;
+      std::cout << "Param Changed : " << ev_string->param_name << "\nNew Value : " << ev_string->new_value
+                << "\nOld Value : " << ev_string->old_value << std::endl;
+      std::cout << "For Node : " << ev_string->node->title << std::endl;
     } else if (ev_wstring != nullptr) {
       std::string utf8_str = wide_to_utf8(ev_wstring->new_value);
       std::cout << "Param Changed : " << ev_wstring->param_name << "\nNew Value : " << utf8_str << std::endl;
