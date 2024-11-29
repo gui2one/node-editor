@@ -1,3 +1,4 @@
 build/
 doxygen/
+env/
 imgui.ini.backup
