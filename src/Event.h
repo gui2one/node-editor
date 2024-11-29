@@ -103,15 +103,17 @@ class NodeConnectionEvent : public Event {
   EventType GetType() const override { return EventType::NodeConnection; }
 };
 
+template <typename T>
 class ParamChangedEvent : public Event {
  public:
-  std::shared_ptr<AbstractNode> node;
+  AbstractNode* node;
   std::string param_name;
+  T new_value;
 
  public:
   ParamChangedEvent() : node(nullptr), param_name(""), Event() {}
-  ParamChangedEvent(std::shared_ptr<AbstractNode> node, std::string param_name)
-      : node(node), param_name(param_name), Event() {}
+  ParamChangedEvent(AbstractNode* node, std::string param_name, T new_value)
+      : node(node), param_name(param_name), new_value(new_value), Event() {}
 
   EventType GetType() const override { return EventType::ParamChanged; }
 };

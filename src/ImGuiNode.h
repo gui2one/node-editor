@@ -62,13 +62,14 @@ struct InputConnector {
   bool grabbed = false;
 };
 
-class AbstractNode {
+class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
  public:
   AbstractNode(std::string _title) : title(_title), position(50, 0), size(100, 30), color(NODE_COLOR::DARK_GREY) {
     uuid = generate_uuid();
   };
   virtual ~AbstractNode() = default;
 
+  std::shared_ptr<AbstractNode> get_shared_ptr() { return shared_from_this(); }
   virtual void Update() = 0;    // implemented in Node.h, in the Node<T> class
   virtual void Generate() = 0;  // user defined method. i.e the work the node is doint for the user app
 
