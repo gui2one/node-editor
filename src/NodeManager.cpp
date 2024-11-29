@@ -1,7 +1,7 @@
 // #include "NodeParam.h") {
 #include "NodeManager.h"
 
-GLuint GenerateEmptyTexture() {
+static GLuint GenerateEmptyTexture() {
   std::cout << "EMPTY TEXTURE !!!!" << std::endl;
 
   GLuint texture;
@@ -20,7 +20,7 @@ GLuint GenerateEmptyTexture() {
   return texture;
 }
 
-GLuint LoadTexture(const char *filename) {
+static GLuint LoadTexture(const char *filename) {
   int width, height, channels;
   // std::cout << "!!!!!!!!!!!!!!!! " << filename << std::endl;
 
