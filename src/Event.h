@@ -114,7 +114,7 @@ class ParamChangedEvent : public Event {
   ParamChangedEvent() : node(nullptr), param_name(""), Event() {}
   ParamChangedEvent(AbstractNode* node, std::string param_name, T new_value)
       : node(node), param_name(param_name), new_value(new_value), Event() {
-    std::cout << "ParamChanged Event : " << param_name << std::endl;
+    // std::cout << "ParamChanged Event : " << param_name << std::endl;
   }
 
   EventType GetType() const override { return EventType::ParamChanged; }

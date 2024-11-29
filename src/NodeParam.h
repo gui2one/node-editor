@@ -181,7 +181,7 @@ class Param<glm::vec3> : public NodeParam {
 
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      // float default_value = 0.0f;
+      bool value_changed = false;
 
       ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
       ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
@@ -193,8 +193,8 @@ class Param<glm::vec3> : public NodeParam {
       float input_width = avail_x / 3.0f - 30.0f - spacing;
       ImGui::PushID(0);
       if (ImGui::Button("X", ImVec2(30, 25))) {
+        value_changed = true;
         value.x = default_val.x;
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval());
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -203,7 +203,7 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::PushID(1);
       ImGui::PushItemWidth(input_width);
       if (ImGui::DragFloat("##x", &value.x, 0.05f)) {
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval());
+        value_changed = true;
       }
       ImGui::PopID();
       ImGui::PopItemWidth();
@@ -216,8 +216,8 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::PushID("label_y");
 
       if (ImGui::Button("Y", ImVec2(30, 25))) {
+        value_changed = true;
         value.y = default_val.y;
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval());
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -225,7 +225,7 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::PushID("float_y");
       ImGui::PushItemWidth(input_width);
       if (ImGui::DragFloat("##y", &value.y, 0.05f)) {
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval());
+        value_changed = true;
       }
       ImGui::PopID();
       ImGui::PopItemWidth();
@@ -236,8 +236,8 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::SameLine(0, spacing);
       ImGui::PushID("label_z");
       if (ImGui::Button("Z", ImVec2(30, 25))) {
+        value_changed = true;
         value.z = default_val.z;
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval());
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -245,11 +245,15 @@ class Param<glm::vec3> : public NodeParam {
       ImGui::PushID("float_z");
       ImGui::PushItemWidth(input_width);
       if (ImGui::DragFloat("##z", &value.z, 0.05f)) {
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval());
+        value_changed = true;
       }
       ImGui::PopID();
       ImGui::PopItemWidth();
       ImGui::PopStyleVar();
+
+      if (value_changed) {
+        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval());
+      }
     });
   }
 
