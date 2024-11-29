@@ -141,15 +141,9 @@ class Param<glm::vec2> : public NodeParam {
       // flags |= ImGuiInputFlags_RepeatUntilRelease;
 
       if (ImGui::DragFloat("##x", &this->temp_value.x, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
-        // std::cout << "U changed " << value.x << std::endl;
-        // value_changed = true;
       }
       if (ImGui::IsItemDeactivatedAfterEdit()) {
-        this->value.x = this->temp_value.x;
-        std::cout << "U changed " << this->value.x << std::endl;
         value_changed = true;
-        /* reset temp_value after Event Dispatch */
-        this->temp_value.x = this->value.x;
       }
       ImGui::PopID();
       ImGui::PopItemWidth();
@@ -174,18 +168,17 @@ class Param<glm::vec2> : public NodeParam {
         // value_changed = true;
       }
       if (ImGui::IsItemDeactivatedAfterEdit()) {
-        this->value.y = this->temp_value.y;
-        std::cout << "V changed " << this->value.y << std::endl;
         value_changed = true;
-        /* reset temp_value after Event Dispatch */
-        this->temp_value.y = this->value.y;
       }
       ImGui::PopID();
       ImGui::PopItemWidth();
 
       ImGui::PopStyleVar();
       if (value_changed) {
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, Eval(), Eval());
+        // std::cout << "Vec2 value changed " << this->value.x << ", " << this->value.y << std::endl;
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, value, old_value);
       }
     });
   }
@@ -193,6 +186,7 @@ class Param<glm::vec2> : public NodeParam {
 
  public:
   glm::vec2 value;
+  glm::vec2 old_value;
   glm::vec2 temp_value;
   glm::vec2 default_val = glm::vec2(0.0f);
 };
@@ -209,88 +203,12 @@ class Param<glm::vec3> : public NodeParam {
     temp_value = _value;
     value = _value;
   };
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      bool value_changed = false;
-
-      ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
-      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
-
-      float avail_x = ImGui::GetContentRegionAvail().x;
-      float spacing = ImGui::GetCurrentContext()->Style.ItemInnerSpacing.x;
-      float input_width = avail_x / 3.0f - 30.0f - spacing;
-      ImGui::PushID(0);
-      if (ImGui::Button("X", ImVec2(30, 25))) {
-        value_changed = true;
-        value.x = default_val.x;
-      }
-      ImGui::PopID();
-      ImGui::PopStyleColor(3);
-      ImGui::SameLine();
-
-      ImGui::PushID(1);
-      ImGui::PushItemWidth(input_width);
-      if (ImGui::DragFloat("##x", &value.x, 0.05f)) {
-        value_changed = true;
-      }
-      ImGui::PopID();
-      ImGui::PopItemWidth();
-
-      ImGui::SameLine(0, spacing);
-
-      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
-      ImGui::PushID("label_y");
-
-      if (ImGui::Button("Y", ImVec2(30, 25))) {
-        value_changed = true;
-        value.y = default_val.y;
-      }
-      ImGui::PopID();
-      ImGui::PopStyleColor(3);
-      ImGui::SameLine();
-      ImGui::PushID("float_y");
-      ImGui::PushItemWidth(input_width);
-      if (ImGui::DragFloat("##y", &value.y, 0.05f)) {
-        value_changed = true;
-      }
-      ImGui::PopID();
-      ImGui::PopItemWidth();
-
-      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.1f, 0.8f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.1f, 0.9f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.1f, 1.0f, 1.f)));
-      ImGui::SameLine(0, spacing);
-      ImGui::PushID("label_z");
-      if (ImGui::Button("Z", ImVec2(30, 25))) {
-        value_changed = true;
-        value.z = default_val.z;
-      }
-      ImGui::PopID();
-      ImGui::PopStyleColor(3);
-      ImGui::SameLine();
-      ImGui::PushID("float_z");
-      ImGui::PushItemWidth(input_width);
-      if (ImGui::DragFloat("##z", &value.z, 0.05f)) {
-        value_changed = true;
-      }
-      ImGui::PopID();
-      ImGui::PopItemWidth();
-      ImGui::PopStyleVar();
-
-      if (value_changed) {
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval(), Eval());
-      }
-    });
-  }
 
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 
  public:
   glm::vec3 value;
+  glm::vec3 old_value;
   glm::vec3 temp_value;
   glm::vec3 default_val = glm::vec3(0.0f);
 };
@@ -473,7 +391,9 @@ class ParamVec3 : public Param<glm::vec3> {
 
       ImGui::PushID(1);
       ImGui::PushItemWidth(input_width);
-      if (ImGui::DragFloat("##x", &value.x, 0.05f)) {
+      if (ImGui::DragFloat("##x", &temp_value.x, 0.05f)) {
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
         value_changed = true;
       }
       ImGui::PopID();
@@ -495,7 +415,9 @@ class ParamVec3 : public Param<glm::vec3> {
       ImGui::SameLine();
       ImGui::PushID("float_y");
       ImGui::PushItemWidth(input_width);
-      if (ImGui::DragFloat("##y", &value.y, 0.05f)) {
+      if (ImGui::DragFloat("##y", &temp_value.y, 0.05f)) {
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
         value_changed = true;
       }
       ImGui::PopID();
@@ -515,7 +437,9 @@ class ParamVec3 : public Param<glm::vec3> {
       ImGui::SameLine();
       ImGui::PushID("float_z");
       ImGui::PushItemWidth(input_width);
-      if (ImGui::DragFloat("##z", &value.z, 0.05f)) {
+      if (ImGui::DragFloat("##z", &temp_value.z, 0.05f)) {
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
         value_changed = true;
       }
       ImGui::PopID();
@@ -523,7 +447,10 @@ class ParamVec3 : public Param<glm::vec3> {
       ImGui::PopStyleVar();
 
       if (value_changed) {
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, Eval(), Eval());
+        // std::cout << "Vec3 value changed " << this->value.x << ", " << this->value.y << std::endl;
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, value, old_value);
       }
     });
   }

@@ -130,8 +130,8 @@ void NodeManager::InitGLFWEvents() {
     auto ev_bool = dynamic_cast<const ParamChangedEvent<bool> *>(&event);
     auto ev_float = dynamic_cast<const ParamChangedEvent<float> *>(&event);
     auto ev_int = dynamic_cast<const ParamChangedEvent<int> *>(&event);
-    auto ev_vec2 = dynamic_cast<const ParamChangedEvent<glm::vec2> *>(&event);
     auto ev_vec3 = dynamic_cast<const ParamChangedEvent<glm::vec3> *>(&event);
+    auto ev_vec2 = dynamic_cast<const ParamChangedEvent<glm::vec2> *>(&event);
     if (ev_string != nullptr) {
       std::cout << "Param Changed : " << ev_string->param_name << "\nNew Value : " << ev_string->new_value
                 << "\nOld Value : " << ev_string->old_value << std::endl;
@@ -146,12 +146,14 @@ void NodeManager::InitGLFWEvents() {
       std::cout << "Param Changed : " << ev_float->param_name << "\nNew Value : " << ev_float->new_value << std::endl;
     } else if (ev_int != nullptr) {
       std::cout << "Param Changed : " << ev_int->param_name << "\nNew Value : " << ev_int->new_value << std::endl;
-    } else if (ev_vec2 != nullptr) {
-      std::cout << "Param Changed : " << ev_vec2->param_name << "\nNew Value : " << ev_vec2->new_value.x << ", "
-                << ev_vec2->new_value.y << std::endl;
     } else if (ev_vec3 != nullptr) {
-      std::cout << "Param Changed : " << ev_vec3->param_name << "\nNew Value : " << ev_vec3->new_value.x << ", "
-                << ev_vec3->new_value.y << ", " << ev_vec3->new_value.z << std::endl;
+      std::cout << "Vec3 Changed : " << ev_vec3->param_name << "\nNew Value : " << ev_vec3->new_value.x << ", "
+                << ev_vec3->new_value.y << ", " << ev_vec3->new_value.z << "\nOld Value" << ev_vec3->old_value.x << ", "
+                << ev_vec3->old_value.y << ", " << ev_vec3->old_value.z << std::endl;
+    } else if (ev_vec2 != nullptr) {
+      std::cout << "glm::vec2 Changed ??? : " << ev_vec2->param_name << "\nNew Value : " << ev_vec2->new_value.x << ", "
+                << ev_vec2->new_value.y << "\nOld Value : " << ev_vec2->old_value.x << ", " << ev_vec2->old_value.y
+                << std::endl;
     }
     // auto ev = dynamic_cast<const ParamChangedEvent *>(&event);
     m_OneParamChanged = true;
