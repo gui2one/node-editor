@@ -510,9 +510,9 @@ void NodeManager::DrawCanvas() {
 
   // Draw border and background color
   ImGuiIO &io = ImGui::GetIO();
-  if (io.MouseWheel > 0.0f) {
+  if (io.MouseWheel > 0.0f && m_ViewProps.canvasHovered) {
     m_ViewProps.zoom *= 1.1f;
-  } else if (io.MouseWheel < 0.0f) {
+  } else if (io.MouseWheel < 0.0f && m_ViewProps.canvasHovered) {
     m_ViewProps.zoom /= 1.1f;
   }
 
