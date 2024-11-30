@@ -15,7 +15,7 @@ struct FileFilterItem {
 
 std::shared_ptr<AbstractNode> FindNodeByUUID(std::string uuid, std::vector<std::shared_ptr<AbstractNode>> nodes);
 
-std::shared_ptr<NodeParam> FindParamByName(std::shared_ptr<AbstractNode> factory_node, std::string param_name);
+std::shared_ptr<NodeParam> FindParamByName(AbstractNode* factory_node, std::string param_name);
 ImVec2 get_nodes_center(std::vector<std::shared_ptr<AbstractNode>>& nodes);
 void deselect_all(std::vector<std::shared_ptr<AbstractNode>>& nodes);
 

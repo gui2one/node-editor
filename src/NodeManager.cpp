@@ -136,6 +136,10 @@ void NodeManager::InitGLFWEvents() {
       std::cout << "Param Changed : " << ev_string->param_name << "\nNew Value : " << ev_string->new_value
                 << "\nOld Value : " << ev_string->old_value << std::endl;
       std::cout << "For Node : " << ev_string->node->title << std::endl;
+      auto action = std::make_shared<ParamStringAction>(ev_string->node, ev_string->param_name, ev_string->old_value,
+                                                        ev_string->new_value);
+      ActionManager::GetInstance().executeCommand(action);
+
     } else if (ev_wstring != nullptr) {
       std::string utf8_str = wide_to_utf8(ev_wstring->new_value);
       std::cout << "Param Changed : " << ev_wstring->param_name << "\nNew Value : " << utf8_str << std::endl;
@@ -946,8 +950,8 @@ void NodeManager::OnMouseRelease(const Event &event) {
 
   if (m_ViewProps.node_clicked != nullptr) {
     if (m_ViewProps.node_clicked_position != m_ViewProps.node_clicked->position) {
-      auto move_action = std::make_shared<MoveNodeAction>(m_ViewProps.node_clicked, m_ViewProps.node_clicked_position,
-                                                          m_ViewProps.node_clicked->position);
+      auto move_action = std::make_shared<MoveNodeAction>(
+          m_ViewProps.node_clicked.get(), m_ViewProps.node_clicked_position, m_ViewProps.node_clicked->position);
       ActionManager::GetInstance().executeCommand(std::move(move_action));
     }
   }

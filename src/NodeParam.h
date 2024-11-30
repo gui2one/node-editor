@@ -235,9 +235,9 @@ class Param<std::string> : public NodeParam {
       }
 
       if (ImGui::IsItemDeactivatedAfterEdit()) {
-        this->value = temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(std::string, m_Node, m_Label, this->value, this->temp_value);
-        this->temp_value = std::string(value);
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(std::string, m_Node, m_Label, this->value, this->old_value);
       }
     });
   }
@@ -246,6 +246,7 @@ class Param<std::string> : public NodeParam {
 
  public:
   std::string value;
+  std::string old_value;
   std::string temp_value;
 };
 template <>

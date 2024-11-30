@@ -11,8 +11,7 @@ std::shared_ptr<AbstractNode> FindNodeByUUID(std::string uuid, std::vector<std::
   return nullptr;
 }
 
-std::shared_ptr<NED::NodeParam> FindParamByName(std::shared_ptr<NED::AbstractNode> factory_node,
-                                                std::string param_name) {
+std::shared_ptr<NED::NodeParam> FindParamByName(AbstractNode* factory_node, std::string param_name) {
   for (auto& param_item : factory_node->m_ParamLayout.params) {
     auto p_group = std::dynamic_pointer_cast<NED::ParamGroup>(param_item);
     if (p_group != nullptr) {

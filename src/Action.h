@@ -21,7 +21,7 @@ class Action {
 
 class MoveNodeAction : public Action {
  public:
-  MoveNodeAction(std::shared_ptr<AbstractNode> node, ImVec2 from_pos, ImVec2 to_pos);
+  MoveNodeAction(AbstractNode* node, ImVec2 from_pos, ImVec2 to_pos);
 
   void Do() override;
   void Undo() override;
@@ -29,21 +29,20 @@ class MoveNodeAction : public Action {
  private:
   ImVec2 from_pos;
   ImVec2 to_pos;
-  std::shared_ptr<AbstractNode> m_Node;
+  AbstractNode* m_Node;
 };
 
 // Param Actions
 class ParamStringAction : public Action {
  public:
-  ParamStringAction(std::shared_ptr<AbstractNode> node, std::string param_name, std::string from_value,
-                    std::string to_value);
+  ParamStringAction(AbstractNode* node, std::string param_name, std::string from_value, std::string to_value);
 
   void Do() override;
   void Undo() override;
 
  private:
   std::string m_ParamName;
-  std::shared_ptr<AbstractNode> m_Node;
+  AbstractNode* m_Node;
   std::string from_value;
   std::string to_value;
 };
