@@ -126,7 +126,17 @@ void NodeManager::InitGLFWEvents() {
   dispatcher.Subscribe(EventType::NodeConnection, [this](const Event& event) {
     Evaluate();
     auto ev = static_cast<const NodeConnectionEvent&>(event);
+
     auto action = std::make_shared<NodeConnectAction>(ev.input_node.get(), ev.output_node.get(), ev.output_index);
+    action->message = std::format("Node Connect");
+    ActionManager::GetInstance().executeCommand(action);
+  });
+  dispatcher.Subscribe(EventType::NodeDisconnection, [this](const Event& event) {
+    Evaluate();
+    auto ev = static_cast<const NodeDisconnectionEvent&>(event);
+
+    auto action = std::make_shared<NodeDisconnectAction>(ev.input_node.get(), ev.output_node.get(), ev.output_index);
+    action->message = std::format("Node Disconnect");
     ActionManager::GetInstance().executeCommand(action);
   });
   dispatcher.Subscribe(EventType::ParamChanged, [this](const Event& event) {
@@ -910,6 +920,8 @@ void NodeManager::OnMouseClick(const Event& event) {
       if (m_ConnectionProcedure.is_mutli_input) {  // multi input
         ApplyConnectionProcedure();
       } else {
+        NodeDisconnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node, 0);
+        EventManager::GetInstance().Dispatch(event);
         m_ConnectionProcedure.started = false;
         m_ConnectionProcedure.output_node->ResetInput(m_ConnectionProcedure.output_index);
         ResetConnectionProcedure();

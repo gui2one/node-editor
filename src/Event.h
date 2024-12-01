@@ -19,6 +19,7 @@ enum class EventType {
   DropFile,
 
   NodeConnection,
+  NodeDisconnection,
   NodeSelected,
   NodeMoved,
 
@@ -101,6 +102,19 @@ class NodeConnectionEvent : public Event {
                       std::shared_ptr<AbstractNode> output_node = nullptr, uint32_t output_index = 0)
       : input_node(input_node), input_index(input_index), output_node(output_node), output_index(output_index) {}
   EventType GetType() const override { return EventType::NodeConnection; }
+};
+
+class NodeDisconnectionEvent : public Event {
+ public:
+  std::shared_ptr<AbstractNode> input_node = nullptr;
+  uint32_t input_index = 0;
+  std::shared_ptr<AbstractNode> output_node = nullptr;
+  uint32_t output_index = 0;
+
+  NodeDisconnectionEvent(std::shared_ptr<AbstractNode> input_node = nullptr, uint32_t input_index = 0,
+                         std::shared_ptr<AbstractNode> output_node = nullptr, uint32_t output_index = 0)
+      : input_node(input_node), input_index(input_index), output_node(output_node), output_index(output_index) {}
+  EventType GetType() const override { return EventType::NodeDisconnection; }
 };
 
 template <typename T>

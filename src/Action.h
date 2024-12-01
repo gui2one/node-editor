@@ -68,6 +68,18 @@ class NodeConnectAction : public Action {
   AbstractNode* m_ChildNode;
   uint32_t m_ChildInputIndex;
 };
+class NodeDisconnectAction : public Action {
+ public:
+  NodeDisconnectAction(AbstractNode* parent_node, AbstractNode* child_node, uint32_t child_input_index);
+
+  void Do() override;
+  void Undo() override;
+
+ private:
+  AbstractNode* m_ParentNode;
+  AbstractNode* m_ChildNode;
+  uint32_t m_ChildInputIndex;
+};
 
 };  // namespace NED
 

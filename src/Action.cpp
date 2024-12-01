@@ -22,4 +22,18 @@ void NodeConnectAction::Undo() {
   m_ChildNode->ClearCache();
 }
 
+NodeDisconnectAction::NodeDisconnectAction(AbstractNode* parent_node, AbstractNode* child_node,
+                                           uint32_t child_input_index)
+    : m_ParentNode(parent_node), m_ChildNode(child_node), m_ChildInputIndex(child_input_index) {}
+
+void NodeDisconnectAction::Do() {
+  m_ChildNode->SetInput(m_ChildInputIndex, nullptr);
+  m_ChildNode->ClearCache();
+}
+
+void NodeDisconnectAction::Undo() {
+  std::cout << "DISCONNECT undo !!!!!!!!!!!!!!!!" << std::endl;
+  m_ChildNode->SetInput(m_ChildInputIndex, m_ParentNode);
+}
+
 };  // namespace NED
