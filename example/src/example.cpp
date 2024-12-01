@@ -40,20 +40,6 @@ int main(int argc, char *argv[]) {
 
   static EventDispatcher &dispatcher = EventManager::GetInstance();
 
-  dispatcher.Subscribe(EventType::NodeConnection, [&app](const Event &event) {
-    auto &manager = app.GetNodeManager();
-    manager.Evaluate();
-    if (manager.GetOutputNode() != nullptr) {
-      auto string_op = std::dynamic_pointer_cast<StringOperator>(manager.GetOutputNode());
-      auto number_op = std::dynamic_pointer_cast<NumberOperator>(manager.GetOutputNode());
-
-      if (string_op != nullptr) {
-        std::cout << "String Connection Update -> " << string_op->m_DataCache << std::endl;
-      } else if (number_op != nullptr) {
-        std::cout << "Number Connection Update -> " << number_op->m_DataCache << std::endl;
-      }
-    }
-  });
   dispatcher.Subscribe(EventType::ParamChanged, [&app](const Event &event) {
     auto &manager = app.GetNodeManager();
     manager.m_OneParamChanged = true;
