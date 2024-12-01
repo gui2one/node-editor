@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include <chrono>
+#include <limits>
 #include <filesystem>
 #include <iostream>
 #include <limits>

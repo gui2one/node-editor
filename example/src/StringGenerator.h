@@ -38,6 +38,16 @@ class StringGenerate : public StringGenerator {
     auto label = CREATE_PARAM(NED::ParamLabel, "label1", this);
     label->Set("Is this the label ?");
 
+    auto combo_p = CREATE_PARAM(NED::ParamComboBox, "Combo", this);
+    combo_p->SetChoices({"one", "two", "thre"});
+    combo_p->Set(1);
+
+    auto float_p = CREATE_PARAM(NED::Param<float>, "Float", this);
+    float_p->Set(3.14f);
+
+    auto int_p = CREATE_PARAM(NED::Param<int>, "Int", this);
+    int_p->Set(42);
+
     auto coords = CREATE_PARAM(NED::Param<glm::vec2>, "coords", this);
     coords->Set(glm::vec2(0.0f));
     coords->default_val = glm::vec2(2.0f);
@@ -47,7 +57,7 @@ class StringGenerate : public StringGenerator {
     position->default_val = glm::vec3(1.0f);
 
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
-    grp->params = {label, coords, position};
+    grp->params = {label, combo_p, float_p, int_p, coords, position};
 
     m_ParamLayout.params = {value, grp};
   };
@@ -108,8 +118,8 @@ class StringConcatenator : public StringModifier {
 
   void Generate() override {
     if (GetInput(0) != nullptr && GetInput(1) != nullptr) {
-      auto op0 = static_cast<StringOperator *>(GetInput(0).get());
-      auto op1 = static_cast<StringOperator *>(GetInput(1).get());
+      auto op0 = static_cast<StringOperator*>(GetInput(0).get());
+      auto op1 = static_cast<StringOperator*>(GetInput(1).get());
       if (add_separator_param->Eval()) {
         m_DataCache = op0->m_DataCache + " " + op1->m_DataCache;
       } else {
@@ -141,7 +151,7 @@ class StringConcatenatorMulti : public StringModifier {
     m_DataCache = "";
     for (size_t i = 0; i < GetMultiInputCount(); i++) {
       if (GetMultiInput(i) != nullptr) {
-        auto op0 = static_cast<StringOperator *>(GetMultiInput(i).get());
+        auto op0 = static_cast<StringOperator*>(GetMultiInput(i).get());
         if (add_separator_param->Eval()) {
           m_DataCache += " " + op0->m_DataCache;
         } else {
@@ -170,7 +180,7 @@ class StringRepeater : public StringModifier {
   void Generate() override {
     if (GetInput(0) != nullptr) {
       std::string val = "";
-      auto op0 = static_cast<StringOperator *>(GetInput(0).get());
+      auto op0 = static_cast<StringOperator*>(GetInput(0).get());
 
       int num_copies = count->Eval();
       if (num_copies < 0) return;
@@ -194,7 +204,7 @@ class StringToUpperCase : public StringModifier {
   }
 
   void Generate() override {
-    auto op0 = static_cast<StringOperator *>(GetInput(0).get());
+    auto op0 = static_cast<StringOperator*>(GetInput(0).get());
     if (op0 == nullptr) return;
     std::string src = op0->m_DataCache;
     std::transform(src.begin(), src.end(), src.begin(), ::toupper);
