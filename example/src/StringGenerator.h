@@ -101,7 +101,7 @@ class StringConcatenator : public StringModifier {
     SetNumAvailableInputs(2);
     // add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
     add_separator_param = CREATE_PARAM(NED::Param<bool>, "Add Separator", this);
-    add_separator_param->value = false;
+    add_separator_param->Set(false);
     m_ParamLayout.params = {add_separator_param};
   }
   ~StringConcatenator() {};
@@ -129,7 +129,7 @@ class StringConcatenatorMulti : public StringModifier {
     ActivateMultiInput();
     // add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
     add_separator_param = CREATE_PARAM(NED::Param<bool>, "Add Separator", this);
-    add_separator_param->value = false;
+    add_separator_param->Set(false);
     // auto combo_test = std::make_shared<ParamComboBox>("Combo Test");
     auto combo_test = CREATE_PARAM(NED::ParamComboBox, "Combo Test", this);
     combo_test->SetChoices({"A", "B", "C"});
@@ -160,7 +160,7 @@ class StringRepeater : public StringModifier {
     SetNumAvailableInputs(1);
     // count = std::make_shared<Param<int>>("Count", 10);
     count = CREATE_PARAM(NED::Param<int>, "Count", this);
-    count->value = 10;
+    count->Set(10);
     count->min_val = 0;
     count->max_val = 100;
     m_ParamLayout.params = {count};

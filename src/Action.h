@@ -29,11 +29,10 @@ class ParamAction : public Action {
   void Do() override {
 	  auto param = Utils::FindParamByName(m_Node, m_ParamName);
 	  set_param_value<T>(param, new_value);
-
   }
   void Undo() override {
 	auto param = Utils::FindParamByName(m_Node, m_ParamName);
-	  set_param_value<T>(param, old_value);
+	set_param_value<T>(param, old_value);
   }	
 
   public : 

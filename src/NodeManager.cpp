@@ -133,23 +133,25 @@ void NodeManager::InitGLFWEvents() {
     auto ev_vec3 = dynamic_cast<const ParamChangedEvent<glm::vec3> *>(&event);
     auto ev_vec2 = dynamic_cast<const ParamChangedEvent<glm::vec2> *>(&event);
     if (ev_string != nullptr) {
-      std::cout << "Param Changed : " << ev_string->param_name << "\nNew Value : " << ev_string->new_value
-                << "\nOld Value : " << ev_string->old_value << std::endl;
-      std::cout << "For Node : " << ev_string->node->title << std::endl;
       auto action = std::make_shared<ParamAction<std::string>>(ev_string->node, ev_string->param_name, ev_string->old_value,
                                                         ev_string->new_value);
       ActionManager::GetInstance().executeCommand(action);
 
     } else if (ev_wstring != nullptr) {
-      std::string utf8_str = wide_to_utf8(ev_wstring->new_value);
-      std::cout << "Param Changed : " << ev_wstring->param_name << "\nNew Value : " << utf8_str << std::endl;
+
+      auto action = std::make_shared<ParamAction<std::wstring>>(ev_wstring->node, ev_wstring->param_name, ev_wstring->old_value,
+                                                        ev_wstring->new_value);
+      ActionManager::GetInstance().executeCommand(action);      
     } else if (ev_bool != nullptr) {
-      std::cout << "Param Changed : " << ev_bool->param_name
-                << "\nNew Value : " << (ev_bool->new_value ? "true" : "false") << std::endl;
+      auto action = std::make_shared<ParamAction<bool>>(ev_bool->node, ev_bool->param_name, ev_bool->old_value,
+                                                        ev_bool->new_value);
+      ActionManager::GetInstance().executeCommand(action);   
     } else if (ev_float != nullptr) {
       std::cout << "Param Changed : " << ev_float->param_name << "\nNew Value : " << ev_float->new_value << std::endl;
     } else if (ev_int != nullptr) {
-      std::cout << "Param Changed : " << ev_int->param_name << "\nNew Value : " << ev_int->new_value << std::endl;
+          auto action = std::make_shared<ParamAction<int>>(ev_int->node, ev_int->param_name, ev_int->old_value,
+                                                        ev_int->new_value);
+      ActionManager::GetInstance().executeCommand(action);   
     } else if (ev_vec3 != nullptr) {
       std::cout << "Vec3 Changed : " << ev_vec3->param_name << "\nNew Value : " << ev_vec3->new_value.x << ", "
                 << ev_vec3->new_value.y << ", " << ev_vec3->new_value.z << "\nOld Value" << ev_vec3->old_value.x << ", "
@@ -982,39 +984,48 @@ void NodeManager::OnMouseRelease(const Event &event) {
 }
 
 void NodeManager::OnKeyPress(const Event &event) {
-  if (!m_ViewProps.canvasHovered) return;
+  // if (!m_ViewProps.canvasHovered) return;
   const KeyPressEvent &keyEvent = static_cast<const KeyPressEvent &>(event);
 
   switch (keyEvent.key) {
     case GLFW_KEY_BACKSPACE:
-      if (m_CurrentNode != nullptr) {
+      if (m_CurrentNode != nullptr && m_ViewProps.canvasHovered) {
         auto it = std::find(GetNodes().begin(), GetNodes().end(), m_CurrentNode);
         GetNodes().erase(it);
         m_CurrentNode = nullptr;
       }
       break;
     case GLFW_KEY_TAB:
-      m_ViewProps.nodes_menu_opened = true;
+      if( m_ViewProps.canvasHovered ) m_ViewProps.nodes_menu_opened = true;
       break;
     case GLFW_KEY_ENTER:
-      if (m_CurrentNode) {
-        SetOutputNode(m_CurrentNode);
-        EventManager::GetInstance().Dispatch(ManagerUpdateEvent());
+      if(m_ViewProps.canvasHovered){
+
+        if (m_CurrentNode) {
+          SetOutputNode(m_CurrentNode);
+          EventManager::GetInstance().Dispatch(ManagerUpdateEvent());
+        }
       }
       break;
-
+    case GLFW_KEY_F :
+      if(m_ViewProps.canvasHovered) ViewFrameAll();
+    break;
     case GLFW_KEY_S:
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
         SaveAll();
+      }
+      break;
+    case GLFW_KEY_W: /* FIXME : Z on AZERTY keyboard !!!*/
+      if (keyEvent.mods & GLFW_MOD_CONTROL) {
+        std::cout << "undo" << std::endl;
+        ActionManager::GetInstance().undo();
       }
       break;
 
     default:
       break;
   }
-  if (keyEvent.key == GLFW_KEY_F) {
-    ViewFrameAll();
-  }
+
 }
 
 void NodeManager::ViewFrameAll() {

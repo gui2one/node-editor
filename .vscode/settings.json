@@ -1,8 +1,8 @@
 {
     "files.associations": {
+        "*.str3000": "yaml",
         "*.qss": "css",
         "*.spec": "python",
-        "*.str3000": "yaml",
         "algorithm": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -84,7 +84,11 @@
         "valarray": "cpp",
         "variant": "cpp",
         "filesystem": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "csignal": "cpp",
+        "regex": "cpp",
+        "stdfloat": "cpp"
     },
     "codeium.enableCodeLens": false,
     "clang-format.executable": "C:/Program Files/LLVM/bin/clang-format"

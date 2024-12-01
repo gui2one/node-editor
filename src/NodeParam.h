@@ -257,16 +257,20 @@ class Param<std::wstring> : public NodeParam {
   ~Param() {};
 
   std::wstring Eval() { return value; }
-
+  void Set(std::wstring _value) {
+    value = _value;
+    temp_value = _value;
+  }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       std::string converted = wide_to_utf8(value);
-      char buffer[2048];
-      if (converted.length() > 2048) converted = converted.substr(0, 2048);
-      std::copy(converted.begin(), converted.end(), buffer);
-      buffer[converted.length()] = 0;
-      if (ImGui::InputText("##m_Label", (char*)buffer, 2048)) {
-        DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, Eval(), Eval());
+      if (ImGui::InputText("##m_Label", &converted)) {
+        this->temp_value = utf8_to_wide(converted);
+      }
+      if( ImGui::IsItemDeactivatedAfterEdit() ){
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, value, old_value);
       }
     });
   }
@@ -275,6 +279,8 @@ class Param<std::wstring> : public NodeParam {
 
  public:
   std::wstring value;
+  std::wstring old_value;
+  std::wstring temp_value;
 };
 
 template <>
@@ -293,9 +299,15 @@ class Param<int> : public NodeParam {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       ImGuiSliderFlags flags = 0;
       flags |= ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_ClampOnInput;
-      if (ImGui::DragInt("##m_Label", &value, 1.0f, min_val, max_val, "%d", flags)) {
-        DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, Eval(), Eval());
+      if (ImGui::DragInt("##m_Label", &temp_value, 1.0f, min_val, max_val, "%d", flags)) {
+
       }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, this->value, this->old_value);
+      }
+      
     });
   }
 
@@ -303,6 +315,7 @@ class Param<int> : public NodeParam {
 
  public:
   int value;
+  int old_value;
   int temp_value;
   int min_val = INT_MIN;
   int max_val = INT_MAX;
@@ -350,8 +363,10 @@ class Param<bool> : public NodeParam {
   }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      if (ImGui::Checkbox("##m_Label", &value)) {
-        DISPATCH_PARAM_CHANGE_EVENT(bool, m_Node, m_Label, Eval(), Eval());
+      if (ImGui::Checkbox("##m_Label", &temp_value)) {
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(bool, m_Node, m_Label, this->value, this->old_value);
       }
     });
   }
@@ -359,6 +374,7 @@ class Param<bool> : public NodeParam {
 
  public:
   bool value;
+  bool old_value;
   bool temp_value;
 };
 
@@ -477,7 +493,7 @@ class ParamFile : public Param<std::wstring> {
       ImGui::PushItemWidth(avail_x - 50.0f);
 
       // ImGui::InputText("##m_Label", &value);
-      std::string converted = wide_to_utf8(value);
+      std::string converted = wide_to_utf8(temp_value);
       ImGui::InputText("##m_Label", &converted, 2048);
 
       ImGui::PopItemWidth();
@@ -486,8 +502,11 @@ class ParamFile : public Param<std::wstring> {
       if (ImGui::Button("Browse")) {
         auto path = Utils::open_file_explorer(filters);
         if (path != "") {
-          value = path.wstring();
-          DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, Eval(), Eval());
+          temp_value = path.wstring();
+          old_value = value;
+          value = temp_value;
+          
+          DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, value, old_value);
         }
       }
       ImGui::PopItemWidth();
@@ -605,7 +624,7 @@ T get_param_value(std::shared_ptr<NodeParam> param) {
 }
 template <typename T>
 void set_param_value(std::shared_ptr<NodeParam> param, T value) {
-  static_cast<Param<T>*>(param.get())->Set(value);
+  dynamic_cast<Param<T>*>(param.get())->Set(value);
 };
 
 };  // namespace NED
