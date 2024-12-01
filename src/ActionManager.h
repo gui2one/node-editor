@@ -22,6 +22,15 @@ class ActionManager {
   std::vector<std::string_view> GetUndoMessages() { return GetStackMessages(undoStack); }
   std::vector<std::string_view> GetRedoMessages() { return GetStackMessages(redoStack); }
 
+  void Reset() {
+    while (!undoStack.empty()) {
+      undoStack.pop();
+    }
+    while (!redoStack.empty()) {
+      redoStack.pop();
+    }
+  }
+
  private:
   // Private constructor for Singleton
   ActionManager() = default;

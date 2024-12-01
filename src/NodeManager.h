@@ -87,9 +87,6 @@ class NodeManager {
   inline std::vector<std::shared_ptr<AbstractNode>>& GetNodes() { return m_CurrentNetwork->nodes; }
   inline const std::vector<std::shared_ptr<AbstractNode>>& GetNodes() const { return m_CurrentNetwork->nodes; }
 
-  std::shared_ptr<AbstractNode> FindNodeByUUID(std::string uuid);
-  std::shared_ptr<NodeParam> FindParamByName(std::shared_ptr<AbstractNode> factory_node, std::string param_name);
-
   void DisplayNodeParams(std::shared_ptr<AbstractNode> node);
   void DrawNodes();
   void DrawCanvas();
@@ -158,6 +155,7 @@ class NodeManager {
 
   void CreateAllNodes();
   void BuildImGuiMainMenuBar();
+  void ResetAll();
 
  private:
   void SetNodesMenu(std::function<void()> func);

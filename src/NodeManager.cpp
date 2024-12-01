@@ -200,39 +200,6 @@ void NodeManager::AddIcon(std::string name, std::filesystem::path path) {
   m_Icons.insert({name, LoadTexture(path.string().c_str())});
 }
 
-std::shared_ptr<AbstractNode> NodeManager::FindNodeByUUID(std::string uuid) {
-  for (auto node : GetNodes()) {
-    if (node->uuid == uuid) {
-      return node;
-    }
-  }
-  return nullptr;
-}
-
-std::shared_ptr<NED::NodeParam> NodeManager::FindParamByName(std::shared_ptr<NED::AbstractNode> factory_node,
-                                                             std::string param_name) {
-  for (auto& param_item : factory_node->m_ParamLayout.params) {
-    auto p_group = std::dynamic_pointer_cast<ParamGroup>(param_item);
-    if (p_group != nullptr) {
-      if (p_group->m_Label == param_name) {
-        return p_group;
-      }
-      for (auto group_item : p_group->params) {
-        if (group_item->m_Label == param_name) {
-          return group_item;
-        }
-      }
-
-    } else {
-      if (param_item->m_Label == param_name) {
-        return param_item;
-      }
-    }
-  }
-
-  return nullptr;
-}
-
 void NodeManager::CreateAllNodes() {
   static NodeFactoryRegistry& registry = NodeFactoryRegistry::GetInstance();
 
@@ -262,11 +229,7 @@ void NodeManager::CreateAllNodes() {
 void NodeManager::BuildImGuiMainMenuBar() {
   if (ImGui::BeginMenu("File")) {
     if (ImGui::MenuItem("New", "Ctrl+N")) {
-      GetRootNetwork().nodes.clear();
-      GetRootNetwork().outuput_node = nullptr;
-      m_CurrentNode = nullptr;
-      m_SavePath = std::filesystem::path("");
-      glfwSetWindowTitle(GetGLFWWindow(), m_SavePath.string().c_str());
+      ResetAll();
     }
 
     if (ImGui::MenuItem("Save", "Ctrl+S")) {
@@ -319,6 +282,15 @@ void NodeManager::BuildImGuiMainMenuBar() {
   //   ImGui::MenuItem("Show Demo Window", NULL, &showDemoWindow);
   //   ImGui::EndMenu();
   // }
+}
+
+void NodeManager::ResetAll() {
+  GetRootNetwork().nodes.clear();
+  GetRootNetwork().outuput_node = nullptr;
+  m_CurrentNode = nullptr;
+  m_SavePath = std::filesystem::path("");
+  ActionManager::GetInstance().Reset();
+  glfwSetWindowTitle(GetGLFWWindow(), m_SavePath.string().c_str());
 }
 
 void NodeManager::SetNodesMenu(std::function<void()> func) { m_NodesMenu = func; }
