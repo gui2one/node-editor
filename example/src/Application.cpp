@@ -283,6 +283,8 @@ void Application::Run() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     static bool showDemoWindow = false;
+    static bool first_opened = true;
+    static int run_ticks = 0;
     if (showDemoWindow) {
       ImGui::ShowDemoWindow(&showDemoWindow);
     }
@@ -298,20 +300,23 @@ void Application::Run() {
     ImGui::PopStyleVar();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    static bool first_opened = true;
 
     ImGui::Begin("Canvas test");
 
     m_NodeManager.DrawCanvas();
-    if (first_opened) {
-      m_NodeManager.ViewFrameAll();
-      first_opened = false;
-    }
+
     ImGui::End();
     ImGui::PopStyleVar();
 
     ImGuiEndFrame();
 
+    if (run_ticks > 0 && first_opened) {
+      m_NodeManager.ViewFrameAll();
+      std::cout << "ViewFrameAll()" << std::endl;
+      first_opened = false;
+    } else {
+      run_ticks++;
+    }
     glfwSwapBuffers(m_NativeWindow);
 
     // std::this_thread::sleep_for(std::chrono::milliseconds(10));
