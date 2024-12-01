@@ -147,7 +147,7 @@ void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_no
 
   } else if (p_type_str == "ParamComboBox") {
     auto combo_p = std::dynamic_pointer_cast<ParamComboBox>(param);
-    combo_p->SetChoice(yaml["value"].as<int>());
+    combo_p->Set(yaml["value"].as<int>());
 
   } else if (p_type_str == "ParamGroup") {
     auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
