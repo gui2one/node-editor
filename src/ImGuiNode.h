@@ -297,8 +297,6 @@ class NullNode : public ImGuiNode<T> {
       auto subnet_op = dynamic_cast<SubnetNode<T>*>(this->GetInput(0));
 
       if (op0 != nullptr) {
-        std::cout << "Generate for Null Operator ------------------" << std::endl;
-        std::cout << "input Cache = " << op0->m_DataCache << std::endl;
         this->m_DataCache = op0->m_DataCache;
       } else if (subnetinput_op != nullptr) {
         this->m_DataCache = subnetinput_op->m_DataCache;
