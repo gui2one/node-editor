@@ -136,7 +136,7 @@ void NodeManager::InitGLFWEvents() {
       std::cout << "Param Changed : " << ev_string->param_name << "\nNew Value : " << ev_string->new_value
                 << "\nOld Value : " << ev_string->old_value << std::endl;
       std::cout << "For Node : " << ev_string->node->title << std::endl;
-      auto action = std::make_shared<ParamStringAction>(ev_string->node, ev_string->param_name, ev_string->old_value,
+      auto action = std::make_shared<ParamAction<std::string>>(ev_string->node, ev_string->param_name, ev_string->old_value,
                                                         ev_string->new_value);
       ActionManager::GetInstance().executeCommand(action);
 
