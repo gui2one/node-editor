@@ -19,7 +19,7 @@ class Node : public T {
 
   void Update() {
     auto node = static_cast<AbstractNode *>(this);
-    auto op = static_cast<T *>(this);
+    auto op = dynamic_cast<T *>(this);
     if (!node->IsMultiInput()) {
       if (node->IsSubnetInputNode()) {
         if (node->parent_node != nullptr) {
@@ -63,5 +63,5 @@ class Node : public T {
 
   T *ToOperator() { return static_cast<T *>(this); }
 };
-};  // namespace NodeEditor
+};  // namespace NED
 #endif  // NODE_EDITOR_NODE_H

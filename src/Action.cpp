@@ -12,4 +12,14 @@ void MoveNodeAction::Do() {
 }
 void MoveNodeAction::Undo() { m_Node->position = from_pos; }
 
+NodeConnectAction::NodeConnectAction(AbstractNode* parent_node, AbstractNode* child_node, uint32_t child_input_index)
+    : m_ParentNode(parent_node), m_ChildNode(child_node), m_ChildInputIndex(child_input_index) {}
+
+void NodeConnectAction::Do() { m_ChildNode->SetInput(m_ChildInputIndex, m_ParentNode); }
+
+void NodeConnectAction::Undo() {
+  m_ChildNode->SetInput(m_ChildInputIndex, nullptr);
+  m_ChildNode->ClearCache();
+}
+
 };  // namespace NED

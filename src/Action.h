@@ -42,6 +42,7 @@ class ParamAction : public Action {
   T old_value;
   T new_value;
 };
+
 class MoveNodeAction : public Action {
  public:
   MoveNodeAction(AbstractNode* node, ImVec2 from_pos, ImVec2 to_pos);
@@ -53,6 +54,19 @@ class MoveNodeAction : public Action {
   ImVec2 from_pos;
   ImVec2 to_pos;
   AbstractNode* m_Node;
+};
+
+class NodeConnectAction : public Action {
+ public:
+  NodeConnectAction(AbstractNode* parent_node, AbstractNode* child_node, uint32_t child_input_index);
+
+  void Do() override;
+  void Undo() override;
+
+ private:
+  AbstractNode* m_ParentNode;
+  AbstractNode* m_ChildNode;
+  uint32_t m_ChildInputIndex;
 };
 
 };  // namespace NED

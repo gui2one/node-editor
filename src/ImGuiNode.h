@@ -72,6 +72,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   std::shared_ptr<AbstractNode> get_shared_ptr() { return shared_from_this(); }
   virtual void Update() = 0;    // implemented in Node.h, in the Node<T> class
   virtual void Generate() = 0;  // user defined method. i.e the work the node is doint for the user app
+  virtual void ClearCache() = 0;
 
   YAML::Node YAMLSerialize() {
     YAML::Node yaml_node;
@@ -110,7 +111,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     return yaml_node;
   }
 
-  void SetInput(uint32_t index, std::shared_ptr<AbstractNode> node) {
+  void SetInput(uint32_t index, AbstractNode* node) {
     if (index < 0 || index > 3) return;
     inputs[index] = node;
   }
@@ -118,7 +119,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     if (index < 0 || index > 3) return;
     inputs[index] = nullptr;
   }
-  std::shared_ptr<AbstractNode> GetInput(uint32_t index) {
+  AbstractNode* GetInput(uint32_t index) {
     if (index < 0 || index > 3) return nullptr;
     return inputs[index];
   }
@@ -140,8 +141,8 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
 
   inline size_t GetMultiInputCount() { return m_MultiInput.size(); }
-  inline std::shared_ptr<AbstractNode> GetMultiInput(size_t index) { return m_MultiInput[index]; }
-  inline void AppendInput(std::shared_ptr<AbstractNode> node) { m_MultiInput.push_back(node); }
+  inline AbstractNode* GetMultiInput(size_t index) { return m_MultiInput[index]; }
+  inline void AppendInput(AbstractNode* node) { m_MultiInput.push_back(node); }
 
   inline void ActivateMultiInput() { m_IsMultiInput = true; }
   inline bool IsMultiInput() { return m_IsMultiInput; }
@@ -151,6 +152,9 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
 
   inline void ActivateSubnetInputNode() { m_IsSubnetInputNode = true; }
   inline bool IsSubnetInputNode() { return m_IsSubnetInputNode; }
+
+  // inline void AvtivateNullNode() { m_IsNullNode = true; }
+  // inline bool IsNullNode() const { return m_IsNullNode; }
 
   inline void SetNumAvailableInputs(uint32_t num) {
     if (num > MAX_N_INPUTS) {
@@ -183,6 +187,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   bool m_IsMultiInput = false;
   bool m_IsSubnet = false;
   bool m_IsSubnetInputNode = false;
+  // bool m_IsNullNode = false;
 
  public:
   const char* icon_name = "";
@@ -201,8 +206,8 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   bool grabbed = false;
   bool highlighted = false;
 
-  std::array<std::shared_ptr<AbstractNode>, MAX_N_INPUTS> inputs = {nullptr, nullptr, nullptr, nullptr};
-  std::vector<std::shared_ptr<AbstractNode>> m_MultiInput;
+  std::array<AbstractNode*, MAX_N_INPUTS> inputs = {nullptr, nullptr, nullptr, nullptr};
+  std::vector<AbstractNode*> m_MultiInput;
   std::vector<InputConnector> m_InputConnectors;
 };
 
@@ -233,6 +238,7 @@ class SubnetNode : public AbstractNode {
       }
     }
   }
+  void ClearCache() override { m_DataCache = T(); }
 
  public:
   T m_DataCache;
@@ -264,13 +270,15 @@ class SubnetInputNode : public AbstractNode {
 
       uint32_t id = input_id->Eval();
       if (_parent_node->GetInput(id) != nullptr) {
-        auto op = static_cast<ImGuiNode<T>*>(_parent_node->GetInput(id).get());
+        auto op = static_cast<ImGuiNode<T>*>(_parent_node->GetInput(id));
         m_DataCache = op->m_DataCache;
       }
     } else {
       std::cout << "NO Parent node defined" << std::endl;
     }
   }
+
+  void ClearCache() override { m_DataCache = T(); }
 
  public:
   T m_DataCache;
@@ -284,11 +292,13 @@ class NullNode : public ImGuiNode<T> {
 
   void Generate() override {
     if (this->GetInput(0) != nullptr) {
-      auto op0 = std::dynamic_pointer_cast<ImGuiNode<T>>(this->GetInput(0));
-      auto subnetinput_op = std::dynamic_pointer_cast<SubnetInputNode<T>>(this->GetInput(0));
-      auto subnet_op = std::dynamic_pointer_cast<SubnetNode<T>>(this->GetInput(0));
+      auto op0 = dynamic_cast<ImGuiNode<T>*>(this->GetInput(0));
+      auto subnetinput_op = dynamic_cast<SubnetInputNode<T>*>(this->GetInput(0));
+      auto subnet_op = dynamic_cast<SubnetNode<T>*>(this->GetInput(0));
 
       if (op0 != nullptr) {
+        std::cout << "Generate for Null Operator ------------------" << std::endl;
+        std::cout << "input Cache = " << op0->m_DataCache << std::endl;
         this->m_DataCache = op0->m_DataCache;
       } else if (subnetinput_op != nullptr) {
         this->m_DataCache = subnetinput_op->m_DataCache;
@@ -297,6 +307,8 @@ class NullNode : public ImGuiNode<T> {
       }
     }
   }
+
+  void ClearCache() override { this->m_DataCache = T(); }
 };
 };  // namespace NED
 

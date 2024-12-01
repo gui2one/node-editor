@@ -16,6 +16,8 @@ class StringOperator : public ImGuiNode<std::string> {
  public:
   StringOperator() : ImGuiNode("default") {};
   virtual ~StringOperator() = default;
+
+  void ClearCache() override { m_DataCache = ""; }
 };
 
 class StringGenerator : public StringOperator {
@@ -118,8 +120,8 @@ class StringConcatenator : public StringModifier {
 
   void Generate() override {
     if (GetInput(0) != nullptr && GetInput(1) != nullptr) {
-      auto op0 = static_cast<StringOperator*>(GetInput(0).get());
-      auto op1 = static_cast<StringOperator*>(GetInput(1).get());
+      auto op0 = static_cast<StringOperator*>(GetInput(0));
+      auto op1 = static_cast<StringOperator*>(GetInput(1));
       if (add_separator_param->Eval()) {
         m_DataCache = op0->m_DataCache + " " + op1->m_DataCache;
       } else {
@@ -151,7 +153,7 @@ class StringConcatenatorMulti : public StringModifier {
     m_DataCache = "";
     for (size_t i = 0; i < GetMultiInputCount(); i++) {
       if (GetMultiInput(i) != nullptr) {
-        auto op0 = static_cast<StringOperator*>(GetMultiInput(i).get());
+        auto op0 = static_cast<StringOperator*>(GetMultiInput(i));
         if (add_separator_param->Eval()) {
           m_DataCache += " " + op0->m_DataCache;
         } else {
@@ -180,7 +182,7 @@ class StringRepeater : public StringModifier {
   void Generate() override {
     if (GetInput(0) != nullptr) {
       std::string val = "";
-      auto op0 = static_cast<StringOperator*>(GetInput(0).get());
+      auto op0 = static_cast<StringOperator*>(GetInput(0));
 
       int num_copies = count->Eval();
       if (num_copies < 0) return;
@@ -204,7 +206,7 @@ class StringToUpperCase : public StringModifier {
   }
 
   void Generate() override {
-    auto op0 = static_cast<StringOperator*>(GetInput(0).get());
+    auto op0 = static_cast<StringOperator*>(GetInput(0));
     if (op0 == nullptr) return;
     std::string src = op0->m_DataCache;
     std::transform(src.begin(), src.end(), src.begin(), ::toupper);

@@ -125,16 +125,9 @@ void NodeManager::InitGLFWEvents() {
   });
   dispatcher.Subscribe(EventType::NodeConnection, [this](const Event& event) {
     Evaluate();
-    // if (GetOutputNode() != nullptr) {
-    //   auto string_op = std::dynamic_pointer_cast<StringOperator>(GetOutputNode());
-    //   auto number_op = std::dynamic_pointer_cast<NumberOperator>(GetOutputNode());
-
-    //  if (string_op != nullptr) {
-    //    std::cout << "String Connection Update -> " << string_op->m_DataCache << std::endl;
-    //  } else if (number_op != nullptr) {
-    //    std::cout << "Number Connection Update -> " << number_op->m_DataCache << std::endl;
-    //  }
-    //}
+    auto ev = static_cast<const NodeConnectionEvent&>(event);
+    auto action = std::make_shared<NodeConnectAction>(ev.input_node.get(), ev.output_node.get(), ev.output_index);
+    ActionManager::GetInstance().executeCommand(action);
   });
   dispatcher.Subscribe(EventType::ParamChanged, [this](const Event& event) {
     // auto &manager = *this;
@@ -688,23 +681,24 @@ void NodeManager::ApplyConnectionProcedure() {
   if (m_ConnectionProcedure.is_mutli_input) {
     if (m_ConnectionProcedure.input_node == nullptr) {
       m_ConnectionProcedure.output_node->RemoveLastInput();
-      ResetConnectionProcedure();
       NodeConnectionEvent event(nullptr, 0, m_ConnectionProcedure.output_node, 0);
       EventManager::GetInstance().Dispatch(event);
+      ResetConnectionProcedure();
 
     } else {
-      m_ConnectionProcedure.output_node->AppendInput(m_ConnectionProcedure.input_node);
-      ResetConnectionProcedure();
+      m_ConnectionProcedure.output_node->AppendInput(m_ConnectionProcedure.input_node.get());
       NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node,
                                 m_ConnectionProcedure.output_index);
       EventManager::GetInstance().Dispatch(event);
+      ResetConnectionProcedure();
     }
   } else {
-    m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index, m_ConnectionProcedure.input_node);
-    ResetConnectionProcedure();
+    m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index,
+                                                m_ConnectionProcedure.input_node.get());
     NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node,
                               m_ConnectionProcedure.output_index);
     EventManager::GetInstance().Dispatch(event);
+    ResetConnectionProcedure();
   }
 }
 

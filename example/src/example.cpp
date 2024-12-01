@@ -61,11 +61,11 @@ int main(int argc, char *argv[]) {
       } else if (op != nullptr) {
         std::cout << "ManagerUpdate Event !!-> " << op->m_DataCache << std::endl;
       } else if (subnet_input_op != nullptr) {
-        auto op2 = static_cast<ImGuiNode<std::string> *>(subnet_input_op->parent_node->GetInput(0).get());
+        auto op2 = static_cast<ImGuiNode<std::string> *>(subnet_input_op->parent_node->GetInput(0));
         std::cout << "Subnet input Operator -> " << op2->m_DataCache << std::endl;
 
       } else if (number_op != nullptr) {
-        // auto op2 = static_cast<NumberOperator *>(subnet_input_op->parent_node->GetInput(0).get());
+        // auto op2 = static_cast<NumberOperator *>(subnet_input_op->parent_node->GetInput(0));
         std::cout << "Subnet input Operator -> " << number_op->m_DataCache << std::endl;
 
       } else {

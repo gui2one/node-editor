@@ -10,6 +10,8 @@ class NumberOperator : public ImGuiNode<float> {
  public:
   NumberOperator() : ImGuiNode("default Number Op") {}
   virtual ~NumberOperator() = default;
+
+  void ClearCache() override { m_DataCache = 0.0f; }
 };
 
 class NumberConstant : public NumberOperator {
@@ -34,8 +36,8 @@ class Add : public NumberOperator {
   ~Add() {}
   void Generate() override {
     if (GetInput(0) != nullptr && GetInput(1) != nullptr) {
-      auto op0 = std::dynamic_pointer_cast<NumberOperator>(GetInput(0));
-      auto op1 = std::dynamic_pointer_cast<NumberOperator>(GetInput(1));
+      auto op0 = dynamic_cast<NumberOperator*>(GetInput(0));
+      auto op1 = dynamic_cast<NumberOperator*>(GetInput(1));
       m_DataCache = op0->m_DataCache + op1->m_DataCache;
     } else {
       m_DataCache = 0.0f;

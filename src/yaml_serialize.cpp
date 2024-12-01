@@ -204,7 +204,7 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml) {
         continue;
       }
 
-      my_self->SetInput((uint32_t)i, input_node);
+      my_self->SetInput((uint32_t)i, input_node.get());
     }
     for (size_t i = 0; i < node["multi_input"].size(); i++) {
       auto input_uuid = node["multi_input"][i].as<std::string>();
@@ -212,7 +212,7 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml) {
 
       if (input_node == nullptr) continue;
 
-      my_self->AppendInput(input_node);
+      my_self->AppendInput(input_node.get());
     }
   }
   return nodes;
