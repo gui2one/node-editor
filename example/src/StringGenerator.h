@@ -39,8 +39,8 @@ class StringGenerate : public StringGenerator {
     label->Set("Is this the label ?");
 
     auto combo_p = CREATE_PARAM(NED::ParamComboBox, "Combo", this);
-    combo_p->SetChoices({"one", "two", "thre"});
-    combo_p->Set(1);
+    combo_p->SetChoices({"one", "two", "three", "four", "five"});
+    combo_p->Set(0);
 
     auto float_p = CREATE_PARAM(NED::Param<float>, "Float", this);
     float_p->Set(3.14f);

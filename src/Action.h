@@ -55,20 +55,6 @@ class MoveNodeAction : public Action {
   AbstractNode* m_Node;
 };
 
-// Param Actions
-class ParamStringAction : public Action {
- public:
-  ParamStringAction(AbstractNode* node, std::string param_name, std::string from_value, std::string to_value);
-
-  void Do() override;
-  void Undo() override;
-
- private:
-  std::string m_ParamName;
-  AbstractNode* m_Node;
-  std::string from_value;
-  std::string to_value;
-};
 };  // namespace NED
 
 #endif  // NODE_EDITOR_ACTION_H
