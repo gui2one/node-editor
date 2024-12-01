@@ -123,6 +123,19 @@ void NodeManager::InitGLFWEvents() {
     this->m_SavePath = path;
     glfwSetWindowTitle(this->GetGLFWWindow(), path.string().c_str());
   });
+  dispatcher.Subscribe(EventType::NodeConnection, [this](const Event& event) {
+    Evaluate();
+    // if (GetOutputNode() != nullptr) {
+    //   auto string_op = std::dynamic_pointer_cast<StringOperator>(GetOutputNode());
+    //   auto number_op = std::dynamic_pointer_cast<NumberOperator>(GetOutputNode());
+
+    //  if (string_op != nullptr) {
+    //    std::cout << "String Connection Update -> " << string_op->m_DataCache << std::endl;
+    //  } else if (number_op != nullptr) {
+    //    std::cout << "Number Connection Update -> " << number_op->m_DataCache << std::endl;
+    //  }
+    //}
+  });
   dispatcher.Subscribe(EventType::ParamChanged, [this](const Event& event) {
     // auto &manager = *this;
     auto ev_string = dynamic_cast<const ParamChangedEvent<std::string>*>(&event);
@@ -600,29 +613,29 @@ void NodeManager::DisplayActionManager() {
 }
 
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
-  if (node == nullptr) return;
-
   ImGui::Begin("Params");
-  std::string temp_name = node->title;
-  std::string name_copy = std::string(node->title);
+  if (node != nullptr) {
+    std::string temp_name = node->title;
+    std::string name_copy = std::string(node->title);
 
-  ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-  if (ImGui::InputText("Node Name", &name_copy, flags)) {
-    std::unordered_set<std::string> names;
+    ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+    if (ImGui::InputText("Node Name", &name_copy, flags)) {
+      std::unordered_set<std::string> names;
 
-    for (auto other_node : m_CurrentNetwork->nodes) {
-      if (other_node != node) {
-        names.insert(other_node->title);
+      for (auto other_node : m_CurrentNetwork->nodes) {
+        if (other_node != node) {
+          names.insert(other_node->title);
+        }
       }
+      node->title = generate_unique_name(name_copy, names);
+      // std::cout << "Node name changed to " << node->title << std::endl;
     }
-    node->title = generate_unique_name(name_copy, names);
-    // std::cout << "Node name changed to " << node->title << std::endl;
-  }
-  ImGui::Separator();
-  ImGui::Spacing();
-  ImGui::Spacing();
-  for (auto param : node->m_ParamLayout.params) {
-    param->Display();
+    ImGui::Separator();
+    ImGui::Spacing();
+    ImGui::Spacing();
+    for (auto param : node->m_ParamLayout.params) {
+      param->Display();
+    }
   }
 
   ImGui::End();
