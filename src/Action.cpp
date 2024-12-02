@@ -15,11 +15,21 @@ void MoveNodeAction::Undo() { m_Node->position = from_pos; }
 NodeConnectAction::NodeConnectAction(AbstractNode* parent_node, AbstractNode* child_node, uint32_t child_input_index)
     : m_ParentNode(parent_node), m_ChildNode(child_node), m_ChildInputIndex(child_input_index) {}
 
-void NodeConnectAction::Do() { m_ChildNode->SetInput(m_ChildInputIndex, m_ParentNode); }
+void NodeConnectAction::Do() {
+  if (m_ChildNode->IsMultiInput() == false) {
+    m_ChildNode->SetInput(m_ChildInputIndex, m_ParentNode);
+  } else {
+    m_ChildNode->AppendInput(m_ParentNode);
+  }
+}
 
 void NodeConnectAction::Undo() {
-  m_ChildNode->SetInput(m_ChildInputIndex, nullptr);
-  m_ChildNode->ClearCache();
+  if (m_ChildNode->IsMultiInput() == false) {
+    m_ChildNode->SetInput(m_ChildInputIndex, nullptr);
+    m_ChildNode->ClearCache();
+  } else {
+    m_ChildNode->RemoveLastInput();
+  }
 }
 
 NodeDisconnectAction::NodeDisconnectAction(AbstractNode* parent_node, AbstractNode* child_node,
@@ -27,13 +37,20 @@ NodeDisconnectAction::NodeDisconnectAction(AbstractNode* parent_node, AbstractNo
     : m_ParentNode(parent_node), m_ChildNode(child_node), m_ChildInputIndex(child_input_index) {}
 
 void NodeDisconnectAction::Do() {
-  m_ChildNode->SetInput(m_ChildInputIndex, nullptr);
-  m_ChildNode->ClearCache();
+  if (m_ChildNode->IsMultiInput() == false) {
+    m_ChildNode->SetInput(m_ChildInputIndex, nullptr);
+    m_ChildNode->ClearCache();
+  } else {
+    m_ChildNode->RemoveLastInput();
+  }
 }
 
 void NodeDisconnectAction::Undo() {
-  std::cout << "DISCONNECT undo !!!!!!!!!!!!!!!!" << std::endl;
-  m_ChildNode->SetInput(m_ChildInputIndex, m_ParentNode);
+  if (m_ChildNode->IsMultiInput() == false) {
+    m_ChildNode->SetInput(m_ChildInputIndex, m_ParentNode);
+  } else {
+    m_ChildNode->AppendInput(m_ParentNode);
+  }
 }
 
 };  // namespace NED

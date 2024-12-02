@@ -690,21 +690,22 @@ void NodeManager::ApplyConnectionProcedure() {
   }
   if (m_ConnectionProcedure.is_mutli_input) {
     if (m_ConnectionProcedure.input_node == nullptr) {
-      m_ConnectionProcedure.output_node->RemoveLastInput();
-      NodeConnectionEvent event(nullptr, 0, m_ConnectionProcedure.output_node, 0);
+      AbstractNode* last_input_node =
+          m_ConnectionProcedure.output_node->m_MultiInput[m_ConnectionProcedure.output_node->m_MultiInput.size() - 1];
+      NodeDisconnectionEvent event(last_input_node->get_shared_ptr(), 0, m_ConnectionProcedure.output_node, 0);
       EventManager::GetInstance().Dispatch(event);
       ResetConnectionProcedure();
 
     } else {
-      m_ConnectionProcedure.output_node->AppendInput(m_ConnectionProcedure.input_node.get());
+      // m_ConnectionProcedure.output_node->AppendInput(m_ConnectionProcedure.input_node.get());
       NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node,
                                 m_ConnectionProcedure.output_index);
       EventManager::GetInstance().Dispatch(event);
       ResetConnectionProcedure();
     }
   } else {
-    m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index,
-                                                m_ConnectionProcedure.input_node.get());
+    // m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index,
+    //                                             m_ConnectionProcedure.input_node.get());
     NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node,
                               m_ConnectionProcedure.output_index);
     EventManager::GetInstance().Dispatch(event);

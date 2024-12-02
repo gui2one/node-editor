@@ -132,10 +132,12 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     }
     return &m_InputConnectors[index];
   }
-  void RemoveLastInput() {
+  AbstractNode* RemoveLastInput() {
+    auto save = m_MultiInput[m_MultiInput.size() - 1];
     if (m_MultiInput.size() > 0) {
       m_MultiInput.pop_back();
     }
+    return save;
   }
 
   inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
