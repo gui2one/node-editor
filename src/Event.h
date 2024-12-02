@@ -94,32 +94,26 @@ class KeyPressEvent : public Event {
 class NodeConnectionEvent : public Event {
  public:
   std::shared_ptr<AbstractNode> parent_node = nullptr;
-  uint32_t parent_node_index = 0;
+  uint32_t parent_index = 0;
   std::shared_ptr<AbstractNode> child_node = nullptr;
-  uint32_t child_node_index = 0;
+  uint32_t child_index = 0;
 
-  NodeConnectionEvent(std::shared_ptr<AbstractNode> parent_node = nullptr, uint32_t parent_node_index = 0,
-                      std::shared_ptr<AbstractNode> output_node = nullptr, uint32_t child_node_index = 0)
-      : parent_node(parent_node),
-        parent_node_index(parent_node_index),
-        child_node(output_node),
-        child_node_index(child_node_index) {}
+  NodeConnectionEvent(std::shared_ptr<AbstractNode> parent_node = nullptr, uint32_t parent_index = 0,
+                      std::shared_ptr<AbstractNode> output_node = nullptr, uint32_t child_index = 0)
+      : parent_node(parent_node), parent_index(parent_index), child_node(output_node), child_index(child_index) {}
   EventType GetType() const override { return EventType::NodeConnection; }
 };
 
 class NodeDisconnectionEvent : public Event {
  public:
   std::shared_ptr<AbstractNode> parent_node = nullptr;
-  uint32_t parent_node_index = 0;
+  uint32_t parent_index = 0;
   std::shared_ptr<AbstractNode> child_node = nullptr;
-  uint32_t child_node_index = 0;
+  uint32_t child_index = 0;
 
-  NodeDisconnectionEvent(std::shared_ptr<AbstractNode> parent_node = nullptr, uint32_t parent_node_index = 0,
-                         std::shared_ptr<AbstractNode> child_node = nullptr, uint32_t child_node_index = 0)
-      : parent_node(parent_node),
-        parent_node_index(parent_node_index),
-        child_node(child_node),
-        child_node_index(child_node_index) {}
+  NodeDisconnectionEvent(std::shared_ptr<AbstractNode> parent_node = nullptr, uint32_t parent_index = 0,
+                         std::shared_ptr<AbstractNode> child_node = nullptr, uint32_t child_index = 0)
+      : parent_node(parent_node), parent_index(parent_index), child_node(child_node), child_index(child_index) {}
   EventType GetType() const override { return EventType::NodeDisconnection; }
 };
 

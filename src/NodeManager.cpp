@@ -124,7 +124,7 @@ void NodeManager::InitGLFWEvents() {
     Evaluate();
     auto ev = static_cast<const NodeConnectionEvent&>(event);
 
-    auto action = std::make_shared<NodeConnectAction>(ev.parent_node.get(), ev.child_node.get(), ev.child_node_index);
+    auto action = std::make_shared<NodeConnectAction>(ev.parent_node.get(), ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Connect");
     ActionManager::GetInstance().executeCommand(action);
   });
@@ -132,8 +132,7 @@ void NodeManager::InitGLFWEvents() {
     Evaluate();
     auto ev = static_cast<const NodeDisconnectionEvent&>(event);
 
-    auto action =
-        std::make_shared<NodeDisconnectAction>(ev.parent_node.get(), ev.child_node.get(), ev.child_node_index);
+    auto action = std::make_shared<NodeDisconnectAction>(ev.parent_node.get(), ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Disconnect");
     ActionManager::GetInstance().executeCommand(action);
   });
