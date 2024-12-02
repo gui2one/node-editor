@@ -920,7 +920,8 @@ void NodeManager::OnMouseClick(const Event& event) {
       if (m_ConnectionProcedure.is_mutli_input) {  // multi input
         ApplyConnectionProcedure();
       } else {
-        NodeDisconnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node, 0);
+        NodeDisconnectionEvent event(m_ConnectionProcedure.output_node->GetInput(0)->get_shared_ptr(), 0,
+                                     m_ConnectionProcedure.output_node, 0);
         EventManager::GetInstance().Dispatch(event);
         m_ConnectionProcedure.started = false;
         m_ConnectionProcedure.output_node->ResetInput(m_ConnectionProcedure.output_index);
@@ -1016,6 +1017,12 @@ void NodeManager::OnKeyPress(const Event& event) {
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
         std::cout << "undo" << std::endl;
         ActionManager::GetInstance().undo();
+      }
+      break;
+    case GLFW_KEY_Y:
+      if (keyEvent.mods & GLFW_MOD_CONTROL) {
+        std::cout << "REDO" << std::endl;
+        ActionManager::GetInstance().redo();
       }
       break;
 
