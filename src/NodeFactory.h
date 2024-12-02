@@ -24,9 +24,9 @@ class NodeFactoryRegistry {
   inline void RegisterType(const std::string& typeName, NodeFactoryRegistryItem item) { factories[typeName] = item; }
 
   std::shared_ptr<AbstractNode> Create(const std::string& typeName, AbstractNode* parent_node = nullptr) const;
-  std::shared_ptr<AbstractNode> Clone(std::shared_ptr<AbstractNode> other) const;
+  std::shared_ptr<AbstractNode> Clone(std::shared_ptr<AbstractNode> other, bool set_new_position = false,
+                                      ImVec2 new_pos = ImVec2(0, 0)) const;
   void CloneParam(std::shared_ptr<NodeParam> src, std::shared_ptr<NodeParam> dst) const;
-
 
   inline std::unordered_map<std::string, NodeFactoryRegistryItem> GetFactories() const { return factories; }
 
@@ -41,32 +41,27 @@ class NodeFactoryRegistry {
               []() -> std::shared_ptr<NED::Node<Type>> { return std::make_shared<NED::Node<Type>>(Label, #Type); }})
 #define CREATE_SUBNET_INPUT_NODE_CLASS(Type, Label, Category)                                               \
   NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
-      "NED::SubnetInputNode<"#Type">", {Category, Label, "NED::SubnetInputNode<"#Type">",               \
+      "NED::SubnetInputNode<" #Type ">", {Category, Label, "NED::SubnetInputNode<" #Type ">",               \
                                           []() -> std::shared_ptr<NED::Node<NED::SubnetInputNode<Type>>> {  \
                                             return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>( \
-                                                Label, "NED::SubnetInputNode<"#Type">");                  \
+                                                Label, "NED::SubnetInputNode<" #Type ">");                  \
                                           }})
-#define CREATE_UTILITY_CLASSES(Type, Category)                                               \
-  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
-      "NED::SubnetInputNode<"#Type">", {Category, "Subnet Input", "NED::SubnetInputNode<"#Type">",               \
-                                          []() -> std::shared_ptr<NED::Node<NED::SubnetInputNode<Type>>> {  \
-                                            return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>( \
-                                                "Subnet Input", "NED::SubnetInputNode<"#Type">");                  \
-                                          }}); \
-  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
-      "NED::SubnetNode<"#Type">", {Category, "Subnet", "NED::SubnetNode<"#Type">",               \
-                                          []() -> std::shared_ptr<NED::Node<NED::SubnetNode<Type>>> {  \
-                                            return std::make_shared<NED::Node<NED::SubnetNode<Type>>>( \
-                                                "Subnet", "NED::SubnetNode<"#Type">");                  \
-                                          }}); \
-  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                     \
-      "NED::NullNode<"#Type">", {Category, "Null", "NED::NullNode<"#Type">",               \
-                                          []() -> std::shared_ptr<NED::Node<NED::NullNode<Type>>> {  \
-                                            return std::make_shared<NED::Node<NED::NullNode<Type>>>( \
-                                                "Null", "NED::NullNode<"#Type">");                  \
-                                          }})
-
-
-
+#define CREATE_UTILITY_CLASSES(Type, Category)                                                                       \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                              \
+      "NED::SubnetInputNode<" #Type ">", {Category, "Subnet Input", "NED::SubnetInputNode<" #Type ">",               \
+                                          []() -> std::shared_ptr<NED::Node<NED::SubnetInputNode<Type>>> {           \
+                                            return std::make_shared<NED::Node<NED::SubnetInputNode<Type>>>(          \
+                                                "Subnet Input", "NED::SubnetInputNode<" #Type ">");                  \
+                                          }});                                                                       \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                              \
+      "NED::SubnetNode<" #Type ">",                                                                                  \
+      {Category, "Subnet", "NED::SubnetNode<" #Type ">", []() -> std::shared_ptr<NED::Node<NED::SubnetNode<Type>>> { \
+         return std::make_shared<NED::Node<NED::SubnetNode<Type>>>("Subnet", "NED::SubnetNode<" #Type ">");          \
+       }});                                                                                                          \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                              \
+      "NED::NullNode<" #Type ">",                                                                                    \
+      {Category, "Null", "NED::NullNode<" #Type ">", []() -> std::shared_ptr<NED::Node<NED::NullNode<Type>>> {       \
+         return std::make_shared<NED::Node<NED::NullNode<Type>>>("Null", "NED::NullNode<" #Type ">");                \
+       }})
 
 #endif  // NODE_EDITOR_NODEFACTORY_H

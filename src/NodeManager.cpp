@@ -128,6 +128,10 @@ void NodeManager::InitGLFWEvents() {
                                                       ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Connect");
     ActionManager::GetInstance().executeCommand(action);
+
+    // auto test = NodeFactoryRegistry::GetInstance().Clone(ev.new_parent_node.get()->get_shared_ptr(), true,
+    //                                                      ev.new_parent_node.get()->position + ImVec2(50, 250));
+    // m_CurrentNetwork->AddNode(test);
   });
   dispatcher.Subscribe(EventType::NodeDisconnection, [this](const Event& event) {
     Evaluate();
@@ -186,6 +190,15 @@ void NodeManager::InitGLFWEvents() {
     }
     // auto ev = dynamic_cast<const ParamChangedEvent *>(&event);
     m_OneParamChanged = true;
+  });
+
+  dispatcher.Subscribe(EventType::NodeCreated, [this](const Event& event) {
+    auto ev = static_cast<const NodeCreatedEvent&>(event);
+    std::cout << "Node Created : " << ev.node->title << std::endl;
+  });
+  dispatcher.Subscribe(EventType::NodeDeleted, [this](const Event& event) {
+    auto ev = static_cast<const NodeDeletedEvent&>(event);
+    std::cout << "Node Deleted : " << ev.node->title << std::endl;
   });
 }
 
@@ -336,6 +349,8 @@ void NodeManager::BuildNodeMenuFromRegistry() {
               node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
               node->parent_node = m_CurrentNetworkOwner;
               this->m_CurrentNetwork->AddNode(node);
+              NodeCreatedEvent event(this->m_CurrentNetwork, node.get());
+              EventManager::GetInstance().Dispatch(event);
             }
           }
         }
@@ -1002,6 +1017,8 @@ void NodeManager::OnKeyPress(const Event& event) {
       if (m_CurrentNode != nullptr && m_ViewProps.canvasHovered) {
         auto it = std::find(GetNodes().begin(), GetNodes().end(), m_CurrentNode);
         GetNodes().erase(it);
+        NodeDeletedEvent event(m_CurrentNetwork, m_CurrentNode.get());
+        EventManager::GetInstance().Dispatch(event);
         m_CurrentNode = nullptr;
       }
       break;

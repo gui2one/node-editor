@@ -5,6 +5,7 @@
 #include <format>
 
 #include "ImGuiNode.h"
+#include "NodeFactory.h"
 #include "NodeParam.h"
 #include "utils/node_manager_utils.h"
 namespace NED {

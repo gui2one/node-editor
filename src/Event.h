@@ -2,12 +2,14 @@
 #define EVENT_H
 #pragma once
 
-#include "ImGuiNode.h"
+// #include "ImGuiNode.h"
+//  #include "NodeManager.h"
 
 namespace NED {
 
 //// forward declarations
-// class AbstractNode;
+class NodeNetwork;
+class AbstractNode;
 
 enum class EventType {
   MouseMove,
@@ -22,6 +24,9 @@ enum class EventType {
   NodeDisconnection,
   NodeSelected,
   NodeMoved,
+
+  NodeCreated,
+  NodeDeleted,
 
   ParamChanged,
   ManagerUpdate
@@ -122,6 +127,27 @@ class NodeDisconnectionEvent : public Event {
   EventType GetType() const override { return EventType::NodeDisconnection; }
 };
 
+class NodeCreatedEvent : public Event {
+ public:
+  NodeNetwork* node_network = nullptr;
+  AbstractNode* node = nullptr;
+
+ public:
+  NodeCreatedEvent(NodeNetwork* node_network, AbstractNode* node) : node_network(node_network), node(node) {}
+
+  EventType GetType() const override { return EventType::NodeCreated; }
+};
+
+class NodeDeletedEvent : public Event {
+ public:
+  NodeNetwork* node_network = nullptr;
+  AbstractNode* node = nullptr;
+
+ public:
+  NodeDeletedEvent(NodeNetwork* node_network, AbstractNode* node) : node_network(node_network), node(node) {}
+
+  EventType GetType() const override { return EventType::NodeDeleted; }
+};
 template <typename T>
 class ParamChangedEvent : public Event {
  public:
