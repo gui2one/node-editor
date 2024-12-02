@@ -9,21 +9,27 @@ MoveNodeAction::MoveNodeAction(AbstractNode* node, ImVec2 from_pos, ImVec2 to_po
 void MoveNodeAction::Do() { m_Node->position = to_pos; }
 void MoveNodeAction::Undo() { m_Node->position = from_pos; }
 
-NodeConnectAction::NodeConnectAction(AbstractNode* parent_node, AbstractNode* child_node, uint32_t child_input_index)
-    : m_ParentNode(parent_node), m_ChildNode(child_node), m_ChildInputIndex(child_input_index) {}
+NodeConnectAction::NodeConnectAction(AbstractNode* new_parent_node, AbstractNode* old_parent_node,
+                                     AbstractNode* child_node, uint32_t child_input_index)
+    : m_NewParentNode(new_parent_node),
+      m_OldParentNode(old_parent_node),
+      m_ChildNode(child_node),
+      m_ChildInputIndex(child_input_index) {}
 
 void NodeConnectAction::Do() {
   if (m_ChildNode->IsMultiInput() == false) {
-    m_ChildNode->SetInput(m_ChildInputIndex, m_ParentNode);
+    m_ChildNode->SetInput(m_ChildInputIndex, m_NewParentNode);
   } else {
-    m_ChildNode->AppendInput(m_ParentNode);
+    m_ChildNode->AppendInput(m_NewParentNode);
   }
 }
 
 void NodeConnectAction::Undo() {
   if (m_ChildNode->IsMultiInput() == false) {
-    m_ChildNode->SetInput(m_ChildInputIndex, nullptr);
-    m_ChildNode->ClearCache();
+    m_ChildNode->SetInput(m_ChildInputIndex, m_OldParentNode);
+    if (m_OldParentNode != nullptr) {
+      m_ChildNode->ClearCache();
+    }
   } else {
     m_ChildNode->RemoveLastInput();
   }

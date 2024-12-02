@@ -58,13 +58,15 @@ class MoveNodeAction : public Action {
 
 class NodeConnectAction : public Action {
  public:
-  NodeConnectAction(AbstractNode* parent_node, AbstractNode* child_node, uint32_t child_input_index);
+  NodeConnectAction(AbstractNode* new_parent_node, AbstractNode* old_parent_node, AbstractNode* child_node,
+                    uint32_t child_input_index);
 
   void Do() override;
   void Undo() override;
 
  private:
-  AbstractNode* m_ParentNode;
+  AbstractNode* m_NewParentNode;
+  AbstractNode* m_OldParentNode;
   AbstractNode* m_ChildNode;
   uint32_t m_ChildInputIndex;
 };
