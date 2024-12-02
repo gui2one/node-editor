@@ -29,9 +29,9 @@ struct ConnectionProcedure {
 
   Direction direction = CHILD_TO_PARENT;
   bool started = false;
-  std::shared_ptr<AbstractNode> output_node;
-  uint32_t output_index;
-  std::shared_ptr<AbstractNode> input_node;
+  std::shared_ptr<AbstractNode> child_node;
+  uint32_t child_index;
+  std::shared_ptr<AbstractNode> parent_node;
   bool is_mutli_input = false;
 };
 

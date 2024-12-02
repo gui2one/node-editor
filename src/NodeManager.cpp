@@ -412,8 +412,8 @@ void NodeManager::DrawNodes() {
   }
 
   if (m_ConnectionProcedure.started) {
-    if (m_ConnectionProcedure.output_node->IsMultiInput()) {
-      ImVec2 input_conn_pos = m_ConnectionProcedure.output_node->position;
+    if (m_ConnectionProcedure.child_node->IsMultiInput()) {
+      ImVec2 input_conn_pos = m_ConnectionProcedure.child_node->position;
       // ImVec2 connector_pos = input_conn_pos + m_ConnectionProcedure.output_node->position;
       ImVec2 p0 = ToScreenSpace(input_conn_pos);
       double x, y;
@@ -423,8 +423,8 @@ void NodeManager::DrawNodes() {
       draw_list->AddBezierCubic(p0, p0 - ImVec2(0, 100), p1 + ImVec2(0, 100), p1, NODE_COLOR::ORANGE, 2.0f);
     } else {
       ImVec2 input_conn_pos =
-          m_ConnectionProcedure.output_node->GetInputConnector(m_ConnectionProcedure.output_index)->relative_pos;
-      ImVec2 connector_pos = input_conn_pos + m_ConnectionProcedure.output_node->position;
+          m_ConnectionProcedure.child_node->GetInputConnector(m_ConnectionProcedure.child_index)->relative_pos;
+      ImVec2 connector_pos = input_conn_pos + m_ConnectionProcedure.child_node->position;
       ImVec2 p0 = ToScreenSpace(connector_pos);
       double x, y;
       glfwGetCursorPos(m_GLFWWindow, &x, &y);
@@ -683,30 +683,39 @@ bool NodeManager::IsNodeMultiInputConnectorHovered(std::shared_ptr<AbstractNode>
 }
 
 void NodeManager::ApplyConnectionProcedure() {
-  if (m_ConnectionProcedure.output_node == m_ConnectionProcedure.input_node) {
+  if (m_ConnectionProcedure.child_node == m_ConnectionProcedure.parent_node) {
     return;
   }
   if (m_ConnectionProcedure.is_mutli_input) {
-    if (m_ConnectionProcedure.input_node == nullptr) {
+    if (m_ConnectionProcedure.parent_node == nullptr) {
       AbstractNode* last_input_node =
-          m_ConnectionProcedure.output_node->m_MultiInput[m_ConnectionProcedure.output_node->m_MultiInput.size() - 1];
-      NodeDisconnectionEvent event(last_input_node->get_shared_ptr(), 0, m_ConnectionProcedure.output_node,
-                                   m_ConnectionProcedure.output_index);
+          m_ConnectionProcedure.child_node->m_MultiInput[m_ConnectionProcedure.child_node->m_MultiInput.size() - 1];
+      NodeDisconnectionEvent event(last_input_node->get_shared_ptr(), 0, m_ConnectionProcedure.child_node,
+                                   m_ConnectionProcedure.child_index);
       EventManager::GetInstance().Dispatch(event);
       ResetConnectionProcedure();
 
     } else {
-      // m_ConnectionProcedure.output_node->AppendInput(m_ConnectionProcedure.input_node.get());
-      NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node,
-                                m_ConnectionProcedure.output_index);
+      NodeConnectionEvent event(m_ConnectionProcedure.parent_node, 0, m_ConnectionProcedure.child_node,
+                                m_ConnectionProcedure.child_index);
+      auto input_op = m_ConnectionProcedure.child_node->GetInput(m_ConnectionProcedure.child_index);
+      if (input_op != nullptr) {
+        event.old_parent_node = input_op->get_shared_ptr();
+      } else {
+        event.old_parent_node = nullptr;
+      }
       EventManager::GetInstance().Dispatch(event);
       ResetConnectionProcedure();
     }
   } else {
-    // m_ConnectionProcedure.output_node->SetInput(m_ConnectionProcedure.output_index,
-    //                                             m_ConnectionProcedure.input_node.get());
-    NodeConnectionEvent event(m_ConnectionProcedure.input_node, 0, m_ConnectionProcedure.output_node,
-                              m_ConnectionProcedure.output_index);
+    NodeConnectionEvent event(m_ConnectionProcedure.parent_node, 0, m_ConnectionProcedure.child_node,
+                              m_ConnectionProcedure.child_index);
+    auto input_op = m_ConnectionProcedure.child_node->GetInput(m_ConnectionProcedure.child_index);
+    if (input_op != nullptr) {
+      event.old_parent_node = input_op->get_shared_ptr();
+    } else {
+      event.old_parent_node = nullptr;
+    }
     EventManager::GetInstance().Dispatch(event);
     ResetConnectionProcedure();
   }
@@ -715,9 +724,9 @@ void NodeManager::ApplyConnectionProcedure() {
 void NodeManager::ResetConnectionProcedure() {
   m_ConnectionProcedure.started = false;
   m_ConnectionProcedure.is_mutli_input = false;
-  m_ConnectionProcedure.input_node = nullptr;
-  m_ConnectionProcedure.output_node = nullptr;
-  m_ConnectionProcedure.output_index = 0;
+  m_ConnectionProcedure.parent_node = nullptr;
+  m_ConnectionProcedure.child_node = nullptr;
+  m_ConnectionProcedure.child_index = 0;
 }
 
 void NodeManager::SaveAll() {
@@ -884,7 +893,7 @@ void NodeManager::OnMouseClick(const Event& event) {
 
     if (m_ConnectionProcedure.started && node_hovered) {
       clicked_something = true;
-      m_ConnectionProcedure.input_node = node;
+      m_ConnectionProcedure.parent_node = node;
 
       ApplyConnectionProcedure();
       Evaluate();
@@ -898,8 +907,8 @@ void NodeManager::OnMouseClick(const Event& event) {
           connector->grabbed = true;
 
           m_ConnectionProcedure.started = true;
-          m_ConnectionProcedure.output_node = node;
-          m_ConnectionProcedure.output_index = i;
+          m_ConnectionProcedure.child_node = node;
+          m_ConnectionProcedure.child_index = i;
         }
       }
     } else {
@@ -908,8 +917,8 @@ void NodeManager::OnMouseClick(const Event& event) {
         m_ConnectionProcedure.started = true;
         m_ConnectionProcedure.is_mutli_input = true;
 
-        m_ConnectionProcedure.output_node = node;
-        // m_ConnectionProcedure.output_index = 0;
+        m_ConnectionProcedure.child_node = node;
+        // m_ConnectionProcedure.child_index = 0;
       }
     }
   }
@@ -921,11 +930,11 @@ void NodeManager::OnMouseClick(const Event& event) {
         ApplyConnectionProcedure();
       } else {
         NodeDisconnectionEvent event(
-            m_ConnectionProcedure.output_node->GetInput(m_ConnectionProcedure.output_index)->get_shared_ptr(), 0,
-            m_ConnectionProcedure.output_node, m_ConnectionProcedure.output_index);
+            m_ConnectionProcedure.child_node->GetInput(m_ConnectionProcedure.child_index)->get_shared_ptr(), 0,
+            m_ConnectionProcedure.child_node, m_ConnectionProcedure.child_index);
         EventManager::GetInstance().Dispatch(event);
         m_ConnectionProcedure.started = false;
-        m_ConnectionProcedure.output_node->ResetInput(m_ConnectionProcedure.output_index);  // redundant ?
+        m_ConnectionProcedure.child_node->ResetInput(m_ConnectionProcedure.child_index);  // redundant ?
         ResetConnectionProcedure();
       }
     }
@@ -959,7 +968,7 @@ void NodeManager::OnMouseRelease(const Event& event) {
   }
   for (auto node : GetNodes()) {
     if (m_ConnectionProcedure.started && IsNodeHovered(node)) {
-      m_ConnectionProcedure.input_node = node;
+      m_ConnectionProcedure.parent_node = node;
 
       ApplyConnectionProcedure();
       Evaluate();
