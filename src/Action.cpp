@@ -6,10 +6,7 @@ MoveNodeAction::MoveNodeAction(AbstractNode* node, ImVec2 from_pos, ImVec2 to_po
   message = std::format("Moved Node from {},{} to {},{}", from_pos.x, from_pos.y, to_pos.x, to_pos.y);
 }
 
-void MoveNodeAction::Do() {
-  m_Node->position = to_pos;
-  std::cout << message << std::endl;
-}
+void MoveNodeAction::Do() { m_Node->position = to_pos; }
 void MoveNodeAction::Undo() { m_Node->position = from_pos; }
 
 NodeConnectAction::NodeConnectAction(AbstractNode* parent_node, AbstractNode* child_node, uint32_t child_input_index)

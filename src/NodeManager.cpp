@@ -2,8 +2,6 @@
 #include "NodeManager.h"
 
 static GLuint GenerateEmptyTexture() {
-  std::cout << "EMPTY TEXTURE !!!!" << std::endl;
-
   GLuint texture;
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
@@ -22,7 +20,6 @@ static GLuint GenerateEmptyTexture() {
 
 static GLuint LoadTexture(const char* filename) {
   int width, height, channels;
-  // std::cout << "!!!!!!!!!!!!!!!! " << filename << std::endl;
 
   unsigned char* data = stbi_load(filename, &width, &height, &channels, 4);
   if (!data) {
@@ -176,13 +173,15 @@ void NodeManager::InitGLFWEvents() {
       action->message = std::format("Param Int Change -- {}", ev_int->param_name);
       ActionManager::GetInstance().executeCommand(action);
     } else if (ev_vec3 != nullptr) {
-      std::cout << "Vec3 Changed : " << ev_vec3->param_name << "\nNew Value : " << ev_vec3->new_value.x << ", "
-                << ev_vec3->new_value.y << ", " << ev_vec3->new_value.z << "\nOld Value" << ev_vec3->old_value.x << ", "
-                << ev_vec3->old_value.y << ", " << ev_vec3->old_value.z << std::endl;
+      // std::cout << "Vec3 Changed : " << ev_vec3->param_name << "\nNew Value : " << ev_vec3->new_value.x << ", "
+      //           << ev_vec3->new_value.y << ", " << ev_vec3->new_value.z << "\nOld Value" << ev_vec3->old_value.x <<
+      //           ", "
+      //           << ev_vec3->old_value.y << ", " << ev_vec3->old_value.z << std::endl;
     } else if (ev_vec2 != nullptr) {
-      std::cout << "glm::vec2 Changed ??? : " << ev_vec2->param_name << "\nNew Value : " << ev_vec2->new_value.x << ", "
-                << ev_vec2->new_value.y << "\nOld Value : " << ev_vec2->old_value.x << ", " << ev_vec2->old_value.y
-                << std::endl;
+      // std::cout << "glm::vec2 Changed ??? : " << ev_vec2->param_name << "\nNew Value : " << ev_vec2->new_value.x <<
+      // ", "
+      //           << ev_vec2->new_value.y << "\nOld Value : " << ev_vec2->old_value.x << ", " << ev_vec2->old_value.y
+      //           << std::endl;
     }
     // auto ev = dynamic_cast<const ParamChangedEvent *>(&event);
     m_OneParamChanged = true;
@@ -603,7 +602,6 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
         }
       }
       node->title = generate_unique_name(name_copy, names);
-      // std::cout << "Node name changed to " << node->title << std::endl;
     }
     ImGui::Separator();
     ImGui::Spacing();
@@ -927,7 +925,7 @@ void NodeManager::OnMouseClick(const Event& event) {
             m_ConnectionProcedure.output_node, m_ConnectionProcedure.output_index);
         EventManager::GetInstance().Dispatch(event);
         m_ConnectionProcedure.started = false;
-        m_ConnectionProcedure.output_node->ResetInput(m_ConnectionProcedure.output_index);
+        m_ConnectionProcedure.output_node->ResetInput(m_ConnectionProcedure.output_index);  // redundant ?
         ResetConnectionProcedure();
       }
     }
@@ -1018,13 +1016,11 @@ void NodeManager::OnKeyPress(const Event& event) {
       break;
     case GLFW_KEY_W: /* FIXME : Z on AZERTY keyboard !!!*/
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
-        std::cout << "undo" << std::endl;
         ActionManager::GetInstance().undo();
       }
       break;
     case GLFW_KEY_Y:
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
-        std::cout << "REDO" << std::endl;
         ActionManager::GetInstance().redo();
       }
       break;
