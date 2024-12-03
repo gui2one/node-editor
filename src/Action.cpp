@@ -57,16 +57,23 @@ void NodeDisconnectAction::Undo() {
   }
 }
 
-NodeCreateAction::NodeCreateAction(NodeNetwork* network, std::string type_name)
-    : m_NodeNetwork(network), m_TypeName(type_name) {
+NodeCreateAction::NodeCreateAction(NodeManager* node_manager, NodeNetwork* network, std::string type_name,
+                                   ImVec2 position)
+    : m_NodeManager(node_manager), m_NodeNetwork(network), m_TypeName(type_name), m_Position(position) {
   std::cout << "Creating Node of type: " << m_TypeName << std::endl;
   std::cout << "Num nodes in network : " << m_NodeNetwork->nodes.size() << std::endl;
   m_Node = NodeFactoryRegistry::GetInstance().Create(m_TypeName);
+  m_Node->position = m_Position;
   m_NodeNetwork->AddNode(m_Node);
 }
 
 void NodeCreateAction::Do() { m_NodeNetwork->AddNode(m_Node); }
 
-void NodeCreateAction::Undo() { m_NodeNetwork->RemoveNode(m_Node.get()); }
+void NodeCreateAction::Undo() {
+  m_NodeNetwork->RemoveNode(m_Node.get());
+  if (m_NodeManager->m_CurrentNode == m_Node) {
+    m_NodeManager->m_CurrentNode = nullptr;
+  }
+}
 
 };  // namespace NED

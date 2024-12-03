@@ -196,7 +196,7 @@ void NodeManager::InitGLFWEvents() {
     auto ev = static_cast<const NodeCreatedEvent&>(event);
     std::cout << "Node to be Created : " << ev.node_type_name << std::endl;
 
-    auto action = std::make_shared<NodeCreateAction>(m_CurrentNetwork, ev.node_type_name);
+    auto action = std::make_shared<NodeCreateAction>(this, m_CurrentNetwork, ev.node_type_name, ev.node_position);
     action->message = std::format("Node to be Created  : {}", ev.node_type_name);
     ActionManager::GetInstance().executeCommand(action, false);
   });
@@ -353,7 +353,7 @@ void NodeManager::BuildNodeMenuFromRegistry() {
               node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
               node->parent_node = m_CurrentNetworkOwner;
               // this->m_CurrentNetwork->AddNode(node);
-              NodeCreatedEvent event(this->m_CurrentNetwork, node->m_TypeName);
+              NodeCreatedEvent event(this->m_CurrentNetwork, node->m_TypeName, node->position);
               EventManager::GetInstance().Dispatch(event);
             }
           }

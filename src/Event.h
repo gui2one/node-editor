@@ -131,10 +131,11 @@ class NodeCreatedEvent : public Event {
  public:
   NodeNetwork* node_network = nullptr;
   std::string node_type_name = nullptr;
+  ImVec2 node_position = ImVec2(0, 0);
 
  public:
-  NodeCreatedEvent(NodeNetwork* node_network, std::string node_type_name)
-      : node_network(node_network), node_type_name(node_type_name) {}
+  NodeCreatedEvent(NodeNetwork* node_network, std::string node_type_name, ImVec2 node_position)
+      : node_network(node_network), node_type_name(node_type_name), node_position(node_position) {}
 
   EventType GetType() const override { return EventType::NodeCreated; }
 };

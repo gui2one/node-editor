@@ -12,6 +12,7 @@ namespace NED {
 
 // forward dlecare
 struct NodeNetwork;
+class NodeManager;
 
 class Action {
  public:
@@ -89,14 +90,16 @@ class NodeDisconnectAction : public Action {
 
 class NodeCreateAction : public Action {
  public:
-  NodeCreateAction(NodeNetwork* network, std::string type_name);
+  NodeCreateAction(NodeManager* node_manager, NodeNetwork* network, std::string type_name, ImVec2 position);
   void Do() override;
   void Undo() override;
 
  private:
   std::shared_ptr<AbstractNode> m_Node = nullptr;
+  NodeManager* m_NodeManager;
   NodeNetwork* m_NodeNetwork;
   std::string m_TypeName;
+  ImVec2 m_Position;
 };
 
 }  // namespace NED
