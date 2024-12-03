@@ -8,7 +8,7 @@
 namespace NED {
 
 //// forward declarations
-class NodeNetwork;
+struct NodeNetwork;
 class AbstractNode;
 
 enum class EventType {
@@ -130,10 +130,11 @@ class NodeDisconnectionEvent : public Event {
 class NodeCreatedEvent : public Event {
  public:
   NodeNetwork* node_network = nullptr;
-  AbstractNode* node = nullptr;
+  std::string node_type_name = nullptr;
 
  public:
-  NodeCreatedEvent(NodeNetwork* node_network, AbstractNode* node) : node_network(node_network), node(node) {}
+  NodeCreatedEvent(NodeNetwork* node_network, std::string node_type_name)
+      : node_network(node_network), node_type_name(node_type_name) {}
 
   EventType GetType() const override { return EventType::NodeCreated; }
 };
@@ -141,10 +142,11 @@ class NodeCreatedEvent : public Event {
 class NodeDeletedEvent : public Event {
  public:
   NodeNetwork* node_network = nullptr;
-  AbstractNode* node = nullptr;
+  std::shared_ptr<AbstractNode> node = nullptr;
 
  public:
-  NodeDeletedEvent(NodeNetwork* node_network, AbstractNode* node) : node_network(node_network), node(node) {}
+  NodeDeletedEvent(NodeNetwork* node_network, std::shared_ptr<AbstractNode> node)
+      : node_network(node_network), node(node) {}
 
   EventType GetType() const override { return EventType::NodeDeleted; }
 };

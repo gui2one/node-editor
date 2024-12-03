@@ -1,5 +1,6 @@
 #include "Action.h"
 
+#include "NodeManager.h"
 namespace NED {
 MoveNodeAction::MoveNodeAction(AbstractNode* node, ImVec2 from_pos, ImVec2 to_pos)
     : from_pos(from_pos), to_pos(to_pos), m_Node(node) {
@@ -55,5 +56,17 @@ void NodeDisconnectAction::Undo() {
     m_ChildNode->AppendInput(m_ParentNode);
   }
 }
+
+NodeCreateAction::NodeCreateAction(NodeNetwork* network, std::string type_name)
+    : m_NodeNetwork(network), m_TypeName(type_name) {
+  std::cout << "Creating Node of type: " << m_TypeName << std::endl;
+  std::cout << "Num nodes in network : " << m_NodeNetwork->nodes.size() << std::endl;
+  m_Node = NodeFactoryRegistry::GetInstance().Create(m_TypeName);
+  m_NodeNetwork->AddNode(m_Node);
+}
+
+void NodeCreateAction::Do() { m_NodeNetwork->AddNode(m_Node); }
+
+void NodeCreateAction::Undo() { m_NodeNetwork->RemoveNode(m_Node.get()); }
 
 };  // namespace NED

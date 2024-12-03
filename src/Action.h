@@ -10,6 +10,9 @@
 #include "utils/node_manager_utils.h"
 namespace NED {
 
+// forward dlecare
+struct NodeNetwork;
+
 class Action {
  public:
   virtual ~Action() = default;
@@ -84,6 +87,18 @@ class NodeDisconnectAction : public Action {
   uint32_t m_ChildInputIndex;
 };
 
-};  // namespace NED
+class NodeCreateAction : public Action {
+ public:
+  NodeCreateAction(NodeNetwork* network, std::string type_name);
+  void Do() override;
+  void Undo() override;
+
+ private:
+  std::shared_ptr<AbstractNode> m_Node = nullptr;
+  NodeNetwork* m_NodeNetwork;
+  std::string m_TypeName;
+};
+
+}  // namespace NED
 
 #endif  // NODE_EDITOR_ACTION_H

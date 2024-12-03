@@ -20,7 +20,7 @@ class NumberConstant : public NumberOperator {
     SetNumAvailableInputs(0);
 
     value = CREATE_PARAM(NED::Param<float>, "Value", this);
-    value->value = 1.0f;
+    value->Set(1.0f);
     m_ParamLayout.params = {value};
   }
   ~NumberConstant() {}

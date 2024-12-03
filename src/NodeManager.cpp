@@ -194,7 +194,11 @@ void NodeManager::InitGLFWEvents() {
 
   dispatcher.Subscribe(EventType::NodeCreated, [this](const Event& event) {
     auto ev = static_cast<const NodeCreatedEvent&>(event);
-    std::cout << "Node Created : " << ev.node->title << std::endl;
+    std::cout << "Node to be Created : " << ev.node_type_name << std::endl;
+
+    auto action = std::make_shared<NodeCreateAction>(m_CurrentNetwork, ev.node_type_name);
+    action->message = std::format("Node to be Created  : {}", ev.node_type_name);
+    ActionManager::GetInstance().executeCommand(action, false);
   });
   dispatcher.Subscribe(EventType::NodeDeleted, [this](const Event& event) {
     auto ev = static_cast<const NodeDeletedEvent&>(event);
@@ -348,8 +352,8 @@ void NodeManager::BuildNodeMenuFromRegistry() {
               glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
               node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
               node->parent_node = m_CurrentNetworkOwner;
-              this->m_CurrentNetwork->AddNode(node);
-              NodeCreatedEvent event(this->m_CurrentNetwork, node.get());
+              // this->m_CurrentNetwork->AddNode(node);
+              NodeCreatedEvent event(this->m_CurrentNetwork, node->m_TypeName);
               EventManager::GetInstance().Dispatch(event);
             }
           }
@@ -1015,9 +1019,10 @@ void NodeManager::OnKeyPress(const Event& event) {
   switch (keyEvent.key) {
     case GLFW_KEY_BACKSPACE:
       if (m_CurrentNode != nullptr && m_ViewProps.canvasHovered) {
-        auto it = std::find(GetNodes().begin(), GetNodes().end(), m_CurrentNode);
-        GetNodes().erase(it);
-        NodeDeletedEvent event(m_CurrentNetwork, m_CurrentNode.get());
+        // auto it = std::find(GetNodes().begin(), GetNodes().end(), m_CurrentNode);
+        // GetNodes().erase(it);
+        m_CurrentNetwork->RemoveNode(m_CurrentNode.get());
+        NodeDeletedEvent event(m_CurrentNetwork, m_CurrentNode);
         EventManager::GetInstance().Dispatch(event);
         m_CurrentNode = nullptr;
       }

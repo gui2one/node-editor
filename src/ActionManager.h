@@ -56,8 +56,10 @@ class ActionManager {
     static ActionManager instance;  // Thread-safe in C++11 and later
     return instance;
   }
-  void executeCommand(std::shared_ptr<Action> command) {
-    command->Do();
+  void executeCommand(std::shared_ptr<Action> command, bool execute = true) {
+    if (execute) {
+      command->Do();
+    }
     undoStack.push(std::move(command));
     while (!redoStack.empty()) redoStack.pop();
   }
