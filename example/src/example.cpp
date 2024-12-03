@@ -56,7 +56,12 @@ int main(int argc, char *argv[]) {
       if (subnet_op != nullptr) {
         if (subnet_op->node_network.outuput_node != nullptr) {
           auto output_op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(subnet_op->node_network.outuput_node);
-          std::cout << "m_DataCache -> " << output_op->m_DataCache << std::endl;
+          if (output_op != nullptr) {
+            std::cout << "m_DataCache -> " << output_op->m_DataCache << std::endl;
+
+          } else {
+            std::cout << "unable to cast ouput op" << std::endl;
+          }
         }
       } else if (op != nullptr) {
         std::cout << "ManagerUpdate Event !!-> " << op->m_DataCache << std::endl;

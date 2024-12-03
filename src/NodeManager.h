@@ -144,6 +144,7 @@ class NodeManager {
       if (m_CurrentNode->IsSubnet()) {
         m_CurrentNetworkOwner = m_CurrentNode.get();
         m_CurrentNetwork = &m_CurrentNode->node_network;
+        m_CurrentNetwork->owner = m_CurrentNode;
       }
     }
   }

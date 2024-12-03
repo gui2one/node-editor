@@ -63,6 +63,7 @@ NodeCreateAction::NodeCreateAction(NodeManager* node_manager, NodeNetwork* netwo
   std::cout << "Creating Node of type: " << m_TypeName << std::endl;
   std::cout << "Num nodes in network : " << m_NodeNetwork->nodes.size() << std::endl;
   m_Node = NodeFactoryRegistry::GetInstance().Create(m_TypeName);
+  m_Node->parent_node = network->owner.get();
   m_Node->position = m_Position;
   m_NodeNetwork->AddNode(m_Node);
 }
@@ -75,5 +76,12 @@ void NodeCreateAction::Undo() {
     m_NodeManager->m_CurrentNode = nullptr;
   }
 }
+
+NodeDeleteAction::NodeDeleteAction(NodeManager* node_manager, NodeNetwork* network, std::shared_ptr<AbstractNode> node)
+    : m_NodeManager(node_manager), m_NodeNetwork(network), m_Node(node) {}
+
+void NodeDeleteAction::Do() {}
+
+void NodeDeleteAction::Undo() {}
 
 };  // namespace NED

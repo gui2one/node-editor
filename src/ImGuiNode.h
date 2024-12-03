@@ -45,6 +45,7 @@ enum NODE_COLOR {
 
 struct NodeNetwork {
   std::shared_ptr<AbstractNode> outuput_node = nullptr;
+  std::shared_ptr<AbstractNode> owner = nullptr;
   std::vector<std::shared_ptr<AbstractNode>> nodes;
 
   void AddNode(std::shared_ptr<AbstractNode> _node);
@@ -258,7 +259,7 @@ class SubnetInputNode : public AbstractNode {
     size.y = 50.0f;
 
     input_id = CREATE_PARAM(NED::Param<int>, "input id", this);
-    input_id->value = 0;
+    input_id->Set(0);
     m_ParamLayout.params.push_back(input_id);
 
     icon_name = "arrow";

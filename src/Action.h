@@ -101,6 +101,17 @@ class NodeCreateAction : public Action {
   std::string m_TypeName;
   ImVec2 m_Position;
 };
+class NodeDeleteAction : public Action {
+ public:
+  NodeDeleteAction(NodeManager* node_manager, NodeNetwork* network, std::shared_ptr<AbstractNode> node);
+  void Do() override;
+  void Undo() override;
+
+ private:
+  std::shared_ptr<AbstractNode> m_Node = nullptr;
+  NodeManager* m_NodeManager;
+  NodeNetwork* m_NodeNetwork;
+};
 
 }  // namespace NED
 
