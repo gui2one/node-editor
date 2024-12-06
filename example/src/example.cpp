@@ -60,7 +60,9 @@ int main(int argc, char *argv[]) {
             std::cout << "m_DataCache -> " << output_op->m_DataCache << std::endl;
 
           } else {
-            std::cout << "unable to cast ouput op" << std::endl;
+            auto subnet2 = std::dynamic_pointer_cast<SubnetNode<std::string>>(subnet_op->node_network.outuput_node);
+            std::cout << "m_DataCache -> " << subnet2->m_DataCache << std::endl;
+            // std::cout << "unable to cast ouput op" << std::endl;
           }
         }
       } else if (op != nullptr) {

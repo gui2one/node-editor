@@ -623,23 +623,29 @@ void NodeManager::DisplayNavBar() {
     }
     auto cur_net = m_CurrentNetwork;
     while (cur_net->owner != nullptr) {
-      if (cur_net->owner->IsSubnet() == false) break;
-      /*ImGui::SameLine();
-      if (ImGui::Button(cur_net->owner->title.c_str())) {
-      }*/
+      if (cur_net->owner->IsSubnet() == false) {
+        break;
+      }
+
       subnetworks.push_back(cur_net);
-      if (cur_net->owner->parent_node == nullptr) break;
+
+      if (cur_net->owner->parent_node == nullptr) {
+        break;
+      }
       cur_net = &cur_net->owner->parent_node->node_network;
-      // if (cur_net == nullptr) break;
     }
   }
 
   std::reverse(subnetworks.begin(), subnetworks.end());
-  for (auto net : subnetworks) {
+  for (size_t i = 0; i < subnetworks.size(); i++) {
+    auto net = subnetworks[i];
     ImGui::SameLine();
-    // ImGui::Text("%s", net->owner->title.c_str());
-    if (ImGui::Button(net->owner->title.c_str())) {
-      m_CurrentNetwork = net;
+    if (i < subnetworks.size() - 1) {
+      if (ImGui::Button(net->owner->title.c_str())) {
+        m_CurrentNetwork = net;
+      }
+    } else {
+      ImGui::Text("%s", net->owner->title.c_str());
     }
   }
 }
