@@ -178,15 +178,15 @@ void NodeManager::InitGLFWEvents() {
       action->message = std::format("Param Int Change -- {}", ev_int->param_name);
       ActionManager::GetInstance().executeCommand(action);
     } else if (ev_vec3 != nullptr) {
-      // std::cout << "Vec3 Changed : " << ev_vec3->param_name << "\nNew Value : " << ev_vec3->new_value.x << ", "
-      //           << ev_vec3->new_value.y << ", " << ev_vec3->new_value.z << "\nOld Value" << ev_vec3->old_value.x <<
-      //           ", "
-      //           << ev_vec3->old_value.y << ", " << ev_vec3->old_value.z << std::endl;
+      auto action = std::make_shared<ParamAction<glm::vec3>>(ev_vec3->node, ev_vec3->node->uuid, ev_vec3->param_name,
+                                                             ev_vec3->old_value, ev_vec3->new_value);
+      action->message = std::format("Param Vec3 Change -- {}", ev_vec3->param_name);
+      ActionManager::GetInstance().executeCommand(action);
     } else if (ev_vec2 != nullptr) {
-      // std::cout << "glm::vec2 Changed ??? : " << ev_vec2->param_name << "\nNew Value : " << ev_vec2->new_value.x <<
-      // ", "
-      //           << ev_vec2->new_value.y << "\nOld Value : " << ev_vec2->old_value.x << ", " << ev_vec2->old_value.y
-      //           << std::endl;
+      auto action = std::make_shared<ParamAction<glm::vec2>>(ev_vec2->node, ev_vec2->node->uuid, ev_vec2->param_name,
+                                                             ev_vec2->old_value, ev_vec2->new_value);
+      action->message = std::format("Param Vec2 Change -- {}", ev_vec2->param_name);
+      ActionManager::GetInstance().executeCommand(action);
     }
     // auto ev = dynamic_cast<const ParamChangedEvent *>(&event);
     m_OneParamChanged = true;
@@ -195,14 +195,12 @@ void NodeManager::InitGLFWEvents() {
   dispatcher.Subscribe(EventType::NodeCreated, [this](const Event& event) {
     auto ev = static_cast<const NodeCreatedEvent&>(event);
     std::cout << "Node to be Created : " << ev.node_type_name << std::endl;
-
     auto action = std::make_shared<NodeCreateAction>(this, m_CurrentNetwork, ev.node_type_name, ev.node_position);
     action->message = std::format("Node to be Created  : {}", ev.node_type_name);
     ActionManager::GetInstance().executeCommand(action, false);
   });
   dispatcher.Subscribe(EventType::NodeDeleted, [this](const Event& event) {
     auto ev = static_cast<const NodeDeletedEvent&>(event);
-    std::cout << "Node Deleted : " << ev.node->title << std::endl;
     auto action = std::make_shared<NodeDeleteAction>(this, m_CurrentNetwork, ev.node);
     action->message = std::format("Node Deleted  : {}", ev.node->title);
     ActionManager::GetInstance().executeCommand(action, false);
