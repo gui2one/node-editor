@@ -2,10 +2,6 @@
 
 #include "utils/node_manager_utils.h"
 
-YAML::Emitter& operator<<(YAML::Emitter& out, const std::shared_ptr<NED::AbstractNode>& node) {
-  out << node->YAMLSerialize();
-  return out;
-}
 namespace NED {
 
 YAML::Node serialize_network(NodeNetwork network) {
