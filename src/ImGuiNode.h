@@ -249,20 +249,20 @@ class SubnetNode : public ImGuiNode<T> {
 };
 
 template <typename T>
-class SubnetInputNode : public AbstractNode {
+class SubnetInputNode : public ImGuiNode<T> {
  public:
-  SubnetInputNode() : AbstractNode("subnet input") {
-    ActivateSubnetInputNode();
-    SetNumAvailableInputs(0);
+  SubnetInputNode() : ImGuiNode<T>("subnet input") {
+    this->ActivateSubnetInputNode();
+    this->SetNumAvailableInputs(0);
 
-    size.x = 50.0f;
-    size.y = 50.0f;
+    this->size.x = 50.0f;
+    this->size.y = 50.0f;
 
-    input_id = CREATE_PARAM(NED::Param<int>, "input id", this);
-    input_id->Set(0);
-    m_ParamLayout.params.push_back(input_id);
+    this->input_id = CREATE_PARAM(NED::Param<int>, "input id", this);
+    this->input_id->Set(0);
+    this->m_ParamLayout.params.push_back(input_id);
 
-    icon_name = "arrow";
+    this->icon_name = "arrow";
   }
 
   ~SubnetInputNode() {};
@@ -272,20 +272,20 @@ class SubnetInputNode : public AbstractNode {
     if (_parent_node != nullptr) {
       this->parent_node->Generate();
 
-      uint32_t id = input_id->Eval();
+      uint32_t id = this->input_id->Eval();
       if (_parent_node->GetInput(id) != nullptr) {
         auto op = static_cast<ImGuiNode<T>*>(_parent_node->GetInput(id));
-        m_DataCache = op->m_DataCache;
+        this->m_DataCache = op->m_DataCache;
       }
     } else {
       std::cout << "NO Parent node defined" << std::endl;
     }
   }
 
-  void ClearCache() override { m_DataCache = T(); }
+  void ClearCache() override { this->m_DataCache = T(); }
 
  public:
-  T m_DataCache;
+  // T m_DataCache;
 
   std::shared_ptr<Param<int>> input_id;
 };
