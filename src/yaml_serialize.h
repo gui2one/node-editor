@@ -17,8 +17,6 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
-// #include "yaml_convert.h"
-
 YAML::Emitter& operator<<(YAML::Emitter& out, const std::shared_ptr<NED::AbstractNode>& node);
 namespace NED {
 

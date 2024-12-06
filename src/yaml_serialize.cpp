@@ -32,9 +32,7 @@ YAML::Node serialize_nodes(std::vector<std::shared_ptr<AbstractNode>> nodes) {
 
 void save_all(std::filesystem::path path, NodeNetwork& network) {
   std::fstream saved_file(path.string(), std::ios::out);
-
   saved_file << YAML::Dump(serialize_network(network));
-  // saved_file << serialize_nodes(network.nodes);
   saved_file.close();
 }
 
@@ -61,6 +59,7 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
     auto p_node = yaml_node["params"][i];
 
     if (p_node["type"].as<std::string>() == "ParamGroup") {
+      // TODO : check if this is redundant, because ParamGroup seems to be taken care of in deserialize_param()
       for (size_t j = 0; j < p_node["params"].size(); j++) {
         deserialize_param(p_node["params"][j], factory_node);
       }
@@ -83,29 +82,6 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
   }
   return factory_node;
 }
-
-// std::shared_ptr<NodeParam> find_param_by_name(std::shared_ptr<AbstractNode> factory_node, std::string param_name) {
-//   for (auto& param_item : factory_node->m_ParamLayout.params) {
-//     auto p_group = std::dynamic_pointer_cast<ParamGroup>(param_item);
-//     if (p_group != nullptr) {
-//       if (p_group->m_Label == param_name) {
-//         return p_group;
-//       }
-//       for (auto group_item : p_group->params) {
-//         if (group_item->m_Label == param_name) {
-//           return group_item;
-//         }
-//       }
-//
-//     } else {
-//       if (param_item->m_Label == param_name) {
-//         return param_item;
-//       }
-//     }
-//   }
-//
-//   return nullptr;
-// }
 
 void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node) {
   std::string p_type_str = yaml["type"].as<std::string>();
