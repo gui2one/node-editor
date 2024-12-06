@@ -58,7 +58,7 @@ struct ParamLayout {
 };
 struct InputConnector {
   ImVec2 relative_pos;
-  uint32_t index;
+  uint32_t index = 0;
   float width = 5.0f;
   bool hovered = false;
   bool grabbed = false;

@@ -51,8 +51,8 @@ namespace NED {
 class AbstractNode;
 class NodeParam {
  public:
-  NodeParam() { m_Label = "no m_Label"; };
-  NodeParam(const char* _name) : m_Label(_name) {}
+  NodeParam() : m_Label("no label"), m_TypeName("no type") {}
+  NodeParam(const char* _name) : m_Label(_name), m_TypeName("no type") {}
   virtual ~NodeParam() = default;
   virtual void Display() = 0;
 
@@ -68,9 +68,14 @@ class NodeParam {
 template <typename T>
 class Param : public NodeParam {
  public:
-  Param() : NodeParam() {};
+  Param() = default;
   Param(const char* _name, T _value, T _min_val, T _max_val, T _default_val)
-      : NodeParam(_name), value(_value), min_val(_min_val), max_val(_max_val), default_val(_default_val) {};
+      : NodeParam(_name),
+        value(_value),
+        min_val(_min_val),
+        max_val(_max_val),
+        default_val(_default_val),
+        old_value(_value) {};
   ~Param() {};
 
   T Eval() { return value; };
@@ -91,18 +96,19 @@ class Param : public NodeParam {
   }
 
  private:
-  T value;
-  T min_val;
-  T max_val;
-  T default_val;
-  T temp_value;
+  T value = -1;
+  T old_value = -1;
+  T min_val = -1;
+  T max_val = -1;
+  T default_val = -1;
+  T temp_value = -1;
 };
 
 template <>
 class Param<glm::vec2> : public NodeParam {
  public:
-  Param() : NodeParam() {};
-  Param(const char* _name, glm::vec2 _value) : NodeParam(_name), value(_value), temp_value(_value) {
+  Param() = default;
+  Param(const char* _name, glm::vec2 _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {
     std::cout << "TEMP VALUE : " << temp_value.x << ", " << temp_value.y << std::endl;
   };
   ~Param() {};
@@ -183,17 +189,18 @@ class Param<glm::vec2> : public NodeParam {
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 
  public:
-  glm::vec2 value;
-  glm::vec2 old_value;
-  glm::vec2 temp_value;
+  glm::vec2 value = glm::vec2(0.0f);
+  glm::vec2 old_value = glm::vec2(0.0f);
+  glm::vec2 temp_value = glm::vec2(0.0f);
   glm::vec2 default_val = glm::vec2(0.0f);
 };
 
 template <>
 class Param<glm::vec3> : public NodeParam {
  public:
-  Param() : NodeParam() {};
-  Param(const char* _name, glm::vec3 _value) : NodeParam(_name), value(_value) {};
+  Param() = default;
+  Param(const char* _name, glm::vec3 _value)
+      : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
   ~Param() {};
 
   glm::vec3 Eval() { return value; }
@@ -214,7 +221,7 @@ class Param<glm::vec3> : public NodeParam {
 template <>
 class Param<std::string> : public NodeParam {
  public:
-  Param() : NodeParam() {};
+  Param() = default;
   Param(const char* _name) : NodeParam(_name), value("no value") {};
   Param(const char* _name, std::string _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
@@ -250,7 +257,7 @@ class Param<std::string> : public NodeParam {
 template <>
 class Param<std::wstring> : public NodeParam {
  public:
-  Param() : NodeParam() {};
+  Param() = default;
   Param(const char* _name, std::wstring _value) : NodeParam(_name), value(_value) {};
   ~Param() {};
 
@@ -284,8 +291,8 @@ class Param<std::wstring> : public NodeParam {
 template <>
 class Param<int> : public NodeParam {
  public:
-  Param() : NodeParam() {};
-  Param(const char* _name, int _value) : NodeParam(_name), value(_value) {};
+  Param() = default;
+  Param(const char* _name, int _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
   ~Param() {};
 
   int Eval() { return value; }
@@ -310,9 +317,9 @@ class Param<int> : public NodeParam {
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 
  public:
-  int value;
-  int old_value;
-  int temp_value;
+  int value = 0;
+  int old_value = 0;
+  int temp_value = 0;
   int min_val = std::numeric_limits<int>::min();
   int max_val = std::numeric_limits<int>::max();
 };
@@ -320,8 +327,8 @@ class Param<int> : public NodeParam {
 template <>
 class Param<float> : public NodeParam {
  public:
-  Param() : NodeParam() {};
-  Param(const char* _name, float _value) : NodeParam(_name), value(_value) {};
+  Param() = default;
+  Param(const char* _name, float _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
   ~Param() {};
 
   float Eval() { return value; }
@@ -345,9 +352,9 @@ class Param<float> : public NodeParam {
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 
  public:
-  float value;
-  float old_value;
-  float temp_value;
+  float value = 0.0f;
+  float old_value = 0.0f;
+  float temp_value = 0.0f;
   float min_val = std::numeric_limits<float>::min();
   float max_val = std::numeric_limits<float>::max();
   ;
@@ -356,8 +363,8 @@ class Param<float> : public NodeParam {
 template <>
 class Param<bool> : public NodeParam {
  public:
-  Param() : NodeParam() {};
-  Param(const char* _name, bool _value) : NodeParam(_name), value(_value) {};
+  Param() = default;
+  Param(const char* _name, bool _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
   ~Param() {};
 
   bool Eval() { return value; }
@@ -377,9 +384,9 @@ class Param<bool> : public NodeParam {
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
 
  public:
-  bool value;
-  bool old_value;
-  bool temp_value;
+  bool value = false;
+  bool old_value = false;
+  bool temp_value = false;
 };
 
 /* derived classes */

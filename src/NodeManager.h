@@ -30,7 +30,7 @@ struct ConnectionProcedure {
   Direction direction = CHILD_TO_PARENT;
   bool started = false;
   std::shared_ptr<AbstractNode> child_node;
-  uint32_t child_index;
+  uint32_t child_index = 0;
   std::shared_ptr<AbstractNode> parent_node;
   bool is_mutli_input = false;
 };
