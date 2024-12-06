@@ -1,6 +1,11 @@
 #include "utils.h"
 namespace NED {
 std::string generate_unique_name(const std::string &baseName, const std::unordered_set<std::string> &existingNames) {
+  // first check if name already exists !
+  if (existingNames.find(baseName) == existingNames.end()) {
+    return baseName;
+  }
+
   // Strip trailing digits from the base name.
   std::regex stripDigitsRegex("^(.*?)(\\d*)$");
   std::smatch match;
@@ -50,7 +55,6 @@ std::string generate_uuid() {
   }
   return res;
 }
-
 
 bool str_replace(std::string &str, const std::string &from, const std::string &to) {
   size_t start_pos = str.find(from);

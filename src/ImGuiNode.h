@@ -226,26 +226,26 @@ class ImGuiNode : public AbstractNode {
 };
 
 template <typename T>
-class SubnetNode : public AbstractNode {
+class SubnetNode : public ImGuiNode<T> {
  public:
-  SubnetNode() : AbstractNode("no title") {
-    SetNumAvailableInputs(MAX_N_INPUTS);
-    ActivateSubnet();
+  SubnetNode() : ImGuiNode<T>("no title") {
+    this->SetNumAvailableInputs(MAX_N_INPUTS);
+    this->ActivateSubnet();
 
-    icon_name = "three_dots";
+    this->icon_name = "three_dots";
   }
   void Generate() override {
-    if (node_network.outuput_node != nullptr) {
-      auto op = std::dynamic_pointer_cast<ImGuiNode<T>>(node_network.outuput_node);
+    if (this->node_network.outuput_node != nullptr) {
+      auto op = std::dynamic_pointer_cast<ImGuiNode<T>>(this->node_network.outuput_node);
       if (op != nullptr) {
         this->m_DataCache = op->m_DataCache;
       }
     }
   }
-  void ClearCache() override { m_DataCache = T(); }
+  void ClearCache() override { this->m_DataCache = T(); }
 
- public:
-  T m_DataCache;
+  // public:
+  //  T m_DataCache;
 };
 
 template <typename T>

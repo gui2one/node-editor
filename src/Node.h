@@ -45,17 +45,16 @@ class Node : public T {
     }
 
     if (node->IsSubnet()) {
+      for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
+        if (node->GetInput(i) != nullptr) {
+          node->GetInput(i)->Update();
+        }
+      }
       if (node->node_network.outuput_node != nullptr) {
         node->node_network.outuput_node->Update();
 
       } else {
         std::cout << "Subnet has no ouput Node" << std::endl;
-      }
-
-      for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
-        if (node->GetInput(i) != nullptr) {
-          node->GetInput(i)->Update();
-        }
       }
     }
     op->Generate();
