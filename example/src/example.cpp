@@ -54,23 +54,16 @@ int main(int argc, char *argv[]) {
     auto &manager = app.GetNodeManager();
     manager.Evaluate();
     if (manager.GetOutputNode() != nullptr) {
-      auto subnet_input_op = std::dynamic_pointer_cast<SubnetInputNode<std::string>>(manager.GetOutputNode());
-
       auto number_op = std::dynamic_pointer_cast<NumberOperator>(manager.GetOutputNode());
-      auto op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(manager.GetOutputNode());
+      auto string_op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(manager.GetOutputNode());
 
-      if (op != nullptr) {
-        std::cout << "ManagerUpdate Event !!-> " << op->m_DataCache << std::endl;
-      } else if (subnet_input_op != nullptr) {
-        auto op2 = static_cast<ImGuiNode<std::string> *>(subnet_input_op->parent_node->GetInput(0));
-        std::cout << "Subnet input Operator -> " << op2->m_DataCache << std::endl;
-
+      if (string_op != nullptr) {
+        std::cout << "String Op Update -> " << string_op->m_DataCache << std::endl;
       } else if (number_op != nullptr) {
-        // auto op2 = static_cast<NumberOperator *>(subnet_input_op->parent_node->GetInput(0));
-        std::cout << "Subnet input Operator -> " << number_op->m_DataCache << std::endl;
+        std::cout << "Number Op Update -> " << number_op->m_DataCache << std::endl;
 
       } else {
-        std::cout << "can't convert to Operator" << std::endl;
+        std::cout << "Can't convert to any known Operator Type" << std::endl;
       }
     }
   });
