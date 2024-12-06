@@ -6,12 +6,6 @@
 
 using namespace NED;
 
-union {
-  ImGuiNode<std::string> *node;
-  SubnetNode<std::string> *subnet_node;
-  SubnetInputNode<std::string> *subnet_input_node;
-} NodeUnion;
-
 int main(int argc, char *argv[]) {
   std::filesystem::path file_to_load = "";
   std::filesystem::path exe_path = argv[0];
