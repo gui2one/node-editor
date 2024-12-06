@@ -383,8 +383,11 @@ void NodeManager::DrawNodes() {
   if (m_CurrentNetwork == nullptr) {
     return;
   }
+
   m_ViewProps.canvasPos = ImGui::GetCursorScreenPos();
   ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+  DisplayNavBar();
 
   // display something to recognize m_OutputNode
   for (auto node : GetNodes()) {
@@ -609,6 +612,35 @@ void NodeManager::DisplayActionManager() {
       ImGui::Text("%s", undo_message.data());
     }
     ImGui::End();
+  }
+}
+
+void NodeManager::DisplayNavBar() {
+  std::vector<NodeNetwork*> subnetworks;
+  if (m_CurrentNetwork->owner != nullptr) {
+    if (ImGui::Button("Root")) {
+      GotoRootNetwork();
+    }
+    auto cur_net = m_CurrentNetwork;
+    while (cur_net->owner != nullptr) {
+      if (cur_net->owner->IsSubnet() == false) break;
+      /*ImGui::SameLine();
+      if (ImGui::Button(cur_net->owner->title.c_str())) {
+      }*/
+      subnetworks.push_back(cur_net);
+      if (cur_net->owner->parent_node == nullptr) break;
+      cur_net = &cur_net->owner->parent_node->node_network;
+      // if (cur_net == nullptr) break;
+    }
+  }
+
+  std::reverse(subnetworks.begin(), subnetworks.end());
+  for (auto net : subnetworks) {
+    ImGui::SameLine();
+    // ImGui::Text("%s", net->owner->title.c_str());
+    if (ImGui::Button(net->owner->title.c_str())) {
+      m_CurrentNetwork = net;
+    }
   }
 }
 
@@ -1072,5 +1104,4 @@ void NodeManager::ViewFrameAll() {
   ImVec2 center = Utils::get_nodes_center(GetNodes());
   m_ViewProps.scrolling = -center + m_ViewProps.canvasSize / 2.0f;
 }
-
 };  // namespace NED

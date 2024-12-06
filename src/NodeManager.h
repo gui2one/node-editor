@@ -92,6 +92,7 @@ class NodeManager {
   void DrawCanvas();
 
   void DisplayActionManager();
+  void DisplayNavBar();
 
   inline void SetGLFWWindow(GLFWwindow* _window) { m_GLFWWindow = _window; }
   inline GLFWwindow* GetGLFWWindow() { return m_GLFWWindow; }
@@ -110,7 +111,7 @@ class NodeManager {
   NodeNetwork* GetCurrentNetwork() { return m_CurrentNetwork; }
   NodeNetwork& GetRootNetwork() { return m_NodeNetwork; };
   void GotoRootNetwork() {
-    m_CurrentNetworkOwner = nullptr;
+    m_CurrentNetwork->owner = nullptr;
     m_CurrentNetwork = &m_NodeNetwork;
   };
   void ViewFrameAll();
