@@ -203,6 +203,9 @@ void NodeManager::InitGLFWEvents() {
   dispatcher.Subscribe(EventType::NodeDeleted, [this](const Event& event) {
     auto ev = static_cast<const NodeDeletedEvent&>(event);
     std::cout << "Node Deleted : " << ev.node->title << std::endl;
+    auto action = std::make_shared<NodeDeleteAction>(this, m_CurrentNetwork, ev.node);
+    action->message = std::format("Node Deleted  : {}", ev.node->title);
+    ActionManager::GetInstance().executeCommand(action, false);
   });
 }
 

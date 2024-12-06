@@ -80,8 +80,8 @@ void NodeCreateAction::Undo() {
 NodeDeleteAction::NodeDeleteAction(NodeManager* node_manager, NodeNetwork* network, std::shared_ptr<AbstractNode> node)
     : m_NodeManager(node_manager), m_NodeNetwork(network), m_Node(node) {}
 
-void NodeDeleteAction::Do() {}
+void NodeDeleteAction::Do() { m_NodeNetwork->RemoveNode(m_Node.get()); }
 
-void NodeDeleteAction::Undo() {}
+void NodeDeleteAction::Undo() { m_NodeNetwork->AddNode(m_Node); }
 
 };  // namespace NED
