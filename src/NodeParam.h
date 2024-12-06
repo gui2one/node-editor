@@ -57,6 +57,7 @@ class NodeParam {
   virtual void Display() = 0;
 
   virtual YAML::Node YAMLSerialize() = 0;
+  virtual void YAMLDeserialize(YAML::Node yaml_node) = 0;
 
  public:
   const char* m_Label;
@@ -94,6 +95,8 @@ class Param : public NodeParam {
     yaml_node["value"] = value;
     return yaml_node;
   }
+
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<T>()); }
 
  private:
   T value = -1;
@@ -187,6 +190,7 @@ class Param<glm::vec2> : public NodeParam {
     });
   }
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<glm::vec2>()); }
 
  public:
   glm::vec2 value = glm::vec2(0.0f);
@@ -248,6 +252,7 @@ class Param<std::string> : public NodeParam {
   }
 
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::string>()); }
 
  public:
   std::string value;
@@ -281,6 +286,7 @@ class Param<std::wstring> : public NodeParam {
   }
 
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::wstring>()); }
 
  public:
   std::wstring value;
@@ -315,6 +321,7 @@ class Param<int> : public NodeParam {
   }
 
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<int>()); }
 
  public:
   int value = 0;
@@ -350,6 +357,7 @@ class Param<float> : public NodeParam {
     });
   }
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<float>()); }
 
  public:
   float value = 0.0f;
@@ -382,6 +390,7 @@ class Param<bool> : public NodeParam {
     });
   }
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<bool>()); }
 
  public:
   bool value = false;
@@ -483,6 +492,8 @@ class ParamVec3 : public Param<glm::vec3> {
     });
   }
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<glm::vec3>()); }
 };
 
 class ParamFile : public Param<std::wstring> {
@@ -532,6 +543,8 @@ class ParamFile : public Param<std::wstring> {
     yaml_node["value"] = wide_to_utf8(value);
     return yaml_node;
   }
+
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::wstring>()); }
 };
 
 class ParamLabel : public Param<std::string> {
@@ -552,6 +565,7 @@ class ParamLabel : public Param<std::string> {
     yaml_node["value"] = value;
     return yaml_node;
   }
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::string>()); }
 };
 
 class ParamComboBox : public Param<int> {
@@ -581,6 +595,7 @@ class ParamComboBox : public Param<int> {
     yaml_node["value"] = value;
     return yaml_node;
   }
+  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<int>()); }
 
  public:
   std::vector<const char*> choices = {"first", "second", "third"};
@@ -624,6 +639,13 @@ class ParamGroup : public Param<int> {
     }
     yaml_node["value"] = "null";
     return yaml_node;
+  }
+
+  void YAMLDeserialize(YAML::Node yaml_node) override {
+    // for (auto item : yaml_node["params"]) {
+    //
+    //   Set(yaml_node["value"].as<int>());
+    // }
   }
 
  public:

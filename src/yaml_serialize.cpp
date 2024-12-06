@@ -58,13 +58,15 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
   for (size_t i = 0; i < yaml_node["params"].size(); i++) {
     auto p_node = yaml_node["params"][i];
 
-    if (p_node["type"].as<std::string>() == "ParamGroup") {
-      // TODO : check if this is redundant, because ParamGroup seems to be taken care of in deserialize_param()
+    if (p_node["type"].as<std::string>() == "NED::ParamGroup") {
       for (size_t j = 0; j < p_node["params"].size(); j++) {
-        deserialize_param(p_node["params"][j], factory_node);
+        // std::cout << "Deserializing group param: " << p_node["params"][j]["label"].as<std::string>() << std::endl;
+        auto param = Utils::FindParamByName(factory_node.get(), p_node["params"][j]["label"].as<std::string>());
+        param->YAMLDeserialize(p_node["params"][j]);
       }
     } else {
-      deserialize_param(p_node, factory_node);
+      auto param = Utils::FindParamByName(factory_node.get(), p_node["label"].as<std::string>());
+      param->YAMLDeserialize(p_node);
     }
   }
 
@@ -81,60 +83,6 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
     factory_node->node_network.outuput_node = net.outuput_node;
   }
   return factory_node;
-}
-
-void deserialize_param(YAML::Node yaml, std::shared_ptr<AbstractNode> factory_node) {
-  std::string p_type_str = yaml["type"].as<std::string>();
-  std::string p_name = yaml["label"].as<std::string>();
-
-  str_replace_all(p_type_str, "NED::Param<", "");
-  str_remove_last(p_type_str, ">");
-  str_replace_all(p_type_str, "NED::", "");
-
-  std::shared_ptr<NodeParam> param = nullptr;
-
-  param = Utils::FindParamByName(factory_node.get(), p_name);
-
-  if (param == nullptr) {
-    std::cout << "Could not find param: " << p_name << "" << std::endl;
-
-    return;
-  }
-  if (p_type_str == "std::string") {
-    set_param_value<std::string>(param, yaml["value"].as<std::string>());
-
-  } else if (p_type_str == "int") {
-    set_param_value<int>(param, yaml["value"].as<int>());
-
-  } else if (p_type_str == "float") {
-    set_param_value<float>(param, yaml["value"].as<float>());
-
-  } else if (p_type_str == "bool") {
-    set_param_value<bool>(param, yaml["value"].as<bool>());
-
-  } else if (p_type_str == "glm::vec2") {
-    set_param_value<glm::vec2>(param, yaml["value"].as<glm::vec2>());
-
-  } else if (p_type_str == "glm::vec3") {
-    set_param_value<glm::vec3>(param, yaml["value"].as<glm::vec3>());
-
-  } else if (p_type_str == "ParamVec3") {
-    set_param_value<glm::vec3>(param, yaml["value"].as<glm::vec3>());
-
-  } else if (p_type_str == "ParamComboBox") {
-    auto combo_p = std::dynamic_pointer_cast<ParamComboBox>(param);
-    combo_p->Set(yaml["value"].as<int>());
-
-  } else if (p_type_str == "ParamGroup") {
-    auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
-    for (size_t j = 0; j < yaml["params"].size(); j++) {
-      deserialize_param(yaml["params"][j], factory_node);
-    }
-
-  } else if (p_type_str == "ParamFile") {
-    auto file_p = std::dynamic_pointer_cast<ParamFile>(param);
-    file_p->Set(utf8_to_wide(yaml["value"].as<std::string>()));
-  }
 }
 
 NodeNetwork deserialize_network(YAML::Node yaml) {
