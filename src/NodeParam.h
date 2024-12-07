@@ -661,7 +661,7 @@ T get_param_value(std::shared_ptr<NodeParam> param) {
 }
 template <typename T>
 void set_param_value(std::shared_ptr<NodeParam> param, T value) {
-  dynamic_cast<Param<T>*>(param.get())->Set(value);
+  std::dynamic_pointer_cast<Param<T>>(param)->Set(value);
 };
 
 };  // namespace NED

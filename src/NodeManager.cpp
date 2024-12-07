@@ -141,61 +141,71 @@ void NodeManager::InitGLFWEvents() {
     action->message = std::format("Node Disconnect");
     ActionManager::GetInstance().executeCommand(action);
   });
-  dispatcher.Subscribe(EventType::ParamChanged, [this](const Event& event) {
-    // auto &manager = *this;
-    auto ev_string = dynamic_cast<const ParamChangedEvent<std::string>*>(&event);
-    auto ev_wstring = dynamic_cast<const ParamChangedEvent<std::wstring>*>(&event);
-    auto ev_bool = dynamic_cast<const ParamChangedEvent<bool>*>(&event);
-    auto ev_float = dynamic_cast<const ParamChangedEvent<float>*>(&event);
-    auto ev_int = dynamic_cast<const ParamChangedEvent<int>*>(&event);
-    auto ev_vec3 = dynamic_cast<const ParamChangedEvent<glm::vec3>*>(&event);
-    auto ev_vec2 = dynamic_cast<const ParamChangedEvent<glm::vec2>*>(&event);
-    if (ev_string != nullptr) {
-      auto action = std::make_shared<ParamAction<std::string>>(
-          ev_string->node, ev_string->node->uuid, ev_string->param_name, ev_string->old_value, ev_string->new_value);
-      action->message = std::format("Param String Change -- {}", ev_string->param_name);
-      ActionManager::GetInstance().executeCommand(action);
 
-    } else if (ev_wstring != nullptr) {
-      auto action =
-          std::make_shared<ParamAction<std::wstring>>(ev_wstring->node, ev_wstring->node->uuid, ev_wstring->param_name,
-                                                      ev_wstring->old_value, ev_wstring->new_value);
-      action->message = std::format("Param WString Change -- {}", ev_wstring->param_name);
-      ActionManager::GetInstance().executeCommand(action);
+  DispatchParamChange<float>();
 
-    } else if (ev_bool != nullptr) {
-      auto action = std::make_shared<ParamAction<bool>>(ev_bool->node, ev_bool->node->uuid, ev_bool->param_name,
-                                                        ev_bool->old_value, ev_bool->new_value);
-      action->message = std::format("Param Boolean Change -- {}", ev_bool->param_name);
-      ActionManager::GetInstance().executeCommand(action);
+  DispatchParamChange<int>();
+  DispatchParamChange<bool>();
+  DispatchParamChange<glm::vec2>();
+  DispatchParamChange<glm::vec3>();
+  DispatchParamChange<std::string>();
+  DispatchParamChange<std::wstring>();
+  // dispatcher.Subscribe(EventType::ParamChanged, [this](const Event& event) {
+  //   // auto &manager = *this;
+  //   auto ev_string = dynamic_cast<const ParamChangedEvent<std::string>*>(&event);
+  //   auto ev_wstring = dynamic_cast<const ParamChangedEvent<std::wstring>*>(&event);
+  //   auto ev_bool = dynamic_cast<const ParamChangedEvent<bool>*>(&event);
+  //   auto ev_float = dynamic_cast<const ParamChangedEvent<float>*>(&event);
+  //   auto ev_int = dynamic_cast<const ParamChangedEvent<int>*>(&event);
+  //   auto ev_vec3 = dynamic_cast<const ParamChangedEvent<glm::vec3>*>(&event);
+  //   auto ev_vec2 = dynamic_cast<const ParamChangedEvent<glm::vec2>*>(&event);
+  //   if (ev_string != nullptr) {
+  //     auto action = std::make_shared<ParamAction<std::string>>(
+  //         ev_string->node, ev_string->node->uuid, ev_string->param_name, ev_string->old_value, ev_string->new_value);
+  //     action->message = std::format("Param String Change -- {}", ev_string->param_name);
+  //     ActionManager::GetInstance().executeCommand(action);
 
-    } else if (ev_float != nullptr) {
-      auto action = std::make_shared<ParamAction<float>>(ev_float->node, ev_float->node->uuid, ev_float->param_name,
-                                                         ev_float->old_value, ev_float->new_value);
-      action->message = std::format("Param Float Change -- {}", ev_float->param_name);
-      ActionManager::GetInstance().executeCommand(action);
+  //  } else if (ev_wstring != nullptr) {
+  //    auto action =
+  //        std::make_shared<ParamAction<std::wstring>>(ev_wstring->node, ev_wstring->node->uuid,
+  //        ev_wstring->param_name,
+  //                                                    ev_wstring->old_value, ev_wstring->new_value);
+  //    action->message = std::format("Param WString Change -- {}", ev_wstring->param_name);
+  //    ActionManager::GetInstance().executeCommand(action);
 
-    } else if (ev_int != nullptr) {
-      auto action = std::make_shared<ParamAction<int>>(ev_int->node, ev_int->node->uuid, ev_int->param_name,
-                                                       ev_int->old_value, ev_int->new_value);
-      action->message = std::format("Param Int Change -- {}", ev_int->param_name);
-      ActionManager::GetInstance().executeCommand(action);
+  //  } else if (ev_bool != nullptr) {
+  //    auto action = std::make_shared<ParamAction<bool>>(ev_bool->node, ev_bool->node->uuid, ev_bool->param_name,
+  //                                                      ev_bool->old_value, ev_bool->new_value);
+  //    action->message = std::format("Param Boolean Change -- {}", ev_bool->param_name);
+  //    ActionManager::GetInstance().executeCommand(action);
 
-    } else if (ev_vec3 != nullptr) {
-      auto action = std::make_shared<ParamAction<glm::vec3>>(ev_vec3->node, ev_vec3->node->uuid, ev_vec3->param_name,
-                                                             ev_vec3->old_value, ev_vec3->new_value);
-      action->message = std::format("Param Vec3 Change -- {}", ev_vec3->param_name);
-      ActionManager::GetInstance().executeCommand(action);
+  //  } else if (ev_float != nullptr) {
+  //    auto action = std::make_shared<ParamAction<float>>(ev_float->node, ev_float->node->uuid, ev_float->param_name,
+  //                                                       ev_float->old_value, ev_float->new_value);
+  //    action->message = std::format("Param Float Change -- {}", ev_float->param_name);
+  //    ActionManager::GetInstance().executeCommand(action);
 
-    } else if (ev_vec2 != nullptr) {
-      auto action = std::make_shared<ParamAction<glm::vec2>>(ev_vec2->node, ev_vec2->node->uuid, ev_vec2->param_name,
-                                                             ev_vec2->old_value, ev_vec2->new_value);
-      action->message = std::format("Param Vec2 Change -- {}", ev_vec2->param_name);
-      ActionManager::GetInstance().executeCommand(action);
-    }
+  //  } else if (ev_int != nullptr) {
+  //    auto action = std::make_shared<ParamAction<int>>(ev_int->node, ev_int->node->uuid, ev_int->param_name,
+  //                                                     ev_int->old_value, ev_int->new_value);
+  //    action->message = std::format("Param Int Change -- {}", ev_int->param_name);
+  //    ActionManager::GetInstance().executeCommand(action);
 
-    m_OneParamChanged = true;
-  });
+  //  } else if (ev_vec3 != nullptr) {
+  //    auto action = std::make_shared<ParamAction<glm::vec3>>(ev_vec3->node, ev_vec3->node->uuid, ev_vec3->param_name,
+  //                                                           ev_vec3->old_value, ev_vec3->new_value);
+  //    action->message = std::format("Param Vec3 Change -- {}", ev_vec3->param_name);
+  //    ActionManager::GetInstance().executeCommand(action);
+
+  //  } else if (ev_vec2 != nullptr) {
+  //    auto action = std::make_shared<ParamAction<glm::vec2>>(ev_vec2->node, ev_vec2->node->uuid, ev_vec2->param_name,
+  //                                                           ev_vec2->old_value, ev_vec2->new_value);
+  //    action->message = std::format("Param Vec2 Change -- {}", ev_vec2->param_name);
+  //    ActionManager::GetInstance().executeCommand(action);
+  //  }
+
+  //  m_OneParamChanged = true;
+  //});
 
   dispatcher.Subscribe(EventType::NodeCreated, [this](const Event& event) {
     auto ev = static_cast<const NodeCreatedEvent&>(event);

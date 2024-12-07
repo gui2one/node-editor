@@ -74,6 +74,22 @@ class NodeManager {
 
   void InitGLFWEvents();
 
+  template <typename T>
+  void DispatchParamChange() {
+    static auto& dispatcher = EventManager::GetInstance();
+    dispatcher.Subscribe(EventType::ParamChanged, [this](const Event& event) {
+      auto ev = dynamic_cast<const ParamChangedEvent<T>*>(&event);
+      if (ev != nullptr) {
+        auto action =
+            std::make_shared<ParamAction<T>>(ev->node, ev->node->uuid, ev->param_name, ev->old_value, ev->new_value);
+        action->message = std::format("Param Template Change -- {}", ev->param_name);
+        ActionManager::GetInstance().executeCommand(action);
+      }
+
+      m_OneParamChanged = true;
+    });
+  }
+
   void InitIcons();
   void AddIcon(std::string name, std::filesystem::path path);
 

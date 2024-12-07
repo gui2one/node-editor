@@ -19,12 +19,18 @@ class Param<double> : public NodeParam {
   double value;
   double temp_value;
   double old_value;
+  // double min_val = std::numeric_limits<double>::min();
+  // double max_val = std::numeric_limits<double>::max();
+  double min_val = 0.0;
+  double max_val = 300.0;
 
  public:
   Param() = default;
-  Param(const char* _name) : NodeParam(_name), value(0.0) {};
-  Param(const char* _name, double _value) : NodeParam(_name), value(_value) {}
+  // Param(const char* _name) : NodeParam(_name), value(0.0) {};
+  Param(const char* _name, double _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {}
   ~Param() {}
+
+  double Eval() { return value; }
   void Set(double _value) {
     value = _value;
     temp_value = _value;
@@ -32,7 +38,9 @@ class Param<double> : public NodeParam {
 
   void Display() override {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      if (ImGui::DragScalar(m_Label, ImGuiDataType_Double, &temp_value)) {
+      ImGuiSliderFlags flags = 0;
+      if (ImGui::SliderScalar("##_label", ImGuiDataType_Double, &temp_value, (const void*)&min_val,
+                              (const void*)&max_val)) {
       }
       if (ImGui::IsItemDeactivatedAfterEdit()) {
         this->old_value = this->value;
