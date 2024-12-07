@@ -75,7 +75,7 @@ class NodeManager {
   void InitGLFWEvents();
 
   template <typename T>
-  void DispatchParamChange() {
+  void ParamChangeSubscribe() {
     static auto& dispatcher = EventManager::GetInstance();
     dispatcher.Subscribe(EventType::ParamChanged, [this](const Event& event) {
       auto ev = dynamic_cast<const ParamChangedEvent<T>*>(&event);

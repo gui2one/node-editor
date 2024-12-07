@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 
   static EventDispatcher &dispatcher = EventManager::GetInstance();
 
-  manager.DispatchParamChange<double>();
+  manager.ParamChangeSubscribe<double>();
 
   dispatcher.Subscribe(EventType::ParamChanged, [&app](const Event &event) {
     auto &manager = app.GetNodeManager();
