@@ -18,6 +18,7 @@ class Param<double> : public NodeParam {
  public:
   double value;
   double temp_value;
+  double old_value;
 
  public:
   Param() = default;
@@ -30,7 +31,15 @@ class Param<double> : public NodeParam {
   }
 
   void Display() override {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() { ImGui::InputDouble(m_Label, &value); });
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      if (ImGui::DragScalar(m_Label, ImGuiDataType_Double, &temp_value)) {
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(double, m_Node, m_Label, this->value, this->old_value);
+      }
+    });
   }
   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
   void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<double>()); }
