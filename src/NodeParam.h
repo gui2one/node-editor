@@ -63,7 +63,9 @@ class NodeParam {
   const char* m_Label;
   const char* m_TypeName;
   AbstractNode* m_Node = nullptr;
-  int value = -1;
+  // int value = -1;
+  // int temp_value = -1;
+  // int old_value = -1;
 };
 
 template <typename T>

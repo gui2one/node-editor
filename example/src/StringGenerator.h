@@ -58,8 +58,9 @@ class StringGenerate : public StringGenerator {
     position->Set(glm::vec3(1.0f));
     position->default_val = glm::vec3(1.0f);
 
+    auto double_p = CREATE_PARAM(NED::Param<double>, "double", this);
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
-    grp->params = {label, combo_p, float_p, int_p, coords, position};
+    grp->params = {label, combo_p, float_p, int_p, coords, position, double_p};
 
     m_ParamLayout.params = {value, grp};
   };
