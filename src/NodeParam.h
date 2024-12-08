@@ -47,8 +47,9 @@
   ImGui::Spacing();
 
 namespace NED {
-// forward declaree
+// forward declare AbstratcNode
 class AbstractNode;
+
 class NodeParam {
  public:
   NodeParam() : m_Label("no label"), m_TypeName("no type") {}
