@@ -128,6 +128,10 @@ void NodeManager::InitGLFWEvents() {
                                                       ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Connect");
     ActionManager::GetInstance().executeCommand(action);
+
+    // auto test = NodeFactoryRegistry::GetInstance().Clone(ev.new_parent_node.get()->get_shared_ptr(), true,
+    //                                                      ev.new_parent_node.get()->position + ImVec2(50, 250));
+    // m_CurrentNetwork->AddNode(test);
   });
   dispatcher.Subscribe(EventType::NodeDisconnection, [this](const Event& event) {
     Evaluate();
