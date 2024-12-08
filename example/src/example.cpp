@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
   CREATE_UTILITY_CLASSES(std::string, "string/utility");
   REGISTER_NODE_TYPE(NED::StringGenerate, "generate", "string/generator");
   REGISTER_NODE_TYPE(NED::StringConcatenator, "concatenator", "string/modifier");
-  REGISTER_NODE_TYPE(NED::TextFileLoader, "load_text_file", "string/generator");
+  // REGISTER_NODE_TYPE(NED::TextFileLoader, "load_text_file", "string/generator");
   REGISTER_NODE_TYPE(NED::StringConcatenatorMulti, "concatmulti", "string/modifier");
   REGISTER_NODE_TYPE(NED::StringRepeater, "repeater", "string/modifier");
   REGISTER_NODE_TYPE(NED::StringToUpperCase, "to_upper_case", "string/modifier");
