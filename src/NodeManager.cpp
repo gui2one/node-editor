@@ -54,11 +54,12 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NED::ParamFile);
   REGISTER_PARAM_TYPE(NED::Param<std::string>);
   REGISTER_PARAM_TYPE(NED::Param<std::wstring>);
-  REGISTER_PARAM_TYPE(NED::Param<int>);
-  REGISTER_PARAM_TYPE(NED::Param<float>);
+
   REGISTER_PARAM_TYPE(NED::Param<bool>);
-  REGISTER_PARAM_TYPE(NED::Param<glm::vec2>);
-  // REGISTER_PARAM_TYPE(NED::Param<glm::vec3>);
+
+  REGISTER_PARAM_TYPE(NED::ParamFloat);
+  REGISTER_PARAM_TYPE(NED::ParamInt);
+  REGISTER_PARAM_TYPE(NED::ParamVec2);
   REGISTER_PARAM_TYPE(NED::ParamVec3);
 }
 
@@ -128,10 +129,6 @@ void NodeManager::InitGLFWEvents() {
                                                       ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Connect");
     ActionManager::GetInstance().executeCommand(action);
-
-    // auto test = NodeFactoryRegistry::GetInstance().Clone(ev.new_parent_node.get()->get_shared_ptr(), true,
-    //                                                      ev.new_parent_node.get()->position + ImVec2(50, 250));
-    // m_CurrentNetwork->AddNode(test);
   });
   dispatcher.Subscribe(EventType::NodeDisconnection, [this](const Event& event) {
     Evaluate();

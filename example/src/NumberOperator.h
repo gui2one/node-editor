@@ -19,7 +19,7 @@ class NumberConstant : public NumberOperator {
   NumberConstant() : NumberOperator() {
     SetNumAvailableInputs(0);
 
-    value = CREATE_PARAM(NED::Param<float>, "Value", this);
+    value = CREATE_PARAM(NED::ParamFloat, "Value", this);
     value->Set(1.0f);
     m_ParamLayout.params = {value};
   }
@@ -27,7 +27,7 @@ class NumberConstant : public NumberOperator {
   void Generate() override { m_DataCache = value->Eval(); }
 
  public:
-  std::shared_ptr<NED::Param<float>> value;
+  std::shared_ptr<NED::ParamFloat> value;
 };
 
 class Add : public NumberOperator {

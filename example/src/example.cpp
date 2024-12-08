@@ -28,7 +28,8 @@ int main(int argc, char *argv[]) {
   REGISTER_NODE_TYPE(NED::Add, "add", "number/math");
   REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "number");
 
-  REGISTER_PARAM_TYPE(NED::Param<double>);
+  // "User" type
+  REGISTER_PARAM_TYPE(NED::ParamDouble);
 
   Application app;
 

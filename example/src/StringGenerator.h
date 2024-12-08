@@ -44,13 +44,13 @@ class StringGenerate : public StringGenerator {
     combo_p->SetChoices({"one", "two", "three", "four", "five"});
     combo_p->Set(0);
 
-    auto float_p = CREATE_PARAM(NED::Param<float>, "Float", this);
+    auto float_p = CREATE_PARAM(NED::ParamFloat, "Float", this);
     float_p->Set(3.14f);
 
-    auto int_p = CREATE_PARAM(NED::Param<int>, "Int", this);
+    auto int_p = CREATE_PARAM(NED::ParamInt, "Int", this);
     int_p->Set(42);
 
-    auto coords = CREATE_PARAM(NED::Param<glm::vec2>, "coords", this);
+    auto coords = CREATE_PARAM(NED::ParamVec2, "coords", this);
     coords->Set(glm::vec2(0.0f));
     coords->default_val = glm::vec2(2.0f);
 
@@ -58,7 +58,12 @@ class StringGenerate : public StringGenerator {
     position->Set(glm::vec3(1.0f));
     position->default_val = glm::vec3(1.0f);
 
-    auto double_p = CREATE_PARAM(NED::Param<double>, "double", this);
+    auto double_p = CREATE_PARAM(NED::ParamDouble, "double", this);
+    double_p->Set(3.14);
+
+    // auto file_p = CREATE_PARAM(NED::ParamFile, "File", this);
+    // file_p->Set(L"C:/gui2one/CODE/node-editor/example/src/StringGenerator.h");
+
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
     grp->params = {label, combo_p, float_p, int_p, coords, position, double_p};
 
@@ -171,8 +176,8 @@ class StringRepeater : public StringModifier {
  public:
   StringRepeater() : StringModifier() {
     SetNumAvailableInputs(1);
-    // count = std::make_shared<Param<int>>("Count", 10);
-    count = CREATE_PARAM(NED::Param<int>, "Count", this);
+    // count = std::make_shared<ParamInt>("Count", 10);
+    count = CREATE_PARAM(NED::ParamInt, "Count", this);
     count->Set(10);
     count->min_val = 0;
     count->max_val = 100;
@@ -196,7 +201,7 @@ class StringRepeater : public StringModifier {
   }
 
  public:
-  std::shared_ptr<Param<int>> count;
+  std::shared_ptr<ParamInt> count;
 };
 
 class StringToUpperCase : public StringModifier {

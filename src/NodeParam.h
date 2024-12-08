@@ -63,9 +63,6 @@ class NodeParam {
   const char* m_Label;
   const char* m_TypeName;
   AbstractNode* m_Node = nullptr;
-  // int value = -1;
-  // int temp_value = -1;
-  // int old_value = -1;
 };
 
 template <typename T>
@@ -100,128 +97,13 @@ class Param : public NodeParam {
 
   void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<T>()); }
 
- private:
-  T value = -1;
-  T old_value = -1;
-  T min_val = -1;
-  T max_val = -1;
-  T default_val = -1;
-  T temp_value = -1;
-};
-
-template <>
-class Param<glm::vec2> : public NodeParam {
  public:
-  Param() = default;
-  Param(const char* _name, glm::vec2 _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {
-    std::cout << "TEMP VALUE : " << temp_value.x << ", " << temp_value.y << std::endl;
-  };
-  ~Param() {};
-
-  glm::vec2 Eval() { return value; }
-
-  void Set(glm::vec2 _value) {
-    value = _value;
-    temp_value = _value;
-  }
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      bool value_changed = false;
-      ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
-      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
-
-      float avail_x = ImGui::GetContentRegionAvail().x;
-      float spacing = ImGui::GetCurrentContext()->Style.ItemInnerSpacing.x;
-      float input_width = avail_x / 2.0f - 30.0f - spacing;
-      ImGui::PushID(0);
-      if (ImGui::Button("X", ImVec2(30, 25))) {
-        value_changed = true;
-        value.x = default_val.x;
-      }
-      ImGui::PopID();
-      ImGui::PopStyleColor(3);
-      ImGui::SameLine();
-
-      ImGui::PushID(1);
-      ImGui::PushItemWidth(input_width);
-      ImGuiInputFlags flags = 0;
-      // flags |= ImGuiInputFlags_RepeatUntilRelease;
-
-      if (ImGui::DragFloat("##x", &this->temp_value.x, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
-      }
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        value_changed = true;
-      }
-      ImGui::PopID();
-      ImGui::PopItemWidth();
-
-      ImGui::SameLine(0, spacing);
-
-      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
-      ImGui::PushID("label_y");
-
-      if (ImGui::Button("Y", ImVec2(30, 25))) {
-        value_changed = true;
-        value.y = default_val.y;
-      }
-      ImGui::PopID();
-      ImGui::PopStyleColor(3);
-      ImGui::SameLine();
-      ImGui::PushID("float_y");
-      ImGui::PushItemWidth(input_width);
-      if (ImGui::DragFloat("##y", &temp_value.y, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
-        // value_changed = true;
-      }
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        value_changed = true;
-      }
-      ImGui::PopID();
-      ImGui::PopItemWidth();
-
-      ImGui::PopStyleVar();
-      if (value_changed) {
-        // std::cout << "Vec2 value changed " << this->value.x << ", " << this->value.y << std::endl;
-        this->old_value = this->value;
-        this->value = this->temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, value, old_value);
-      }
-    });
-  }
-  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<glm::vec2>()); }
-
- public:
-  glm::vec2 value = glm::vec2(0.0f);
-  glm::vec2 old_value = glm::vec2(0.0f);
-  glm::vec2 temp_value = glm::vec2(0.0f);
-  glm::vec2 default_val = glm::vec2(0.0f);
-};
-
-template <>
-class Param<glm::vec3> : public NodeParam {
- public:
-  Param() = default;
-  Param(const char* _name, glm::vec3 _value)
-      : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
-  ~Param() {};
-
-  glm::vec3 Eval() { return value; }
-  void Set(glm::vec3 _value) {
-    temp_value = _value;
-    value = _value;
-  };
-
-  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-
- public:
-  glm::vec3 value;
-  glm::vec3 old_value;
-  glm::vec3 temp_value;
-  glm::vec3 default_val = glm::vec3(0.0f);
+  T value;
+  T old_value;
+  T min_val;
+  T max_val;
+  T default_val;
+  T temp_value;
 };
 
 template <>
@@ -296,79 +178,42 @@ class Param<std::wstring> : public NodeParam {
   std::wstring temp_value;
 };
 
-template <>
-class Param<int> : public NodeParam {
- public:
-  Param() = default;
-  Param(const char* _name, int _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
-  ~Param() {};
-
-  int Eval() { return value; }
-  void Set(int _value) {
-    value = _value;
-    temp_value = _value;
-  }
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      ImGuiSliderFlags flags = 0;
-      flags |= ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_ClampOnInput;
-      if (ImGui::DragInt("##m_Label", &temp_value, 1.0f, min_val, max_val, "%d", flags)) {
-      }
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        this->old_value = this->value;
-        this->value = this->temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, this->value, this->old_value);
-      }
-    });
-  }
-
-  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<int>()); }
-
- public:
-  int value = 0;
-  int old_value = 0;
-  int temp_value = 0;
-  int min_val = std::numeric_limits<int>::min();
-  int max_val = std::numeric_limits<int>::max();
-};
-
-template <>
-class Param<float> : public NodeParam {
- public:
-  Param() = default;
-  Param(const char* _name, float _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
-  ~Param() {};
-
-  float Eval() { return value; }
-  void Set(float _value) {
-    value = _value;
-    temp_value = _value;
-  }
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      ImGuiSliderFlags flags = 0;
-
-      if (ImGui::SliderFloat("##m_Label", &temp_value, 0, 100, "%.3f", flags)) {
-      }
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        old_value = value;
-        value = temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(float, m_Node, m_Label, value, old_value);
-      }
-    });
-  }
-  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<float>()); }
-
- public:
-  float value = 0.0f;
-  float old_value = 0.0f;
-  float temp_value = 0.0f;
-  float min_val = std::numeric_limits<float>::min();
-  float max_val = std::numeric_limits<float>::max();
-  ;
-};
+// template <>
+// class Param<int> : public NodeParam {
+//  public:
+//   Param() = default;
+//   Param(const char* _name, int _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
+//   ~Param() {};
+//
+//   int Eval() { return value; }
+//   void Set(int _value) {
+//     value = _value;
+//     temp_value = _value;
+//   }
+//   void Display() {
+//     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+//       ImGuiSliderFlags flags = 0;
+//       flags |= ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_ClampOnInput;
+//       if (ImGui::DragInt("##m_Label", &temp_value, 1.0f, min_val, max_val, "%d", flags)) {
+//       }
+//       if (ImGui::IsItemDeactivatedAfterEdit()) {
+//         this->old_value = this->value;
+//         this->value = this->temp_value;
+//         DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, this->value, this->old_value);
+//       }
+//     });
+//   }
+//
+//   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+//   void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<int>()); }
+//
+//  public:
+//   int value = 0;
+//   int old_value = 0;
+//   int temp_value = 0;
+//   int min_val = std::numeric_limits<int>::min();
+//   int max_val = std::numeric_limits<int>::max();
+// };
 
 template <>
 class Param<bool> : public NodeParam {
@@ -401,12 +246,40 @@ class Param<bool> : public NodeParam {
 };
 
 /* derived classes */
+class ParamFloat : public Param<float> {
+ public:
+  void Display() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      ImGuiSliderFlags flags = 0;
+
+      if (ImGui::SliderFloat("##m_Label", &temp_value, 0, 100, "%.3f", flags)) {
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        old_value = value;
+        value = temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(float, m_Node, m_Label, value, old_value);
+      }
+    });
+  }
+};
+class ParamInt : public Param<int> {
+ public:
+  void Display() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      ImGuiSliderFlags flags = 0;
+      flags |= ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_ClampOnInput;
+      if (ImGui::DragInt("##m_Label", &temp_value, 1.0f, min_val, max_val, "%d", flags)) {
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, this->value, this->old_value);
+      }
+    });
+  }
+};
 class ParamVec3 : public Param<glm::vec3> {
  public:
-  ParamVec3() : Param("no name", glm::vec3(0.0f)) {};
-  ParamVec3(glm::vec3 _value) : Param("", _value) {};
-  ParamVec3(const char* _name, glm::vec3 _value) : Param(_name, _value) {};
-  ~ParamVec3() {};
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       bool value_changed = false;
@@ -493,23 +366,83 @@ class ParamVec3 : public Param<glm::vec3> {
       }
     });
   }
-  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+};
+class ParamVec2 : public Param<glm::vec2> {
+ public:
+  void Display() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      bool value_changed = false;
+      ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
+      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
+      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
+      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
 
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<glm::vec3>()); }
+      float avail_x = ImGui::GetContentRegionAvail().x;
+      float spacing = ImGui::GetCurrentContext()->Style.ItemInnerSpacing.x;
+      float input_width = avail_x / 2.0f - 30.0f - spacing;
+      ImGui::PushID(0);
+      if (ImGui::Button("X", ImVec2(30, 25))) {
+        value_changed = true;
+        value.x = default_val.x;
+      }
+      ImGui::PopID();
+      ImGui::PopStyleColor(3);
+      ImGui::SameLine();
+
+      ImGui::PushID(1);
+      ImGui::PushItemWidth(input_width);
+      ImGuiInputFlags flags = 0;
+      // flags |= ImGuiInputFlags_RepeatUntilRelease;
+
+      if (ImGui::DragFloat("##x", &this->temp_value.x, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        value_changed = true;
+      }
+      ImGui::PopID();
+      ImGui::PopItemWidth();
+
+      ImGui::SameLine(0, spacing);
+
+      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
+      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
+      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
+      ImGui::PushID("label_y");
+
+      if (ImGui::Button("Y", ImVec2(30, 25))) {
+        value_changed = true;
+        value.y = default_val.y;
+      }
+      ImGui::PopID();
+      ImGui::PopStyleColor(3);
+      ImGui::SameLine();
+      ImGui::PushID("float_y");
+      ImGui::PushItemWidth(input_width);
+      if (ImGui::DragFloat("##y", &temp_value.y, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
+        // value_changed = true;
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        value_changed = true;
+      }
+      ImGui::PopID();
+      ImGui::PopItemWidth();
+
+      ImGui::PopStyleVar();
+      if (value_changed) {
+        // std::cout << "Vec2 value changed " << this->value.x << ", " << this->value.y << std::endl;
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, value, old_value);
+      }
+    });
+  }
 };
 
 class ParamFile : public Param<std::wstring> {
  public:
-  std::wstring value;
   std::vector<Utils::FileFilterItem> filters = {{"All Files", "*"}, {"Text Files", "txt"}};
 
  public:
-  ParamFile() : Param<std::wstring>() {};
-  ParamFile(const char* _name, std::wstring _value) : Param(_name, _value) {};
-  ~ParamFile() {};
-
-  std::wstring Eval() { return value; }
-
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       // ImGui::Text("ParamFile Not implemented yet ...");
@@ -545,36 +478,21 @@ class ParamFile : public Param<std::wstring> {
     yaml_node["value"] = wide_to_utf8(value);
     return yaml_node;
   }
-
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::wstring>()); }
 };
 
 class ParamLabel : public Param<std::string> {
  public:
-  ParamLabel() : Param<std::string>("aaaa", "no value") {};
-  ParamLabel(std::string _value) : Param<std::string>("", _value) {};
-  ParamLabel(const char* _name, std::string _value) : Param<std::string>(_name, _value) {};
-  ~ParamLabel() {};
   void Display() {
     ImGui::Spacing();
     ImGui::Text("%s", value.c_str());
   }
-  YAML::Node YAMLSerialize() override {
-    YAML::Node yaml_node;
-    std::string type_str = std::string(m_TypeName);
-    yaml_node["type"] = type_str;
-    yaml_node["label"] = m_Label;
-    yaml_node["value"] = value;
-    return yaml_node;
-  }
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::string>()); }
 };
 
 class ParamComboBox : public Param<int> {
  public:
-  ParamComboBox() : Param<int>("m_Label", 0) {};
-  ParamComboBox(const char* _name) : Param<int>(_name, 0) {};
-  ~ParamComboBox() {};
+  // ParamComboBox() : Param<int>("m_Label", 0) {};
+  // ParamComboBox(const char* _name) : Param<int>(_name, 0) {};
+  //~ParamComboBox() {};
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       if (ImGui::Combo("##m_Label", &temp_value, choices.data(), static_cast<int>(choices.size()))) {
@@ -625,10 +543,24 @@ class ParamSeparator : public Param<std::string> {
 
 class ParamGroup : public Param<int> {
  public:
-  ParamGroup() : Param<int>("", 0) {};
-  ParamGroup(const char* _name) : Param<int>(_name, 0) {};
-  ~ParamGroup() {};
-  void Display() override;
+  void Display() {
+    ImGui::Spacing();
+    ImGui::Text("%s", m_Label);
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    ImGui::Indent(10.0f);
+    ImGui::BeginGroup();
+
+    for (auto item : params) {
+      item->Display();
+    }
+
+    ImGui::EndGroup();
+    ImGui::Indent(-10.0f);
+  };
 
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;

@@ -54,12 +54,12 @@ void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::
     auto p_label = std::dynamic_pointer_cast<NED::ParamLabel>(src_param);
     auto p_group = std::dynamic_pointer_cast<NED::ParamGroup>(src_param);
     auto p_file = std::dynamic_pointer_cast<NED::ParamFile>(src_param);
-    auto p_int = std::dynamic_pointer_cast<NED::Param<int>>(src_param);
-    auto p_float = std::dynamic_pointer_cast<NED::Param<float>>(src_param);
+    auto p_int = std::dynamic_pointer_cast<NED::ParamInt>(src_param);
+    auto p_float = std::dynamic_pointer_cast<NED::ParamFloat>(src_param);
     auto p_string = std::dynamic_pointer_cast<NED::Param<std::string>>(src_param);
     auto p_bool = std::dynamic_pointer_cast<NED::Param<bool>>(src_param);
-    auto p_vec2 = std::dynamic_pointer_cast<NED::Param<glm::vec2>>(src_param);
-    auto p_vec3 = std::dynamic_pointer_cast<NED::Param<glm::vec3>>(src_param);
+    auto p_vec2 = std::dynamic_pointer_cast<NED::ParamVec2>(src_param);
+    auto p_vec3 = std::dynamic_pointer_cast<NED::ParamVec3>(src_param);
     if (p_label != nullptr) {
       auto factory_p_label = std::dynamic_pointer_cast<NED::ParamLabel>(dst_param);
       factory_p_label->value = p_label->value;
@@ -77,10 +77,10 @@ void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::
       factory_p_file->value = p_file->value;
 
     } else if (p_int != nullptr) {
-      auto factory_p_int = std::dynamic_pointer_cast<NED::Param<int>>(dst_param);
+      auto factory_p_int = std::dynamic_pointer_cast<NED::ParamInt>(dst_param);
       factory_p_int->value = p_int->value;
     } else if (p_float != nullptr) {
-      auto factory_p_float = std::dynamic_pointer_cast<NED::Param<float>>(dst_param);
+      auto factory_p_float = std::dynamic_pointer_cast<NED::ParamFloat>(dst_param);
       factory_p_float->value = p_float->value;
     } else if (p_string != nullptr) {
       auto factory_p_string = std::dynamic_pointer_cast<NED::Param<std::string>>(dst_param);

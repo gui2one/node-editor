@@ -258,7 +258,7 @@ class SubnetInputNode : public ImGuiNode<T> {
     this->size.x = 50.0f;
     this->size.y = 50.0f;
 
-    this->input_id = CREATE_PARAM(NED::Param<int>, "input id", this);
+    this->input_id = CREATE_PARAM(NED::ParamInt, "input id", this);
     this->input_id->Set(0);
     this->m_ParamLayout.params.push_back(input_id);
 
