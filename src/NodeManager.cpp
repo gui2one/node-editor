@@ -55,10 +55,9 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NED::Param<std::string>);
   REGISTER_PARAM_TYPE(NED::Param<std::wstring>);
 
-  REGISTER_PARAM_TYPE(NED::Param<bool>);
-
   REGISTER_PARAM_TYPE(NED::ParamFloat);
   REGISTER_PARAM_TYPE(NED::ParamInt);
+  REGISTER_PARAM_TYPE(NED::ParamBool);
   REGISTER_PARAM_TYPE(NED::ParamVec2);
   REGISTER_PARAM_TYPE(NED::ParamVec3);
 }

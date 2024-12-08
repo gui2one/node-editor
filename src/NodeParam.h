@@ -178,73 +178,6 @@ class Param<std::wstring> : public NodeParam {
   std::wstring temp_value;
 };
 
-// template <>
-// class Param<int> : public NodeParam {
-//  public:
-//   Param() = default;
-//   Param(const char* _name, int _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
-//   ~Param() {};
-//
-//   int Eval() { return value; }
-//   void Set(int _value) {
-//     value = _value;
-//     temp_value = _value;
-//   }
-//   void Display() {
-//     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-//       ImGuiSliderFlags flags = 0;
-//       flags |= ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_ClampOnInput;
-//       if (ImGui::DragInt("##m_Label", &temp_value, 1.0f, min_val, max_val, "%d", flags)) {
-//       }
-//       if (ImGui::IsItemDeactivatedAfterEdit()) {
-//         this->old_value = this->value;
-//         this->value = this->temp_value;
-//         DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, this->value, this->old_value);
-//       }
-//     });
-//   }
-//
-//   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-//   void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<int>()); }
-//
-//  public:
-//   int value = 0;
-//   int old_value = 0;
-//   int temp_value = 0;
-//   int min_val = std::numeric_limits<int>::min();
-//   int max_val = std::numeric_limits<int>::max();
-// };
-
-template <>
-class Param<bool> : public NodeParam {
- public:
-  Param() = default;
-  Param(const char* _name, bool _value) : NodeParam(_name), value(_value), temp_value(_value), old_value(_value) {};
-  ~Param() {};
-
-  bool Eval() { return value; }
-  void Set(bool _value) {
-    value = _value;
-    temp_value = _value;
-  }
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      if (ImGui::Checkbox("##m_Label", &temp_value)) {
-        this->old_value = this->value;
-        this->value = this->temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(bool, m_Node, m_Label, this->value, this->old_value);
-      }
-    });
-  }
-  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<bool>()); }
-
- public:
-  bool value = false;
-  bool old_value = false;
-  bool temp_value = false;
-};
-
 /* derived classes */
 class ParamFloat : public Param<float> {
  public:
@@ -274,6 +207,19 @@ class ParamInt : public Param<int> {
         this->old_value = this->value;
         this->value = this->temp_value;
         DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, this->value, this->old_value);
+      }
+    });
+  }
+};
+
+class ParamBool : public Param<bool> {
+ public:
+  void Display() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      if (ImGui::Checkbox("##m_Label", &temp_value)) {
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(bool, m_Node, m_Label, this->value, this->old_value);
       }
     });
   }
@@ -490,9 +436,6 @@ class ParamLabel : public Param<std::string> {
 
 class ParamComboBox : public Param<int> {
  public:
-  // ParamComboBox() : Param<int>("m_Label", 0) {};
-  // ParamComboBox(const char* _name) : Param<int>(_name, 0) {};
-  //~ParamComboBox() {};
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       if (ImGui::Combo("##m_Label", &temp_value, choices.data(), static_cast<int>(choices.size()))) {
@@ -507,15 +450,15 @@ class ParamComboBox : public Param<int> {
   inline void SetChoice(int choice) { value = choice; }
   inline void SetChoices(std::vector<const char*> _choices) { choices = _choices; }
 
-  YAML::Node YAMLSerialize() override {
-    YAML::Node yaml_node;
-    std::string type_str = std::string(m_TypeName);
-    yaml_node["type"] = type_str;
-    yaml_node["label"] = m_Label;
-    yaml_node["value"] = value;
-    return yaml_node;
-  }
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<int>()); }
+  // YAML::Node YAMLSerialize() override {
+  //   YAML::Node yaml_node;
+  //   std::string type_str = std::string(m_TypeName);
+  //   yaml_node["type"] = type_str;
+  //   yaml_node["label"] = m_Label;
+  //   yaml_node["value"] = value;
+  //   return yaml_node;
+  // }
+  // void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<int>()); }
 
  public:
   std::vector<const char*> choices = {"first", "second", "third"};

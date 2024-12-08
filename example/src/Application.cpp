@@ -149,6 +149,8 @@ bool Application::Init() {
   }
 #endif
   m_NodeManager.InitGLFWEvents();
+
+  m_NodeManager.ParamChangeSubscribe<double>();
   m_NodeManager.InitIcons();
 
   ImGuiInit(m_NativeWindow);

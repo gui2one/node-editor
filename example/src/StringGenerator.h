@@ -50,22 +50,24 @@ class StringGenerate : public StringGenerator {
     auto int_p = CREATE_PARAM(NED::ParamInt, "Int", this);
     int_p->Set(42);
 
-    auto coords = CREATE_PARAM(NED::ParamVec2, "coords", this);
+    auto coords = CREATE_PARAM(NED::ParamVec2, "Vec2", this);
     coords->Set(glm::vec2(0.0f));
     coords->default_val = glm::vec2(2.0f);
 
-    auto position = CREATE_PARAM(NED::ParamVec3, "position", this);
+    auto position = CREATE_PARAM(NED::ParamVec3, "Vec3", this);
     position->Set(glm::vec3(1.0f));
     position->default_val = glm::vec3(1.0f);
 
-    auto double_p = CREATE_PARAM(NED::ParamDouble, "double", this);
+    auto double_p = CREATE_PARAM(NED::ParamDouble, "Double", this);
     double_p->Set(3.14);
 
+    auto bool_p = CREATE_PARAM(NED::ParamBool, "Bool", this);
+    bool_p->Set(true);
     // auto file_p = CREATE_PARAM(NED::ParamFile, "File", this);
     // file_p->Set(L"C:/gui2one/CODE/node-editor/example/src/StringGenerator.h");
 
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
-    grp->params = {label, combo_p, float_p, int_p, coords, position, double_p};
+    grp->params = {label, combo_p, float_p, int_p, coords, position, double_p, bool_p};
 
     m_ParamLayout.params = {value, grp};
   };
@@ -117,8 +119,8 @@ class StringConcatenator : public StringModifier {
  public:
   StringConcatenator() : StringModifier() {
     SetNumAvailableInputs(2);
-    // add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
-    add_separator_param = CREATE_PARAM(NED::Param<bool>, "Add Separator", this);
+    // add_separator_param = std::make_shared<ParamBool>("Add Separator", false);
+    add_separator_param = CREATE_PARAM(NED::ParamBool, "Add Separator", this);
     add_separator_param->Set(false);
     m_ParamLayout.params = {add_separator_param};
   }
@@ -137,7 +139,7 @@ class StringConcatenator : public StringModifier {
   }
 
  public:
-  std::shared_ptr<Param<bool>> add_separator_param;
+  std::shared_ptr<ParamBool> add_separator_param;
 };
 
 class StringConcatenatorMulti : public StringModifier {
@@ -145,8 +147,8 @@ class StringConcatenatorMulti : public StringModifier {
   StringConcatenatorMulti() : StringModifier() {
     SetNumAvailableInputs(0);
     ActivateMultiInput();
-    // add_separator_param = std::make_shared<Param<bool>>("Add Separator", false);
-    add_separator_param = CREATE_PARAM(NED::Param<bool>, "Add Separator", this);
+    // add_separator_param = std::make_shared<ParamBool>("Add Separator", false);
+    add_separator_param = CREATE_PARAM(NED::ParamBool, "Add Separator", this);
     add_separator_param->Set(false);
     // auto combo_test = std::make_shared<ParamComboBox>("Combo Test");
     auto combo_test = CREATE_PARAM(NED::ParamComboBox, "Combo Test", this);
@@ -170,7 +172,7 @@ class StringConcatenatorMulti : public StringModifier {
   }
 
  public:
-  std::shared_ptr<Param<bool>> add_separator_param;
+  std::shared_ptr<ParamBool> add_separator_param;
 };
 class StringRepeater : public StringModifier {
  public:
