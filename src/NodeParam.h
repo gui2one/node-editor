@@ -59,6 +59,8 @@ class NodeParam {
   virtual YAML::Node YAMLSerialize() = 0;
   virtual void YAMLDeserialize(YAML::Node yaml_node) = 0;
 
+  virtual void Clone(std::shared_ptr<NodeParam> dst_param) = 0;
+
  public:
   const char* m_Label;
   const char* m_TypeName;
@@ -79,7 +81,22 @@ class Param : public NodeParam {
   ~Param() {};
 
   T Eval() { return value; };
+  void Clone(std::shared_ptr<NodeParam> dst_param) override {
+    auto cast_p = std::dynamic_pointer_cast<Param<T>>(dst_param);
 
+    if (cast_p != nullptr) {
+      std::cout << "---------- cast OK ?---------------" << std::endl;
+      cast_p->Set(value);
+      // cast_p->value = value;
+      // cast_p->old_value = old_value;
+      // cast_p->min_val = min_val;
+      // cast_p->max_val = max_val;
+      // cast_p->default_val = default_val;
+      // cast_p->temp_value = temp_value;
+    } else {
+      std::cout << "---------- cast failed ---------------" << std::endl;
+    }
+  }
   void Set(T _value) {
     temp_value = _value;
     value = _value;
