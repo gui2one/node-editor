@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 
 #include "ImGuiNode.h"
-
+#include "utils.h"
 
 namespace YAML {
 
@@ -18,13 +18,19 @@ struct convert<std::wstring> {
     // std::cout << "Encoding Wstring to yaml" << std::endl;
 
     Node node;
-    node["value"] = rhs;
+    node = NED::wide_to_utf8(rhs);
 
     return node;
   }
 
   static bool decode(const Node& node, std::wstring& rhs) {
-    rhs = node["value"].as<std::wstring>();
+    // std::cout << "Decoding Wstring from yaml" << std::endl;
+
+    if (!node || !node.IsScalar()) {
+      return false;
+    }
+    auto utf8 = node.as<std::string>();
+    rhs = NED::utf8_to_wide(utf8);
     return true;
   }
 };

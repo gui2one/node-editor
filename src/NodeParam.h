@@ -106,40 +106,40 @@ class Param : public NodeParam {
   T temp_value;
 };
 
-template <>
-class Param<std::wstring> : public NodeParam {
- public:
-  Param() = default;
-  Param(const char* _name, std::wstring _value) : NodeParam(_name), value(_value) {};
-  ~Param() {};
-
-  std::wstring Eval() { return value; }
-  void Set(std::wstring _value) {
-    value = _value;
-    temp_value = _value;
-  }
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      std::string converted = wide_to_utf8(value);
-      if (ImGui::InputText("##m_Label", &converted)) {
-        this->temp_value = utf8_to_wide(converted);
-      }
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        this->old_value = this->value;
-        this->value = this->temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, value, old_value);
-      }
-    });
-  }
-
-  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::wstring>()); }
-
- public:
-  std::wstring value;
-  std::wstring old_value;
-  std::wstring temp_value;
-};
+// template <>
+// class Param<std::wstring> : public NodeParam {
+//  public:
+//   Param() = default;
+//   Param(const char* _name, std::wstring _value) : NodeParam(_name), value(_value) {};
+//   ~Param() {};
+//
+//   std::wstring Eval() { return value; }
+//   void Set(std::wstring _value) {
+//     value = _value;
+//     temp_value = _value;
+//   }
+//   void Display() {
+//     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+//       std::string converted = wide_to_utf8(value);
+//       if (ImGui::InputText("##m_Label", &converted)) {
+//         this->temp_value = utf8_to_wide(converted);
+//       }
+//       if (ImGui::IsItemDeactivatedAfterEdit()) {
+//         this->old_value = this->value;
+//         this->value = this->temp_value;
+//         DISPATCH_PARAM_CHANGE_EVENT(std::wstring, m_Node, m_Label, value, old_value);
+//       }
+//     });
+//   }
+//
+//   NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
+//   void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::wstring>()); }
+//
+//  public:
+//   std::wstring value;
+//   std::wstring old_value;
+//   std::wstring temp_value;
+// };
 
 /* derived classes */
 class ParamFloat : public Param<float> {
@@ -376,11 +376,9 @@ class ParamFile : public Param<std::wstring> {
  public:
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      // ImGui::Text("ParamFile Not implemented yet ...");
       float avail_x = ImGui::GetContentRegionAvail().x;
       ImGui::PushItemWidth(avail_x - 50.0f);
 
-      // ImGui::InputText("##m_Label", &value);
       std::string converted = wide_to_utf8(temp_value);
       ImGui::InputText("##m_Label", &converted, 2048);
 
@@ -409,6 +407,8 @@ class ParamFile : public Param<std::wstring> {
     yaml_node["value"] = wide_to_utf8(value);
     return yaml_node;
   }
+
+  void YAMLDeserialize(YAML::Node yaml_node) { Set(yaml_node["value"].as<std::wstring>()); }
 };
 
 class ParamLabel : public Param<std::string> {
