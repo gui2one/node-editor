@@ -52,14 +52,22 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NED::ParamGroup);
   REGISTER_PARAM_TYPE(NED::ParamComboBox);
   REGISTER_PARAM_TYPE(NED::ParamFile);
-  REGISTER_PARAM_TYPE(NED::Param<std::string>);
   REGISTER_PARAM_TYPE(NED::Param<std::wstring>);
 
   REGISTER_PARAM_TYPE(NED::ParamFloat);
   REGISTER_PARAM_TYPE(NED::ParamInt);
   REGISTER_PARAM_TYPE(NED::ParamBool);
+  REGISTER_PARAM_TYPE(NED::ParamString);
   REGISTER_PARAM_TYPE(NED::ParamVec2);
   REGISTER_PARAM_TYPE(NED::ParamVec3);
+
+  ParamChangeSubscribe<float>();
+  ParamChangeSubscribe<int>();
+  ParamChangeSubscribe<bool>();
+  ParamChangeSubscribe<glm::vec2>();
+  ParamChangeSubscribe<glm::vec3>();
+  ParamChangeSubscribe<std::string>();
+  ParamChangeSubscribe<std::wstring>();
 }
 
 NodeManager::~NodeManager() {}
@@ -137,14 +145,6 @@ void NodeManager::InitGLFWEvents() {
     action->message = std::format("Node Disconnect");
     ActionManager::GetInstance().executeCommand(action);
   });
-
-  ParamChangeSubscribe<float>();
-  ParamChangeSubscribe<int>();
-  ParamChangeSubscribe<bool>();
-  ParamChangeSubscribe<glm::vec2>();
-  ParamChangeSubscribe<glm::vec3>();
-  ParamChangeSubscribe<std::string>();
-  ParamChangeSubscribe<std::wstring>();
 
   dispatcher.Subscribe(EventType::NodeCreated, [this](const Event& event) {
     auto ev = static_cast<const NodeCreatedEvent&>(event);

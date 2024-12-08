@@ -107,43 +107,6 @@ class Param : public NodeParam {
 };
 
 template <>
-class Param<std::string> : public NodeParam {
- public:
-  Param() = default;
-  Param(const char* _name) : NodeParam(_name), value("no value") {};
-  Param(const char* _name, std::string _value) : NodeParam(_name), value(_value) {};
-  ~Param() {};
-
-  std::string Eval() { return value; }
-  void Set(std::string _value) {
-    value = _value;
-    temp_value = _value;
-  }
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      ImGuiInputTextFlags flags = 0;
-      // flags |= ImGuiInputTextFlags_EnterReturnsTrue;
-
-      if (ImGui::InputText("##m_Label", &temp_value, flags)) {
-      }
-
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        this->old_value = this->value;
-        this->value = this->temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(std::string, m_Node, m_Label, this->value, this->old_value);
-      }
-    });
-  }
-
-  NODE_EDITOR_PARAM_YAML_SERIALIZE_FUNC();
-  void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<std::string>()); }
-
- public:
-  std::string value;
-  std::string old_value;
-  std::string temp_value;
-};
-template <>
 class Param<std::wstring> : public NodeParam {
  public:
   Param() = default;
@@ -195,6 +158,7 @@ class ParamFloat : public Param<float> {
     });
   }
 };
+
 class ParamInt : public Param<int> {
  public:
   void Display() {
@@ -224,6 +188,97 @@ class ParamBool : public Param<bool> {
     });
   }
 };
+
+class ParamString : public Param<std::string> {
+ public:
+  void Display() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      ImGuiInputTextFlags flags = 0;
+      // flags |= ImGuiInputTextFlags_EnterReturnsTrue;
+
+      if (ImGui::InputText("##m_Label", &temp_value, flags)) {
+      }
+
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(std::string, m_Node, m_Label, this->value, this->old_value);
+      }
+    });
+  }
+};
+
+class ParamVec2 : public Param<glm::vec2> {
+ public:
+  void Display() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      bool value_changed = false;
+      ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
+      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
+      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
+      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
+
+      float avail_x = ImGui::GetContentRegionAvail().x;
+      float spacing = ImGui::GetCurrentContext()->Style.ItemInnerSpacing.x;
+      float input_width = avail_x / 2.0f - 30.0f - spacing;
+      ImGui::PushID(0);
+      if (ImGui::Button("X", ImVec2(30, 25))) {
+        value_changed = true;
+        value.x = default_val.x;
+      }
+      ImGui::PopID();
+      ImGui::PopStyleColor(3);
+      ImGui::SameLine();
+
+      ImGui::PushID(1);
+      ImGui::PushItemWidth(input_width);
+      ImGuiInputFlags flags = 0;
+      // flags |= ImGuiInputFlags_RepeatUntilRelease;
+
+      if (ImGui::DragFloat("##x", &this->temp_value.x, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        value_changed = true;
+      }
+      ImGui::PopID();
+      ImGui::PopItemWidth();
+
+      ImGui::SameLine(0, spacing);
+
+      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
+      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
+      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
+      ImGui::PushID("label_y");
+
+      if (ImGui::Button("Y", ImVec2(30, 25))) {
+        value_changed = true;
+        value.y = default_val.y;
+      }
+      ImGui::PopID();
+      ImGui::PopStyleColor(3);
+      ImGui::SameLine();
+      ImGui::PushID("float_y");
+      ImGui::PushItemWidth(input_width);
+      if (ImGui::DragFloat("##y", &temp_value.y, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
+        // value_changed = true;
+      }
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        value_changed = true;
+      }
+      ImGui::PopID();
+      ImGui::PopItemWidth();
+
+      ImGui::PopStyleVar();
+      if (value_changed) {
+        // std::cout << "Vec2 value changed " << this->value.x << ", " << this->value.y << std::endl;
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, value, old_value);
+      }
+    });
+  }
+};
+
 class ParamVec3 : public Param<glm::vec3> {
  public:
   void Display() {
@@ -313,76 +368,6 @@ class ParamVec3 : public Param<glm::vec3> {
     });
   }
 };
-class ParamVec2 : public Param<glm::vec2> {
- public:
-  void Display() {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      bool value_changed = false;
-      ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.f, 0.f));
-      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.8f, 0.1f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.9f, 0.1f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(1.0f, 0.1f, 0.1f, 1.f)));
-
-      float avail_x = ImGui::GetContentRegionAvail().x;
-      float spacing = ImGui::GetCurrentContext()->Style.ItemInnerSpacing.x;
-      float input_width = avail_x / 2.0f - 30.0f - spacing;
-      ImGui::PushID(0);
-      if (ImGui::Button("X", ImVec2(30, 25))) {
-        value_changed = true;
-        value.x = default_val.x;
-      }
-      ImGui::PopID();
-      ImGui::PopStyleColor(3);
-      ImGui::SameLine();
-
-      ImGui::PushID(1);
-      ImGui::PushItemWidth(input_width);
-      ImGuiInputFlags flags = 0;
-      // flags |= ImGuiInputFlags_RepeatUntilRelease;
-
-      if (ImGui::DragFloat("##x", &this->temp_value.x, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
-      }
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        value_changed = true;
-      }
-      ImGui::PopID();
-      ImGui::PopItemWidth();
-
-      ImGui::SameLine(0, spacing);
-
-      ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(ImColor(0.1f, 0.5f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(ImColor(0.1f, 0.6f, 0.1f, 1.f)));
-      ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(ImColor(0.1f, 0.7f, 0.1f, 1.f)));
-      ImGui::PushID("label_y");
-
-      if (ImGui::Button("Y", ImVec2(30, 25))) {
-        value_changed = true;
-        value.y = default_val.y;
-      }
-      ImGui::PopID();
-      ImGui::PopStyleColor(3);
-      ImGui::SameLine();
-      ImGui::PushID("float_y");
-      ImGui::PushItemWidth(input_width);
-      if (ImGui::DragFloat("##y", &temp_value.y, 0.05f, 1.0f, 0.0f, "%.3f", flags)) {
-        // value_changed = true;
-      }
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        value_changed = true;
-      }
-      ImGui::PopID();
-      ImGui::PopItemWidth();
-
-      ImGui::PopStyleVar();
-      if (value_changed) {
-        // std::cout << "Vec2 value changed " << this->value.x << ", " << this->value.y << std::endl;
-        this->old_value = this->value;
-        this->value = this->temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(glm::vec2, m_Node, m_Label, value, old_value);
-      }
-    });
-  }
-};
 
 class ParamFile : public Param<std::wstring> {
  public:
@@ -450,25 +435,12 @@ class ParamComboBox : public Param<int> {
   inline void SetChoice(int choice) { value = choice; }
   inline void SetChoices(std::vector<const char*> _choices) { choices = _choices; }
 
-  // YAML::Node YAMLSerialize() override {
-  //   YAML::Node yaml_node;
-  //   std::string type_str = std::string(m_TypeName);
-  //   yaml_node["type"] = type_str;
-  //   yaml_node["label"] = m_Label;
-  //   yaml_node["value"] = value;
-  //   return yaml_node;
-  // }
-  // void YAMLDeserialize(YAML::Node yaml_node) override { Set(yaml_node["value"].as<int>()); }
-
  public:
   std::vector<const char*> choices = {"first", "second", "third"};
 };
 
 class ParamSeparator : public Param<std::string> {
  public:
-  ParamSeparator() : Param<std::string>("separator") {};
-  ParamSeparator(const char* _name) : Param<std::string>(_name) {};
-  ~ParamSeparator() {};
   void Display() {
     ImGui::Spacing();
     ImGui::Separator();

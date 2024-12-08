@@ -34,7 +34,7 @@ class StringGenerator : public StringOperator {
 class StringGenerate : public StringGenerator {
  public:
   StringGenerate() : StringGenerator() {
-    value = CREATE_PARAM(NED::Param<std::string>, "String Value", this);
+    value = CREATE_PARAM(NED::ParamString, "String Value", this);
     value->Set("Hello ???");
 
     auto label = CREATE_PARAM(NED::ParamLabel, "label1", this);
@@ -49,6 +49,8 @@ class StringGenerate : public StringGenerator {
 
     auto int_p = CREATE_PARAM(NED::ParamInt, "Int", this);
     int_p->Set(42);
+    int_p->min_val = -255;
+    int_p->max_val = 255;
 
     auto coords = CREATE_PARAM(NED::ParamVec2, "Vec2", this);
     coords->Set(glm::vec2(0.0f));
@@ -75,7 +77,7 @@ class StringGenerate : public StringGenerator {
 
   void Generate() override { m_DataCache = value->Eval(); }
 
-  std::shared_ptr<Param<std::string>> value;
+  std::shared_ptr<ParamString> value;
 
  public:
  private:
