@@ -15,8 +15,6 @@ namespace YAML {
 template <>
 struct convert<std::wstring> {
   static Node encode(const std::wstring& rhs) {
-    // std::cout << "Encoding Wstring to yaml" << std::endl;
-
     Node node;
     node = NED::wide_to_utf8(rhs);
 
@@ -24,8 +22,6 @@ struct convert<std::wstring> {
   }
 
   static bool decode(const Node& node, std::wstring& rhs) {
-    // std::cout << "Decoding Wstring from yaml" << std::endl;
-
     if (!node || !node.IsScalar()) {
       return false;
     }

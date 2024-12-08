@@ -44,8 +44,6 @@ int main(int argc, char *argv[]) {
 
   static EventDispatcher &dispatcher = EventManager::GetInstance();
 
-  // manager.ParamChangeSubscribe<double>();
-
   dispatcher.Subscribe(EventType::ParamChanged, [&app](const Event &event) {
     auto &manager = app.GetNodeManager();
     manager.m_OneParamChanged = true;
@@ -74,15 +72,6 @@ int main(int argc, char *argv[]) {
 
   app.GetNodeManager().LoadFromFile(file_to_load);
 
-  std::wstring w_string = std::wstring(L"Hello World");
-  YAML::Node node;
-  node["value"] = w_string;
-
-  try {
-    std::wstring result = node["value"].as<std::wstring>();
-  } catch (const YAML::Exception &e) {
-    std::cerr << "YAML Error: " << e.what() << std::endl;
-  }
   app.Run();
 
   std::cout << "__All Done__" << std::endl;
