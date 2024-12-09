@@ -9,7 +9,7 @@ class BaseApplication {
 
   inline NodeManager& GetNodeManager() { return m_NodeManager; }
 
- public:
+ private:
   NodeManager m_NodeManager;
 };
 

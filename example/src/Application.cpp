@@ -118,8 +118,8 @@ bool Application::Init() {
   }
 
   glfwMakeContextCurrent(m_NativeWindow);
-  m_NodeManager.SetGLFWWindow(m_NativeWindow);
-  m_NodeManager.SetFileExtension("str3000");
+  GetNodeManager().SetGLFWWindow(m_NativeWindow);
+  GetNodeManager().SetFileExtension("str3000");
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;
@@ -148,10 +148,10 @@ bool Application::Init() {
     }
   }
 #endif
-  m_NodeManager.InitGLFWEvents();
+  GetNodeManager().InitGLFWEvents();
 
-  m_NodeManager.ParamChangeSubscribe<double>();
-  m_NodeManager.InitIcons();
+  GetNodeManager().ParamChangeSubscribe<double>();
+  GetNodeManager().InitIcons();
 
   ImGuiInit(m_NativeWindow);
 
@@ -173,7 +173,7 @@ void Application::ImGuiInit(GLFWwindow *window) {
   m_BoldFont = io.Fonts->AddFontFromFileTTF("resources/fonts/JetBrainsMono-ExtraBold.ttf", 16);
   io.FontDefault = m_RegularFont;
   io.Fonts->Build();
-  m_NodeManager.SetFonts(m_RegularFont, m_BoldFont);
+  GetNodeManager().SetFonts(m_RegularFont, m_BoldFont);
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -293,20 +293,21 @@ void Application::Run() {
       ImGui::ShowDemoWindow(&showDemoWindow);
     }
 
+    auto &manager = GetNodeManager();
     // main menu bar
     auto backup_padding = ImGui::GetStyle().FramePadding;
     ImGui::GetStyle().FramePadding = ImVec2(0.0f, 10.0f);
     ImGui::BeginMainMenuBar();
-    m_NodeManager.BuildImGuiMainMenuBar();
+    manager.BuildImGuiMainMenuBar();
     ImGui::EndMainMenuBar();
     ImGui::GetStyle().FramePadding = backup_padding;
 
     // ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f, 10.0f));
-    if (m_NodeManager.m_ViewProps.nodeParamsOpened) {
-      m_NodeManager.DisplayNodeParams(m_NodeManager.m_CurrentNode);
+    if (manager.m_ViewProps.nodeParamsOpened) {
+      manager.DisplayNodeParams(manager.m_CurrentNode);
     }
-    if (m_NodeManager.m_ViewProps.actionManagerOpened) {
-      m_NodeManager.DisplayActionManager();
+    if (manager.m_ViewProps.actionManagerOpened) {
+      manager.DisplayActionManager();
     }
     // ImGui::PopStyleVar();
 
@@ -314,7 +315,7 @@ void Application::Run() {
 
     ImGui::Begin("Canvas test");
 
-    m_NodeManager.DrawCanvas();
+    manager.DrawCanvas();
 
     ImGui::End();
     ImGui::PopStyleVar();
@@ -322,7 +323,7 @@ void Application::Run() {
     ImGuiEndFrame();
 
     if (run_ticks > 0 && first_opened) {
-      m_NodeManager.ViewFrameAll();
+      manager.ViewFrameAll();
       // std::cout << "ViewFrameAll()" << std::endl;
       first_opened = false;
     } else {
