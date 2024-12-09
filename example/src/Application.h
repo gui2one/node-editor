@@ -7,18 +7,17 @@
 #include <fstream>
 #include <thread>
 
+#include "BaseApplication.h"
 #include "StringGenerator.h"
 #include "node_editor.h"
 #include "params.h"
 #include "utils.h"
 #include "yaml_serialize.h"
-
 namespace NED {
-struct DebugData
-{
-    int value;
+struct DebugData {
+  int value;
 };
-class Application {
+class Application : public BaseApplication {
  public:
   Application();
   ~Application();
