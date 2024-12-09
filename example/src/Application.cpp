@@ -155,7 +155,7 @@ bool Application::Init() {
 
   ImGuiInit(m_NativeWindow);
 
-  glViewport(0, 0, 1920, 1500);
+  glViewport(0, 0, 1920, 1080);
   glfwSwapInterval(0);
 
   return true;
