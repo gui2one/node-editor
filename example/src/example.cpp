@@ -29,10 +29,13 @@ int main(int argc, char *argv[]) {
   REGISTER_NODE_TYPE(NED::Add, "add", "number/math");
   REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "number");
 
-  // "User" type
+  // "User" Param<T> type
   REGISTER_PARAM_TYPE(NED::ParamDouble);
 
   Application app;
+
+  // needed for undo/redo to work on User Param<T> type
+  app.GetNodeManager().ParamChangeSubscribe<double>();
 
   app.SetLoopFunction([&app]() {
     ImGui::Begin("user window");
@@ -41,6 +44,7 @@ int main(int argc, char *argv[]) {
     }
     ImGui::End();
   });
+
   if (!app.Init()) {
     std::cout << "App Init() Error ..." << std::endl;
     return -1;

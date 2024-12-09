@@ -18,8 +18,6 @@ bool Application::Init() {
   }
   GetNodeManager().SetFileExtension("str3000");
 
-  GetNodeManager().ParamChangeSubscribe<double>();
-
   return true;
 }
 
