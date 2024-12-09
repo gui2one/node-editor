@@ -24,8 +24,6 @@ class Application : public BaseApplication {
   void Run();
 
  private:
-  void ImGuiBeginFrame();
-  void ImGuiEndFrame();
 };
 
 };  // namespace NED

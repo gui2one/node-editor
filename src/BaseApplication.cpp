@@ -137,6 +137,14 @@ bool BaseApplication::InitGLFW() {
   }
 #endif
 
+  GetNodeManager().InitGLFWEvents();
+  GetNodeManager().InitIcons();
+
+  ImGuiInit(GetNativeWindow());
+
+  glViewport(0, 0, 1920, 1080);
+  glfwSwapInterval(0);
+
   return true;
 }
 void BaseApplication::ImGuiInit(GLFWwindow *window) {
@@ -227,4 +235,32 @@ void BaseApplication::ImGuiInit(GLFWwindow *window) {
   ///////////
 }
 
+void BaseApplication::ImGuiBeginFrame() {
+  // Start the Dear ImGui frame
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+
+  ImGui::DockSpaceOverViewport(
+      NULL, NULL, ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_PassthruCentralNode /*|ImGuiDockNodeFlags_NoResize*/);
+}
+
+void BaseApplication::ImGuiEndFrame() {
+  ImGui::Render();
+
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+  ImGui::EndFrame();
+
+  ImGuiIO &io = ImGui::GetIO();
+
+  if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+    GLFWwindow *backup_current_context = glfwGetCurrentContext();
+
+    ImGui::UpdatePlatformWindows();
+    ImGui::RenderPlatformWindowsDefault();
+
+    glfwMakeContextCurrent(backup_current_context);
+  }
+}
 };  // namespace NED

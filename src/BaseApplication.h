@@ -16,6 +16,8 @@ class BaseApplication {
   inline void SetNativeWindow(GLFWwindow* window) { m_NativeWindow = window; }
 
   void ImGuiInit(GLFWwindow* window);
+  void ImGuiBeginFrame();
+  void ImGuiEndFrame();
 
  private:
   GLFWwindow* m_NativeWindow;
