@@ -15,12 +15,18 @@ class BaseApplication {
   inline GLFWwindow* GetNativeWindow() { return m_NativeWindow; }
   inline void SetNativeWindow(GLFWwindow* window) { m_NativeWindow = window; }
 
+  void ImGuiInit(GLFWwindow* window);
+
  private:
   GLFWwindow* m_NativeWindow;
   NodeManager m_NodeManager;
 
  private:
   DebugData* m_DebugData;
+
+ public:
+  ImFont* m_RegularFont;
+  ImFont* m_BoldFont;
 };
 
 }  // namespace NED

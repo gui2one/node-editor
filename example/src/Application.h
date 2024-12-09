@@ -23,12 +23,7 @@ class Application : public BaseApplication {
   bool Init();
   void Run();
 
- public:
-  ImFont* m_RegularFont;
-  ImFont* m_BoldFont;
-
  private:
-  void ImGuiInit(GLFWwindow* window);
   void ImGuiBeginFrame();
   void ImGuiEndFrame();
 };
