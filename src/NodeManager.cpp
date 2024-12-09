@@ -336,8 +336,6 @@ void NodeManager::DrawNodes() {
   m_ViewProps.canvasPos = ImGui::GetCursorScreenPos();
   ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-  DisplayNavBar();
-
   // display something to recognize m_OutputNode
   for (auto node : GetNodes()) {
     if (node == m_CurrentNetwork->outuput_node) {
@@ -533,6 +531,7 @@ void NodeManager::DrawCanvas() {
                          IM_COL32(200, 200, 200, 40));
   }
 
+  DisplayNavBar();
   DrawNodes();
 
   // selection rectangle

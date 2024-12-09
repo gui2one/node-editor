@@ -315,7 +315,7 @@ void Application::Run() {
 
     if (run_ticks > 0 && first_opened) {
       m_NodeManager.ViewFrameAll();
-      std::cout << "ViewFrameAll()" << std::endl;
+      // std::cout << "ViewFrameAll()" << std::endl;
       first_opened = false;
     } else {
       run_ticks++;
