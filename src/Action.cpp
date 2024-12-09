@@ -84,4 +84,20 @@ void NodeDeleteAction::Do() { m_NodeNetwork->RemoveNode(m_Node.get()); }
 
 void NodeDeleteAction::Undo() { m_NodeNetwork->AddNode(m_Node); }
 
+MoveMultipleNodesAction::MoveMultipleNodesAction(std::vector<AbstractNode*> nodes, std::vector<ImVec2> from_positions,
+                                                 std::vector<ImVec2> to_positions)
+    : nodes(nodes), from_positions(from_positions), to_positions(to_positions) {}
+
+void MoveMultipleNodesAction::Do() {
+  for (size_t i = 0; i < nodes.size(); i++) {
+    nodes[i]->position = to_positions[i];
+  }
+}
+
+void MoveMultipleNodesAction::Undo() {
+  for (size_t i = 0; i < nodes.size(); i++) {
+    nodes[i]->position = from_positions[i];
+  }
+}
+
 };  // namespace NED

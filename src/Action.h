@@ -10,7 +10,7 @@
 #include "utils/node_manager_utils.h"
 namespace NED {
 
-// forward dlecare
+// forward declare
 struct NodeNetwork;
 class NodeManager;
 
@@ -62,6 +62,19 @@ class MoveNodeAction : public Action {
   ImVec2 from_pos;
   ImVec2 to_pos;
   AbstractNode* m_Node;
+};
+
+class MoveMultipleNodesAction : public Action {
+ public:
+  MoveMultipleNodesAction(std::vector<AbstractNode*> nodes, std::vector<ImVec2> from_positions,
+                          std::vector<ImVec2> to_positions);
+  void Do() override;
+  void Undo() override;
+
+ private:
+  std::vector<AbstractNode*> nodes;
+  std::vector<ImVec2> from_positions;
+  std::vector<ImVec2> to_positions;
 };
 
 class NodeConnectAction : public Action {

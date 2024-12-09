@@ -973,9 +973,34 @@ void NodeManager::OnMouseRelease(const Event& event) {
   m_LastCLickReleaseTime = now;
 
   if (m_ViewProps.node_clicked != nullptr) {
-    if (m_ViewProps.node_clicked_position != m_ViewProps.node_clicked->position) {
-      auto move_action = std::make_shared<MoveNodeAction>(
-          m_ViewProps.node_clicked.get(), m_ViewProps.node_clicked_position, m_ViewProps.node_clicked->position);
+    // get number of selected nodes
+    int num_selected_nodes = 0;
+    std::vector<AbstractNode*> selected_nodes;
+    for (auto node : GetNodes()) {
+      if (node->selected) {
+        selected_nodes.push_back(node.get());
+        num_selected_nodes++;
+      }
+    }
+
+    if (num_selected_nodes == 1) {
+      if (m_ViewProps.node_clicked_position != m_ViewProps.node_clicked->position) {
+        auto move_action = std::make_shared<MoveNodeAction>(
+            m_ViewProps.node_clicked.get(), m_ViewProps.node_clicked_position, m_ViewProps.node_clicked->position);
+        ActionManager::GetInstance().executeCommand(std::move(move_action));
+      }
+    } else {
+      // std::cout << "multiple nodes to move ?!" << std::endl;
+      auto offset = m_ViewProps.node_clicked->position - m_ViewProps.node_clicked_position;
+      // std::cout << "offset :" << offset.x << ", " << offset.y << std::endl;
+      std::vector<ImVec2> from_positions;
+      std::vector<ImVec2> to_positions;
+      for (auto node : selected_nodes) {
+        from_positions.push_back(node->position - offset);
+        to_positions.push_back(node->position);
+      }
+      auto move_action = std::make_shared<MoveMultipleNodesAction>(selected_nodes, from_positions, to_positions);
+      move_action->message = std::format("moving {} nodes", num_selected_nodes);
       ActionManager::GetInstance().executeCommand(std::move(move_action));
     }
   }
