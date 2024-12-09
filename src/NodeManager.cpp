@@ -989,7 +989,7 @@ void NodeManager::OnMouseRelease(const Event& event) {
             m_ViewProps.node_clicked.get(), m_ViewProps.node_clicked_position, m_ViewProps.node_clicked->position);
         ActionManager::GetInstance().executeCommand(std::move(move_action));
       }
-    } else {
+    } else if (num_selected_nodes > 1) {
       // std::cout << "multiple nodes to move ?!" << std::endl;
       auto offset = m_ViewProps.node_clicked->position - m_ViewProps.node_clicked_position;
       // std::cout << "offset :" << offset.x << ", " << offset.y << std::endl;
