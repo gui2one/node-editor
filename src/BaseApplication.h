@@ -8,8 +8,11 @@ class BaseApplication {
   BaseApplication() {};
 
   inline NodeManager& GetNodeManager() { return m_NodeManager; }
+  inline GLFWwindow* GetNativeWindow() { return m_NativeWindow; }
+  inline void SetNativeWindow(GLFWwindow* window) { m_NativeWindow = window; }
 
  private:
+  GLFWwindow* m_NativeWindow;
   NodeManager m_NodeManager;
 };
 

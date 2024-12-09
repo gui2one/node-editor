@@ -95,7 +95,7 @@ Application::~Application() {
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
-  glfwDestroyWindow(m_NativeWindow);
+  glfwDestroyWindow(GetNativeWindow());
   glfwTerminate();
 }
 
@@ -109,16 +109,16 @@ bool Application::Init() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-  m_NativeWindow = glfwCreateWindow(1920, 800, "no title yet", NULL, NULL);
-
-  if (m_NativeWindow == NULL) {
+  auto win = glfwCreateWindow(1920, 800, "no title yet", NULL, NULL);
+  SetNativeWindow(win);
+  if (GetNativeWindow() == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();
     return false;
   }
 
-  glfwMakeContextCurrent(m_NativeWindow);
-  GetNodeManager().SetGLFWWindow(m_NativeWindow);
+  glfwMakeContextCurrent(GetNativeWindow());
+  GetNodeManager().SetGLFWWindow(GetNativeWindow());
   GetNodeManager().SetFileExtension("str3000");
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -153,7 +153,7 @@ bool Application::Init() {
   GetNodeManager().ParamChangeSubscribe<double>();
   GetNodeManager().InitIcons();
 
-  ImGuiInit(m_NativeWindow);
+  ImGuiInit(GetNativeWindow());
 
   glViewport(0, 0, 1920, 1080);
   glfwSwapInterval(0);
@@ -279,7 +279,7 @@ void Application::ImGuiEndFrame() {
 }
 
 void Application::Run() {
-  while (!glfwWindowShouldClose(m_NativeWindow)) {
+  while (!glfwWindowShouldClose(GetNativeWindow())) {
     glfwWaitEvents();
     ImGuiBeginFrame();
 
@@ -329,7 +329,7 @@ void Application::Run() {
     } else {
       run_ticks++;
     }
-    glfwSwapBuffers(m_NativeWindow);
+    glfwSwapBuffers(GetNativeWindow());
 
     // std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }

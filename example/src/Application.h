@@ -35,8 +35,6 @@ class Application : public BaseApplication {
   void ImGuiEndFrame();
 
  private:
-  GLFWwindow* m_NativeWindow;
-
   DebugData* m_DebugData;
 };
 
