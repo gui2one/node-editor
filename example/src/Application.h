@@ -22,7 +22,6 @@ class Application : public BaseApplication {
   Application();
   ~Application();
 
-  inline NodeManager& GetNodeManager() { return m_NodeManager; }
   bool Init();
   void Run();
 
@@ -37,7 +36,6 @@ class Application : public BaseApplication {
 
  private:
   GLFWwindow* m_NativeWindow;
-  NodeManager m_NodeManager;
 
   DebugData* m_DebugData;
 };
