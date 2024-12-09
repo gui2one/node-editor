@@ -19,6 +19,9 @@ class BaseApplication {
   void ImGuiBeginFrame();
   void ImGuiEndFrame();
 
+  void SetLoopFunction(std::function<void()> func) { m_LoopFunction = func; }
+  void Run();
+
  private:
   GLFWwindow* m_NativeWindow;
   NodeManager m_NodeManager;
@@ -29,6 +32,8 @@ class BaseApplication {
  public:
   ImFont* m_RegularFont;
   ImFont* m_BoldFont;
+
+  std::function<void()> m_LoopFunction;
 };
 
 }  // namespace NED

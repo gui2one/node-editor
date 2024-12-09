@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
   REGISTER_NODE_TYPE(NED::StringRepeater, "repeater", "string/modifier");
   REGISTER_NODE_TYPE(NED::StringToUpperCase, "to_upper_case", "string/modifier");
 
+  CREATE_UTILITY_CLASSES(float, "number/utility");
   REGISTER_NODE_TYPE(NED::Add, "add", "number/math");
   REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "number");
 
@@ -33,6 +34,13 @@ int main(int argc, char *argv[]) {
 
   Application app;
 
+  app.SetLoopFunction([&app]() {
+    ImGui::Begin("user window");
+    for (auto node : app.GetNodeManager().GetNodes()) {
+      ImGui::Text("%s", node->title.c_str());
+    }
+    ImGui::End();
+  });
   if (!app.Init()) {
     std::cout << "App Init() Error ..." << std::endl;
     return -1;

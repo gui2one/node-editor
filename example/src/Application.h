@@ -21,7 +21,6 @@ class Application : public BaseApplication {
   ~Application();
 
   bool Init();
-  void Run();
 
  private:
 };
