@@ -14,9 +14,7 @@
 #include "utils.h"
 #include "yaml_serialize.h"
 namespace NED {
-struct DebugData {
-  int value;
-};
+
 class Application : public BaseApplication {
  public:
   Application();
@@ -33,9 +31,6 @@ class Application : public BaseApplication {
   void ImGuiInit(GLFWwindow* window);
   void ImGuiBeginFrame();
   void ImGuiEndFrame();
-
- private:
-  DebugData* m_DebugData;
 };
 
 };  // namespace NED
