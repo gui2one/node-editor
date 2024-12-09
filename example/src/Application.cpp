@@ -182,6 +182,8 @@ void Application::ImGuiInit(GLFWwindow *window) {
   const char *glsl_version = "#version 330";
   ImGui_ImplOpenGL3_Init(glsl_version);
 
+  // ImGui::GetStyle().FramePadding = ImVec2(6.0f, 6.0f);
+
   ImVec4 *colors = ImGui::GetStyle().Colors;
   colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
   colors[ImGuiCol_TextDisabled] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
@@ -292,9 +294,12 @@ void Application::Run() {
     }
 
     // main menu bar
+    auto backup_padding = ImGui::GetStyle().FramePadding;
+    ImGui::GetStyle().FramePadding = ImVec2(0.0f, 10.0f);
     ImGui::BeginMainMenuBar();
     m_NodeManager.BuildImGuiMainMenuBar();
     ImGui::EndMainMenuBar();
+    ImGui::GetStyle().FramePadding = backup_padding;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f, 10.0f));
     m_NodeManager.DisplayNodeParams(m_NodeManager.m_CurrentNode);

@@ -203,6 +203,7 @@ void NodeManager::CreateAllNodes() {
 }
 
 void NodeManager::BuildImGuiMainMenuBar() {
+  // ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(3, 10));
   if (ImGui::BeginMenu("File")) {
     if (ImGui::MenuItem("New", "Ctrl+N")) {
       ResetAll();
@@ -254,6 +255,8 @@ void NodeManager::BuildImGuiMainMenuBar() {
   //   ImGui::MenuItem("Show Demo Window", NULL, &showDemoWindow);
   //   ImGui::EndMenu();
   // }
+
+  // ImGui::PopStyleVar(1);
 }
 
 void NodeManager::ResetAll() {
@@ -467,6 +470,8 @@ void NodeManager::DrawNodes() {
       draw_list->AddRect(min, max, IM_COL32(200, 200, 60, 100), 3.0f, 0, 3.0f);
     }
   }
+
+  DisplayNavBar();
 }
 
 void NodeManager::DrawCanvas() {
@@ -529,7 +534,6 @@ void NodeManager::DrawCanvas() {
   }
 
   DrawNodes();
-  DisplayNavBar();
 
   // selection rectangle
   if (m_ViewProps.rectangleSelectionStarted) {
@@ -571,9 +575,12 @@ void NodeManager::DisplayNavBar() {
   std::vector<NodeNetwork*> subnetworks;
   if (m_CurrentNetwork->owner != nullptr) {
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    auto cursor = ImGui::GetCursorPos();
-    float height = 50.0f;
-    draw_list->AddRectFilled(cursor, ImVec2(ImGui::GetContentRegionAvail().x, height), NODE_COLOR::DARK_GREY);
+    auto cursor = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
+    // cursor = ImVec2(0, 0);
+    float height = 30.0f;
+    draw_list->AddRectFilled(cursor, ImVec2(ImGui::GetContentRegionAvail().x, cursor.y + height),
+                             NODE_COLOR::DARK_GREY);
+
     if (ImGui::Button("Root")) {
       GotoRootNetwork();
     }
@@ -590,6 +597,8 @@ void NodeManager::DisplayNavBar() {
       }
       cur_net = &cur_net->owner->parent_node->node_network;
     }
+
+    // draw_list->AddCircleFilled(cursor, 50.0f, NODE_COLOR::RED);
   }
 
   std::reverse(subnetworks.begin(), subnetworks.end());
