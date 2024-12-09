@@ -122,6 +122,7 @@ void NodeManager::InitGLFWEvents() {
   dispatcher.Subscribe(EventType::KeyPress, [this](const NED::Event& event) { this->OnKeyPress(event); });
   dispatcher.Subscribe(EventType::DropFile, [this](const NED::Event& event) {
     auto drop_ev = static_cast<const NED::DropFileEvent&>(event);
+    GotoRootNetwork();
     auto path = std::filesystem::path(drop_ev.path);
     auto net = load_yaml_file(path);
     this->GetRootNetwork() = net;
@@ -246,10 +247,6 @@ void NodeManager::BuildImGuiMainMenuBar() {
     ImGui::MenuItem("Show Grid", NULL, &m_ViewProps.display_grid);
     ImGui::MenuItem("Show Mouse Coords", NULL, &m_ViewProps.show_mouse_coords);
     ImGui::Separator();
-
-    if (ImGui::MenuItem("Goto Root")) {
-      GotoRootNetwork();
-    }
 
     ImGui::EndMenu();
   }
@@ -531,8 +528,8 @@ void NodeManager::DrawCanvas() {
                          IM_COL32(200, 200, 200, 40));
   }
 
-  DisplayNavBar();
   DrawNodes();
+  DisplayNavBar();
 
   // selection rectangle
   if (m_ViewProps.rectangleSelectionStarted) {
@@ -564,8 +561,19 @@ void NodeManager::DisplayActionManager() {
 }
 
 void NodeManager::DisplayNavBar() {
+  int nstylevar = 0;
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(5, 5));
+  nstylevar++;
+  ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+  nstylevar++;
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f);
+  nstylevar++;
   std::vector<NodeNetwork*> subnetworks;
   if (m_CurrentNetwork->owner != nullptr) {
+    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+    auto cursor = ImGui::GetCursorPos();
+    float height = 50.0f;
+    draw_list->AddRectFilled(cursor, ImVec2(ImGui::GetContentRegionAvail().x, height), NODE_COLOR::DARK_GREY);
     if (ImGui::Button("Root")) {
       GotoRootNetwork();
     }
@@ -588,6 +596,8 @@ void NodeManager::DisplayNavBar() {
   for (size_t i = 0; i < subnetworks.size(); i++) {
     auto net = subnetworks[i];
     ImGui::SameLine();
+    ImGui::Text("/");
+    ImGui::SameLine();
     if (i < subnetworks.size() - 1) {
       if (ImGui::Button(net->owner->title.c_str())) {
         m_CurrentNetwork = net;
@@ -596,6 +606,8 @@ void NodeManager::DisplayNavBar() {
       ImGui::Text("%s", net->owner->title.c_str());
     }
   }
+
+  ImGui::PopStyleVar(nstylevar);
 }
 
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
@@ -775,9 +787,9 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
   }
 }
 
-bool valueInRange(float value, float min, float max) { return (value >= min) && (value <= max); }
+static bool valueInRange(float value, float min, float max) { return (value >= min) && (value <= max); }
 
-bool rectOverlap(Rect A, Rect B) {
+static bool rectOverlap(Rect A, Rect B) {
   bool xOverlap = valueInRange(A.x, B.x, B.x + B.width) || valueInRange(B.x, A.x, A.x + A.width);
 
   bool yOverlap = valueInRange(A.y, B.y, B.y + B.height) || valueInRange(B.y, A.y, A.y + A.height);
