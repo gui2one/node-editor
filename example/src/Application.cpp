@@ -301,11 +301,14 @@ void Application::Run() {
     ImGui::EndMainMenuBar();
     ImGui::GetStyle().FramePadding = backup_padding;
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f, 10.0f));
-    m_NodeManager.DisplayNodeParams(m_NodeManager.m_CurrentNode);
-    m_NodeManager.DisplayActionManager();
-    // m_NodeManager.DisplayNavBar();
-    ImGui::PopStyleVar();
+    // ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f, 10.0f));
+    if (m_NodeManager.m_ViewProps.nodeParamsOpened) {
+      m_NodeManager.DisplayNodeParams(m_NodeManager.m_CurrentNode);
+    }
+    if (m_NodeManager.m_ViewProps.actionManagerOpened) {
+      m_NodeManager.DisplayActionManager();
+    }
+    // ImGui::PopStyleVar();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 

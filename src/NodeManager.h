@@ -47,6 +47,9 @@ struct ViewProperties {
   bool nodes_menu_opened = false;
   bool show_mouse_coords = false;
 
+  bool nodeParamsOpened = true;
+  bool actionManagerOpened = true;
+
   ImVec2 scrolling;
   float zoom = 1.0f;
 

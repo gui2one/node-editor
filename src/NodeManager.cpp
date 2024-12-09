@@ -249,6 +249,8 @@ void NodeManager::BuildImGuiMainMenuBar() {
     ImGui::MenuItem("Show Mouse Coords", NULL, &m_ViewProps.show_mouse_coords);
     ImGui::Separator();
 
+    ImGui::MenuItem("Display Node Params", NULL, &m_ViewProps.nodeParamsOpened);
+    ImGui::MenuItem("Display Action Manager", NULL, &m_ViewProps.actionManagerOpened);
     ImGui::EndMenu();
   }
   // if (ImGui::BeginMenu("ImGui")) {
@@ -553,15 +555,19 @@ void NodeManager::DrawCanvas() {
 }
 
 void NodeManager::DisplayActionManager() {
-  static bool ActionManager_opened = true;
-  if (ImGui::Begin("Action Manager", &ActionManager_opened)) {
-    auto& mngr = ActionManager::GetInstance();
-
-    for (auto& undo_message : mngr.GetUndoMessages()) {
-      ImGui::Text("%s", undo_message.data());
-    }
+  if (!ImGui::Begin("Action Manager", &m_ViewProps.actionManagerOpened, 0)) {
+    // Early out if the window is collapsed, as an optimization.
     ImGui::End();
+    return;
   }
+
+  auto& mngr = ActionManager::GetInstance();
+
+  for (auto& undo_message : mngr.GetUndoMessages()) {
+    ImGui::Text("%s", undo_message.data());
+  }
+
+  ImGui::End();
 }
 
 void NodeManager::DisplayNavBar() {
@@ -620,7 +626,13 @@ void NodeManager::DisplayNavBar() {
 }
 
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
-  ImGui::Begin("Params");
+  // static bool NodeParams_opened = true;
+  if (!ImGui::Begin("Params", &m_ViewProps.nodeParamsOpened, 0)) {
+    // Early out if the window is collapsed, as an optimization.
+    ImGui::End();
+    return;
+  }
+
   if (node != nullptr) {
     std::string temp_name = node->title;
     std::string name_copy = std::string(node->title);
