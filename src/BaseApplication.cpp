@@ -88,6 +88,13 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum 
 #endif
 }
 namespace NED {
+BaseApplication::~BaseApplication() {
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+  glfwDestroyWindow(GetNativeWindow());
+  glfwTerminate();
+}
 bool BaseApplication::InitGLFW() {
   if (!glfwInit()) {
     printf("problem with GLFW\n");

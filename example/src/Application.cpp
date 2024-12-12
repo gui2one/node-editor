@@ -4,14 +4,6 @@ namespace NED {
 
 Application::Application() {}
 
-Application::~Application() {
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-  glfwDestroyWindow(GetNativeWindow());
-  glfwTerminate();
-}
-
 bool Application::Init() {
   if (!InitGLFW()) {
     return false;

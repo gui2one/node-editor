@@ -18,7 +18,7 @@ namespace NED {
 class Application : public BaseApplication {
  public:
   Application();
-  ~Application();
+  //~Application();
 
   bool Init();
 

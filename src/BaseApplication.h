@@ -9,6 +9,7 @@ struct DebugData {
 class BaseApplication {
  public:
   BaseApplication() {};
+  ~BaseApplication();
 
   bool InitGLFW();
   inline NodeManager& GetNodeManager() { return m_NodeManager; }
