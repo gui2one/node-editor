@@ -71,7 +71,7 @@ class StringGenerate : public StringGenerator {
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
     grp->params = {label, combo_p, float_p, int_p, coords, position, double_p, bool_p};
 
-    m_ParamLayout.params = {value, grp};
+    m_ParamLayout.Append({value, grp});
   };
   ~StringGenerate() {};
 

@@ -55,6 +55,10 @@ struct NodeNetwork {
 struct ParamLayout {
   std::vector<std::shared_ptr<NodeParam>> params;
   std::shared_ptr<NodeParam> Get(size_t idx) { return params[idx]; }
+  inline void Append(std::shared_ptr<NodeParam> param) { params.push_back(param); }
+  inline void Append(std::vector<std::shared_ptr<NodeParam>> params) {
+    this->params.insert(this->params.end(), params.begin(), params.end());
+  }
 };
 struct InputConnector {
   ImVec2 relative_pos;
