@@ -43,8 +43,6 @@ int main(int argc, char *argv[]) {
   ImGuiIO &io = ImGui::GetIO();
 
   auto big_font = io.Fonts->AddFontFromFileTTF("resources/fonts/JetBrainsMono-Regular.ttf", 32);
-  // m_BoldFont = io.Fonts->AddFontFromFileTTF("resources/fonts/JetBrainsMono-ExtraBold.ttf", 16);
-  // io.FontDefault = big_font;
   io.Fonts->Build();
 
   // needed for undo/redo to work on User Param<T> type

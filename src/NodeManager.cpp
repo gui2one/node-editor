@@ -253,12 +253,6 @@ void NodeManager::BuildImGuiMainMenuBar() {
     ImGui::MenuItem("Display Action Manager", NULL, &m_ViewProps.actionManagerOpened);
     ImGui::EndMenu();
   }
-  // if (ImGui::BeginMenu("ImGui")) {
-  //   ImGui::MenuItem("Show Demo Window", NULL, &showDemoWindow);
-  //   ImGui::EndMenu();
-  // }
-
-  // ImGui::PopStyleVar(1);
 }
 
 void NodeManager::ResetAll() {
