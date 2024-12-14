@@ -157,6 +157,9 @@ class ParamInt : public Param<int> {
       }
     });
   }
+
+  int min_val = std::numeric_limits<int>::min();
+  int max_val = std::numeric_limits<int>::max();
 };
 
 class ParamBool : public Param<bool> {
