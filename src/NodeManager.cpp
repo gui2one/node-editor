@@ -942,6 +942,8 @@ void NodeManager::OnMouseClick(const Event& event) {
 
       ApplyConnectionProcedure();
       Evaluate();
+
+      DISPATCH_EDITOR_UPDATE_EVENT();
     }
     if (!node->IsMultiInput()) {
       for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
@@ -1036,21 +1038,13 @@ void NodeManager::OnMouseRelease(const Event& event) {
       ActionManager::GetInstance().executeCommand(std::move(move_action));
     }
   }
-  for (auto node : GetNodes()) {
-    if (m_ConnectionProcedure.started && IsNodeHovered(node)) {
-      m_ConnectionProcedure.parent_node = node;
 
-      ApplyConnectionProcedure();
-      Evaluate();
-    }
-  }
-
-  if (m_OneParamChanged) {
-    Evaluate();
-    m_OneParamChanged = false;
-    ManagerUpdateEvent event;
-    EventManager::GetInstance().Dispatch(event);
-  }
+  // if (m_OneParamChanged) {
+  //   Evaluate();
+  //   m_OneParamChanged = false;
+  //   ManagerUpdateEvent event;
+  //   EventManager::GetInstance().Dispatch(event);
+  // }
 
   for (auto node : GetNodes()) {
     if (node->selected) {
@@ -1069,8 +1063,6 @@ void NodeManager::OnKeyPress(const Event& event) {
   switch (keyEvent.key) {
     case GLFW_KEY_BACKSPACE:
       if (m_CurrentNode != nullptr && m_ViewProps.canvasHovered) {
-        // auto it = std::find(GetNodes().begin(), GetNodes().end(), m_CurrentNode);
-        // GetNodes().erase(it);
         m_CurrentNetwork->RemoveNode(m_CurrentNode.get());
         NodeDeletedEvent event(m_CurrentNetwork, m_CurrentNode);
         EventManager::GetInstance().Dispatch(event);
@@ -1098,16 +1090,18 @@ void NodeManager::OnKeyPress(const Event& event) {
       break;
     case GLFW_KEY_W: /* FIXME : Z on AZERTY keyboard !!!*/
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
-        ActionManager::GetInstance().undo();
-        ManagerUpdateEvent event;
-        EventManager::GetInstance().Dispatch(event);
+        if (ActionManager::GetInstance().undo()) {
+          // ManagerUpdateEvent event;
+          // EventManager::GetInstance().Dispatch(event);
+        }
       }
       break;
     case GLFW_KEY_Y:
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
-        ActionManager::GetInstance().redo();
-        ManagerUpdateEvent event;
-        EventManager::GetInstance().Dispatch(event);
+        if (ActionManager::GetInstance().redo()) {
+          // ManagerUpdateEvent event;
+          // EventManager::GetInstance().Dispatch(event);
+        }
       }
       break;
 

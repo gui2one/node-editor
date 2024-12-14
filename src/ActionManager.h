@@ -6,6 +6,7 @@
 #include <string_view>
 
 #include "Action.h"
+#include "EventManager.h"
 template <typename T>
 class ExposedStack : public std::stack<T> {
  public:
@@ -64,22 +65,31 @@ class ActionManager {
     while (!redoStack.empty()) redoStack.pop();
   }
 
-  void undo() {
+  bool undo() {
     if (!undoStack.empty()) {
       auto command = std::move(undoStack.top());
       undoStack.pop();
       command->Undo();
       redoStack.push(std::move(command));
+      ManagerUpdateEvent event;
+      EventManager::GetInstance().Dispatch(event);
+      return true;
     }
+
+    return false;
   }
 
-  void redo() {
+  bool redo() {
     if (!redoStack.empty()) {
       auto command = std::move(redoStack.top());
       redoStack.pop();
       command->Do();
       undoStack.push(std::move(command));
+      ManagerUpdateEvent event;
+      EventManager::GetInstance().Dispatch(event);
+      return true;
     }
+    return false;
   }
 };
 };  // namespace NED
