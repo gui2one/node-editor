@@ -32,23 +32,37 @@ int main(int argc, char *argv[]) {
   // "User" Param<T> type
   REGISTER_PARAM_TYPE(NED::ParamDouble);
 
+  std::string STRING_RESULT = "";
   Application app;
-
-  // needed for undo/redo to work on User Param<T> type
-  app.GetNodeManager().ParamChangeSubscribe<double>();
-
-  app.SetLoopFunction([&app]() {
-    ImGui::Begin("user window");
-    for (auto node : app.GetNodeManager().GetNodes()) {
-      ImGui::Text("%s", node->title.c_str());
-    }
-    ImGui::End();
-  });
 
   if (!app.Init()) {
     std::cout << "App Init() Error ..." << std::endl;
     return -1;
   };
+
+  ImGuiIO &io = ImGui::GetIO();
+
+  auto big_font = io.Fonts->AddFontFromFileTTF("resources/fonts/JetBrainsMono-Regular.ttf", 32);
+  // m_BoldFont = io.Fonts->AddFontFromFileTTF("resources/fonts/JetBrainsMono-ExtraBold.ttf", 16);
+  // io.FontDefault = big_font;
+  io.Fonts->Build();
+
+  // needed for undo/redo to work on User Param<T> type
+  app.GetNodeManager().ParamChangeSubscribe<double>();
+
+  app.SetLoopFunction([&]() {
+    ImGui::Begin("user window");
+    for (auto node : app.GetNodeManager().GetNodes()) {
+      ImGui::Text("%s", node->title.c_str());
+    }
+    ImGui::End();
+
+    ImGui::Begin("Render Widow");
+    ImGui::PushFont(big_font);
+    ImGui::Text("-> %s", STRING_RESULT.c_str());
+    ImGui::PopFont();
+    ImGui::End();
+  });
 
   auto &manager = app.GetNodeManager();
 
@@ -60,7 +74,7 @@ int main(int argc, char *argv[]) {
     auto &manager = app.GetNodeManager();
     manager.m_OneParamChanged = true;
   });
-  dispatcher.Subscribe(EventType::ManagerUpdate, [&app](const Event &event) {
+  dispatcher.Subscribe(EventType::ManagerUpdate, [&app, &STRING_RESULT](const Event &event) {
     auto &manager = app.GetNodeManager();
     manager.Evaluate();
     if (manager.GetOutputNode() != nullptr) {
@@ -68,7 +82,8 @@ int main(int argc, char *argv[]) {
       auto string_op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(manager.GetOutputNode());
 
       if (string_op != nullptr) {
-        std::cout << "Render string : " << string_op->m_DataCache << std::endl;
+        STRING_RESULT = string_op->m_DataCache;
+        std::cout << "Render string : " << STRING_RESULT << std::endl;
       } else if (number_op != nullptr) {
         std::cout << "Number Op Update -> " << number_op->m_DataCache << std::endl;
 
