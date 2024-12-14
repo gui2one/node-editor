@@ -8,3 +8,4 @@
 
 # Bugs to fix
  - bad connection for nodes inside a cloned subnet.
+ - ImGui drawing issue after window resize.
