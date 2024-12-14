@@ -786,7 +786,6 @@ void NodeManager::SaveAll() {
 void NodeManager::LoadAll() {
   if (m_SavePath.empty()) {
     auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
-    // auto path = Utils::open_file_explorer();
     m_SavePath = path;
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
   }
@@ -825,14 +824,6 @@ void NodeManager::OnMouseMove(const Event& event) {
   static ImVec2 old_pos = ImVec2(0, 0);
   ImVec2 delta = ImVec2(moveEvent.x, moveEvent.y) - old_pos;
   std::shared_ptr<AbstractNode> hovered_node = nullptr;
-
-  // if (m_ViewProps.node_clicked != nullptr) {
-  //   // m_ViewProps.node_clicked->position += delta;
-  //   std::cout << "Moving node : " << m_ViewProps.node_clicked->title << "";
-  //   std::cout << "-- Start pos = " << m_ViewProps.node_clicked_position.x << ", " <<
-  //   m_ViewProps.node_clicked_position.y
-  //             << std::endl;
-  // }
 
   if (ImGui::IsMouseDown(ImGuiMouseButton_Right)) {
     m_ViewProps.scrolling += delta;
@@ -925,7 +916,6 @@ void NodeManager::OnMouseClick(const Event& event) {
       clicked_something = true;
       m_ViewProps.node_clicked = node;
       m_ViewProps.node_clicked_position = node->position;
-      // std::cout << "Node clicked: " << m_ViewProps.node_clicked->title << std::endl;
     }
 
     if (node_hovered && node->selected == false && m_ViewProps.rectangleSelectionStarted == false) {
@@ -1007,7 +997,6 @@ void NodeManager::OnMouseRelease(const Event& event) {
   m_LastCLickReleaseTime = now;
 
   if (m_ViewProps.node_clicked != nullptr) {
-    // get number of selected nodes
     int num_selected_nodes = 0;
     std::vector<AbstractNode*> selected_nodes;
     for (auto node : GetNodes()) {
@@ -1026,7 +1015,7 @@ void NodeManager::OnMouseRelease(const Event& event) {
     } else if (num_selected_nodes > 1) {
       // std::cout << "multiple nodes to move ?!" << std::endl;
       auto offset = m_ViewProps.node_clicked->position - m_ViewProps.node_clicked_position;
-      // std::cout << "offset :" << offset.x << ", " << offset.y << std::endl;
+
       std::vector<ImVec2> from_positions;
       std::vector<ImVec2> to_positions;
       for (auto node : selected_nodes) {
@@ -1090,18 +1079,12 @@ void NodeManager::OnKeyPress(const Event& event) {
       break;
     case GLFW_KEY_W: /* FIXME : Z on AZERTY keyboard !!!*/
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
-        if (ActionManager::GetInstance().undo()) {
-          // ManagerUpdateEvent event;
-          // EventManager::GetInstance().Dispatch(event);
-        }
+        ActionManager::GetInstance().undo();
       }
       break;
     case GLFW_KEY_Y:
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
-        if (ActionManager::GetInstance().redo()) {
-          // ManagerUpdateEvent event;
-          // EventManager::GetInstance().Dispatch(event);
-        }
+        ActionManager::GetInstance().redo();
       }
       break;
 
