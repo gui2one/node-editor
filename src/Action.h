@@ -33,13 +33,13 @@ class ParamAction : public Action {
 
   void Do() override {
     auto param = Utils::FindParamByName(m_Node, m_ParamName);
-    std::cout << "DO " << param->m_Label << std::endl;
+    // std::cout << "DO " << param->m_Label << std::endl;
     set_param_value<T>(param, new_value);
   }
   void Undo() override {
     auto param = Utils::FindParamByName(m_Node, m_ParamName);
 
-    std::cout << "UNDO " << param->m_Label << std::endl;
+    // std::cout << "UNDO " << param->m_Label << std::endl;
     set_param_value<T>(param, old_value);
   }
 

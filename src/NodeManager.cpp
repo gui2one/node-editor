@@ -1099,11 +1099,15 @@ void NodeManager::OnKeyPress(const Event& event) {
     case GLFW_KEY_W: /* FIXME : Z on AZERTY keyboard !!!*/
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
         ActionManager::GetInstance().undo();
+        ManagerUpdateEvent event;
+        EventManager::GetInstance().Dispatch(event);
       }
       break;
     case GLFW_KEY_Y:
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
         ActionManager::GetInstance().redo();
+        ManagerUpdateEvent event;
+        EventManager::GetInstance().Dispatch(event);
       }
       break;
 

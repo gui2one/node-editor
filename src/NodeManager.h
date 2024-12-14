@@ -87,6 +87,9 @@ class NodeManager {
             std::make_shared<ParamAction<T>>(ev->node, ev->node->uuid, ev->param_name, ev->old_value, ev->new_value);
         action->message = std::format("Param Template Change -- {}", ev->param_name);
         ActionManager::GetInstance().executeCommand(action);
+
+        ManagerUpdateEvent mngr_event;
+        EventManager::GetInstance().Dispatch(mngr_event);
       }
 
       m_OneParamChanged = true;

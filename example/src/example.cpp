@@ -25,9 +25,9 @@ int main(int argc, char *argv[]) {
   REGISTER_NODE_TYPE(NED::StringRepeater, "repeater", "string/modifier");
   REGISTER_NODE_TYPE(NED::StringToUpperCase, "to_upper_case", "string/modifier");
 
-  CREATE_UTILITY_CLASSES(float, "number/utility");
-  REGISTER_NODE_TYPE(NED::Add, "add", "number/math");
-  REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "number");
+  // CREATE_UTILITY_CLASSES(float, "number/utility");
+  // REGISTER_NODE_TYPE(NED::Add, "add", "number/math");
+  // REGISTER_NODE_TYPE(NED::NumberConstant, "constant", "number");
 
   // "User" Param<T> type
   REGISTER_PARAM_TYPE(NED::ParamDouble);
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
       auto string_op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(manager.GetOutputNode());
 
       if (string_op != nullptr) {
-        std::cout << "String Op Update -> " << string_op->m_DataCache << std::endl;
+        std::cout << "Render string : " << string_op->m_DataCache << std::endl;
       } else if (number_op != nullptr) {
         std::cout << "Number Op Update -> " << number_op->m_DataCache << std::endl;
 
