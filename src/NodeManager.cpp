@@ -648,6 +648,11 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
       }
       node->title = generate_unique_name(name_copy, names);
     }
+
+    ImGui::PushStyleColor(ImGuiCol_Text, NODE_COLOR::LIGHT_GREY);
+    ImGui::Text("Node Type: %s", node->m_TypeName);
+    ImGui::PopStyleColor();
+
     ImGui::Separator();
     ImGui::Spacing();
     ImGui::Spacing();
