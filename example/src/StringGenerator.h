@@ -54,7 +54,7 @@ class StringGenerate : public StringGenerator {
 
     auto coords = CREATE_PARAM(NED::ParamVec2, "Vec2", this);
     coords->Set(glm::vec2(0.0f));
-    coords->default_val = glm::vec2(2.0f);
+    coords->default_val = glm::vec2(0.0f);
 
     auto position = CREATE_PARAM(NED::ParamVec3, "Vec3", this);
     position->Set(glm::vec3(1.0f));

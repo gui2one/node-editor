@@ -206,7 +206,7 @@ class ParamVec2 : public Param<glm::vec2> {
       ImGui::PushID(0);
       if (ImGui::Button("X", ImVec2(30, 25))) {
         value_changed = true;
-        value.x = default_val.x;
+        temp_value.x = default_val.x;
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -234,7 +234,7 @@ class ParamVec2 : public Param<glm::vec2> {
 
       if (ImGui::Button("Y", ImVec2(30, 25))) {
         value_changed = true;
-        value.y = default_val.y;
+        temp_value.y = default_val.y;
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -278,7 +278,7 @@ class ParamVec3 : public Param<glm::vec3> {
       ImGui::PushID(0);
       if (ImGui::Button("X", ImVec2(30, 25))) {
         value_changed = true;
-        value.x = default_val.x;
+        temp_value.x = default_val.x;
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -303,7 +303,7 @@ class ParamVec3 : public Param<glm::vec3> {
 
       if (ImGui::Button("Y", ImVec2(30, 25))) {
         value_changed = true;
-        value.y = default_val.y;
+        temp_value.y = default_val.y;
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
@@ -325,7 +325,7 @@ class ParamVec3 : public Param<glm::vec3> {
       ImGui::PushID("label_z");
       if (ImGui::Button("Z", ImVec2(30, 25))) {
         value_changed = true;
-        value.z = default_val.z;
+        temp_value.z = default_val.z;
       }
       ImGui::PopID();
       ImGui::PopStyleColor(3);
