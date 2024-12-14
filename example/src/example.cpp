@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
   // needed for undo/redo to work on User Param<T> type
   app.GetNodeManager().ParamChangeSubscribe<double>();
 
-  app.SetLoopFunction([&]() {
+  app.UserFunction([&]() {
     ImGui::Begin("user window");
     for (auto node : app.GetNodeManager().GetNodes()) {
       ImGui::Text("%s", node->title.c_str());
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 
     ImGui::Begin("Render Widow");
     ImGui::PushFont(big_font);
-    ImGui::Text("-> %s", STRING_RESULT.c_str());
+    ImGui::Text("%s", STRING_RESULT.c_str());
     ImGui::PopFont();
     ImGui::End();
   });

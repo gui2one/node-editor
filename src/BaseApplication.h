@@ -20,7 +20,7 @@ class BaseApplication {
   void ImGuiBeginFrame();
   void ImGuiEndFrame();
 
-  void SetLoopFunction(std::function<void()> func) { m_LoopFunction = func; }
+  void UserFunction(std::function<void()> func) { m_LoopFunction = func; }
   void Run();
 
  private:
