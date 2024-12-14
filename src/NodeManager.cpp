@@ -584,7 +584,7 @@ void NodeManager::DisplayNavBar() {
     auto cursor = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
     // cursor = ImVec2(0, 0);
     float height = 30.0f;
-    draw_list->AddRectFilled(cursor, ImVec2(ImGui::GetContentRegionAvail().x, cursor.y + height),
+    draw_list->AddRectFilled(cursor, ImVec2(cursor.x + ImGui::GetContentRegionAvail().x, cursor.y + height),
                              NODE_COLOR::DARK_GREY);
 
     if (ImGui::Button("Root")) {
