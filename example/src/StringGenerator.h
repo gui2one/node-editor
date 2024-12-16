@@ -23,7 +23,7 @@ class StringOperator : public ImGuiNode<std::string> {
 class StringGenerator : public StringOperator {
  public:
   StringGenerator() : StringOperator() {
-    color = NODE_COLOR::MAROON;
+    color = NODE_COLOR::YELLOW;
     SetNumAvailableInputs(0);
   };
   ~StringGenerator() {};
