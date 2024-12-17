@@ -78,7 +78,7 @@ const std::wstring create_windows_file_explorer_Filter(const std::vector<FileFil
 
   return filter;
 }
-std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters) {
+std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters, bool save_mode) {
 #ifdef _WIN32
   SetConsoleOutputCP(CP_UTF8);
   OPENFILENAMEW ofn;
@@ -96,6 +96,9 @@ std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters) {
   ofn.nMaxFileTitle = 0;
   ofn.lpstrInitialDir = NULL;
   ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_CREATEPROMPT;
+  if (save_mode) {
+    ofn.Flags |= OFN_OVERWRITEPROMPT;
+  }
 
   if (GetSaveFileNameW(&ofn) == TRUE)  // Changed to GetOpenFileNameW
   {

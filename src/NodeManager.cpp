@@ -775,18 +775,26 @@ void NodeManager::ResetConnectionProcedure() {
 
 void NodeManager::SaveAll() {
   if (m_SavePath.empty()) {
-    auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
+    auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}}, true);
     if (path.extension().string() != std::string("." + std::string(m_FileExtension))) {
       std::cout << "Wrong File extension -> " << path.extension() << std::endl;
       std::cout << "Good extension is : " << m_FileExtension << std::endl;
       std::cout << "path parent : " << path.parent_path() << std::endl;
 
+      // force good extension
       path = path.parent_path() / (path.stem().string() + std::string("." + std::string(m_FileExtension)));
+    }
+    // check if path already exist ... after adding extension
+    if (std::filesystem::exists(path)) {
+      std::cout << "path already exist : " << path << std::endl;
+      return;
+      // SaveAll();
+      //  Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
     }
     m_SavePath = path;
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
+    save_all(m_SavePath, GetRootNetwork());
   }
-  save_all(m_SavePath, GetRootNetwork());
 }
 
 void NodeManager::LoadAll() {
