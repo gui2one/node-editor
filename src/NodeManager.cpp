@@ -776,6 +776,13 @@ void NodeManager::ResetConnectionProcedure() {
 void NodeManager::SaveAll() {
   if (m_SavePath.empty()) {
     auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
+    if (path.extension().string() != std::string("." + std::string(m_FileExtension))) {
+      std::cout << "Wrong File extension -> " << path.extension() << std::endl;
+      std::cout << "Good extension is : " << m_FileExtension << std::endl;
+      std::cout << "path parent : " << path.parent_path() << std::endl;
+
+      path = path.parent_path() / (path.stem().string() + std::string("." + std::string(m_FileExtension)));
+    }
     m_SavePath = path;
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
   }

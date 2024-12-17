@@ -1,0 +1,3 @@
+cmake -B./build
+
+PAUSE
