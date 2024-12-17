@@ -793,8 +793,8 @@ void NodeManager::SaveAll() {
     }
     m_SavePath = path;
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
-    save_all(m_SavePath, GetRootNetwork());
   }
+  save_all(m_SavePath, GetRootNetwork());
 }
 
 void NodeManager::LoadAll() {
