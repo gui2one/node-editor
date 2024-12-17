@@ -2,6 +2,7 @@
 #define NODE_EDITOR_BASE_APPLICATION_H
 #pragma once
 #include "NodeManager.h"
+#include "ui_utils.h"
 namespace NED {
 struct DebugData {
   int value;

@@ -3,7 +3,7 @@
 #include "StringGenerator.h"
 #include "node_editor.h"
 #include "params.h"
-
+#include "ui_utils.h"
 using namespace NED;
 
 int main(int argc, char *argv[]) {
@@ -49,17 +49,17 @@ int main(int argc, char *argv[]) {
   app.GetNodeManager().ParamChangeSubscribe<double>();
 
   app.UserFunction([&]() {
-    ImGui::Begin("user window");
+    UI::Begin("user window");
     for (auto node : app.GetNodeManager().GetNodes()) {
       ImGui::Text("%s", node->title.c_str());
     }
-    ImGui::End();
+    UI::End();
 
-    ImGui::Begin("Render Widow");
+    UI::Begin("Render");
     ImGui::PushFont(big_font);
     ImGui::Text("%s", STRING_RESULT.c_str());
     ImGui::PopFont();
-    ImGui::End();
+    UI::End();
   });
 
   auto &manager = app.GetNodeManager();

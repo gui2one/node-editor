@@ -549,9 +549,9 @@ void NodeManager::DrawCanvas() {
 }
 
 void NodeManager::DisplayActionManager() {
-  if (!ImGui::Begin("Action Manager", &m_ViewProps.actionManagerOpened, 0)) {
+  if (!UI::Begin("Action Manager", &m_ViewProps.actionManagerOpened, 0)) {
     // Early out if the window is collapsed, as an optimization.
-    ImGui::End();
+    UI::End();
     return;
   }
 
@@ -621,9 +621,9 @@ void NodeManager::DisplayNavBar() {
 
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   // static bool NodeParams_opened = true;
-  if (!ImGui::Begin("Params", &m_ViewProps.nodeParamsOpened, 0)) {
+  if (!UI::Begin("Params", &m_ViewProps.nodeParamsOpened, 0)) {
     // Early out if the window is collapsed, as an optimization.
-    ImGui::End();
+    UI::End();
     return;
   }
 

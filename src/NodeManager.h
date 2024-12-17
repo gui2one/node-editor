@@ -8,6 +8,7 @@
 #include "EventManager.h"
 #include "ImGuiNode.h"
 #include "ParamFactory.h"
+#include "ui_utils.h"
 #include "utils.h"
 #include "utils/node_manager_utils.h"
 

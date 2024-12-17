@@ -303,11 +303,11 @@ void BaseApplication::Run() {
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-    ImGui::Begin("Canvas test");
+    UI::Begin("Canvas test");
 
     manager.DrawCanvas();
 
-    ImGui::End();
+    UI::End();
     ImGui::PopStyleVar();
 
     m_LoopFunction();
