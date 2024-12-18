@@ -552,6 +552,14 @@ void NodeManager::DrawCanvas() {
   draw_list->PopClipRect();
 }
 
+ImVec2 NodeManager::ToCanvasSpace(ImVec2 pos) const {
+  return (pos - m_ViewProps.scrolling - m_ViewProps.canvasPos) * (1.0f / m_ViewProps.zoom);
+}
+
+ImVec2 NodeManager::ToScreenSpace(ImVec2 pos) const {
+  return (pos + m_ViewProps.scrolling + m_ViewProps.canvasPos) * (m_ViewProps.zoom);
+}
+
 void NodeManager::DisplayActionManager() {
   if (!UI::Begin("Action Manager", &m_ViewProps.actionManagerOpened, 0)) {
     // Early out if the window is collapsed, as an optimization.
@@ -682,6 +690,7 @@ void NodeManager::params_options_buttons(std::shared_ptr<NodeParam> param, int i
   }
   inc++;
 }
+
 void NodeManager::DisplayNodeParamsOptions() {
   static bool s_ParamOptionsOpened = true;
 
@@ -729,14 +738,6 @@ void NodeManager::SetOutputNode(std::shared_ptr<AbstractNode> node) {
   if (m_CurrentNetwork != nullptr) {
     m_CurrentNetwork->outuput_node = node;
   }
-}
-
-ImVec2 NodeManager::ToCanvasSpace(ImVec2 pos) {
-  return (pos - m_ViewProps.scrolling - m_ViewProps.canvasPos) * (1.0f / m_ViewProps.zoom);
-}
-
-ImVec2 NodeManager::ToScreenSpace(ImVec2 pos) {
-  return (pos + m_ViewProps.scrolling + m_ViewProps.canvasPos) * (m_ViewProps.zoom);
 }
 
 bool NodeManager::IsNodeHovered(std::shared_ptr<AbstractNode> node) {
@@ -894,6 +895,11 @@ static bool rectOverlap(Rect A, Rect B) {
   bool yOverlap = valueInRange(A.y, B.y, B.y + B.height) || valueInRange(B.y, A.y, A.y + A.height);
 
   return xOverlap && yOverlap;
+}
+
+void NodeManager::ViewFrameAll() {
+  ImVec2 center = Utils::get_nodes_center(GetNodes());
+  m_ViewProps.scrolling = -center + m_ViewProps.canvasSize / 2.0f;
 }
 
 void NodeManager::OnMouseMove(const Event& event) {
@@ -1172,8 +1178,4 @@ void NodeManager::OnKeyPress(const Event& event) {
   }
 }
 
-void NodeManager::ViewFrameAll() {
-  ImVec2 center = Utils::get_nodes_center(GetNodes());
-  m_ViewProps.scrolling = -center + m_ViewProps.canvasSize / 2.0f;
-}
 };  // namespace NED

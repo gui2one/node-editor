@@ -147,8 +147,8 @@ class NodeManager {
   };
   void ViewFrameAll();
 
-  ImVec2 ToCanvasSpace(ImVec2 pos);
-  ImVec2 ToScreenSpace(ImVec2 pos);
+  ImVec2 ToCanvasSpace(ImVec2 pos) const;
+  ImVec2 ToScreenSpace(ImVec2 pos) const;
 
   bool IsNodeHovered(std::shared_ptr<AbstractNode> node);
   bool IsInputConnectorHovered(std::shared_ptr<AbstractNode> node, uint32_t index);
