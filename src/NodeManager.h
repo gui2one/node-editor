@@ -52,6 +52,8 @@ struct ViewProperties {
   bool actionManagerOpened = true;
   bool nodeParamsOptionsOpened = false;
 
+  std::shared_ptr<NodeParam> currentParam = nullptr;
+
   ImVec2 scrolling;
   float zoom = 1.0f;
 
@@ -114,6 +116,7 @@ class NodeManager {
   void DisplayNodeParams(std::shared_ptr<AbstractNode> node);
   void DisplayNodeParamsOptions();
   void OpenNodeParamsOptionsPopup();
+  void params_options_buttons(std::shared_ptr<NodeParam> param);
 
   void DrawNodes();
   void DrawCanvas();

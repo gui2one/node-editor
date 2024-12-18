@@ -662,20 +662,42 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   ImGui::End();
 }
 
+void NodeManager::params_options_buttons(std::shared_ptr<NodeParam> param) {
+  auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
+  if (group_p != nullptr) {
+    for (auto _param : group_p->params) {
+      params_options_buttons(_param);
+    }
+  } else {
+    if (ImGui::Button(param->m_Label)) {
+      m_ViewProps.currentParam = param;
+    }
+  }
+}
 void NodeManager::DisplayNodeParamsOptions() {
   static bool s_ParamOptionsOpened = true;
 
   if (ImGui::BeginPopupModal("Node Params Options", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::Text("There ... some important content...");
-
-    if (m_CurrentNode != nullptr) {
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoDocking;
+    if (ImGui::BeginTable("ItemPropertiesTable", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersInnerV)) {
+      ImGui::TableNextColumn();
       for (auto param : m_CurrentNode->m_ParamLayout.params) {
-        param->DisplayOptions();
+        params_options_buttons(param);
       }
+      ImGui::TableNextColumn();
+
+      if (m_ViewProps.currentParam != nullptr) {
+        m_ViewProps.currentParam->DisplayOptions();
+      }
+
+      ImGui::EndTable();
     }
+
     if (ImGui::Button("close##modal")) {
       ImGui::CloseCurrentPopup();
       m_ViewProps.nodeParamsOptionsOpened = false;
+      m_ViewProps.currentParam = nullptr;
     }
     ImGui::EndPopup();
   }
