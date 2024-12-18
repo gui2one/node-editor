@@ -51,6 +51,7 @@ struct ViewProperties {
   bool nodeParamsOpened = true;
   bool actionManagerOpened = true;
   bool nodeParamsOptionsOpened = false;
+  bool fileChanged = false;
 
   std::shared_ptr<NodeParam> currentParam = nullptr;
 

@@ -71,6 +71,9 @@ int main(int argc, char *argv[]) {
   dispatcher.Subscribe(EventType::ParamChanged, [&app](const Event &event) {
     auto &manager = app.GetNodeManager();
     manager.m_OneParamChanged = true;
+    manager.m_ViewProps.fileChanged = true;
+    glfwSetWindowTitle(app.GetNativeWindow(),
+                       std::format("{}-- modified", app.GetNodeManager().m_SavePath.string()).c_str());
   });
   dispatcher.Subscribe(EventType::ManagerUpdate, [&app, &STRING_RESULT](const Event &event) {
     auto &manager = app.GetNodeManager();
