@@ -567,12 +567,36 @@ void NodeManager::DisplayActionManager() {
     return;
   }
 
+  ImGui::BeginTable("ActionManagerTable", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersInnerV);
   auto& mngr = ActionManager::GetInstance();
 
-  for (auto& undo_message : mngr.GetUndoMessages()) {
-    ImGui::Text("%s", undo_message.data());
+  ImGui::TableNextColumn();
+  ImGui::Text("Undos");
+  ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+  if (ImGui::BeginListBox("##undos", ImVec2(0, 0))) {
+    for (auto& undo_message : mngr.GetUndoMessages()) {
+      ImGui::Text("%s", undo_message.data());
+    }
+
+    ImGui::EndListBox();
   }
 
+  ImGui::PopItemWidth();
+
+  ImGui::TableNextColumn();
+  ImGui::Text("Redos");
+  ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+  if (ImGui::BeginListBox("##redos", ImVec2(0, 0))) {
+    for (auto& redo_message : mngr.GetRedoMessages()) {
+      ImGui::Text("%s", redo_message.data());
+    }
+
+    ImGui::EndListBox();
+  }
+
+  ImGui::PopItemWidth();
+
+  ImGui::EndTable();
   ImGui::End();
 }
 
