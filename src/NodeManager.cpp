@@ -601,10 +601,23 @@ void NodeManager::DisplayActionManager() {
   static int cur_action = 0;
   static int temp_action = 0;
   if (mngr.GetUndoMessages().size() > 0 || mngr.GetRedoMessages().size() > 0) {
-    if (ImGui::SliderInt("Timeline", &temp_action, 0, mngr.GetUndoMessages().size() - 1)) {
+    ImGui::Text("Timeline");
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+    if (ImGui::SliderInt("##Timeline", &temp_action, 0,
+                         mngr.GetUndoMessages().size() + mngr.GetRedoMessages().size())) {
       int diff = cur_action - temp_action;
-      std::cout << "diff : " << diff << std::endl;
+
       cur_action = temp_action;
+
+      if (diff > 0) {
+        for (int i = 0; i < diff; i++) {
+          mngr.redo();
+        }
+      } else if (diff < 0) {
+        for (int i = 0; i < -diff; i++) {
+          mngr.undo();
+        }
+      }
     }
   }
   ImGui::End();
