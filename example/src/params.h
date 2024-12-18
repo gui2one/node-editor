@@ -15,10 +15,10 @@ namespace NED {
 
 class ParamDouble : public Param<double> {
  public:
-  double min_val = 0.0;
-  double max_val = 300.0;
-
- public:
+  ParamDouble() {
+    min_val = 0.0;
+    max_val = 1.0;
+  }
   void Display() override {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       ImGuiSliderFlags flags = 0;
@@ -31,6 +31,10 @@ class ParamDouble : public Param<double> {
         DISPATCH_PARAM_CHANGE_EVENT(double, m_Node, m_Label, this->value, this->old_value);
       }
     });
+  }
+  void DisplayOptions() override {
+    ImGui::InputDouble("min", &min_val);
+    ImGui::InputDouble("max", &max_val);
   }
 };
 };  // namespace NED

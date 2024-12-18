@@ -139,7 +139,7 @@ class ParamFloat : public Param<float> {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       ImGuiSliderFlags flags = 0;
 
-      if (ImGui::SliderFloat("##m_Label", &temp_value, 0, 100, "%.3f", flags)) {
+      if (ImGui::SliderFloat("##m_Label", &temp_value, min_val, max_val, "%.3f", flags)) {
       }
       if (ImGui::IsItemDeactivatedAfterEdit()) {
         old_value = value;
@@ -148,10 +148,12 @@ class ParamFloat : public Param<float> {
       }
     });
   }
-
- public:
-  float min_val = std::numeric_limits<float>::min();
-  float max_val = std::numeric_limits<float>::max();
+  void DisplayOptions() {
+    ImGui::PushID(this);
+    ImGui::InputFloat("min", &min_val);
+    ImGui::InputFloat("max", &max_val);
+    ImGui::PopID();
+  }
 };
 
 class ParamInt : public Param<int> {

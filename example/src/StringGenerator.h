@@ -46,6 +46,8 @@ class StringGenerate : public StringGenerator {
 
     auto float_p = CREATE_PARAM(NED::ParamFloat, "Float", this);
     float_p->Set(3.14f);
+    float_p->min_val = 0.0f;
+    float_p->max_val = 122.0f;
 
     auto int_p = CREATE_PARAM(NED::ParamInt, "Int", this);
     int_p->Set(42);

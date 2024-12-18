@@ -662,16 +662,22 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   ImGui::End();
 }
 
-void NodeManager::params_options_buttons(std::shared_ptr<NodeParam> param) {
+void NodeManager::params_options_buttons(std::shared_ptr<NodeParam> param, int inc) {
+  static int current_item = -1;
+  inc++;
   auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
   if (group_p != nullptr) {
     for (auto _param : group_p->params) {
-      params_options_buttons(_param);
+      params_options_buttons(_param, inc++);
     }
   } else {
-    if (ImGui::Button(param->m_Label)) {
+    // ImGui::PushID(inc);
+    if (ImGui::Selectable(param->m_Label, current_item == inc)) {
       m_ViewProps.currentParam = param;
+      current_item = inc;
     }
+
+    // ImGui::PopID();
   }
 }
 void NodeManager::DisplayNodeParamsOptions() {
