@@ -667,6 +667,12 @@ void NodeManager::DisplayNodeParamsOptions() {
 
   if (ImGui::BeginPopupModal("Node Params Options", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
     ImGui::Text("There ... some important content...");
+
+    if (m_CurrentNode != nullptr) {
+      for (auto param : m_CurrentNode->m_ParamLayout.params) {
+        param->DisplayOptions();
+      }
+    }
     if (ImGui::Button("close##modal")) {
       ImGui::CloseCurrentPopup();
       m_ViewProps.nodeParamsOptionsOpened = false;

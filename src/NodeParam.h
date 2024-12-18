@@ -56,6 +56,7 @@ class NodeParam {
   NodeParam(const char* _name) : m_Label(_name), m_TypeName("no type") {}
   virtual ~NodeParam() = default;
   virtual void Display() = 0;
+  virtual void DisplayOptions() = 0;
 
   virtual YAML::Node YAMLSerialize() = 0;
   virtual void YAMLDeserialize(YAML::Node yaml_node) = 0;
@@ -104,6 +105,7 @@ class Param : public NodeParam {
   };
 
   void Display() { ImGui::Text("%s -- not implemented", m_Label); }
+  void DisplayOptions() { ImGui::Text("%s -- Options not implemented", m_Label); }
 
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
@@ -156,6 +158,13 @@ class ParamInt : public Param<int> {
         DISPATCH_PARAM_CHANGE_EVENT(int, m_Node, m_Label, this->value, this->old_value);
       }
     });
+  }
+
+  void DisplayOptions() {
+    ImGui::PushID(this);
+    ImGui::InputInt("min", &min_val);
+    ImGui::InputInt("max", &max_val);
+    ImGui::PopID();
   }
 
   int min_val = std::numeric_limits<int>::min();
@@ -462,6 +471,11 @@ class ParamGroup : public Param<int> {
     ImGui::Indent(-10.0f);
   };
 
+  void DisplayOptions() {
+    for (auto param : params) {
+      param->DisplayOptions();
+    }
+  }
   YAML::Node YAMLSerialize() override {
     YAML::Node yaml_node;
     std::string type_str = std::string(m_TypeName);
