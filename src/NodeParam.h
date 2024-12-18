@@ -112,6 +112,8 @@ class Param : public NodeParam {
     yaml_node["type"] = std::string(m_TypeName);
     yaml_node["label"] = m_Label;
     yaml_node["value"] = value;
+    yaml_node["min_val"] = min_val;
+    yaml_node["max_val"] = max_val;
     return yaml_node;
   }
 
@@ -129,6 +131,10 @@ class Param : public NodeParam {
 /* derived classes */
 class ParamFloat : public Param<float> {
  public:
+  ParamFloat() {
+    min_val = std::numeric_limits<float>::min();
+    max_val = std::numeric_limits<float>::max();
+  }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       ImGuiSliderFlags flags = 0;
@@ -142,10 +148,18 @@ class ParamFloat : public Param<float> {
       }
     });
   }
+
+ public:
+  float min_val = std::numeric_limits<float>::min();
+  float max_val = std::numeric_limits<float>::max();
 };
 
 class ParamInt : public Param<int> {
  public:
+  ParamInt() {
+    min_val = std::numeric_limits<int>::min();
+    max_val = std::numeric_limits<int>::max();
+  }
   void Display() {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       ImGuiSliderFlags flags = 0;
@@ -167,8 +181,8 @@ class ParamInt : public Param<int> {
     ImGui::PopID();
   }
 
-  int min_val = std::numeric_limits<int>::min();
-  int max_val = std::numeric_limits<int>::max();
+  // int min_val = std::numeric_limits<int>::min();
+  // int max_val = std::numeric_limits<int>::max();
 };
 
 class ParamBool : public Param<bool> {

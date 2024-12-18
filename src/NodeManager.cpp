@@ -694,11 +694,14 @@ void NodeManager::DisplayNodeParamsOptions() {
       ImGui::EndTable();
     }
 
+    ImGui::Separator();
+    ImGui::SameLine(ImGui::GetContentRegionAvail().x - 50.0f);
     if (ImGui::Button("close##modal")) {
       ImGui::CloseCurrentPopup();
       m_ViewProps.nodeParamsOptionsOpened = false;
       m_ViewProps.currentParam = nullptr;
     }
+    // ImGui::PopItemWidth();
     ImGui::EndPopup();
   }
 }
@@ -830,13 +833,13 @@ void NodeManager::SaveAll() {
 
       // force good extension
       path = path.parent_path() / (path.stem().string() + std::string("." + std::string(m_FileExtension)));
-    }
-    // check if path already exist ... after adding extension
-    if (std::filesystem::exists(path)) {
-      std::cout << "path already exist : " << path << std::endl;
-      return;
-      // SaveAll();
-      //  Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
+      // check if path already exist ... after adding extension
+      if (std::filesystem::exists(path)) {
+        std::cout << "path already exist : " << path << std::endl;
+        return;
+        // SaveAll();
+        //  Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
+      }
     }
     m_SavePath = path;
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
