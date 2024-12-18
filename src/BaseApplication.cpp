@@ -287,6 +287,11 @@ void BaseApplication::Run() {
     }
 
     auto &manager = GetNodeManager();
+    manager.DisplayNodeParamsOptions();
+    if (manager.m_ViewProps.nodeParamsOptionsOpened) {
+      ImGui::OpenPopup("Node Params Options");
+      glfwPostEmptyEvent();
+    }
     // main menu bar
 
     if (ImGui::BeginMainMenuBar()) {
@@ -297,6 +302,7 @@ void BaseApplication::Run() {
     if (manager.m_ViewProps.nodeParamsOpened) {
       manager.DisplayNodeParams(manager.m_CurrentNode);
     }
+
     if (manager.m_ViewProps.actionManagerOpened) {
       manager.DisplayActionManager();
     }

@@ -50,6 +50,7 @@ struct ViewProperties {
 
   bool nodeParamsOpened = true;
   bool actionManagerOpened = true;
+  bool nodeParamsOptionsOpened = false;
 
   ImVec2 scrolling;
   float zoom = 1.0f;
@@ -111,6 +112,9 @@ class NodeManager {
   inline const std::vector<std::shared_ptr<AbstractNode>>& GetNodes() const { return m_CurrentNetwork->nodes; }
 
   void DisplayNodeParams(std::shared_ptr<AbstractNode> node);
+  void DisplayNodeParamsOptions();
+  void OpenNodeParamsOptionsPopup();
+
   void DrawNodes();
   void DrawCanvas();
 
