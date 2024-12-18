@@ -116,7 +116,7 @@ class NodeManager {
   void DisplayNodeParams(std::shared_ptr<AbstractNode> node);
   void DisplayNodeParamsOptions();
   void OpenNodeParamsOptionsPopup();
-  void params_options_buttons(std::shared_ptr<NodeParam> param, int inc = -1);
+  void params_options_buttons(std::shared_ptr<NodeParam> param, int inc = 0);
 
   void DrawNodes();
   void DrawCanvas();
