@@ -597,6 +597,16 @@ void NodeManager::DisplayActionManager() {
   ImGui::PopItemWidth();
 
   ImGui::EndTable();
+
+  static int cur_action = 0;
+  static int temp_action = 0;
+  if (mngr.GetUndoMessages().size() > 0 || mngr.GetRedoMessages().size() > 0) {
+    if (ImGui::SliderInt("Timeline", &temp_action, 0, mngr.GetUndoMessages().size() - 1)) {
+      int diff = cur_action - temp_action;
+      std::cout << "diff : " << diff << std::endl;
+      cur_action = temp_action;
+    }
+  }
   ImGui::End();
 }
 
