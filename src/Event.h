@@ -18,6 +18,8 @@ enum class EventType {
   MouseRelease,
   KeyPress,
 
+  LoadFile,
+  SaveFile,
   DropFile,
 
   NodeConnection,
@@ -76,6 +78,24 @@ class MouseReleaseEvent : public Event {
   MouseReleaseEvent(int button) : button(button) {}
 
   EventType GetType() const override { return EventType::MouseRelease; }
+};
+
+class LoadFileEvent : public Event {
+ public:
+  const char* path;
+
+  LoadFileEvent(const char* _path) : path(_path) {}
+
+  EventType GetType() const override { return EventType::LoadFile; }
+};
+
+class SaveFileEvent : public Event {
+ public:
+  const char* path;
+
+  SaveFileEvent(const char* _path) : path(_path) {}
+
+  EventType GetType() const override { return EventType::SaveFile; }
 };
 
 class DropFileEvent : public Event {

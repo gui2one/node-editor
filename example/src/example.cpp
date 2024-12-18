@@ -67,7 +67,10 @@ int main(int argc, char *argv[]) {
   manager.AddIcon("to_upper", "example_resources/icons/to_upper.png");
 
   static EventDispatcher &dispatcher = EventManager::GetInstance();
-
+  dispatcher.Subscribe(EventType::SaveFile,
+                       [&app](const Event &event) { std::cout << "Save File event" << std::endl; });
+  dispatcher.Subscribe(EventType::LoadFile,
+                       [&app](const Event &event) { std::cout << "Load File event" << std::endl; });
   dispatcher.Subscribe(EventType::ParamChanged, [&app](const Event &event) {
     auto &manager = app.GetNodeManager();
     manager.m_OneParamChanged = true;

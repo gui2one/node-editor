@@ -124,7 +124,11 @@ void NodeManager::InitGLFWEvents() {
     auto drop_ev = static_cast<const NED::DropFileEvent&>(event);
     GotoRootNetwork();
     auto path = std::filesystem::path(drop_ev.path);
+
     auto net = load_yaml_file(path);
+    LoadFileEvent event2(m_SavePath.string().c_str());
+    EventManager::GetInstance().Dispatch(event2);
+
     this->GetRootNetwork() = net;
 
     this->m_SavePath = path;
@@ -849,6 +853,9 @@ void NodeManager::SaveAll() {
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
   }
   save_all(m_SavePath, GetRootNetwork());
+
+  SaveFileEvent event(m_SavePath.string().c_str());
+  EventManager::GetInstance().Dispatch(event);
 }
 
 void NodeManager::LoadAll() {
@@ -860,6 +867,8 @@ void NodeManager::LoadAll() {
 
   if (!m_SavePath.empty()) {
     NodeNetwork net = load_yaml_file(m_SavePath);
+    LoadFileEvent event(m_SavePath.string().c_str());
+    EventManager::GetInstance().Dispatch(event);
     m_NodeNetwork = net;
     ViewFrameAll();
   }
@@ -869,6 +878,8 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
   if (!path.empty()) {
     m_SavePath = path;
     NodeNetwork net = load_yaml_file(path);
+    LoadFileEvent event(m_SavePath.string().c_str());
+    EventManager::GetInstance().Dispatch(event);
     m_NodeNetwork = net;
     ViewFrameAll();
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
