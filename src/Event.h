@@ -27,6 +27,8 @@ enum class EventType {
   NodeSelected,
   NodeMoved,
 
+  SelectionChanged,
+
   NodeCreated,
   NodeDeleted,
 
@@ -145,6 +147,17 @@ class NodeDisconnectionEvent : public Event {
                          std::shared_ptr<AbstractNode> child_node = nullptr, uint32_t child_index = 0)
       : parent_node(parent_node), parent_index(parent_index), child_node(child_node), child_index(child_index) {}
   EventType GetType() const override { return EventType::NodeDisconnection; }
+};
+
+class SelectionChangedEvent : public Event {
+ public:
+  NodeNetwork* node_network = nullptr;
+  std::vector<std::shared_ptr<AbstractNode>> selected_nodes;
+
+ public:
+  SelectionChangedEvent(NodeNetwork* node_network, std::vector<std::shared_ptr<AbstractNode>> selected_nodes)
+      : node_network(node_network), selected_nodes(selected_nodes) {}
+  EventType GetType() const override { return EventType::SelectionChanged; }
 };
 
 class NodeCreatedEvent : public Event {
