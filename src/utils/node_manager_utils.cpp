@@ -56,6 +56,20 @@ void deselect_all(std::vector<std::shared_ptr<NED::AbstractNode>>& nodes) {
   // return ImVec2();
 }
 
+/*
+returns true if vectors of nodes are the same
+*/
+bool compare_selections(std::vector<AbstractNode*> selA, std::vector<AbstractNode*> selB) {
+  if (selA.size() != selB.size()) return false;
+  // sort nodes by uuid
+  std::sort(selA.begin(), selA.end(), [](AbstractNode* a, AbstractNode* b) { return a->uuid < b->uuid; });
+  std::sort(selB.begin(), selB.end(), [](AbstractNode* a, AbstractNode* b) { return a->uuid < b->uuid; });
+  for (int i = 0; i < selA.size(); i++) {
+    if (selA[i]->uuid != selB[i]->uuid) return false;
+  }
+  return true;
+}
+
 const std::wstring create_windows_file_explorer_Filter(const std::vector<FileFilterItem>& filters) {
   std::wstring filter;
 

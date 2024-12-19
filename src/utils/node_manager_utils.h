@@ -19,6 +19,8 @@ std::shared_ptr<NodeParam> FindParamByName(AbstractNode* factory_node, std::stri
 ImVec2 get_nodes_center(std::vector<std::shared_ptr<AbstractNode>>& nodes);
 void deselect_all(std::vector<std::shared_ptr<AbstractNode>>& nodes);
 
+bool compare_selections(std::vector<AbstractNode*> selA, std::vector<AbstractNode*> selB);
+
 std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters = {{"All Files", "*.*"}},
                                          bool save_mode = false);
 const std::wstring create_windows_file_explorer_Filter(const std::vector<FileFilterItem>& filters);

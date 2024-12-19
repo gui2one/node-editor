@@ -114,6 +114,10 @@ void NodeManager::InitGLFWEvents() {
     dispatcher.Dispatch(event);
   });
 
+  dispatcher.Subscribe(EventType::SelectionChanged, [this](const NED::Event& event) {
+    auto ev = static_cast<const NED::SelectionChangedEvent&>(event);
+    std::cout << "SelectionChanged : " << ev.selected_nodes.size() << std::endl;
+  });
   dispatcher.Subscribe(EventType::MouseClick, [this](const NED::Event& event) { this->OnMouseClick(event); });
   dispatcher.Subscribe(EventType::MouseDoubleClick,
                        [this](const NED::Event& event) { this->OnMouseDoubleClick(event); });
@@ -604,7 +608,7 @@ void NodeManager::DisplayActionManager() {
     ImGui::Text("Timeline");
     ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
     if (ImGui::SliderInt("##Timeline", &temp_action, 0,
-                         mngr.GetUndoMessages().size() + mngr.GetRedoMessages().size())) {
+                         (int)mngr.GetUndoMessages().size() + (int)mngr.GetRedoMessages().size())) {
       int diff = cur_action - temp_action;
 
       cur_action = temp_action;
@@ -676,6 +680,17 @@ void NodeManager::DisplayNavBar() {
   }
 
   ImGui::PopStyleVar(nstylevar);
+}
+
+std::vector<AbstractNode*> NodeManager::GetSelectedNodes() {
+  std::vector<AbstractNode*> selection;
+  for (auto node : GetNodes()) {
+    if (node->selected) {
+      selection.push_back(node.get());
+    }
+  }
+
+  return selection;
 }
 
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
@@ -1117,6 +1132,8 @@ void NodeManager::OnMouseClick(const Event& event) {
 void NodeManager::OnMouseRelease(const Event& event) {
   const MouseReleaseEvent& clickEvent = static_cast<const MouseReleaseEvent&>(event);
 
+  // save current selection
+  auto old_selection = GetSelectedNodes();
   auto now = std::chrono::system_clock::now();
   if (std::chrono::duration_cast<std::chrono::milliseconds>(now - m_LastCLickReleaseTime).count() < 300) {
     if (m_ViewProps.canvasHovered) {
@@ -1129,22 +1146,15 @@ void NodeManager::OnMouseRelease(const Event& event) {
   m_LastCLickReleaseTime = now;
 
   if (m_ViewProps.node_clicked != nullptr) {
-    int num_selected_nodes = 0;
-    std::vector<AbstractNode*> selected_nodes;
-    for (auto node : GetNodes()) {
-      if (node->selected) {
-        selected_nodes.push_back(node.get());
-        num_selected_nodes++;
-      }
-    }
+    std::vector<AbstractNode*> selected_nodes = GetSelectedNodes();
 
-    if (num_selected_nodes == 1) {
+    if (selected_nodes.size() == 1) {
       if (m_ViewProps.node_clicked_position != m_ViewProps.node_clicked->position) {
         auto move_action = std::make_shared<MoveNodeAction>(
             m_ViewProps.node_clicked.get(), m_ViewProps.node_clicked_position, m_ViewProps.node_clicked->position);
         ActionManager::GetInstance().executeCommand(std::move(move_action));
       }
-    } else if (num_selected_nodes > 1) {
+    } else if (selected_nodes.size() > 1) {
       // std::cout << "multiple nodes to move ?!" << std::endl;
       auto offset = m_ViewProps.node_clicked->position - m_ViewProps.node_clicked_position;
 
@@ -1155,7 +1165,7 @@ void NodeManager::OnMouseRelease(const Event& event) {
         to_positions.push_back(node->position);
       }
       auto move_action = std::make_shared<MoveMultipleNodesAction>(selected_nodes, from_positions, to_positions);
-      move_action->message = std::format("moving {} nodes", num_selected_nodes);
+      move_action->message = std::format("moving {} nodes", selected_nodes.size());
       ActionManager::GetInstance().executeCommand(std::move(move_action));
     }
   }
@@ -1173,6 +1183,15 @@ void NodeManager::OnMouseRelease(const Event& event) {
       break;
     }
   }
+
+  std::vector<AbstractNode*> selected_nodes = GetSelectedNodes();
+
+  std::cout << "old selection " << old_selection.size() << "\nnew selection " << selected_nodes.size() << std::endl;
+  if (Utils::compare_selections(old_selection, selected_nodes) == false) {
+    SelectionChangedEvent selection_event(m_CurrentNetwork, selected_nodes);
+    EventManager::GetInstance().Dispatch(selection_event);
+  }
+
   m_ViewProps.rectangleSelectionStarted = false;
   m_ViewProps.node_clicked = nullptr;
 }

@@ -62,6 +62,8 @@ struct ViewProperties {
   ImVec2 node_clicked_position;
   bool canvasHovered = false;
 
+  std::vector<AbstractNode*> selected_nodes;
+
   bool rectangleSelectionStarted = false;
   ImVec2 rectangleSelectionStartPoint;
   ImVec2 rectangleSelectionEndPoint;
@@ -114,6 +116,7 @@ class NodeManager {
   inline std::vector<std::shared_ptr<AbstractNode>>& GetNodes() { return m_CurrentNetwork->nodes; }
   inline const std::vector<std::shared_ptr<AbstractNode>>& GetNodes() const { return m_CurrentNetwork->nodes; }
 
+  std::vector<AbstractNode*> GetSelectedNodes();
   void DisplayNodeParams(std::shared_ptr<AbstractNode> node);
   void DisplayNodeParamsOptions();
   void OpenNodeParamsOptionsPopup();
