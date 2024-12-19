@@ -1,4 +1,3 @@
-// #include "NodeParam.h") {
 #include "NodeManager.h"
 
 static GLuint GenerateEmptyTexture() {
@@ -52,7 +51,6 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NED::ParamGroup);
   REGISTER_PARAM_TYPE(NED::ParamComboBox);
   REGISTER_PARAM_TYPE(NED::ParamFile);
-  // REGISTER_PARAM_TYPE(NED::Param<std::wstring>);
 
   REGISTER_PARAM_TYPE(NED::ParamFloat);
   REGISTER_PARAM_TYPE(NED::ParamInt);
@@ -78,7 +76,6 @@ void NodeManager::InitGLFWEvents() {
   glfwSetWindowUserPointer(GetGLFWWindow(), &m_WindowData);
 
   glfwSetMouseButtonCallback(GetGLFWWindow(), [](GLFWwindow* window, int button, int action, int mods) {
-    // WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
     double mouseX, mouseY;
     glfwGetCursorPos(window, &mouseX, &mouseY);
     if (action == GLFW_PRESS) {
@@ -211,7 +208,6 @@ void NodeManager::CreateAllNodes() {
 }
 
 void NodeManager::BuildImGuiMainMenuBar() {
-  // ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(3, 10));
   if (ImGui::BeginMenu("File")) {
     if (ImGui::MenuItem("New", "Ctrl+N")) {
       ResetAll();
@@ -244,7 +240,6 @@ void NodeManager::BuildImGuiMainMenuBar() {
     if (ImGui::MenuItem("Clone", "Ctrl+D", false, m_CurrentNode != nullptr)) {
       auto factory_node = NodeFactoryRegistry::GetInstance().Clone(m_CurrentNode);
       GetCurrentNetwork()->AddNode(factory_node);
-      // AddNode(factory_node);
     }
     ImGui::EndMenu();
   }
@@ -311,7 +306,7 @@ void NodeManager::BuildNodeMenuFromRegistry() {
               glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
               node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
               node->parent_node = m_CurrentNetworkOwner;
-              // this->m_CurrentNetwork->AddNode(node);
+
               NodeCreatedEvent event(this->m_CurrentNetwork, node->m_TypeName, node->position);
               EventManager::GetInstance().Dispatch(event);
             }
@@ -370,7 +365,6 @@ void NodeManager::DrawNodes() {
     }
 
     // for multi input
-
     float step_size = (node->size.x * 0.8f) / node->GetMultiInputCount();
     ImVec2 start_x = node->position + ImVec2((node->size.x * 0.1f), -8.0f);
     for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
@@ -639,7 +633,7 @@ void NodeManager::DisplayNavBar() {
   if (m_CurrentNetwork->owner != nullptr) {
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
     auto cursor = ImGui::GetWindowPos() + ImGui::GetWindowContentRegionMin();
-    // cursor = ImVec2(0, 0);
+
     float height = 30.0f;
     draw_list->AddRectFilled(cursor, ImVec2(cursor.x + ImGui::GetContentRegionAvail().x, cursor.y + height),
                              NODE_COLOR::DARK_GREY);
@@ -660,8 +654,6 @@ void NodeManager::DisplayNavBar() {
       }
       cur_net = &cur_net->owner->parent_node->node_network;
     }
-
-    // draw_list->AddCircleFilled(cursor, 50.0f, NODE_COLOR::RED);
   }
 
   std::reverse(subnetworks.begin(), subnetworks.end());
@@ -789,7 +781,6 @@ void NodeManager::DisplayNodeParamsOptions() {
       m_ViewProps.nodeParamsOptionsOpened = false;
       m_ViewProps.currentParam = nullptr;
     }
-    // ImGui::PopItemWidth();
     ImGui::EndPopup();
   }
 }
@@ -917,8 +908,6 @@ void NodeManager::SaveAll() {
       if (std::filesystem::exists(path)) {
         std::cout << "path already exist : " << path << std::endl;
         return;
-        // SaveAll();
-        //  Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
       }
     }
     m_SavePath = path;
@@ -1090,15 +1079,11 @@ void NodeManager::OnMouseClick(const Event& event) {
     m_ViewProps.rectangleSelectionStartPoint = ToCanvasSpace(ImVec2(clickEvent.x, clickEvent.y));
     m_ViewProps.rectangleSelectionEndPoint = m_ViewProps.rectangleSelectionStartPoint;
   }
-
-  // UpdateSelection();
 }
 
 void NodeManager::OnMouseRelease(const Event& event) {
   const MouseReleaseEvent& clickEvent = static_cast<const MouseReleaseEvent&>(event);
 
-  // save current selection
-  auto old_selection = GetSelectedNodes();
   auto now = std::chrono::system_clock::now();
   if (std::chrono::duration_cast<std::chrono::milliseconds>(now - m_LastCLickReleaseTime).count() < 300) {
     if (m_ViewProps.canvasHovered) {
@@ -1120,7 +1105,6 @@ void NodeManager::OnMouseRelease(const Event& event) {
         ActionManager::GetInstance().executeCommand(std::move(move_action));
       }
     } else if (selected_nodes.size() > 1) {
-      // std::cout << "multiple nodes to move ?!" << std::endl;
       auto offset = m_ViewProps.node_clicked->position - m_ViewProps.node_clicked_position;
 
       std::vector<ImVec2> from_positions;
