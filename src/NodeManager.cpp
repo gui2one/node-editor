@@ -693,6 +693,15 @@ std::vector<AbstractNode*> NodeManager::GetSelectedNodes() {
   return selection;
 }
 
+void NodeManager::UpdateSelection() {
+  auto selected_nodes = GetSelectedNodes();
+  if (Utils::compare_selections(selected_nodes, m_ViewProps.selected_nodes) == false) {
+    m_ViewProps.selected_nodes = selected_nodes;
+    SelectionChangedEvent selectionChangedEvent(m_CurrentNetwork, selected_nodes);
+    EventManager::GetInstance().Dispatch(selectionChangedEvent);
+  }
+}
+
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   // static bool NodeParams_opened = true;
   if (!UI::Begin("Params", &m_ViewProps.nodeParamsOpened, 0)) {
@@ -1081,6 +1090,8 @@ void NodeManager::OnMouseClick(const Event& event) {
     m_ViewProps.rectangleSelectionStartPoint = ToCanvasSpace(ImVec2(clickEvent.x, clickEvent.y));
     m_ViewProps.rectangleSelectionEndPoint = m_ViewProps.rectangleSelectionStartPoint;
   }
+
+  // UpdateSelection();
 }
 
 void NodeManager::OnMouseRelease(const Event& event) {
@@ -1124,13 +1135,6 @@ void NodeManager::OnMouseRelease(const Event& event) {
     }
   }
 
-  // if (m_OneParamChanged) {
-  //   Evaluate();
-  //   m_OneParamChanged = false;
-  //   ManagerUpdateEvent event;
-  //   EventManager::GetInstance().Dispatch(event);
-  // }
-
   for (auto node : GetNodes()) {
     if (node->selected) {
       m_CurrentNode = node;
@@ -1138,13 +1142,7 @@ void NodeManager::OnMouseRelease(const Event& event) {
     }
   }
 
-  std::vector<AbstractNode*> selected_nodes = GetSelectedNodes();
-
-  std::cout << "old selection " << old_selection.size() << "\nnew selection " << selected_nodes.size() << std::endl;
-  if (Utils::compare_selections(old_selection, selected_nodes) == false) {
-    SelectionChangedEvent selection_event(m_CurrentNetwork, selected_nodes);
-    EventManager::GetInstance().Dispatch(selection_event);
-  }
+  UpdateSelection();
 
   m_ViewProps.rectangleSelectionStarted = false;
   m_ViewProps.node_clicked = nullptr;

@@ -110,6 +110,8 @@ class NodeManager {
   inline const std::vector<std::shared_ptr<AbstractNode>>& GetNodes() const { return m_CurrentNetwork->nodes; }
 
   std::vector<AbstractNode*> GetSelectedNodes();
+  void UpdateSelection();
+
   void DisplayNodeParams(std::shared_ptr<AbstractNode> node);
   void DisplayNodeParamsOptions();
   void OpenNodeParamsOptionsPopup();
