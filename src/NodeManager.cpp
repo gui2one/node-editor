@@ -949,16 +949,6 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
   }
 }
 
-static bool valueInRange(float value, float min, float max) { return (value >= min) && (value <= max); }
-
-static bool rectOverlap(Rect A, Rect B) {
-  bool xOverlap = valueInRange(A.x, B.x, B.x + B.width) || valueInRange(B.x, A.x, A.x + A.width);
-
-  bool yOverlap = valueInRange(A.y, B.y, B.y + B.height) || valueInRange(B.y, A.y, A.y + A.height);
-
-  return xOverlap && yOverlap;
-}
-
 void NodeManager::ViewFrameAll() {
   ImVec2 center = Utils::get_nodes_center(GetNodes());
   m_ViewProps.scrolling = -center + m_ViewProps.canvasSize / 2.0f;
@@ -1008,45 +998,9 @@ void NodeManager::OnMouseMove(const Event& event) {
 
   if (m_ViewProps.rectangleSelectionStarted) {
     for (auto node : GetNodes()) {
-      bool inside_x = false;
-      bool inside_y = false;
-
-      float node_x = node->position.x;
-      float node_y = node->position.y;
-      float node_w = node->size.x;
-      float node_h = node->size.y;
-
-      Rect node_rect;
-      node_rect.x = node->position.x;
-      node_rect.y = node->position.y;
-      node_rect.width = node->size.x;
-      node_rect.height = node->size.y;
-
-      Rect selection_rect;
-
-      if (start_x < end_x) {
-        selection_rect.x = start_x;
-        selection_rect.width = std::abs(end_x - start_x);
-      } else if (start_x > end_x) {
-        selection_rect.width = std::abs(start_x - end_x);
-        selection_rect.x = end_x;
-      } else {
-        selection_rect.x = start_x;
-        selection_rect.width = 1.0f;
-      }
-
-      if (start_y < end_y) {
-        selection_rect.y = start_y;
-        selection_rect.height = std::abs(end_y - start_y);
-      } else if (start_y > end_y) {
-        selection_rect.height = std::abs(start_y - end_y);
-        selection_rect.y = end_y;
-      } else {
-        selection_rect.y = start_y;
-        selection_rect.height = 1.0f;
-      }
-
-      node->selected = rectOverlap(node_rect, selection_rect);
+      auto sel_rect =
+          Utils::selection_rect(m_ViewProps.rectangleSelectionStartPoint, m_ViewProps.rectangleSelectionEndPoint);
+      node->selected = Utils::node_in_rect(node.get(), sel_rect);
     }
   }
 }

@@ -211,6 +211,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   bool m_Serializable = true;
 
   bool selected = false;
+  bool preselected = false;
   bool grabbed = false;
   bool highlighted = false;
 

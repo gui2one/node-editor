@@ -56,9 +56,6 @@ void deselect_all(std::vector<std::shared_ptr<NED::AbstractNode>>& nodes) {
   // return ImVec2();
 }
 
-/*
-returns true if vectors of nodes are the same
-*/
 bool compare_selections(std::vector<AbstractNode*> selA, std::vector<AbstractNode*> selB) {
   if (selA.size() != selB.size()) return false;
   // sort nodes by uuid
@@ -68,6 +65,57 @@ bool compare_selections(std::vector<AbstractNode*> selA, std::vector<AbstractNod
     if (selA[i]->uuid != selB[i]->uuid) return false;
   }
   return true;
+}
+
+bool rectOverlap(Rect A, Rect B) {
+  bool xOverlap = valueInRange(A.x, B.x, B.x + B.width) || valueInRange(B.x, A.x, A.x + A.width);
+
+  bool yOverlap = valueInRange(A.y, B.y, B.y + B.height) || valueInRange(B.y, A.y, A.y + A.height);
+
+  return xOverlap && yOverlap;
+}
+
+Rect selection_rect(ImVec2 start, ImVec2 end) {
+  Utils::Rect selection_rect;
+
+  if (start.x < end.x) {
+    selection_rect.x = start.x;
+    selection_rect.width = std::abs(end.x - start.x);
+  } else if (start.x > end.x) {
+    selection_rect.width = std::abs(start.x - end.x);
+    selection_rect.x = end.x;
+  } else {
+    selection_rect.x = start.x;
+    selection_rect.width = 1.0f;
+  }
+
+  if (start.y < end.y) {
+    selection_rect.y = start.y;
+    selection_rect.height = std::abs(end.y - start.y);
+  } else if (start.y > end.y) {
+    selection_rect.height = std::abs(start.y - end.y);
+    selection_rect.y = end.y;
+  } else {
+    selection_rect.y = start.y;
+    selection_rect.height = 1.0f;
+  }
+
+  return selection_rect;
+}
+
+bool valueInRange(float value, float min, float max) { return (value >= min) && (value <= max); }
+
+bool node_in_rect(AbstractNode* node, Rect rect) {
+  bool inside_x = false;
+  bool inside_y = false;
+
+  Utils::Rect node_rect;
+  node_rect.x = node->position.x;
+  node_rect.y = node->position.y;
+  node_rect.width = node->size.x;
+  node_rect.height = node->size.y;
+
+  return rectOverlap(node_rect, rect);
 }
 
 const std::wstring create_windows_file_explorer_Filter(const std::vector<FileFilterItem>& filters) {

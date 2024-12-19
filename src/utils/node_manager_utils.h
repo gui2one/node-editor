@@ -8,6 +8,14 @@ namespace NED {
 // forward declare
 class NodeParam;
 namespace Utils {
+
+struct Rect {
+  float x;
+  float y;
+  float width;
+  float height;
+};
+
 struct FileFilterItem {
   std::string description;
   std::string extension;
@@ -19,7 +27,18 @@ std::shared_ptr<NodeParam> FindParamByName(AbstractNode* factory_node, std::stri
 ImVec2 get_nodes_center(std::vector<std::shared_ptr<AbstractNode>>& nodes);
 void deselect_all(std::vector<std::shared_ptr<AbstractNode>>& nodes);
 
+/// <summary>
+/// return true if selections are the same
+/// </summary>
+/// <param name="selA"></param>
+/// <param name="selB"></param>
+/// <returns></returns>
 bool compare_selections(std::vector<AbstractNode*> selA, std::vector<AbstractNode*> selB);
+
+Rect selection_rect(ImVec2 start, ImVec2 end);
+bool valueInRange(float value, float min, float max);
+bool node_in_rect(AbstractNode* node, Rect rect);
+bool rectOverlap(Utils::Rect A, Utils::Rect B);
 
 std::filesystem::path open_file_explorer(std::vector<FileFilterItem> filters = {{"All Files", "*.*"}},
                                          bool save_mode = false);
