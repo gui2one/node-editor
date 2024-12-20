@@ -134,6 +134,7 @@ void NodeManager::InitGLFWEvents() {
     GotoRootNetwork();
     auto path = std::filesystem::path(drop_ev.path);
 
+    ResetAll();
     auto net = load_yaml_file(path);
     LoadFileEvent event2(m_SavePath.string().c_str());
     EventManager::GetInstance().Dispatch(event2);
@@ -268,6 +269,7 @@ void NodeManager::BuildImGuiMainMenuBar() {
 
 void NodeManager::ResetAll() {
   GetRootNetwork().nodes.clear();
+  m_ViewProps.selected_nodes.clear();
   GetRootNetwork().outuput_node = nullptr;
   m_CurrentNode = nullptr;
   m_SavePath = std::filesystem::path("");
@@ -1001,6 +1003,7 @@ void NodeManager::LoadAll() {
   }
 
   if (!m_SavePath.empty()) {
+    ResetAll();
     NodeNetwork net = load_yaml_file(m_SavePath);
     LoadFileEvent event(m_SavePath.string().c_str());
     EventManager::GetInstance().Dispatch(event);
@@ -1012,6 +1015,7 @@ void NodeManager::LoadAll() {
 void NodeManager::LoadFromFile(std::filesystem::path path) {
   if (!path.empty()) {
     m_SavePath = path;
+    ResetAll();
     NodeNetwork net = load_yaml_file(path);
     LoadFileEvent event(m_SavePath.string().c_str());
     EventManager::GetInstance().Dispatch(event);
