@@ -110,24 +110,31 @@ void NodeManager::InitGLFWEvents() {
     DropFileEvent event(paths[0]);
     dispatcher.Dispatch(event);
   });
+
   dispatcher.Subscribe(EventType::CurrentNodeChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const NED::CurrentNodeChangedEvent&>(event);
     auto action = std::make_shared<CurrentNodeChangedAction>(this, ev.old_current, ev.new_current);
     action->message = std::format("Current node Changed");
     ActionManager::GetInstance().executeCommand(std::move(action), false);
   });
+
   dispatcher.Subscribe(EventType::SelectionChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const NED::SelectionChangedEvent&>(event);
     auto action = std::make_shared<SelectionChangedAction>(ev.node_manager, ev.old_selection, ev.new_selection);
     action->message = std::format("SelectionChanged from {} to {}", ev.old_selection.size(), ev.new_selection.size());
     ActionManager::GetInstance().executeCommand(std::move(action));
   });
+
   dispatcher.Subscribe(EventType::MouseClick, [this](const NED::Event& event) { this->OnMouseClick(event); });
+
   dispatcher.Subscribe(EventType::MouseDoubleClick,
                        [this](const NED::Event& event) { this->OnMouseDoubleClick(event); });
   dispatcher.Subscribe(EventType::MouseRelease, [this](const NED::Event& event) { this->OnMouseRelease(event); });
+
   dispatcher.Subscribe(EventType::MouseMove, [this](const NED::Event& event) { this->OnMouseMove(event); });
+
   dispatcher.Subscribe(EventType::KeyPress, [this](const NED::Event& event) { this->OnKeyPress(event); });
+
   dispatcher.Subscribe(EventType::DropFile, [this](const NED::Event& event) {
     auto drop_ev = static_cast<const NED::DropFileEvent&>(event);
     GotoRootNetwork();
@@ -371,8 +378,7 @@ void NodeManager::DrawNodes() {
         ImVec2 ctrl1 = p0 + ImVec2(0, ctrl_y_offset);
         ImVec2 ctrl2 = other_pos - ImVec2(0, ctrl_y_offset);
 
-        draw_list->AddBezierCubic(p0, ctrl1, ctrl2, other_pos, NODE_COLOR::GREY,
-                                  2.0f);  // ImDrawList API uses screen coordinates()
+        draw_list->AddBezierCubic(p0, ctrl1, ctrl2, other_pos, NODE_COLOR::GREY, 2.0f);
       }
     }
 
@@ -391,8 +397,7 @@ void NodeManager::DrawNodes() {
         ImVec2 ctrl1 = p0 + ImVec2(0, ctrl_y_offset);
         ImVec2 ctrl2 = other_pos - ImVec2(0, ctrl_y_offset);
 
-        draw_list->AddBezierCubic(p0, ctrl1, ctrl2, other_pos, NODE_COLOR::GREY,
-                                  2.0f);  // ImDrawList API uses screen coordinates()
+        draw_list->AddBezierCubic(p0, ctrl1, ctrl2, other_pos, NODE_COLOR::GREY, 2.0f);
       }
     }
   }
@@ -400,7 +405,7 @@ void NodeManager::DrawNodes() {
   if (m_ConnectionProcedure.started) {
     if (m_ConnectionProcedure.child_node->IsMultiInput()) {
       ImVec2 input_conn_pos = m_ConnectionProcedure.child_node->position;
-      // ImVec2 connector_pos = input_conn_pos + m_ConnectionProcedure.output_node->position;
+
       ImVec2 p0 = ToScreenSpace(input_conn_pos);
       double x, y;
       glfwGetCursorPos(m_GLFWWindow, &x, &y);
@@ -458,8 +463,7 @@ void NodeManager::DrawNodes() {
       ImVec2 node_center = min + (node->size * 0.5f * m_ViewProps.zoom);
       ImVec2 icon_min = node_center - ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
       ImVec2 icon_max = node_center + ImVec2(15.0f, 15.0f) * m_ViewProps.zoom;
-      // glBindTexture(GL_TEXTURE_2D, (GLuint)(intptr_t)m_Icons[node->icon_name]);
-      // m_Icons.at(node->icon_name);
+
       if (m_Icons.at((const char*)node->icon_name) != 0) {
         draw_list->AddImage((ImTextureID)(intptr_t)m_Icons.at((const char*)node->icon_name), icon_min, icon_max, uv0,
                             uv1);
@@ -550,23 +554,6 @@ void NodeManager::DrawCanvas() {
     draw_list->AddRect(ToScreenSpace(m_ViewProps.rectangleSelectionStartPoint),
                        ToScreenSpace(m_ViewProps.rectangleSelectionEndPoint), NODE_COLOR::YELLOW);
   }
-  // debug draw
-  // ImVec2 raw_pos = io.MousePos;
-  // if (m_ViewProps.show_mouse_coords) {
-  //  auto canvas_space = ToCanvasSpace(raw_pos);
-  //  int x, y;
-  //  glfwGetWindowPos(m_GLFWWindow, &x, &y);
-  //  auto screen_space = ImVec2((float)x, (float)y) + raw_pos;
-  //  std::string txt =
-  //      "canvas space (" + std::to_string((int)canvas_space.x) + ", " + std::to_string((int)canvas_space.y) + ")";
-  //  std::string txt_raw_pos =
-  //      "window space(" + std::to_string((int)raw_pos.x) + ", " + std::to_string((int)raw_pos.y) + ")";
-  //  std::string txt_screen_pos =
-  //      "screen space(" + std::to_string((int)screen_space.x) + ", " + std::to_string((int)screen_space.y) + ")";
-  //  draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
-  //  draw_list->AddText(raw_pos + ImVec2(20, 20), IM_COL32(255, 255, 255, 255), (const char*)txt_raw_pos.c_str());
-  //  draw_list->AddText(raw_pos + ImVec2(20, 40), IM_COL32(255, 255, 255, 255), (const char*)txt_screen_pos.c_str());
-  //}
 
   // All drawing finishes here
   draw_list->PopClipRect();
@@ -585,9 +572,7 @@ void NodeManager::DisplayCoordSpacesDebug() {
       "window space(" + std::to_string((int)raw_pos.x) + ", " + std::to_string((int)raw_pos.y) + ")";
   std::string txt_screen_pos =
       "screen space(" + std::to_string((int)screen_space.x) + ", " + std::to_string((int)screen_space.y) + ")";
-  // draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
-  // draw_list->AddText(raw_pos + ImVec2(20, 20), IM_COL32(255, 255, 255, 255), (const char*)txt_raw_pos.c_str());
-  // draw_list->AddText(raw_pos + ImVec2(20, 40), IM_COL32(255, 255, 255, 255), (const char*)txt_screen_pos.c_str());
+
   auto mouse_pos = ImGui::GetMousePos();
   ImGui::SetNextWindowPos(mouse_pos);
   ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs |
@@ -771,7 +756,6 @@ void NodeManager::tree_view_recurse(NodeNetwork* network) {
         SetCurrentNode(node);
         if (node->parent_node != nullptr) {
           std::cout << node->parent_node->title << std::endl;
-          // m_CurrentNetworkOwner = node->parent_node;
           m_CurrentNetwork = &node->parent_node->node_network;
           m_CurrentNetwork->owner = node->parent_node->get_shared_ptr();
         } else {
@@ -789,7 +773,6 @@ void NodeManager::DisplayTreeView() {
 }
 
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
-  // static bool NodeParams_opened = true;
   if (!UI::Begin("Params", &m_ViewProps.nodeParamsOpened, 0)) {
     // Early out if the window is collapsed, as an optimization.
     UI::End();
@@ -890,7 +873,6 @@ void NodeManager::Evaluate() {
 }
 
 void NodeManager::SetOutputNode(std::shared_ptr<AbstractNode> node) {
-  // m_OutputNode = node;
   if (m_CurrentNetwork != nullptr) {
     m_CurrentNetwork->outuput_node = node;
   }
@@ -1027,7 +1009,6 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
 
 void NodeManager::SetCurrentNetwork(std::shared_ptr<AbstractNode> node) {
   if (node->IsSubnet()) {
-    // m_CurrentNetworkOwner = node.get();
     m_CurrentNetwork = &node->node_network;
     m_CurrentNetwork->owner = node;
   } else {
@@ -1274,7 +1255,6 @@ void NodeManager::OnMouseDoubleClick(const Event& event) {
   }
   if (IsNodeHovered(m_CurrentNode)) {
     if (m_CurrentNode->IsSubnet()) {
-      // m_CurrentNetworkOwner = m_CurrentNode.get();
       m_CurrentNetwork = &m_CurrentNode->node_network;
       m_CurrentNetwork->owner = m_CurrentNode;
     }
