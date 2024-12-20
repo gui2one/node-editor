@@ -546,9 +546,19 @@ void NodeManager::DrawCanvas() {
   // debug draw
   ImVec2 raw_pos = io.MousePos;
   if (m_ViewProps.show_mouse_coords) {
-    auto converted_pos = ToCanvasSpace(raw_pos);
-    std::string txt = "(" + std::to_string((int)converted_pos.x) + ", " + std::to_string((int)converted_pos.y) + ")";
+    auto canvas_space = ToCanvasSpace(raw_pos);
+    int x, y;
+    glfwGetWindowPos(m_GLFWWindow, &x, &y);
+    auto screen_space = ImVec2((float)x, (float)y) + raw_pos;
+    std::string txt =
+        "canvas space (" + std::to_string((int)canvas_space.x) + ", " + std::to_string((int)canvas_space.y) + ")";
+    std::string txt_raw_pos =
+        "window space(" + std::to_string((int)raw_pos.x) + ", " + std::to_string((int)raw_pos.y) + ")";
+    std::string txt_screen_pos =
+        "screen space(" + std::to_string((int)screen_space.x) + ", " + std::to_string((int)screen_space.y) + ")";
     draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
+    draw_list->AddText(raw_pos + ImVec2(20, 20), IM_COL32(255, 255, 255, 255), (const char*)txt_raw_pos.c_str());
+    draw_list->AddText(raw_pos + ImVec2(20, 40), IM_COL32(255, 255, 255, 255), (const char*)txt_screen_pos.c_str());
   }
 
   // All drawing finishes here
