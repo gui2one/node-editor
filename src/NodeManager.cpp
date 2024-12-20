@@ -268,12 +268,15 @@ void NodeManager::BuildImGuiMainMenuBar() {
 }
 
 void NodeManager::ResetAll() {
+  GotoRootNetwork();
   GetRootNetwork().nodes.clear();
   m_ViewProps.selected_nodes.clear();
   GetRootNetwork().outuput_node = nullptr;
   m_CurrentNode = nullptr;
-  m_SavePath = std::filesystem::path("");
+
   ActionManager::GetInstance().Reset();
+
+  m_SavePath = std::filesystem::path("");
   glfwSetWindowTitle(GetGLFWWindow(), m_SavePath.string().c_str());
 }
 
