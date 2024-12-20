@@ -698,19 +698,23 @@ void NodeManager::UpdateSelection() {
     m_ViewProps.selected_nodes = selected_nodes;
   }
 }
-
-void NodeManager::DisplayTreeView() {
-  ImGui::Begin("Tree View");
-  for (auto node : GetRootNetwork().nodes) {
+void tree_view_recurse(NodeNetwork* network) {
+  for (auto node : network->nodes) {
     if (node->IsSubnet()) {
       if (ImGui::TreeNode(node->title.c_str())) {
+        tree_view_recurse(&node->node_network);
+
         ImGui::TreePop();
       }
     } else {
-      if (ImGui::Selectable(node->title.c_str(), true)) {
-      }
+      ImGui::Selectable(node->title.c_str(), false);
     }
   }
+}
+void NodeManager::DisplayTreeView() {
+  ImGui::Begin("Tree View");
+
+  tree_view_recurse(&GetRootNetwork());
   ImGui::End();
 }
 
