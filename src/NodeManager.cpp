@@ -576,7 +576,7 @@ void NodeManager::DisplayActionManager() {
   ImGui::TableNextColumn();
   ImGui::Text("Undos");
   ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-  if (ImGui::BeginListBox("##undos", ImVec2(0, 0))) {
+  if (ImGui::BeginListBox("##undos", ImVec2(0, ImGui::GetContentRegionAvail().y - 50))) {
     for (auto& undo_message : mngr.GetUndoMessages()) {
       ImGui::Text("%s", undo_message.data());
     }
@@ -589,7 +589,7 @@ void NodeManager::DisplayActionManager() {
   ImGui::TableNextColumn();
   ImGui::Text("Redos");
   ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-  if (ImGui::BeginListBox("##redos", ImVec2(0, 0))) {
+  if (ImGui::BeginListBox("##redos", ImVec2(0, ImGui::GetContentRegionAvail().y - 50))) {
     for (auto& redo_message : mngr.GetRedoMessages()) {
       ImGui::Text("%s", redo_message.data());
     }
