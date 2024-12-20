@@ -151,14 +151,14 @@ class NodeDisconnectionEvent : public Event {
 
 class SelectionChangedEvent : public Event {
  public:
-  NodeNetwork* node_network = nullptr;
+  NodeManager* node_manager = nullptr;
   std::vector<AbstractNode*> new_selection;
   std::vector<AbstractNode*> old_selection;
 
  public:
-  SelectionChangedEvent(NodeNetwork* node_network, std::vector<AbstractNode*> new_selection,
+  SelectionChangedEvent(NodeManager* node_manager, std::vector<AbstractNode*> new_selection,
                         std::vector<AbstractNode*> old_selection)
-      : node_network(node_network), new_selection(new_selection), old_selection(old_selection) {}
+      : node_manager(node_manager), new_selection(new_selection), old_selection(old_selection) {}
   EventType GetType() const override { return EventType::SelectionChanged; }
 };
 

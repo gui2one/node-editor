@@ -113,7 +113,12 @@ void NodeManager::InitGLFWEvents() {
 
   dispatcher.Subscribe(EventType::SelectionChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const NED::SelectionChangedEvent&>(event);
-    std::cout << "SelectionChanged from " << ev.old_selection.size() << " to " << ev.new_selection.size() << std::endl;
+    // std::cout << "SelectionChanged from " << ev.old_selection.size() << " to " << ev.new_selection.size() <<
+    // std::endl;
+
+    auto action = std::make_shared<SelectionChangedAction>(ev.node_manager, ev.old_selection, ev.new_selection);
+    action->message = std::format("SelectionChanged from {} to {}", ev.old_selection.size(), ev.new_selection.size());
+    ActionManager::GetInstance().executeCommand(action);
   });
   dispatcher.Subscribe(EventType::MouseClick, [this](const NED::Event& event) { this->OnMouseClick(event); });
   dispatcher.Subscribe(EventType::MouseDoubleClick,
@@ -688,7 +693,7 @@ std::vector<AbstractNode*> NodeManager::GetSelectedNodes() {
 void NodeManager::UpdateSelection() {
   auto selected_nodes = GetSelectedNodes();
   if (Utils::compare_selections(selected_nodes, m_ViewProps.selected_nodes) == false) {
-    SelectionChangedEvent selectionChangedEvent(m_CurrentNetwork, selected_nodes, m_ViewProps.selected_nodes);
+    SelectionChangedEvent selectionChangedEvent(this, selected_nodes, m_ViewProps.selected_nodes);
     EventManager::GetInstance().Dispatch(selectionChangedEvent);
     m_ViewProps.selected_nodes = selected_nodes;
   }

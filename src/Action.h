@@ -129,6 +129,20 @@ class NodeDeleteAction : public Action {
   NodeNetwork* m_NodeNetwork;
 };
 
+class SelectionChangedAction : public Action {
+ public:
+  SelectionChangedAction(NodeManager* node_manager, std::vector<AbstractNode*> old_selection,
+                         std::vector<AbstractNode*> new_selection);
+
+  void Do() override;
+  void Undo() override;
+
+ public:
+  NodeManager* node_manager;
+  std::vector<AbstractNode*> old_selection;
+  std::vector<AbstractNode*> new_selection;
+};
+
 }  // namespace NED
 
 #endif  // NODE_EDITOR_ACTION_H

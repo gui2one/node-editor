@@ -100,4 +100,24 @@ void MoveMultipleNodesAction::Undo() {
   }
 }
 
+SelectionChangedAction::SelectionChangedAction(NodeManager* node_manager, std::vector<AbstractNode*> old_selection,
+                                               std::vector<AbstractNode*> new_selection)
+    : node_manager(node_manager), old_selection(old_selection), new_selection(new_selection) {}
+
+void SelectionChangedAction::Do() {
+  Utils::deselect_all(node_manager->GetNodes());
+  node_manager->m_ViewProps.selected_nodes = new_selection;
+  for (auto node : new_selection) {
+    node->selected = true;
+  }
+}
+
+void SelectionChangedAction::Undo() {
+  Utils::deselect_all(node_manager->GetNodes());
+  node_manager->m_ViewProps.selected_nodes = old_selection;
+  for (auto node : old_selection) {
+    node->selected = true;
+  }
+}
+
 };  // namespace NED
