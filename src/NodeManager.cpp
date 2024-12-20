@@ -110,12 +110,15 @@ void NodeManager::InitGLFWEvents() {
     DropFileEvent event(paths[0]);
     dispatcher.Dispatch(event);
   });
-
+  dispatcher.Subscribe(EventType::CurrentNodeChanged, [this](const NED::Event& event) {
+    auto ev = static_cast<const NED::CurrentNodeChangedEvent&>(event);
+    std::cout << "CurrentNodeChanged" << std::endl;
+    // auto action = std::make_shared<SelectionChangedAction>(ev.node_manager, ev.old_selection, ev.new_selection);
+    // action->message = std::format("SelectionChanged from {} to {}", ev.old_selection.size(),
+    // ev.new_selection.size()); ActionManager::GetInstance().executeCommand(action);
+  });
   dispatcher.Subscribe(EventType::SelectionChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const NED::SelectionChangedEvent&>(event);
-    // std::cout << "SelectionChanged from " << ev.old_selection.size() << " to " << ev.new_selection.size() <<
-    // std::endl;
-
     auto action = std::make_shared<SelectionChangedAction>(ev.node_manager, ev.old_selection, ev.new_selection);
     action->message = std::format("SelectionChanged from {} to {}", ev.old_selection.size(), ev.new_selection.size());
     ActionManager::GetInstance().executeCommand(action);
@@ -738,6 +741,14 @@ void NodeManager::UpdateSelection() {
     m_ViewProps.selected_nodes = selected_nodes;
   }
 }
+void NodeManager::SetCurrentNode(std::shared_ptr<AbstractNode> node) {
+  auto old_current = m_CurrentNode;
+  m_CurrentNode = node;
+  if (m_CurrentNode != old_current) {
+    CurrentNodeChangedEvent currentChangedEvent(m_CurrentNode.get(), old_current.get());
+    EventManager::GetInstance().Dispatch(currentChangedEvent);
+  }
+}
 void NodeManager::tree_view_recurse(NodeNetwork* network) {
   for (auto node : network->nodes) {
     if (node->IsSubnet()) {
@@ -1070,7 +1081,7 @@ void NodeManager::OnMouseClick(const Event& event) {
   for (auto node : GetNodes()) {
     bool node_hovered = IsNodeHovered(node);
     if (node_hovered) {
-      m_CurrentNode = node;
+      SetCurrentNode(node);
       clicked_something = true;
       m_ViewProps.node_clicked = node;
       m_ViewProps.node_clicked_position = node->position;
@@ -1180,7 +1191,7 @@ void NodeManager::OnMouseRelease(const Event& event) {
 
   for (auto node : GetNodes()) {
     if (node->selected) {
-      m_CurrentNode = node;
+      SetCurrentNode(node);
       break;
     }
   }
@@ -1201,7 +1212,7 @@ void NodeManager::OnKeyPress(const Event& event) {
         m_CurrentNetwork->RemoveNode(m_CurrentNode.get());
         NodeDeletedEvent event(m_CurrentNetwork, m_CurrentNode);
         EventManager::GetInstance().Dispatch(event);
-        m_CurrentNode = nullptr;
+        SetCurrentNode(nullptr);
       }
       break;
     case GLFW_KEY_TAB:

@@ -28,6 +28,7 @@ enum class EventType {
   NodeMoved,
 
   SelectionChanged,
+  CurrentNodeChanged,
 
   NodeCreated,
   NodeDeleted,
@@ -161,7 +162,16 @@ class SelectionChangedEvent : public Event {
       : node_manager(node_manager), new_selection(new_selection), old_selection(old_selection) {}
   EventType GetType() const override { return EventType::SelectionChanged; }
 };
+class CurrentNodeChangedEvent : public Event {
+ public:
+  AbstractNode* new_current;
+  AbstractNode* old_current;
 
+ public:
+  CurrentNodeChangedEvent(AbstractNode* new_current, AbstractNode* old_current)
+      : new_current(new_current), old_current(old_current) {}
+  EventType GetType() const override { return EventType::CurrentNodeChanged; }
+};
 class NodeCreatedEvent : public Event {
  public:
   NodeNetwork* node_network = nullptr;

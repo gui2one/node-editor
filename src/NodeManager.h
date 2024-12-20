@@ -111,6 +111,7 @@ class NodeManager {
 
   std::vector<AbstractNode*> GetSelectedNodes();
   void UpdateSelection();
+  void SetCurrentNode(std::shared_ptr<AbstractNode> node);
 
   void tree_view_recurse(NodeNetwork* network);
   void DisplayTreeView();
