@@ -104,6 +104,14 @@ class Param : public NodeParam {
     value = _value;
   };
 
+  void Set(T _value, T _min_val, T _max_val) {
+    temp_value = _value;
+    value = _value;
+
+    min_val = _min_val;
+    max_val = _max_val;
+  };
+
   void Display() { ImGui::Text("%s -- not implemented", m_Label); }
   void DisplayOptions() { ImGui::Text("%s -- Options not implemented", m_Label); }
 

@@ -45,14 +45,10 @@ class StringGenerate : public StringGenerator {
     combo_p->Set(0);
 
     auto float_p = CREATE_PARAM(NED::ParamFloat, "Float", this);
-    float_p->Set(3.14f);
-    float_p->min_val = 0.0f;
-    float_p->max_val = 122.0f;
+    float_p->Set(3.14f, 0.0f, 999.9f);
 
     auto int_p = CREATE_PARAM(NED::ParamInt, "Int", this);
-    int_p->Set(42);
-    // int_p->min_val = -255;
-    // int_p->max_val = 255;
+    int_p->Set(42, 0, 100);
 
     auto coords = CREATE_PARAM(NED::ParamVec2, "Vec2", this);
     coords->Set(glm::vec2(0.0f));
@@ -63,12 +59,10 @@ class StringGenerate : public StringGenerator {
     position->default_val = glm::vec3(1.0f);
 
     auto double_p = CREATE_PARAM(NED::ParamDouble, "Double", this);
-    double_p->Set(3.14);
+    double_p->Set(3.14, -5.0, 5.0);
 
     auto bool_p = CREATE_PARAM(NED::ParamBool, "Bool", this);
     bool_p->Set(true);
-    // auto file_p = CREATE_PARAM(NED::ParamFile, "File", this);
-    // file_p->Set(L"C:/gui2one/CODE/node-editor/example/src/StringGenerator.h");
 
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
     grp->params = {label, combo_p, float_p, int_p, coords, position, double_p, bool_p};
