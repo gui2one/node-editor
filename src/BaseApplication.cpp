@@ -170,7 +170,6 @@ void BaseApplication::ImGuiInit(GLFWwindow *window) {
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; /* I need to remake the whole positioning system to enabled
-  // this */
 
   ImGui_ImplGlfw_InitForOpenGL(window, true);
   const char *glsl_version = "#version 330";

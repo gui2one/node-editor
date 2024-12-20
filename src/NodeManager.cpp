@@ -544,37 +544,53 @@ void NodeManager::DrawCanvas() {
                        ToScreenSpace(m_ViewProps.rectangleSelectionEndPoint), NODE_COLOR::YELLOW);
   }
   // debug draw
-  ImVec2 raw_pos = io.MousePos;
-  if (m_ViewProps.show_mouse_coords) {
-    auto canvas_space = ToCanvasSpace(raw_pos);
-    int x, y;
-    glfwGetWindowPos(m_GLFWWindow, &x, &y);
-    auto screen_space = ImVec2((float)x, (float)y) + raw_pos;
-    std::string txt =
-        "canvas space (" + std::to_string((int)canvas_space.x) + ", " + std::to_string((int)canvas_space.y) + ")";
-    std::string txt_raw_pos =
-        "window space(" + std::to_string((int)raw_pos.x) + ", " + std::to_string((int)raw_pos.y) + ")";
-    std::string txt_screen_pos =
-        "screen space(" + std::to_string((int)screen_space.x) + ", " + std::to_string((int)screen_space.y) + ")";
-    draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
-    draw_list->AddText(raw_pos + ImVec2(20, 20), IM_COL32(255, 255, 255, 255), (const char*)txt_raw_pos.c_str());
-    draw_list->AddText(raw_pos + ImVec2(20, 40), IM_COL32(255, 255, 255, 255), (const char*)txt_screen_pos.c_str());
-  }
+  // ImVec2 raw_pos = io.MousePos;
+  // if (m_ViewProps.show_mouse_coords) {
+  //  auto canvas_space = ToCanvasSpace(raw_pos);
+  //  int x, y;
+  //  glfwGetWindowPos(m_GLFWWindow, &x, &y);
+  //  auto screen_space = ImVec2((float)x, (float)y) + raw_pos;
+  //  std::string txt =
+  //      "canvas space (" + std::to_string((int)canvas_space.x) + ", " + std::to_string((int)canvas_space.y) + ")";
+  //  std::string txt_raw_pos =
+  //      "window space(" + std::to_string((int)raw_pos.x) + ", " + std::to_string((int)raw_pos.y) + ")";
+  //  std::string txt_screen_pos =
+  //      "screen space(" + std::to_string((int)screen_space.x) + ", " + std::to_string((int)screen_space.y) + ")";
+  //  draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
+  //  draw_list->AddText(raw_pos + ImVec2(20, 20), IM_COL32(255, 255, 255, 255), (const char*)txt_raw_pos.c_str());
+  //  draw_list->AddText(raw_pos + ImVec2(20, 40), IM_COL32(255, 255, 255, 255), (const char*)txt_screen_pos.c_str());
+  //}
 
   // All drawing finishes here
   draw_list->PopClipRect();
 }
 
 void NodeManager::DisplayCoordSpacesDebug() {
-  ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize;
-
+  ImVec2 raw_pos = ImGui::GetMousePos();
+  ;
+  auto canvas_space = ToCanvasSpace(raw_pos);
+  int x, y;
+  glfwGetWindowPos(m_GLFWWindow, &x, &y);
+  auto screen_space = ImVec2((float)x, (float)y) + raw_pos;
+  std::string txt =
+      "canvas space (" + std::to_string((int)canvas_space.x) + ", " + std::to_string((int)canvas_space.y) + ")";
+  std::string txt_raw_pos =
+      "window space(" + std::to_string((int)raw_pos.x) + ", " + std::to_string((int)raw_pos.y) + ")";
+  std::string txt_screen_pos =
+      "screen space(" + std::to_string((int)screen_space.x) + ", " + std::to_string((int)screen_space.y) + ")";
+  // draw_list->AddText(raw_pos + ImVec2(20, 0), IM_COL32(255, 255, 255, 255), (const char*)txt.c_str());
+  // draw_list->AddText(raw_pos + ImVec2(20, 20), IM_COL32(255, 255, 255, 255), (const char*)txt_raw_pos.c_str());
+  // draw_list->AddText(raw_pos + ImVec2(20, 40), IM_COL32(255, 255, 255, 255), (const char*)txt_screen_pos.c_str());
   auto mouse_pos = ImGui::GetMousePos();
   ImGui::SetNextWindowPos(mouse_pos);
-
+  ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoInputs |
+                           ImGuiWindowFlags_NoDocking;
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
   ImGui::Begin("Coord Spaces", NULL, flags);
 
-  ImGui::Text("Mouse Pos: %.2f, %.2f", mouse_pos.x, mouse_pos.y);
+  ImGui::Text("%s", txt.c_str());
+  ImGui::Text("%s", txt_raw_pos.c_str());
+  ImGui::Text("%s", txt_screen_pos.c_str());
   ImGui::End();
   ImGui::PopStyleVar();
 }
@@ -862,14 +878,7 @@ void NodeManager::SetOutputNode(std::shared_ptr<AbstractNode> node) {
 bool NodeManager::IsNodeHovered(std::shared_ptr<AbstractNode> node) {
   ImVec2 min = ToScreenSpace(node->position);
   ImVec2 max = min + node->size;
-  double cursor_x, cursor_y;
-  glfwGetCursorPos(m_GLFWWindow, &cursor_x, &cursor_y);
-  bool hovered = false;
-  if (cursor_x > min.x && cursor_x < max.x && cursor_y > min.y && cursor_y < max.y) {
-    hovered = true;
-  }
-
-  return hovered;
+  return ImGui::IsMouseHoveringRect(min, max, false);
 }
 
 bool NodeManager::IsInputConnectorHovered(std::shared_ptr<AbstractNode> node, uint32_t index) {
@@ -879,17 +888,10 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<AbstractNode> node, ui
 
   auto ptr = static_cast<AbstractNode*>(node.get());
   InputConnector* connector = ptr->GetInputConnector(index);
-  ImVec2 connector_pos = ToScreenSpace(node->position + connector->relative_pos);
-
-  float padding = 1.5f;
-  if (cursor_x > connector_pos.x - connector->width * padding &&
-      cursor_x < connector_pos.x + connector->width * padding &&
-      cursor_y > connector_pos.y - connector->width * padding &&
-      cursor_y < connector_pos.y + connector->width * padding) {
-    hovered = true;
-  }
-
-  return hovered;
+  ImVec2 min = ToScreenSpace(node->position + connector->relative_pos -
+                             ImVec2(connector->width / 2.0f, connector->width / 2.0f));
+  ImVec2 max = min + ImVec2(connector->width, connector->width);
+  return ImGui::IsMouseHoveringRect(min, max, false);
 }
 
 bool NodeManager::IsNodeMultiInputConnectorHovered(std::shared_ptr<AbstractNode> node) {
