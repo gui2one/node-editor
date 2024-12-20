@@ -143,6 +143,19 @@ class SelectionChangedAction : public Action {
   std::vector<AbstractNode*> new_selection;
 };
 
+class CurrentNodeChangedAction : public Action {
+ public:
+  CurrentNodeChangedAction(NodeManager* node_manager, AbstractNode* old_current, AbstractNode* new_current);
+
+  void Do() override;
+  void Undo() override;
+
+ public:
+  NodeManager* node_manager;
+  AbstractNode* old_current;
+  AbstractNode* new_current;
+};
+
 }  // namespace NED
 
 #endif  // NODE_EDITOR_ACTION_H

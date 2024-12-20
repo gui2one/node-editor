@@ -112,16 +112,15 @@ void NodeManager::InitGLFWEvents() {
   });
   dispatcher.Subscribe(EventType::CurrentNodeChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const NED::CurrentNodeChangedEvent&>(event);
-    std::cout << "CurrentNodeChanged" << std::endl;
-    // auto action = std::make_shared<SelectionChangedAction>(ev.node_manager, ev.old_selection, ev.new_selection);
-    // action->message = std::format("SelectionChanged from {} to {}", ev.old_selection.size(),
-    // ev.new_selection.size()); ActionManager::GetInstance().executeCommand(action);
+    auto action = std::make_shared<CurrentNodeChangedAction>(this, ev.old_current, ev.new_current);
+    action->message = std::format("Current node Changed");
+    ActionManager::GetInstance().executeCommand(std::move(action), false);
   });
   dispatcher.Subscribe(EventType::SelectionChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const NED::SelectionChangedEvent&>(event);
     auto action = std::make_shared<SelectionChangedAction>(ev.node_manager, ev.old_selection, ev.new_selection);
     action->message = std::format("SelectionChanged from {} to {}", ev.old_selection.size(), ev.new_selection.size());
-    ActionManager::GetInstance().executeCommand(action);
+    ActionManager::GetInstance().executeCommand(std::move(action));
   });
   dispatcher.Subscribe(EventType::MouseClick, [this](const NED::Event& event) { this->OnMouseClick(event); });
   dispatcher.Subscribe(EventType::MouseDoubleClick,
@@ -150,7 +149,7 @@ void NodeManager::InitGLFWEvents() {
     auto action = std::make_shared<NodeConnectAction>(ev.new_parent_node.get(), ev.old_parent_node.get(),
                                                       ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Connect");
-    ActionManager::GetInstance().executeCommand(action);
+    ActionManager::GetInstance().executeCommand(std::move(action));
   });
   dispatcher.Subscribe(EventType::NodeDisconnection, [this](const Event& event) {
     Evaluate();
@@ -158,7 +157,7 @@ void NodeManager::InitGLFWEvents() {
 
     auto action = std::make_shared<NodeDisconnectAction>(ev.parent_node.get(), ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Disconnect");
-    ActionManager::GetInstance().executeCommand(action);
+    ActionManager::GetInstance().executeCommand(std::move(action));
   });
 
   dispatcher.Subscribe(EventType::NodeCreated, [this](const Event& event) {
@@ -166,13 +165,13 @@ void NodeManager::InitGLFWEvents() {
     std::cout << "Node to be Created : " << ev.node_type_name << std::endl;
     auto action = std::make_shared<NodeCreateAction>(this, m_CurrentNetwork, ev.node_type_name, ev.node_position);
     action->message = std::format("Node to be Created  : {}", ev.node_type_name);
-    ActionManager::GetInstance().executeCommand(action, false);
+    ActionManager::GetInstance().executeCommand(std::move(action), false);
   });
   dispatcher.Subscribe(EventType::NodeDeleted, [this](const Event& event) {
     auto ev = static_cast<const NodeDeletedEvent&>(event);
     auto action = std::make_shared<NodeDeleteAction>(this, m_CurrentNetwork, ev.node);
     action->message = std::format("Node Deleted  : {}", ev.node->title);
-    ActionManager::GetInstance().executeCommand(action, false);
+    ActionManager::GetInstance().executeCommand(std::move(action), false);
   });
 }
 
@@ -649,28 +648,28 @@ void NodeManager::DisplayActionManager() {
 
   ImGui::EndTable();
 
-  static int cur_action = 0;
-  static int temp_action = 0;
-  if (mngr.GetUndoMessages().size() > 0 || mngr.GetRedoMessages().size() > 0) {
-    ImGui::Text("Timeline");
-    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-    if (ImGui::SliderInt("##Timeline", &temp_action, 0,
-                         (int)mngr.GetUndoMessages().size() + (int)mngr.GetRedoMessages().size())) {
-      int diff = cur_action - temp_action;
+  // static int cur_action = 0;
+  // static int temp_action = 0;
+  // if (mngr.GetUndoMessages().size() > 0 || mngr.GetRedoMessages().size() > 0) {
+  //   ImGui::Text("Timeline");
+  //   ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+  //   if (ImGui::SliderInt("##Timeline", &temp_action, 0,
+  //                        (int)mngr.GetUndoMessages().size() + (int)mngr.GetRedoMessages().size())) {
+  //     int diff = cur_action - temp_action;
 
-      cur_action = temp_action;
+  //    cur_action = temp_action;
 
-      if (diff > 0) {
-        for (int i = 0; i < diff; i++) {
-          mngr.redo();
-        }
-      } else if (diff < 0) {
-        for (int i = 0; i < -diff; i++) {
-          mngr.undo();
-        }
-      }
-    }
-  }
+  //    if (diff > 0) {
+  //      for (int i = 0; i < diff; i++) {
+  //        mngr.redo();
+  //      }
+  //    } else if (diff < 0) {
+  //      for (int i = 0; i < -diff; i++) {
+  //        mngr.undo();
+  //      }
+  //    }
+  //  }
+  //}
 
   if (ImGui::Button("Clear")) {
     mngr.Reset();

@@ -120,4 +120,25 @@ void SelectionChangedAction::Undo() {
   }
 }
 
+CurrentNodeChangedAction::CurrentNodeChangedAction(NodeManager* node_manager, AbstractNode* old_current,
+                                                   AbstractNode* new_current)
+    : node_manager(node_manager), old_current(old_current), new_current(new_current) {}
+
+void CurrentNodeChangedAction::Do() {
+  if (new_current == nullptr) {
+    node_manager->m_CurrentNode = nullptr;
+    return;
+  } else {
+    node_manager->m_CurrentNode = new_current->get_shared_ptr();
+  }
+}
+
+void CurrentNodeChangedAction::Undo() {
+  if (old_current == nullptr) {
+    node_manager->m_CurrentNode = nullptr;
+    return;
+  } else {
+    node_manager->m_CurrentNode = old_current->get_shared_ptr();
+  }
+}
 };  // namespace NED
