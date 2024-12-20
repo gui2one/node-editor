@@ -205,7 +205,7 @@ void NodeManager::CreateAllNodes() {
       auto node = registry.Create(item.type_name.c_str());
       if (node != nullptr) {
         node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
-        node->parent_node = m_CurrentNetworkOwner;
+        node->parent_node = m_CurrentNetwork->owner.get();
         this->m_CurrentNetwork->AddNode(node);
       }
       y += node->size.y + 40.0f;
@@ -312,12 +312,12 @@ void NodeManager::BuildNodeMenuFromRegistry() {
         // Add items to this menu
         for (const auto& item : items) {
           if (ImGui::MenuItem(item.label.c_str(), nullptr, false, true)) {
-            auto node = registry.Create(item.type_name.c_str(), m_CurrentNetworkOwner);
+            auto node = registry.Create(item.type_name.c_str(), m_CurrentNetwork->owner.get());
             if (node != nullptr) {
               double x, y;
               glfwGetCursorPos(this->GetGLFWWindow(), &x, &y);
               node->position = ImVec2((float)x, (float)y) - m_ViewProps.scrolling - m_ViewProps.canvasPos;
-              node->parent_node = m_CurrentNetworkOwner;
+              node->parent_node = m_CurrentNetwork->owner.get();
 
               NodeCreatedEvent event(this->m_CurrentNetwork, node->m_TypeName, node->position);
               EventManager::GetInstance().Dispatch(event);
@@ -771,7 +771,7 @@ void NodeManager::tree_view_recurse(NodeNetwork* network) {
         SetCurrentNode(node);
         if (node->parent_node != nullptr) {
           std::cout << node->parent_node->title << std::endl;
-          m_CurrentNetworkOwner = node->parent_node;
+          // m_CurrentNetworkOwner = node->parent_node;
           m_CurrentNetwork = &node->parent_node->node_network;
           m_CurrentNetwork->owner = node->parent_node->get_shared_ptr();
         } else {
@@ -1003,16 +1003,12 @@ void NodeManager::LoadAll() {
   if (m_SavePath.empty()) {
     auto path = Utils::open_file_explorer({{"Node-Editor Network Files", m_FileExtension}});
     m_SavePath = path;
+    std::cout << "path : " << path << std::endl;
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
   }
 
   if (!m_SavePath.empty()) {
-    ResetAll();
-    NodeNetwork net = load_yaml_file(m_SavePath);
-    LoadFileEvent event(m_SavePath.string().c_str());
-    EventManager::GetInstance().Dispatch(event);
-    m_NodeNetwork = net;
-    ViewFrameAll();
+    LoadFromFile(m_SavePath);
   }
 }
 
@@ -1026,6 +1022,16 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
     m_NodeNetwork = net;
     ViewFrameAll();
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
+  }
+}
+
+void NodeManager::SetCurrentNetwork(std::shared_ptr<AbstractNode> node) {
+  if (node->IsSubnet()) {
+    // m_CurrentNetworkOwner = node.get();
+    m_CurrentNetwork = &node->node_network;
+    m_CurrentNetwork->owner = node;
+  } else {
+    if (node->parent_node == nullptr) GotoRootNetwork();
   }
 }
 
@@ -1259,6 +1265,19 @@ void NodeManager::OnKeyPress(const Event& event) {
 
     default:
       break;
+  }
+}
+
+void NodeManager::OnMouseDoubleClick(const Event& event) {
+  if (m_CurrentNode == nullptr) {
+    return;
+  }
+  if (IsNodeHovered(m_CurrentNode)) {
+    if (m_CurrentNode->IsSubnet()) {
+      // m_CurrentNetworkOwner = m_CurrentNode.get();
+      m_CurrentNetwork = &m_CurrentNode->node_network;
+      m_CurrentNetwork->owner = m_CurrentNode;
+    }
   }
 }
 

@@ -142,15 +142,7 @@ class NodeManager {
     }
   }
   NodeNetwork* GetCurrentNetwork() { return m_CurrentNetwork; }
-  void SetCurrentNetwork(std::shared_ptr<AbstractNode> node) {
-    if (node->IsSubnet()) {
-      m_CurrentNetworkOwner = node.get();
-      m_CurrentNetwork = &node->node_network;
-      m_CurrentNetwork->owner = node;
-    } else {
-      if (node->parent_node == nullptr) GotoRootNetwork();
-    }
-  }
+  void SetCurrentNetwork(std::shared_ptr<AbstractNode> node);
   NodeNetwork& GetRootNetwork() { return m_NodeNetwork; };
   void GotoRootNetwork() {
     m_CurrentNetwork->owner = nullptr;
@@ -179,18 +171,7 @@ class NodeManager {
   void OnMouseRelease(const Event& event);
   void OnKeyPress(const Event& event);
 
-  void OnMouseDoubleClick(const Event& event) {
-    if (m_CurrentNode == nullptr) {
-      return;
-    }
-    if (IsNodeHovered(m_CurrentNode)) {
-      if (m_CurrentNode->IsSubnet()) {
-        m_CurrentNetworkOwner = m_CurrentNode.get();
-        m_CurrentNetwork = &m_CurrentNode->node_network;
-        m_CurrentNetwork->owner = m_CurrentNode;
-      }
-    }
-  }
+  void OnMouseDoubleClick(const Event& event);
 
   inline void SetFonts(ImFont* _regular, ImFont* _bold) {
     m_RegularFont = _regular;
@@ -208,7 +189,7 @@ class NodeManager {
  public:
   WindowData m_WindowData;
   ViewProperties m_ViewProps;
-  AbstractNode* m_CurrentNetworkOwner = nullptr;
+  // AbstractNode* m_CurrentNetworkOwner = nullptr;
   std::shared_ptr<AbstractNode> m_CurrentNode = nullptr;
   std::filesystem::path m_SavePath = "";
   bool m_OneParamChanged = false;
