@@ -699,6 +699,21 @@ void NodeManager::UpdateSelection() {
   }
 }
 
+void NodeManager::DisplayTreeView() {
+  ImGui::Begin("Tree View");
+  for (auto node : GetRootNetwork().nodes) {
+    if (node->IsSubnet()) {
+      if (ImGui::TreeNode(node->title.c_str())) {
+        ImGui::TreePop();
+      }
+    } else {
+      if (ImGui::Selectable(node->title.c_str(), true)) {
+      }
+    }
+  }
+  ImGui::End();
+}
+
 void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   // static bool NodeParams_opened = true;
   if (!UI::Begin("Params", &m_ViewProps.nodeParamsOpened, 0)) {

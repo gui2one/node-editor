@@ -112,6 +112,7 @@ class NodeManager {
   std::vector<AbstractNode*> GetSelectedNodes();
   void UpdateSelection();
 
+  void DisplayTreeView();
   void DisplayNodeParams(std::shared_ptr<AbstractNode> node);
   void DisplayNodeParamsOptions();
   void OpenNodeParamsOptionsPopup();

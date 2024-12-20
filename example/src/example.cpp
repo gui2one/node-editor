@@ -49,12 +49,6 @@ int main(int argc, char *argv[]) {
   app.GetNodeManager().ParamChangeSubscribe<double>();
 
   app.UserFunction([&]() {
-    UI::Begin("user window");
-    for (auto node : app.GetNodeManager().GetNodes()) {
-      ImGui::Text("%s", node->title.c_str());
-    }
-    UI::End();
-
     UI::Begin("Render");
     ImGui::PushFont(big_font);
     ImGui::Text("%s", STRING_RESULT.c_str());
