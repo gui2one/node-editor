@@ -308,6 +308,9 @@ void BaseApplication::Run() {
       manager.DisplayActionManager();
     }
 
+    if (manager.m_ViewProps.show_mouse_coords) {
+      manager.DisplayCoordSpacesDebug();
+    }
     manager.DisplayTreeView();
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));

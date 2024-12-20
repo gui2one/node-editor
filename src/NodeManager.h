@@ -121,6 +121,7 @@ class NodeManager {
 
   void DrawNodes();
   void DrawCanvas();
+  void DisplayCoordSpacesDebug();
 
   void DisplayActionManager();
   void DisplayNavBar();

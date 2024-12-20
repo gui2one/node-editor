@@ -565,6 +565,20 @@ void NodeManager::DrawCanvas() {
   draw_list->PopClipRect();
 }
 
+void NodeManager::DisplayCoordSpacesDebug() {
+  ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize;
+
+  auto mouse_pos = ImGui::GetMousePos();
+  ImGui::SetNextWindowPos(mouse_pos);
+
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(5, 5));
+  ImGui::Begin("Coord Spaces", NULL, flags);
+
+  ImGui::Text("Mouse Pos: %.2f, %.2f", mouse_pos.x, mouse_pos.y);
+  ImGui::End();
+  ImGui::PopStyleVar();
+}
+
 ImVec2 NodeManager::ToCanvasSpace(ImVec2 pos) const {
   return (pos - m_ViewProps.scrolling - m_ViewProps.canvasPos) * (1.0f / m_ViewProps.zoom);
 }
