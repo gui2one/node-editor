@@ -272,7 +272,7 @@ void NodeManager::ResetAll() {
   GetRootNetwork().nodes.clear();
   m_ViewProps.selected_nodes.clear();
   GetRootNetwork().outuput_node = nullptr;
-  m_CurrentNode = nullptr;
+  SetCurrentNode(nullptr);
 
   ActionManager::GetInstance().Reset();
 
