@@ -648,28 +648,29 @@ void NodeManager::DisplayActionManager() {
 
   ImGui::EndTable();
 
-  // static int cur_action = 0;
-  // static int temp_action = 0;
-  // if (mngr.GetUndoMessages().size() > 0 || mngr.GetRedoMessages().size() > 0) {
-  //   ImGui::Text("Timeline");
-  //   ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-  //   if (ImGui::SliderInt("##Timeline", &temp_action, 0,
-  //                        (int)mngr.GetUndoMessages().size() + (int)mngr.GetRedoMessages().size())) {
-  //     int diff = cur_action - temp_action;
+  // silly "Action Timeline"
+  static int cur_action = 0;
+  static int temp_action = 0;
+  if (mngr.GetUndoMessages().size() > 0 || mngr.GetRedoMessages().size() > 0) {
+    ImGui::Text("Timeline");
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+    if (ImGui::SliderInt("##Timeline", &temp_action, 0,
+                         (int)mngr.GetUndoMessages().size() + (int)mngr.GetRedoMessages().size())) {
+      int diff = cur_action - temp_action;
 
-  //    cur_action = temp_action;
+      cur_action = temp_action;
 
-  //    if (diff > 0) {
-  //      for (int i = 0; i < diff; i++) {
-  //        mngr.redo();
-  //      }
-  //    } else if (diff < 0) {
-  //      for (int i = 0; i < -diff; i++) {
-  //        mngr.undo();
-  //      }
-  //    }
-  //  }
-  //}
+      if (diff > 0) {
+        for (int i = 0; i < diff; i++) {
+          mngr.redo();
+        }
+      } else if (diff < 0) {
+        for (int i = 0; i < -diff; i++) {
+          mngr.undo();
+        }
+      }
+    }
+  }
 
   if (ImGui::Button("Clear")) {
     mngr.Reset();
@@ -767,6 +768,7 @@ void NodeManager::tree_view_recurse(NodeNetwork* network) {
       }
     } else {
       if (ImGui::Selectable(node->title.c_str(), false)) {
+        SetCurrentNode(node);
         if (node->parent_node != nullptr) {
           std::cout << node->parent_node->title << std::endl;
           m_CurrentNetworkOwner = node->parent_node;
