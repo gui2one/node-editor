@@ -112,6 +112,7 @@ class NodeManager {
   std::vector<AbstractNode*> GetSelectedNodes();
   void UpdateSelection();
 
+  void tree_view_recurse(NodeNetwork* network);
   void DisplayTreeView();
   void DisplayNodeParams(std::shared_ptr<AbstractNode> node);
   void DisplayNodeParamsOptions();
@@ -139,6 +140,15 @@ class NodeManager {
     }
   }
   NodeNetwork* GetCurrentNetwork() { return m_CurrentNetwork; }
+  void SetCurrentNetwork(std::shared_ptr<AbstractNode> node) {
+    if (node->IsSubnet()) {
+      m_CurrentNetworkOwner = node.get();
+      m_CurrentNetwork = &node->node_network;
+      m_CurrentNetwork->owner = node;
+    } else {
+      if (node->parent_node == nullptr) GotoRootNetwork();
+    }
+  }
   NodeNetwork& GetRootNetwork() { return m_NodeNetwork; };
   void GotoRootNetwork() {
     m_CurrentNetwork->owner = nullptr;

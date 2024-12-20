@@ -698,7 +698,7 @@ void NodeManager::UpdateSelection() {
     m_ViewProps.selected_nodes = selected_nodes;
   }
 }
-void tree_view_recurse(NodeNetwork* network) {
+void NodeManager::tree_view_recurse(NodeNetwork* network) {
   for (auto node : network->nodes) {
     if (node->IsSubnet()) {
       if (ImGui::TreeNode(node->title.c_str())) {
@@ -707,7 +707,16 @@ void tree_view_recurse(NodeNetwork* network) {
         ImGui::TreePop();
       }
     } else {
-      ImGui::Selectable(node->title.c_str(), false);
+      if (ImGui::Selectable(node->title.c_str(), false)) {
+        if (node->parent_node != nullptr) {
+          std::cout << node->parent_node->title << std::endl;
+          m_CurrentNetworkOwner = node->parent_node;
+          m_CurrentNetwork = &node->parent_node->node_network;
+          m_CurrentNetwork->owner = node->parent_node->get_shared_ptr();
+        } else {
+          GotoRootNetwork();
+        }
+      }
     }
   }
 }
