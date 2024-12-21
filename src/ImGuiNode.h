@@ -55,9 +55,9 @@ struct NodeNetwork {
 struct ParamLayout {
   std::vector<std::shared_ptr<NodeParam>> params;
   std::shared_ptr<NodeParam> Get(size_t idx) { return params[idx]; }
-  inline void Append(std::shared_ptr<NodeParam> param) { params.push_back(param); }
-  inline void Append(std::vector<std::shared_ptr<NodeParam>> params) {
-    this->params.insert(this->params.end(), params.begin(), params.end());
+  inline void Append(std::shared_ptr<NodeParam> new_param) { params.push_back(new_param); }
+  inline void Append(std::vector<std::shared_ptr<NodeParam>> new_params) {
+    this->params.insert(this->params.end(), new_params.begin(), new_params.end());
   }
 };
 struct InputConnector {

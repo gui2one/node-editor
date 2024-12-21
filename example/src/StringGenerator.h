@@ -54,9 +54,9 @@ class StringGenerate : public StringGenerator {
     coords->Set(glm::vec2(0.0f));
     coords->default_val = glm::vec2(0.0f);
 
-    auto position = CREATE_PARAM(NED::ParamVec3, "Vec3", this);
-    position->Set(glm::vec3(1.0f));
-    position->default_val = glm::vec3(1.0f);
+    auto position_p = CREATE_PARAM(NED::ParamVec3, "Vec3", this);
+    position_p->Set(glm::vec3(1.0f));
+    position_p->default_val = glm::vec3(1.0f);
 
     auto double_p = CREATE_PARAM(NED::ParamDouble, "Double", this);
     double_p->Set(3.14, -5.0, 5.0);
@@ -65,7 +65,7 @@ class StringGenerate : public StringGenerator {
     bool_p->Set(true);
 
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
-    grp->params = {label, combo_p, float_p, int_p, coords, position, double_p, bool_p};
+    grp->params = {label, combo_p, float_p, int_p, coords, position_p, double_p, bool_p};
 
     m_ParamLayout.Append({value, grp});
   };

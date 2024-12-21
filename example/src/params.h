@@ -23,7 +23,7 @@ class ParamDouble : public Param<double> {
     DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
       ImGuiSliderFlags flags = 0;
       if (ImGui::SliderScalar("##_label", ImGuiDataType_Double, &temp_value, (const void*)&min_val,
-                              (const void*)&max_val)) {
+                              (const void*)&max_val, "%f", flags)) {
       }
       if (ImGui::IsItemDeactivatedAfterEdit()) {
         this->old_value = this->value;

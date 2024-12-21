@@ -106,9 +106,6 @@ Rect selection_rect(ImVec2 start, ImVec2 end) {
 bool valueInRange(float value, float min, float max) { return (value >= min) && (value <= max); }
 
 bool node_in_rect(AbstractNode* node, Rect rect) {
-  bool inside_x = false;
-  bool inside_y = false;
-
   Utils::Rect node_rect;
   node_rect.x = node->position.x;
   node_rect.y = node->position.y;

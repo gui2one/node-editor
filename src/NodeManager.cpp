@@ -1066,11 +1066,6 @@ void NodeManager::OnMouseMove(const Event& event) {
     hovered_node->highlighted = true;
   }
 
-  float start_x = m_ViewProps.rectangleSelectionStartPoint.x;
-  float start_y = m_ViewProps.rectangleSelectionStartPoint.y;
-  float end_x = m_ViewProps.rectangleSelectionEndPoint.x;
-  float end_y = m_ViewProps.rectangleSelectionEndPoint.y;
-
   if (m_ViewProps.rectangleSelectionStarted) {
     for (auto node : GetNodes()) {
       auto sel_rect =
@@ -1142,10 +1137,10 @@ void NodeManager::OnMouseClick(const Event& event) {
       if (m_ConnectionProcedure.is_mutli_input) {  // multi input
         ApplyConnectionProcedure();
       } else {
-        NodeDisconnectionEvent event(
+        NodeDisconnectionEvent ev(
             m_ConnectionProcedure.child_node->GetInput(m_ConnectionProcedure.child_index)->get_shared_ptr(), 0,
             m_ConnectionProcedure.child_node, m_ConnectionProcedure.child_index);
-        EventManager::GetInstance().Dispatch(event);
+        EventManager::GetInstance().Dispatch(ev);
         m_ConnectionProcedure.started = false;
         m_ConnectionProcedure.child_node->ResetInput(m_ConnectionProcedure.child_index);  // redundant ?
         ResetConnectionProcedure();
@@ -1217,8 +1212,8 @@ void NodeManager::OnKeyPress(const Event& event) {
     case GLFW_KEY_BACKSPACE:
       if (m_CurrentNode != nullptr && m_ViewProps.canvasHovered) {
         m_CurrentNetwork->RemoveNode(m_CurrentNode.get());
-        NodeDeletedEvent event(m_CurrentNetwork, m_CurrentNode);
-        EventManager::GetInstance().Dispatch(event);
+        NodeDeletedEvent ev(m_CurrentNetwork, m_CurrentNode);
+        EventManager::GetInstance().Dispatch(ev);
         SetCurrentNode(nullptr);
       }
       break;
@@ -1236,11 +1231,8 @@ void NodeManager::OnKeyPress(const Event& event) {
     case GLFW_KEY_D:
       if (keyEvent.mods & GLFW_MOD_CONTROL) {
         if (m_CurrentNode != nullptr) {
-          // auto factory_node = NodeFactoryRegistry::GetInstance().Clone(m_CurrentNode);
-          // GetCurrentNetwork()->AddNode(factory_node);
-
-          NodeClonedEvent event(m_CurrentNetwork, m_CurrentNode);
-          EventManager::GetInstance().Dispatch(event);
+          NodeClonedEvent clone_event(m_CurrentNetwork, m_CurrentNode);
+          EventManager::GetInstance().Dispatch(clone_event);
         }
       }
       break;
@@ -1269,6 +1261,7 @@ void NodeManager::OnKeyPress(const Event& event) {
 }
 
 void NodeManager::OnMouseDoubleClick(const Event& event) {
+  (void)event;  // slilence unused warning
   if (m_CurrentNode == nullptr) {
     return;
   }

@@ -30,8 +30,8 @@
   EventManager::GetInstance().Dispatch(event);
 
 #define DISPATCH_EDITOR_UPDATE_EVENT() \
-  ManagerUpdateEvent event;            \
-  EventManager::GetInstance().Dispatch(event);
+  ManagerUpdateEvent _event;           \
+  EventManager::GetInstance().Dispatch(_event);
 
 #define DISPLAY_PARAM_TEMPLATE(label, func)               \
   ImGui::PushID(m_Label);                                 \
