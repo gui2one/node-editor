@@ -1,4 +1,4 @@
-#include "NodeFactory.h"]->parent_node = factory_node.get();
+#include "NodeFactory.h"
 
 namespace NED {
 NodeFactoryRegistry& NED::NodeFactoryRegistry::GetInstance() {
