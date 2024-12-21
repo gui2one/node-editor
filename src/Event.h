@@ -237,6 +237,7 @@ class ManagerUpdateEvent : public Event {
   EventType GetType() const override { return EventType::ManagerUpdate; }
 };
 
+/** TODO : finish ME !!*/
 class OutputNodeChangedEvent : public Event {
  public:
   NodeNetwork* node_network = nullptr;
