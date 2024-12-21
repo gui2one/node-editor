@@ -7,4 +7,3 @@
 
 # Bugs to fix
  - ImGui drawing issue after window resize. ( this doesn't happen anymore, I have no idea why ...)
- - Issue when cloning subnet : subnetinputs still point to original subnet through "owner" maybe ?
