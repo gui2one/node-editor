@@ -36,7 +36,9 @@ enum class EventType {
   NodeCloned,
 
   ParamChanged,
-  ManagerUpdate
+  ManagerUpdate,
+
+  OutputNodeChanged
 };
 
 class Event {
@@ -233,6 +235,13 @@ class ManagerUpdateEvent : public Event {
   ManagerUpdateEvent() : Event() {}
 
   EventType GetType() const override { return EventType::ManagerUpdate; }
+};
+
+class OutputNodeChangedEvent : public Event {
+ public:
+  OutputNodeChangedEvent() : Event() {}
+
+  EventType GetType() const override { return EventType::OutputNodeChanged; }
 };
 
 };  // namespace NED
