@@ -58,13 +58,16 @@ void NodeDisconnectAction::Undo() {
 }
 
 NodeCreateAction::NodeCreateAction(NodeManager* node_manager, NodeNetwork* network, std::string type_name,
-                                   ImVec2 position)
+                                   ImVec2 position, std::shared_ptr<AbstractNode> input)
     : m_NodeManager(node_manager), m_NodeNetwork(network), m_TypeName(type_name), m_Position(position) {
   std::cout << "Creating Node of type: " << m_TypeName << std::endl;
   std::cout << "Num nodes in network : " << m_NodeNetwork->nodes.size() << std::endl;
   m_Node = NodeFactoryRegistry::GetInstance().Create(m_TypeName);
   m_Node->parent_node = network->owner.get();
   m_Node->position = m_Position;
+  if (input != nullptr && m_Node->GetNumAvailableInputs() > 0) {
+    m_Node->SetInput(0, input.get());
+  }
   m_NodeNetwork->AddNode(m_Node);
 }
 

@@ -175,7 +175,8 @@ void NodeManager::InitGLFWEvents() {
   dispatcher.Subscribe(EventType::NodeCreated, [this](const Event& event) {
     auto ev = static_cast<const NodeCreatedEvent&>(event);
     std::cout << "Node to be Created : " << ev.node_type_name << std::endl;
-    auto action = std::make_shared<NodeCreateAction>(this, m_CurrentNetwork, ev.node_type_name, ev.node_position);
+    auto action =
+        std::make_shared<NodeCreateAction>(this, m_CurrentNetwork, ev.node_type_name, ev.node_position, m_CurrentNode);
     action->message = std::format("Node to be Created  : {}", ev.node_type_name);
     ActionManager::GetInstance().executeCommand(std::move(action), false);
   });

@@ -106,7 +106,8 @@ class NodeDisconnectAction : public Action {
 
 class NodeCreateAction : public Action {
  public:
-  NodeCreateAction(NodeManager* node_manager, NodeNetwork* network, std::string type_name, ImVec2 position);
+  NodeCreateAction(NodeManager* node_manager, NodeNetwork* network, std::string type_name, ImVec2 position,
+                   std::shared_ptr<AbstractNode> input = nullptr);
   void Do() override;
   void Undo() override;
 
