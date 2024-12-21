@@ -141,4 +141,20 @@ void CurrentNodeChangedAction::Undo() {
     node_manager->m_CurrentNode = old_current->get_shared_ptr();
   }
 }
+
+NodeCloneAction::NodeCloneAction(NodeManager* node_manager, NodeNetwork* node_network, AbstractNode* src_node)
+    : node_manager(node_manager), node_network(node_network), src_node(src_node) {
+  message = std::format("Cloning Node of type: {}", src_node->m_TypeName);
+}
+
+void NodeCloneAction::Do() {
+  node = NodeFactoryRegistry::GetInstance().Clone(src_node->get_shared_ptr());
+  node_network->AddNode(node);
+}
+void NodeCloneAction::Undo() {
+  node_network->RemoveNode(node.get());
+  if (node_manager->m_CurrentNode == node->get_shared_ptr()) {
+    node_manager->SetCurrentNode(nullptr);
+  }
+}
 };  // namespace NED

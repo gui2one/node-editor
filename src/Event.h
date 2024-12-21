@@ -33,6 +33,8 @@ enum class EventType {
   NodeCreated,
   NodeDeleted,
 
+  NodeCloned,
+
   ParamChanged,
   ManagerUpdate
 };
@@ -196,6 +198,19 @@ class NodeDeletedEvent : public Event {
 
   EventType GetType() const override { return EventType::NodeDeleted; }
 };
+
+class NodeClonedEvent : public Event {
+ public:
+  NodeNetwork* node_network = nullptr;
+  std::shared_ptr<AbstractNode> node = nullptr;
+
+ public:
+  NodeClonedEvent(NodeNetwork* node_network, std::shared_ptr<AbstractNode> node)
+      : node_network(node_network), node(node) {}
+
+  EventType GetType() const override { return EventType::NodeCloned; }
+};
+
 template <typename T>
 class ParamChangedEvent : public Event {
  public:

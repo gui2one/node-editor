@@ -129,6 +129,19 @@ class NodeDeleteAction : public Action {
   NodeNetwork* m_NodeNetwork;
 };
 
+class NodeCloneAction : public Action {
+ public:
+  NodeCloneAction(NodeManager* node_manager, NodeNetwork* node_network, AbstractNode* src_node);
+
+  void Do() override;
+  void Undo() override;
+
+ public:
+  NodeManager* node_manager;
+  NodeNetwork* node_network;
+  AbstractNode* src_node;
+  std::shared_ptr<AbstractNode> node;
+};
 class SelectionChangedAction : public Action {
  public:
   SelectionChangedAction(NodeManager* node_manager, std::vector<AbstractNode*> old_selection,

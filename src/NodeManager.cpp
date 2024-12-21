@@ -110,7 +110,12 @@ void NodeManager::InitGLFWEvents() {
     DropFileEvent event(paths[0]);
     dispatcher.Dispatch(event);
   });
-
+  dispatcher.Subscribe(EventType::NodeCloned, [this](const NED::Event& event) {
+    auto ev = static_cast<const NodeClonedEvent&>(event);
+    // std::cout << "cloned node : " << ev.node->title << std::endl;
+    auto action = std::make_shared<NodeCloneAction>(this, ev.node_network, ev.node.get());
+    ActionManager::GetInstance().executeCommand(std::move(action));
+  });
   dispatcher.Subscribe(EventType::CurrentNodeChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const NED::CurrentNodeChangedEvent&>(event);
     auto action = std::make_shared<CurrentNodeChangedAction>(this, ev.old_current, ev.new_current);
@@ -253,8 +258,10 @@ void NodeManager::BuildImGuiMainMenuBar() {
     }
     ImGui::Separator();
     if (ImGui::MenuItem("Clone", "Ctrl+D", false, m_CurrentNode != nullptr)) {
-      auto factory_node = NodeFactoryRegistry::GetInstance().Clone(m_CurrentNode);
-      GetCurrentNetwork()->AddNode(factory_node);
+      // auto factory_node = NodeFactoryRegistry::GetInstance().Clone(m_CurrentNode);
+      // GetCurrentNetwork()->AddNode(factory_node);
+      NodeClonedEvent event(m_CurrentNetwork, m_CurrentNode);
+      EventManager::GetInstance().Dispatch(event);
     }
     ImGui::EndMenu();
   }
@@ -1222,6 +1229,17 @@ void NodeManager::OnKeyPress(const Event& event) {
         if (m_CurrentNode) {
           SetOutputNode(m_CurrentNode);
           EventManager::GetInstance().Dispatch(ManagerUpdateEvent());
+        }
+      }
+      break;
+    case GLFW_KEY_D:
+      if (keyEvent.mods & GLFW_MOD_CONTROL) {
+        if (m_CurrentNode != nullptr) {
+          // auto factory_node = NodeFactoryRegistry::GetInstance().Clone(m_CurrentNode);
+          // GetCurrentNetwork()->AddNode(factory_node);
+
+          NodeClonedEvent event(m_CurrentNetwork, m_CurrentNode);
+          EventManager::GetInstance().Dispatch(event);
         }
       }
       break;
