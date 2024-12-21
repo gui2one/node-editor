@@ -1,4 +1,4 @@
-#include "NodeFactory.h"
+#include "NodeFactory.h"]->parent_node = factory_node.get();
 
 namespace NED {
 NodeFactoryRegistry& NED::NodeFactoryRegistry::GetInstance() {
@@ -13,6 +13,16 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Create(const std::string& typ
   }
 
   return nullptr;  // Type not found
+}
+
+static std::shared_ptr<AbstractNode> find_node_by_title(NodeNetwork* network, std::string title) {
+  for (auto node : network->nodes) {
+    if (node->title == title) {
+      return node;
+    }
+  }
+
+  return nullptr;
 }
 std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<AbstractNode> other, bool set_new_position,
                                                          ImVec2 new_pos) const {
@@ -30,7 +40,7 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
     factory_node->inputs[i] = other->inputs[i];
   }
 
-  // clone MiultiInputs
+  // clone MultiInputs
   factory_node->m_MultiInput = other->m_MultiInput;
 
   for (size_t i = 0; i < other->m_ParamLayout.params.size(); i++) {
@@ -46,7 +56,33 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
       auto factory_child = NodeFactoryRegistry::GetInstance().Clone(child);
       factory_node->node_network.AddNode(factory_child);
     }
+
+    /*
+     * here I try to update inputs in case of a subnet being cloned. ( because the network 'context' changes )
+     * the strategy is to use node titles, which should be unique per node_nework, but if we clone a subnet, children
+     * titles should remain the same
+     */
+    if (factory_node->IsSubnet()) {
+      std::cout << "Are we here ?!!!! " << std::endl;
+      for (auto child : factory_node->node_network.nodes) {
+        std::vector<std::string> input_titles;
+        for (size_t i = 0; i < MAX_N_INPUTS; i++) {
+          if (child->inputs[i] != nullptr) {
+            auto _title = child->inputs[i]->title;
+
+            std::cout << "input title : " << _title << std::endl;
+            auto found = find_node_by_title(&factory_node->node_network, _title);
+            if (found != nullptr) {
+              std::cout << "Found new parent ?!" << std::endl;
+              child->inputs[i] = found.get();
+            }
+            input_titles.push_back(_title);
+          }
+        }
+      }
+    }
   }
+
   return factory_node;
 }
 void NodeFactoryRegistry::CloneParam(std::shared_ptr<NodeParam> src_param, std::shared_ptr<NodeParam> dst_param) const {
