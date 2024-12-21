@@ -43,17 +43,13 @@ endforeach()
 # set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 add_executable(${PROJECT_NAME} 
     ${SOURCES}
-    # src/example.cpp
-    # src/Application.cpp
-    # src/StringGenerator.cpp
-    # src/NumberOperator.cpp
 )
 
 include_directories(
   src/
 )
 
-# target_compile_options(${PROJECT_NAME} PUBLIC /W3)
+target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_link_libraries(${PROJECT_NAME} PUBLIC node_editor)
 
 add_custom_command(

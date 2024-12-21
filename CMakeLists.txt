@@ -61,7 +61,7 @@ add_library(${PROJECT_NAME} STATIC
   # src/utils/node_manager_utils.cpp
   # src/stb_image.cpp
 )
-target_compile_options(${PROJECT_NAME} PUBLIC /W4)
+target_compile_options(${PROJECT_NAME} PUBLIC /W3)
 target_include_directories(${PROJECT_NAME} PUBLIC ${_include_dirs})
 include_directories(${_include_dirs})
 
