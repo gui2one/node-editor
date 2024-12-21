@@ -50,7 +50,6 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
     CloneParam(param, factory_param);
   }
 
-  // TODO : clone subnet inner Nodes with connections and all
   if (factory_node->IsSubnet()) {
     for (auto child : other->node_network.nodes) {
       auto factory_child = NodeFactoryRegistry::GetInstance().Clone(child);

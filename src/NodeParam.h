@@ -87,16 +87,9 @@ class Param : public NodeParam {
     auto cast_p = std::dynamic_pointer_cast<Param<T>>(dst_param);
 
     if (cast_p != nullptr) {
-      std::cout << "---------- cast OK ?---------------" << std::endl;
-      cast_p->Set(value);
-      // cast_p->value = value;
-      // cast_p->old_value = old_value;
-      // cast_p->min_val = min_val;
-      // cast_p->max_val = max_val;
-      // cast_p->default_val = default_val;
-      // cast_p->temp_value = temp_value;
+      cast_p->Set(value, min_val, max_val);
     } else {
-      std::cout << "---------- cast failed ---------------" << std::endl;
+      std::cout << "---------- Param cast failed ---------------" << std::endl;
     }
   }
   void Set(T _value) {
