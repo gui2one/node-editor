@@ -144,6 +144,7 @@ bool BaseApplication::InitGLFW() {
   }
 #endif
 
+  InitCallbacks();
   GetNodeManager().InitGLFWEvents();
   GetNodeManager().InitIcons();
 
@@ -153,6 +154,53 @@ bool BaseApplication::InitGLFW() {
   glfwSwapInterval(0);
 
   return true;
+}
+void BaseApplication::InitCallbacks() {
+  static auto &dispatcher = EventManager::GetInstance();
+
+  glfwSetWindowUserPointer(GetNativeWindow(), &m_AppData);
+
+  glfwSetMouseButtonCallback(GetNativeWindow(), [](GLFWwindow *window, int button, int action, int mods) {
+    double mouseX, mouseY;
+    glfwGetCursorPos(window, &mouseX, &mouseY);
+    if (action == GLFW_PRESS) {
+      MouseClickEvent clickEvent(button, (float)mouseX, (float)mouseY);
+      dispatcher.Dispatch(clickEvent);
+    } else if (action == GLFW_RELEASE) {
+      MouseReleaseEvent releaseEvent(button);
+      dispatcher.Dispatch(releaseEvent);
+    }
+  });
+
+  glfwSetCursorPosCallback(GetNativeWindow(), [](GLFWwindow *window, double xpos, double ypos) {
+    MouseMoveEvent moveEvent((float)xpos, (float)ypos);
+    dispatcher.Dispatch(moveEvent);
+  });
+
+  glfwSetKeyCallback(GetNativeWindow(), [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS) {
+      KeyPressEvent pressEvent(key, mods);
+      dispatcher.Dispatch(pressEvent);
+    }
+  });
+
+  glfwSetFramebufferSizeCallback(GetNativeWindow(), [](GLFWwindow *window, int width, int height) {
+    auto *data = (AppData *)glfwGetWindowUserPointer(window);
+    data->width = width;
+    data->height = height;
+    glViewport(0, 0, width, height);
+  });
+
+  glfwSetDropCallback(GetNativeWindow(), [](GLFWwindow *window, int count, const char **paths) {
+    DropFileEvent event(paths[0]);
+    dispatcher.Dispatch(event);
+  });
+  glfwSetWindowCloseCallback(GetNativeWindow(), [](GLFWwindow *window) {
+    auto app_data = (AppData *)glfwGetWindowUserPointer(window);
+    glfwSetWindowShouldClose(window, false);
+    app_data->modal_confirm_opened = true;
+    glfwPostEmptyEvent();
+  });
 }
 void BaseApplication::ImGuiInit(GLFWwindow *window) {
   // init ImGui
@@ -271,6 +319,24 @@ void BaseApplication::ImGuiEndFrame() {
   }
 }
 
+void BaseApplication::ConfirmDialog() {
+  if (ImGui::BeginPopupModal("Confirm", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+    glfwPollEvents();
+    ImGui::Text("Are you sure you want to delete this node?");
+    if (ImGui::Button("Yes", ImVec2(120, 0))) {
+      ImGui::CloseCurrentPopup();
+      m_AppData.modal_confirm_opened = false;
+      glfwSetWindowShouldClose(GetNativeWindow(), true);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("No", ImVec2(120, 0))) {
+      ImGui::CloseCurrentPopup();
+      m_AppData.modal_confirm_opened = false;
+    }
+    ImGui::EndPopup();
+  }
+}
+
 void BaseApplication::Run() {
   while (!glfwWindowShouldClose(GetNativeWindow())) {
     glfwWaitEvents();
@@ -287,6 +353,12 @@ void BaseApplication::Run() {
     }
 
     auto &manager = GetNodeManager();
+
+    if (m_AppData.modal_confirm_opened) {
+      ImGui::OpenPopup("Confirm");
+    }
+    ConfirmDialog();
+
     manager.DisplayNodeParamsOptions();
     if (manager.m_ViewProps.nodeParamsOptionsOpened) {
       ImGui::OpenPopup("Node Params Options");

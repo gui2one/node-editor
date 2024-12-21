@@ -73,7 +73,7 @@ NodeManager::~NodeManager() {}
 void NodeManager::InitGLFWEvents() {
   static auto& dispatcher = EventManager::GetInstance();
 
-  glfwSetWindowUserPointer(GetGLFWWindow(), &m_WindowData);
+  /*glfwSetWindowUserPointer(GetGLFWWindow(), &m_WindowData);
 
   glfwSetMouseButtonCallback(GetGLFWWindow(), [](GLFWwindow* window, int button, int action, int mods) {
     double mouseX, mouseY;
@@ -109,7 +109,7 @@ void NodeManager::InitGLFWEvents() {
   glfwSetDropCallback(GetGLFWWindow(), [](GLFWwindow* window, int count, const char** paths) {
     DropFileEvent event(paths[0]);
     dispatcher.Dispatch(event);
-  });
+  });*/
   dispatcher.Subscribe(EventType::NodeCloned, [this](const NED::Event& event) {
     auto ev = static_cast<const NodeClonedEvent&>(event);
     // std::cout << "cloned node : " << ev.node->title << std::endl;
