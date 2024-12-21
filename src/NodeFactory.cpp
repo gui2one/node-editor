@@ -54,6 +54,7 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
   if (factory_node->IsSubnet()) {
     for (auto child : other->node_network.nodes) {
       auto factory_child = NodeFactoryRegistry::GetInstance().Clone(child);
+      factory_child->parent_node = factory_node.get();
       factory_node->node_network.AddNode(factory_child);
     }
 
