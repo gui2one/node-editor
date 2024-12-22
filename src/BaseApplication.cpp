@@ -321,8 +321,8 @@ void BaseApplication::ImGuiEndFrame() {
 
 void BaseApplication::ConfirmDialog() {
   if (ImGui::BeginPopupModal("Confirm", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-    glfwPollEvents();
-    ImGui::Text("Are you sure you want to delete this node?");
+    glfwPostEmptyEvent();
+    ImGui::Text("Quit the program ?");
     if (ImGui::Button("Yes", ImVec2(120, 0))) {
       ImGui::CloseCurrentPopup();
       m_AppData.modal_confirm_opened = false;
@@ -353,16 +353,15 @@ void BaseApplication::Run() {
     }
 
     auto &manager = GetNodeManager();
-
     if (m_AppData.modal_confirm_opened) {
       ImGui::OpenPopup("Confirm");
+      glfwPostEmptyEvent();
     }
     ConfirmDialog();
 
     manager.DisplayNodeParamsOptions();
     if (manager.m_ViewProps.nodeParamsOptionsOpened) {
       ImGui::OpenPopup("Node Params Options");
-      glfwPostEmptyEvent();
     }
     // main menu bar
 
