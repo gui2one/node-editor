@@ -199,7 +199,6 @@ void BaseApplication::InitCallbacks() {
     auto app_data = (AppData *)glfwGetWindowUserPointer(window);
     glfwSetWindowShouldClose(window, false);
     app_data->modal_confirm_opened = true;
-    glfwPostEmptyEvent();
   });
 }
 void BaseApplication::ImGuiInit(GLFWwindow *window) {
@@ -321,7 +320,6 @@ void BaseApplication::ImGuiEndFrame() {
 
 void BaseApplication::ConfirmDialog() {
   if (ImGui::BeginPopupModal("Confirm", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-    glfwPostEmptyEvent();
     ImGui::Text("Quit the program ?");
     if (ImGui::Button("Yes", ImVec2(120, 0))) {
       ImGui::CloseCurrentPopup();
@@ -362,6 +360,7 @@ void BaseApplication::Run() {
     manager.DisplayNodeParamsOptions();
     if (manager.m_ViewProps.nodeParamsOptionsOpened) {
       ImGui::OpenPopup("Node Params Options");
+      glfwPostEmptyEvent();
     }
     // main menu bar
 

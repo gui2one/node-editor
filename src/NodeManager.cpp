@@ -775,7 +775,8 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
     ImGui::PopStyleColor();
     ImGui::SameLine();
     if (ImGui::Button("Options")) {
-      std::cout << "Options" << std::endl;
+      // std::cout << "Options" << std::endl;
+
       OpenNodeParamsOptionsPopup();
     }
     ImGui::Separator();
@@ -837,7 +838,10 @@ void NodeManager::DisplayNodeParamsOptions() {
   }
 }
 
-void NodeManager::OpenNodeParamsOptionsPopup() { m_ViewProps.nodeParamsOptionsOpened = true; }
+void NodeManager::OpenNodeParamsOptionsPopup() {
+  m_ViewProps.nodeParamsOptionsOpened = true;
+  glfwPostEmptyEvent();
+}
 
 void NodeManager::Evaluate() {
   if (m_CurrentNetwork != nullptr) {
