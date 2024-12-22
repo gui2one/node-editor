@@ -75,7 +75,7 @@ class NodeManager {
   NodeManager();
   ~NodeManager();
 
-  void InitGLFWEvents();
+  void EventsSubscribe();
 
   template <typename T>
   void ParamChangeSubscribe() {

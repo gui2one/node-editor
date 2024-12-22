@@ -70,52 +70,16 @@ NodeManager::NodeManager() {
 
 NodeManager::~NodeManager() {}
 
-void NodeManager::InitGLFWEvents() {
+void NodeManager::EventsSubscribe() {
   static auto& dispatcher = EventManager::GetInstance();
 
-  /*glfwSetWindowUserPointer(GetGLFWWindow(), &m_WindowData);
-
-  glfwSetMouseButtonCallback(GetGLFWWindow(), [](GLFWwindow* window, int button, int action, int mods) {
-    double mouseX, mouseY;
-    glfwGetCursorPos(window, &mouseX, &mouseY);
-    if (action == GLFW_PRESS) {
-      MouseClickEvent clickEvent(button, (float)mouseX, (float)mouseY);
-      dispatcher.Dispatch(clickEvent);
-    } else if (action == GLFW_RELEASE) {
-      MouseReleaseEvent releaseEvent(button);
-      dispatcher.Dispatch(releaseEvent);
-    }
-  });
-
-  glfwSetCursorPosCallback(GetGLFWWindow(), [](GLFWwindow* window, double xpos, double ypos) {
-    MouseMoveEvent moveEvent((float)xpos, (float)ypos);
-    dispatcher.Dispatch(moveEvent);
-  });
-
-  glfwSetKeyCallback(GetGLFWWindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (action == GLFW_PRESS) {
-      KeyPressEvent pressEvent(key, mods);
-      dispatcher.Dispatch(pressEvent);
-    }
-  });
-
-  glfwSetFramebufferSizeCallback(GetGLFWWindow(), [](GLFWwindow* window, int width, int height) {
-    WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
-    data->width = width;
-    data->height = height;
-    glViewport(0, 0, width, height);
-  });
-
-  glfwSetDropCallback(GetGLFWWindow(), [](GLFWwindow* window, int count, const char** paths) {
-    DropFileEvent event(paths[0]);
-    dispatcher.Dispatch(event);
-  });*/
   dispatcher.Subscribe(EventType::NodeCloned, [this](const NED::Event& event) {
     auto ev = static_cast<const NodeClonedEvent&>(event);
     // std::cout << "cloned node : " << ev.node->title << std::endl;
     auto action = std::make_shared<NodeCloneAction>(this, ev.node_network, ev.node.get());
     ActionManager::GetInstance().executeCommand(std::move(action));
   });
+
   dispatcher.Subscribe(EventType::CurrentNodeChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const NED::CurrentNodeChangedEvent&>(event);
     auto action = std::make_shared<CurrentNodeChangedAction>(this, ev.old_current, ev.new_current);
@@ -155,6 +119,7 @@ void NodeManager::InitGLFWEvents() {
     this->m_SavePath = path;
     glfwSetWindowTitle(this->GetGLFWWindow(), path.string().c_str());
   });
+
   dispatcher.Subscribe(EventType::NodeConnection, [this](const Event& event) {
     Evaluate();
     auto ev = static_cast<const NodeConnectionEvent&>(event);
@@ -163,6 +128,7 @@ void NodeManager::InitGLFWEvents() {
     action->message = std::format("Node Connect");
     ActionManager::GetInstance().executeCommand(std::move(action));
   });
+
   dispatcher.Subscribe(EventType::NodeDisconnection, [this](const Event& event) {
     Evaluate();
     auto ev = static_cast<const NodeDisconnectionEvent&>(event);
@@ -180,6 +146,7 @@ void NodeManager::InitGLFWEvents() {
     action->message = std::format("Node to be Created  : {}", ev.node_type_name);
     ActionManager::GetInstance().executeCommand(std::move(action), false);
   });
+
   dispatcher.Subscribe(EventType::NodeDeleted, [this](const Event& event) {
     auto ev = static_cast<const NodeDeletedEvent&>(event);
     auto action = std::make_shared<NodeDeleteAction>(this, m_CurrentNetwork, ev.node);

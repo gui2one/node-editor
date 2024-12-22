@@ -145,7 +145,7 @@ bool BaseApplication::InitGLFW() {
 #endif
 
   InitCallbacks();
-  GetNodeManager().InitGLFWEvents();
+  GetNodeManager().EventsSubscribe();
   GetNodeManager().InitIcons();
 
   ImGuiInit(GetNativeWindow());
