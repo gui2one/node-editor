@@ -108,16 +108,7 @@ void NodeManager::EventsSubscribe() {
     auto drop_ev = static_cast<const NED::DropFileEvent&>(event);
     GotoRootNetwork();
     auto path = std::filesystem::path(drop_ev.path);
-
-    ResetAll();
-    auto net = load_yaml_file(path);
-    LoadFileEvent event2(m_SavePath.string().c_str());
-    EventManager::GetInstance().Dispatch(event2);
-
-    this->GetRootNetwork() = net;
-
-    this->m_SavePath = path;
-    glfwSetWindowTitle(this->GetGLFWWindow(), path.string().c_str());
+    LoadFromFile(path);
   });
 
   dispatcher.Subscribe(EventType::NodeConnection, [this](const Event& event) {
@@ -983,6 +974,8 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
     m_NodeNetwork = net;
     ViewFrameAll();
     glfwSetWindowTitle(m_GLFWWindow, path.string().c_str());
+    ManagerUpdateEvent update_event;
+    EventManager::GetInstance().Dispatch(update_event);
   }
 }
 
