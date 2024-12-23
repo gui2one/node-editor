@@ -17,7 +17,7 @@ struct AppData {
 };
 class BaseApplication {
  public:
-  BaseApplication() {};
+  BaseApplication() : m_RegularFont(nullptr), m_BoldFont(nullptr) {};
   ~BaseApplication();
 
   bool InitGLFW();
