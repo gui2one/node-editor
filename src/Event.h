@@ -38,7 +38,8 @@ enum class EventType {
   ParamChanged,
   ManagerUpdate,
 
-  OutputNodeChanged
+  OutputNodeChanged,
+  CurrentNetworkChanged
 };
 
 class Event {
@@ -237,7 +238,6 @@ class ManagerUpdateEvent : public Event {
   EventType GetType() const override { return EventType::ManagerUpdate; }
 };
 
-/** TODO : finish ME !!*/
 class OutputNodeChangedEvent : public Event {
  public:
   NodeNetwork* node_network = nullptr;
@@ -249,6 +249,18 @@ class OutputNodeChangedEvent : public Event {
       : node_network(node_network), new_output_node(new_output_node), old_output_node(old_output_node), Event() {}
 
   EventType GetType() const override { return EventType::OutputNodeChanged; }
+};
+
+class CurrentNetworkChangedEvent : public Event {
+ public:
+  NodeNetwork* new_network = nullptr;
+  NodeNetwork* old_network = nullptr;
+
+ public:
+  CurrentNetworkChangedEvent(NodeNetwork* new_network, NodeNetwork* old_network)
+      : new_network(new_network), old_network(old_network), Event() {}
+
+  EventType GetType() const override { return EventType::CurrentNetworkChanged; }
 };
 
 };  // namespace NED
