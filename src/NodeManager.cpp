@@ -46,7 +46,8 @@ namespace NED {
 NodeManager::NodeManager() {
   SetNodesMenu([this]() { this->BuildNodeMenuFromRegistry(); });
 
-  m_CurrentNetwork = &m_NodeNetwork;
+  // m_CurrentNetwork = &m_NodeNetwork;
+  SetCurrentNetwork(&m_NodeNetwork);
   REGISTER_PARAM_TYPE(NED::ParamLabel);
   REGISTER_PARAM_TYPE(NED::ParamGroup);
   REGISTER_PARAM_TYPE(NED::ParamComboBox);
@@ -72,7 +73,10 @@ NodeManager::~NodeManager() {}
 
 void NodeManager::EventsSubscribe() {
   static auto& dispatcher = EventManager::GetInstance();
-
+  dispatcher.Subscribe(EventType::CurrentNetworkChanged, [this](const NED::Event& event) {
+    auto ev = static_cast<const CurrentNetworkChangedEvent&>(event);
+    std::cout << "Current network changed !" << std::endl;
+  });
   dispatcher.Subscribe(EventType::OutputNodeChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const OutputNodeChangedEvent&>(event);
     std::cout << "changed output node." << std::endl;
@@ -680,7 +684,8 @@ void NodeManager::DisplayNavBar() {
     ImGui::SameLine();
     if (i < subnetworks.size() - 1) {
       if (ImGui::Button(net->owner->title.c_str())) {
-        m_CurrentNetwork = net;
+        // m_CurrentNetwork = net;
+        SetCurrentNetwork(net);
       }
     } else {
       ImGui::Text("%s", net->owner->title.c_str());
@@ -730,7 +735,8 @@ void NodeManager::tree_view_recurse(NodeNetwork* network) {
         SetCurrentNode(node);
         if (node->parent_node != nullptr) {
           std::cout << node->parent_node->title << std::endl;
-          m_CurrentNetwork = &node->parent_node->node_network;
+          // m_CurrentNetwork = &node->parent_node->node_network;
+          SetCurrentNetwork(&node->parent_node->node_network);
           m_CurrentNetwork->owner = node->parent_node->get_shared_ptr();
         } else {
           GotoRootNetwork();
@@ -987,13 +993,12 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
   }
 }
 
-void NodeManager::SetCurrentNetwork(std::shared_ptr<AbstractNode> node) {
-  if (node->IsSubnet()) {
-    m_CurrentNetwork = &node->node_network;
-    m_CurrentNetwork->owner = node;
-  } else {
-    if (node->parent_node == nullptr) GotoRootNetwork();
-  }
+void NodeManager::SetCurrentNetwork(NodeNetwork* network) {
+  NodeNetwork* old_current = m_CurrentNetwork;
+  m_CurrentNetwork = network;
+
+  CurrentNetworkChangedEvent event(old_current, m_CurrentNetwork);
+  EventManager::GetInstance().Dispatch(event);
 }
 
 void NodeManager::ViewFrameAll() {
@@ -1242,7 +1247,8 @@ void NodeManager::OnMouseDoubleClick(const Event& event) {
   }
   if (IsNodeHovered(m_CurrentNode)) {
     if (m_CurrentNode->IsSubnet()) {
-      m_CurrentNetwork = &m_CurrentNode->node_network;
+      // m_CurrentNetwork = &m_CurrentNode->node_network;
+      SetCurrentNetwork(&m_CurrentNode->node_network);
       m_CurrentNetwork->owner = m_CurrentNode;
     }
   }
