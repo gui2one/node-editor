@@ -241,9 +241,12 @@ class ManagerUpdateEvent : public Event {
 class OutputNodeChangedEvent : public Event {
  public:
   NodeNetwork* node_network = nullptr;
+  AbstractNode* old_output_node = nullptr;
+  AbstractNode* new_output_node = nullptr;
 
  public:
-  OutputNodeChangedEvent() : Event() {}
+  OutputNodeChangedEvent(NodeNetwork* node_network, AbstractNode* new_output_node, AbstractNode* old_output_node)
+      : node_network(node_network), new_output_node(new_output_node), old_output_node(old_output_node), Event() {}
 
   EventType GetType() const override { return EventType::OutputNodeChanged; }
 };

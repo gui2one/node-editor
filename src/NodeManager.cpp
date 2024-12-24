@@ -73,6 +73,11 @@ NodeManager::~NodeManager() {}
 void NodeManager::EventsSubscribe() {
   static auto& dispatcher = EventManager::GetInstance();
 
+  dispatcher.Subscribe(EventType::OutputNodeChanged, [this](const NED::Event& event) {
+    auto ev = static_cast<const OutputNodeChangedEvent&>(event);
+    std::cout << "changed output node." << std::endl;
+    EventManager::GetInstance().Dispatch(ManagerUpdateEvent());
+  });
   dispatcher.Subscribe(EventType::NodeCloned, [this](const NED::Event& event) {
     auto ev = static_cast<const NodeClonedEvent&>(event);
     // std::cout << "cloned node : " << ev.node->title << std::endl;
@@ -1187,8 +1192,11 @@ void NodeManager::OnKeyPress(const Event& event) {
     case GLFW_KEY_ENTER:
       if (m_ViewProps.canvasHovered) {
         if (m_CurrentNode) {
+          auto old_output_node = GetOutputNode();
           SetOutputNode(m_CurrentNode);
-          EventManager::GetInstance().Dispatch(ManagerUpdateEvent());
+          // EventManager::GetInstance().Dispatch(ManagerUpdateEvent());
+          OutputNodeChangedEvent ev(GetCurrentNetwork(), GetOutputNode().get(), old_output_node.get());
+          EventManager::GetInstance().Dispatch(ev);
         }
       }
       break;
