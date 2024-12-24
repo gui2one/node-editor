@@ -77,6 +77,9 @@ void NodeManager::EventsSubscribe() {
     auto ev = static_cast<const OutputNodeChangedEvent&>(event);
     std::cout << "changed output node." << std::endl;
     EventManager::GetInstance().Dispatch(ManagerUpdateEvent());
+
+    auto action = std::make_shared<OutputNodeChangedAction>(ev.node_network, ev.old_output_node, ev.new_output_node);
+    ActionManager::GetInstance().executeCommand(std::move(action));
   });
   dispatcher.Subscribe(EventType::NodeCloned, [this](const NED::Event& event) {
     auto ev = static_cast<const NodeClonedEvent&>(event);

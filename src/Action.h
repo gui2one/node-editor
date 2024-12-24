@@ -169,6 +169,18 @@ class CurrentNodeChangedAction : public Action {
   AbstractNode* old_current;
   AbstractNode* new_current;
 };
+class OutputNodeChangedAction : public Action {
+ public:
+  OutputNodeChangedAction(NodeNetwork* node_network, AbstractNode* old_output, AbstractNode* new_output);
+
+  void Do() override;
+  void Undo() override;
+
+ public:
+  NodeNetwork* node_network;
+  AbstractNode* old_output;
+  AbstractNode* new_output;
+};
 
 }  // namespace NED
 

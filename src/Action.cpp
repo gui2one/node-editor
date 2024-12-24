@@ -160,4 +160,27 @@ void NodeCloneAction::Undo() {
     node_manager->SetCurrentNode(nullptr);
   }
 }
+
+OutputNodeChangedAction::OutputNodeChangedAction(NodeNetwork* node_network, AbstractNode* old_output,
+                                                 AbstractNode* new_output)
+    : node_network(node_network), old_output(old_output), new_output(new_output) {}
+
+void OutputNodeChangedAction::Do() {
+  if (new_output == nullptr) {
+    node_network->outuput_node = nullptr;
+    return;
+  } else {
+    node_network->outuput_node = new_output->get_shared_ptr();
+  }
+}
+
+void OutputNodeChangedAction::Undo() {
+  if (old_output == nullptr) {
+    node_network->outuput_node = nullptr;
+    return;
+  } else {
+    node_network->outuput_node = old_output->get_shared_ptr();
+  }
+}
+
 };  // namespace NED
