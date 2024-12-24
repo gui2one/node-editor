@@ -182,6 +182,24 @@ class OutputNodeChangedAction : public Action {
   AbstractNode* new_output;
 };
 
+class CurrentNetworkChangedAction : public Action {
+ public:
+  CurrentNetworkChangedAction(NodeManager* node_manager, NodeNetwork* old_network,
+                              std::shared_ptr<AbstractNode> old_owner, NodeNetwork* new_network,
+                              std::shared_ptr<AbstractNode> new_owner);
+
+  void Do() override;
+  void Undo() override;
+
+ public:
+  NodeManager* node_manager;
+  NodeNetwork* old_network;
+  NodeNetwork* new_network;
+
+  std::shared_ptr<AbstractNode> old_owner;
+  std::shared_ptr<AbstractNode> new_owner;
+};
+
 }  // namespace NED
 
 #endif  // NODE_EDITOR_ACTION_H

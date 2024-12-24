@@ -255,10 +255,13 @@ class CurrentNetworkChangedEvent : public Event {
  public:
   NodeNetwork* new_network = nullptr;
   NodeNetwork* old_network = nullptr;
+  std::shared_ptr<AbstractNode> new_owner = nullptr;
+  std::shared_ptr<AbstractNode> old_owner = nullptr;
 
  public:
-  CurrentNetworkChangedEvent(NodeNetwork* new_network, NodeNetwork* old_network)
-      : new_network(new_network), old_network(old_network), Event() {}
+  CurrentNetworkChangedEvent(NodeNetwork* new_network, std::shared_ptr<AbstractNode> new_owner,
+                             NodeNetwork* old_network, std::shared_ptr<AbstractNode> old_owner)
+      : new_network(new_network), new_owner(new_owner), old_network(old_network), old_owner(old_owner), Event() {}
 
   EventType GetType() const override { return EventType::CurrentNetworkChanged; }
 };

@@ -46,8 +46,8 @@ namespace NED {
 NodeManager::NodeManager() {
   SetNodesMenu([this]() { this->BuildNodeMenuFromRegistry(); });
 
-  // m_CurrentNetwork = &m_NodeNetwork;
-  SetCurrentNetwork(&m_NodeNetwork);
+  m_CurrentNetwork = &m_NodeNetwork;
+  // SetCurrentNetwork(&m_NodeNetwork, nullptr);
   REGISTER_PARAM_TYPE(NED::ParamLabel);
   REGISTER_PARAM_TYPE(NED::ParamGroup);
   REGISTER_PARAM_TYPE(NED::ParamComboBox);
@@ -75,7 +75,11 @@ void NodeManager::EventsSubscribe() {
   static auto& dispatcher = EventManager::GetInstance();
   dispatcher.Subscribe(EventType::CurrentNetworkChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const CurrentNetworkChangedEvent&>(event);
-    std::cout << "Current network changed !" << std::endl;
+    // std::cout << "Current network changed !" << std::endl;
+    auto action =
+        std::make_shared<CurrentNetworkChangedAction>(this, ev.old_network, ev.old_owner, ev.new_network, ev.new_owner);
+    action->message = std::format("Current network changed");
+    ActionManager::GetInstance().executeCommand(std::move(action));
   });
   dispatcher.Subscribe(EventType::OutputNodeChanged, [this](const NED::Event& event) {
     auto ev = static_cast<const OutputNodeChangedEvent&>(event);
@@ -685,7 +689,7 @@ void NodeManager::DisplayNavBar() {
     if (i < subnetworks.size() - 1) {
       if (ImGui::Button(net->owner->title.c_str())) {
         // m_CurrentNetwork = net;
-        SetCurrentNetwork(net);
+        SetCurrentNetwork(net, net->owner);
       }
     } else {
       ImGui::Text("%s", net->owner->title.c_str());
@@ -736,8 +740,8 @@ void NodeManager::tree_view_recurse(NodeNetwork* network) {
         if (node->parent_node != nullptr) {
           std::cout << node->parent_node->title << std::endl;
           // m_CurrentNetwork = &node->parent_node->node_network;
-          SetCurrentNetwork(&node->parent_node->node_network);
-          m_CurrentNetwork->owner = node->parent_node->get_shared_ptr();
+          SetCurrentNetwork(&node->parent_node->node_network, node->parent_node->get_shared_ptr());
+          // m_CurrentNetwork->owner = node->parent_node->get_shared_ptr();
         } else {
           GotoRootNetwork();
         }
@@ -993,12 +997,21 @@ void NodeManager::LoadFromFile(std::filesystem::path path) {
   }
 }
 
-void NodeManager::SetCurrentNetwork(NodeNetwork* network) {
+void NodeManager::SetCurrentNetwork(NodeNetwork* network, std::shared_ptr<AbstractNode> owner, bool trigger_action) {
   NodeNetwork* old_current = m_CurrentNetwork;
+  std::shared_ptr<AbstractNode> old_owner = nullptr;
+  if (m_CurrentNetwork != nullptr) {
+    old_owner = m_CurrentNetwork->owner;
+  }
   m_CurrentNetwork = network;
-
-  CurrentNetworkChangedEvent event(old_current, m_CurrentNetwork);
-  EventManager::GetInstance().Dispatch(event);
+  m_CurrentNetwork->owner = owner;
+  if (old_current != m_CurrentNetwork) {
+    SetCurrentNode(nullptr);
+    if (trigger_action) {
+      CurrentNetworkChangedEvent event(m_CurrentNetwork, m_CurrentNetwork->owner, old_current, old_owner);
+      EventManager::GetInstance().Dispatch(event);
+    }
+  }
 }
 
 void NodeManager::ViewFrameAll() {
@@ -1241,15 +1254,15 @@ void NodeManager::OnKeyPress(const Event& event) {
 }
 
 void NodeManager::OnMouseDoubleClick(const Event& event) {
-  (void)event;  // slilence unused warning
+  (void)event;  // silence unused warning
   if (m_CurrentNode == nullptr) {
     return;
   }
   if (IsNodeHovered(m_CurrentNode)) {
     if (m_CurrentNode->IsSubnet()) {
       // m_CurrentNetwork = &m_CurrentNode->node_network;
-      SetCurrentNetwork(&m_CurrentNode->node_network);
-      m_CurrentNetwork->owner = m_CurrentNode;
+      SetCurrentNetwork(&m_CurrentNode->node_network, m_CurrentNode);
+      // m_CurrentNetwork->owner = m_CurrentNode;
     }
   }
 }

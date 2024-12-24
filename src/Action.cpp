@@ -183,4 +183,18 @@ void OutputNodeChangedAction::Undo() {
   }
 }
 
+CurrentNetworkChangedAction::CurrentNetworkChangedAction(NodeManager* node_manager, NodeNetwork* old_network,
+                                                         std::shared_ptr<AbstractNode> old_owner,
+                                                         NodeNetwork* new_network,
+                                                         std::shared_ptr<AbstractNode> new_owner)
+    : node_manager(node_manager),
+      old_network(old_network),
+      old_owner(old_owner),
+      new_network(new_network),
+      new_owner(new_owner) {}
+
+void CurrentNetworkChangedAction::Do() { node_manager->SetCurrentNetwork(new_network, new_owner, false); }
+
+void CurrentNetworkChangedAction::Undo() { node_manager->SetCurrentNetwork(old_network, old_owner, false); }
+
 };  // namespace NED

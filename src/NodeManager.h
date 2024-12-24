@@ -142,7 +142,8 @@ class NodeManager {
     }
   }
   NodeNetwork* GetCurrentNetwork() { return m_CurrentNetwork; }
-  void SetCurrentNetwork(NodeNetwork* network);
+  void SetCurrentNetwork(NodeNetwork* network, std::shared_ptr<AbstractNode> owner = nullptr,
+                         bool trigger_action = true);
   NodeNetwork& GetRootNetwork() { return m_NodeNetwork; };
   void GotoRootNetwork() {
     SetCurrentNetwork(&m_NodeNetwork);
