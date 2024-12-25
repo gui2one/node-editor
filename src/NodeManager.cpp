@@ -1032,7 +1032,10 @@ void NodeManager::OnMouseMove(const Event& event) {
   }
 
   if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && m_ViewProps.rectangleSelectionStarted) {
-    m_ViewProps.rectangleSelectionEndPoint = ToCanvasSpace(ImVec2(moveEvent.x, moveEvent.y));
+    int x, y;
+    glfwGetWindowPos(GetGLFWWindow(), &x, &y);
+    m_ViewProps.rectangleSelectionEndPoint =
+        ToCanvasSpace(ImVec2(moveEvent.x, moveEvent.y));  //+ImVec2((float)x, (float)y);
   }
 
   for (auto node : GetNodes()) {
@@ -1138,7 +1141,11 @@ void NodeManager::OnMouseClick(const Event& event) {
     }
 
     m_ViewProps.rectangleSelectionStarted = true;
-    m_ViewProps.rectangleSelectionStartPoint = ToCanvasSpace(ImVec2(clickEvent.x, clickEvent.y));
+
+    int x, y;
+    glfwGetWindowPos(GetGLFWWindow(), &x, &y);
+    m_ViewProps.rectangleSelectionStartPoint =
+        ToCanvasSpace(ImVec2(clickEvent.x, clickEvent.y));  //+ImVec2((float)x, (float)y);
     m_ViewProps.rectangleSelectionEndPoint = m_ViewProps.rectangleSelectionStartPoint;
   }
 }
