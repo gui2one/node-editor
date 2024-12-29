@@ -37,6 +37,9 @@ class StringGenerate : public StringGenerator {
     value = CREATE_PARAM(NED::ParamString, "String Value", this);
     value->Set("Hello ???");
 
+    auto color_p = CREATE_PARAM(NED::ParamColor, "Color", this);
+    color_p->Set(glm::vec3(1.0f));
+
     auto label = CREATE_PARAM(NED::ParamLabel, "label1", this);
     label->Set("Is this the label ?");
 
@@ -65,7 +68,7 @@ class StringGenerate : public StringGenerator {
     bool_p->Set(true);
 
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
-    grp->params = {label, combo_p, float_p, int_p, coords, position_p, double_p, bool_p};
+    grp->params = {label, color_p, combo_p, float_p, int_p, coords, position_p, double_p, bool_p};
 
     m_ParamLayout.Append({value, grp});
   };

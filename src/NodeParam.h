@@ -380,6 +380,23 @@ class ParamVec3 : public Param<glm::vec3> {
   }
 };
 
+class ParamColor : public Param<glm::vec3> {
+ public:
+  void Display() {
+    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
+      if (ImGui::ColorEdit3("##color", glm::value_ptr(temp_value))) {
+      }
+
+      if (ImGui::IsItemDeactivatedAfterEdit()) {
+        std::cout << "editing color" << std::endl;
+        this->old_value = this->value;
+        this->value = this->temp_value;
+        DISPATCH_PARAM_CHANGE_EVENT(glm::vec3, m_Node, m_Label, value, old_value);
+      }
+    });
+  }
+};
+
 class ParamFile : public Param<std::wstring> {
  public:
   std::vector<Utils::FileFilterItem> filters = {{"All Files", "*"}, {"Text Files", "txt"}};

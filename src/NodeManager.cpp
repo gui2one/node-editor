@@ -59,6 +59,7 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NED::ParamString);
   REGISTER_PARAM_TYPE(NED::ParamVec2);
   REGISTER_PARAM_TYPE(NED::ParamVec3);
+  REGISTER_PARAM_TYPE(NED::ParamColor);
 
   ParamChangeSubscribe<float>();
   ParamChangeSubscribe<int>();
