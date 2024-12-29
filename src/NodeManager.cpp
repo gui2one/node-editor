@@ -983,8 +983,8 @@ void NodeManager::LoadAll() {
 
 void NodeManager::LoadFromFile(std::filesystem::path path) {
   if (!path.empty()) {
-    m_SavePath = path;
     ResetAll();
+    m_SavePath = path;
     NodeNetwork net = load_yaml_file(path);
     LoadFileEvent event(m_SavePath.string().c_str());
     EventManager::GetInstance().Dispatch(event);
