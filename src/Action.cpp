@@ -163,7 +163,9 @@ void NodeCloneAction::Undo() {
 
 OutputNodeChangedAction::OutputNodeChangedAction(NodeNetwork* node_network, AbstractNode* old_output,
                                                  AbstractNode* new_output)
-    : node_network(node_network), old_output(old_output), new_output(new_output) {}
+    : node_network(node_network), old_output(old_output), new_output(new_output) {
+  message = std::format("Changing Output Node to: {}", new_output->title);
+}
 
 void OutputNodeChangedAction::Do() {
   if (new_output == nullptr) {

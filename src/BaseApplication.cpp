@@ -143,7 +143,6 @@ bool BaseApplication::InitGLFW() {
     }
   }
 #endif
-
   InitCallbacks();
   GetNodeManager().EventsSubscribe();
   GetNodeManager().InitIcons();
