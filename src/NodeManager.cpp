@@ -879,9 +879,9 @@ bool NodeManager::IsInputConnectorHovered(std::shared_ptr<AbstractNode> node, ui
 
   auto ptr = static_cast<AbstractNode*>(node.get());
   InputConnector* connector = ptr->GetInputConnector(index);
-  ImVec2 min = ToScreenSpace(node->position + connector->relative_pos -
-                             ImVec2(connector->width / 2.0f, connector->width / 2.0f));
-  ImVec2 max = min + ImVec2(connector->width, connector->width);
+  float W = connector->width + 5.0f;
+  ImVec2 min = ToScreenSpace(node->position + connector->relative_pos - ImVec2(W, W));
+  ImVec2 max = min + ImVec2(W * 2.0f, W * 2.0f);
   return ImGui::IsMouseHoveringRect(min, max, false);
 }
 
