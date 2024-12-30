@@ -793,7 +793,13 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
     ImGui::Spacing();
     for (auto param : node->m_ParamLayout.params) {
       // param->Display();
-      UI::DisplayParamModel(param, [&]() { param->Display(); });
+      // std::cout << param->m_TypeName << std::endl;
+      auto group_p = std::dynamic_pointer_cast<ParamGroup>(param);
+      if (group_p != nullptr) {
+        group_p->Display();
+      } else {
+        UI::DisplayParamModel(param, [&]() { param->Display(); });
+      }
     }
   }
 

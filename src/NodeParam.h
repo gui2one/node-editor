@@ -63,6 +63,8 @@ class NodeParam {
   virtual void YAMLDeserialize(YAML::Node yaml_node) = 0;
 
   virtual void Clone(std::shared_ptr<NodeParam> dst_param) = 0;
+  virtual bool IsDefault() = 0;
+  virtual void SetToDefault() = 0;
 
  public:
   const char* m_Label;
@@ -106,6 +108,12 @@ class Param : public NodeParam {
     max_val = _max_val;
   };
 
+  bool IsDefault() { return value == default_val; }
+  void SetToDefault() {
+    ParamChangedEvent<T> event(m_Node, m_Label, default_val, value);
+    EventManager::GetInstance().Dispatch(event);
+    Set(default_val);
+  }
   void Display() { ImGui::Text("%s -- not implemented", m_Label); }
   void DisplayOptions() { ImGui::Text("%s -- Options not implemented", m_Label); }
 
