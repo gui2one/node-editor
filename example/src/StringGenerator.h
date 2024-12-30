@@ -68,9 +68,9 @@ class StringGenerate : public StringGenerator {
     bool_p->Set(true);
 
     auto grp = CREATE_PARAM(NED::ParamGroup, "GroupTest", this);
-    grp->params = {label, color_p, combo_p, float_p, int_p, coords, position_p, double_p, bool_p};
+    grp->params = {label, color_p, combo_p, int_p, coords, position_p, double_p, bool_p};
 
-    m_ParamLayout.Append({value, grp});
+    m_ParamLayout.Append({value, float_p, grp});
   };
   ~StringGenerate() {};
 

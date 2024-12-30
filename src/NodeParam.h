@@ -12,6 +12,7 @@
 #include "Event.h"
 #include "EventManager.h"
 #include "pch.h"
+#include "ui_utils.h"
 #include "utils.h"
 #include "utils/node_manager_utils.h"
 
@@ -33,18 +34,18 @@
   ManagerUpdateEvent _event;           \
   EventManager::GetInstance().Dispatch(_event);
 
-#define DISPLAY_PARAM_TEMPLATE(label, func)               \
-  ImGui::PushID(m_Label);                                 \
-  ImGui::Columns(2);                                      \
-  ImGui::SetColumnWidth(0, 150.f);                        \
-  ImGui::Text("%s", m_Label);                             \
-  ImGui::NextColumn();                                    \
-  ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x); \
-  func();                                                 \
-  ImGui::PopItemWidth();                                  \
-  ImGui::Columns(1);                                      \
-  ImGui::PopID();                                         \
-  ImGui::Spacing();
+//#define DISPLAY_PARAM_TEMPLATE(label, func)               \
+//  ImGui::PushID(m_Label);                                 \
+//  ImGui::Columns(2);                                      \
+//  ImGui::SetColumnWidth(0, 150.f);                        \
+//  ImGui::Text("%s", m_Label);                             \
+//  ImGui::NextColumn();                                    \
+//  ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x); \
+//  func();                                                 \
+//  ImGui::PopItemWidth();                                  \
+//  ImGui::Columns(1);                                      \
+//  ImGui::PopID();                                         \
+//  ImGui::Spacing();
 
 namespace NED {
 // forward declare AbstratcNode

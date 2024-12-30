@@ -792,7 +792,8 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
     ImGui::Spacing();
     ImGui::Spacing();
     for (auto param : node->m_ParamLayout.params) {
-      param->Display();
+      // param->Display();
+      UI::DisplayParamModel(param, [&]() { param->Display(); });
     }
   }
 

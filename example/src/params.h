@@ -20,17 +20,15 @@ class ParamDouble : public Param<double> {
     max_val = 1.0;
   }
   void Display() override {
-    DISPLAY_PARAM_TEMPLATE(m_Label, [this]() {
-      ImGuiSliderFlags flags = 0;
-      if (ImGui::SliderScalar("##_label", ImGuiDataType_Double, &temp_value, (const void*)&min_val,
-                              (const void*)&max_val, "%f", flags)) {
-      }
-      if (ImGui::IsItemDeactivatedAfterEdit()) {
-        this->old_value = this->value;
-        this->value = this->temp_value;
-        DISPATCH_PARAM_CHANGE_EVENT(double, m_Node, m_Label, this->value, this->old_value);
-      }
-    });
+    ImGuiSliderFlags flags = 0;
+    if (ImGui::SliderScalar("##_label", ImGuiDataType_Double, &temp_value, (const void*)&min_val, (const void*)&max_val,
+                            "%f", flags)) {
+    }
+    if (ImGui::IsItemDeactivatedAfterEdit()) {
+      this->old_value = this->value;
+      this->value = this->temp_value;
+      DISPATCH_PARAM_CHANGE_EVENT(double, m_Node, m_Label, this->value, this->old_value);
+    }
   }
   void DisplayOptions() override {
     ImGui::InputDouble("min", &min_val);
