@@ -1128,7 +1128,11 @@ void NodeManager::OnMouseClick(const Event& event) {
     Utils::deselect_all(GetNodes());
     if (m_ConnectionProcedure.started) {
       if (m_ConnectionProcedure.is_mutli_input) {  // multi input
-        ApplyConnectionProcedure();
+        if (m_ConnectionProcedure.child_node->GetMultiInputCount() > 0) {
+          ApplyConnectionProcedure();
+        } else {
+          ResetConnectionProcedure();
+        }
       } else {
         AbstractNode* input_node = m_ConnectionProcedure.child_node->GetInput(m_ConnectionProcedure.child_index);
         if (input_node != nullptr) {
@@ -1136,8 +1140,6 @@ void NodeManager::OnMouseClick(const Event& event) {
               m_ConnectionProcedure.child_node->GetInput(m_ConnectionProcedure.child_index)->get_shared_ptr(), 0,
               m_ConnectionProcedure.child_node, m_ConnectionProcedure.child_index);
           EventManager::GetInstance().Dispatch(ev);
-          m_ConnectionProcedure.started = false;
-          m_ConnectionProcedure.child_node->ResetInput(m_ConnectionProcedure.child_index);  // redundant ?
           ResetConnectionProcedure();
         } else {
           ResetConnectionProcedure();
