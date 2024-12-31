@@ -115,7 +115,7 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml) {
     if (my_self == nullptr) continue;
 
     for (size_t i = 0; i < MAX_N_INPUTS; i++) {
-      auto input_uuid = node["inputs"][i].as<std::string>();
+      auto input_uuid = node["inputs"][i]["node"].as<std::string>();
 
       if (input_uuid == "null") continue;
       auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
@@ -127,7 +127,7 @@ std::vector<std::shared_ptr<AbstractNode>> deserialize_nodes(YAML::Node yaml) {
       my_self->SetInput((uint32_t)i, input_node.get());
     }
     for (size_t i = 0; i < node["multi_input"].size(); i++) {
-      auto input_uuid = node["multi_input"][i].as<std::string>();
+      auto input_uuid = node["multi_input"][i]["node"].as<std::string>();
       auto input_node = Utils::FindNodeByUUID(input_uuid, nodes);
 
       if (input_node == nullptr) continue;

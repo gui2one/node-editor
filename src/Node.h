@@ -38,8 +38,8 @@ class Node : public T {
       }
     } else {
       for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
-        if (node->GetMultiInput(i) != nullptr) {
-          node->GetMultiInput(i)->Update(); /* Important !!*/
+        if (node->GetMultiInput(i).node != nullptr) {
+          node->GetMultiInput(i).node->Update(); /* Important !!*/
         }
       }
     }

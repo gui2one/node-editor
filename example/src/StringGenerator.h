@@ -161,8 +161,8 @@ class StringConcatenatorMulti : public StringModifier {
   void Generate() override {
     m_DataCache = "";
     for (size_t i = 0; i < GetMultiInputCount(); i++) {
-      if (GetMultiInput(i) != nullptr) {
-        auto op0 = static_cast<StringOperator*>(GetMultiInput(i));
+      if (GetMultiInput(i).node != nullptr) {
+        auto op0 = static_cast<StringOperator*>(GetMultiInput(i).node);
         if (add_separator_param->Eval()) {
           m_DataCache += " " + op0->m_DataCache;
         } else {

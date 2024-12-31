@@ -100,7 +100,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     for (size_t i = 0; i < MAX_N_INPUTS; i++) {
       YAML::Node input_info;
       if (inputs[i].node != nullptr) {
-        input_info["node"] = uuid;
+        input_info["node"] = inputs[i].node->uuid;
         input_info["connector"] = inputs[i].connector_index;
       } else {
         input_info["node"] = "null";
@@ -113,8 +113,13 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     yaml_node["is_multi_input"] = IsMultiInput();
     if (IsMultiInput()) {
       for (size_t i = 0; i < GetMultiInputCount(); i++) {
-        if (GetMultiInput(i) != nullptr) {
-          yaml_node["multi_input"].push_back(GetMultiInput(i)->uuid);
+        if (GetMultiInput(i).node != nullptr) {
+          InputInfo info;
+          info = GetMultiInput(i);
+          YAML::Node input_info;
+          input_info["node"] = info.node->uuid;
+          input_info["connector"] = info.connector_index;
+          yaml_node["multi_input"].push_back(input_info);
         }
       }
     }
@@ -150,7 +155,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     }
     return &m_InputConnectors[index];
   }
-  AbstractNode* RemoveLastInput() {
+  InputInfo RemoveLastInput() {
     auto save = m_MultiInput[m_MultiInput.size() - 1];
     if (m_MultiInput.size() > 0) {
       m_MultiInput.pop_back();
@@ -161,8 +166,13 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
 
   inline size_t GetMultiInputCount() { return m_MultiInput.size(); }
-  inline AbstractNode* GetMultiInput(size_t index) { return m_MultiInput[index]; }
-  inline void AppendInput(AbstractNode* node) { m_MultiInput.push_back(node); }
+  inline InputInfo GetMultiInput(size_t index) { return m_MultiInput[index]; }
+  inline void AppendInput(AbstractNode* node, uint32_t connector = 0) {
+    InputInfo info;
+    info.node = node;
+    info.connector_index = connector;
+    m_MultiInput.push_back(info);
+  }
 
   inline void ActivateMultiInput() { m_IsMultiInput = true; }
   inline bool IsMultiInput() { return m_IsMultiInput; }
@@ -228,7 +238,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   bool highlighted = false;
 
   std::array<InputInfo, MAX_N_INPUTS> inputs = {nullptr, 0, nullptr, 0, nullptr, 0, nullptr, 0};
-  std::vector<AbstractNode*> m_MultiInput;
+  std::vector<InputInfo> m_MultiInput;
   std::vector<InputConnector> m_InputConnectors;
 };
 

@@ -368,8 +368,8 @@ void NodeManager::DrawNodes() {
     float step_size = (node->size.x * 0.8f) / node->GetMultiInputCount();
     ImVec2 start_x = node->position + ImVec2((node->size.x * 0.1f), -8.0f);
     for (uint32_t i = 0; i < node->GetMultiInputCount(); i++) {
-      if (ptr->GetMultiInput(i) != nullptr) {
-        auto other = ptr->GetMultiInput(i);
+      if (ptr->GetMultiInput(i).node != nullptr) {
+        auto other = ptr->GetMultiInput(i).node;
         ImVec2 p0 = ToScreenSpace(start_x + ImVec2((step_size * i) + (step_size / 2.0f), 0));
         ImVec2 other_pos = ToScreenSpace(other->position + ImVec2(other->size.x / 2.0f, other->size.y));
 
@@ -911,7 +911,8 @@ void NodeManager::ApplyConnectionProcedure() {
   if (m_ConnectionProcedure.is_mutli_input) {
     if (m_ConnectionProcedure.parent_node == nullptr) {
       AbstractNode* last_input_node =
-          m_ConnectionProcedure.child_node->m_MultiInput[m_ConnectionProcedure.child_node->m_MultiInput.size() - 1];
+          m_ConnectionProcedure.child_node->m_MultiInput[m_ConnectionProcedure.child_node->m_MultiInput.size() - 1]
+              .node;
       NodeDisconnectionEvent event(last_input_node->get_shared_ptr(), 0, m_ConnectionProcedure.child_node,
                                    m_ConnectionProcedure.child_index);
       EventManager::GetInstance().Dispatch(event);
