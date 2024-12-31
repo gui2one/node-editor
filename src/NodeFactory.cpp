@@ -71,14 +71,14 @@ std::shared_ptr<AbstractNode> NodeFactoryRegistry::Clone(std::shared_ptr<Abstrac
 
     for (auto child : factory_node->node_network.nodes) {
       for (size_t i = 0; i < MAX_N_INPUTS; i++) {
-        if (child->inputs[i] != nullptr) {
-          auto _title = child->inputs[i]->title;
+        if (child->inputs[i].node != nullptr) {
+          auto _title = child->inputs[i].node->title;
 
           // std::cout << "input title : " << _title << std::endl;
           auto new_parent = find_node_by_title(&factory_node->node_network, _title);
           if (new_parent != nullptr) {
             // std::cout << "Found new parent ?!" << std::endl;
-            child->inputs[i] = new_parent.get();
+            child->inputs[i].node = new_parent.get();
           }
         }
       }

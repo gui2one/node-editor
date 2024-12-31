@@ -68,6 +68,10 @@ struct InputConnector {
   bool grabbed = false;
 };
 
+struct InputInfo {
+  AbstractNode* node = nullptr;
+  uint32_t connector_index = 0;
+};
 class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
  public:
   AbstractNode(std::string _title) : title(_title), position(50, 0), size(100, 30), color(NODE_COLOR::DARK_GREY) {
@@ -93,8 +97,8 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     }
 
     for (size_t i = 0; i < MAX_N_INPUTS; i++) {
-      if (inputs[i] != nullptr) {
-        yaml_node["inputs"].push_back(inputs[i]->uuid);
+      if (inputs[i].node != nullptr) {
+        yaml_node["inputs"].push_back(inputs[i].node->uuid);
       } else {
         yaml_node["inputs"].push_back("null");
       }
@@ -117,17 +121,19 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     return yaml_node;
   }
 
-  void SetInput(uint32_t index, AbstractNode* node) {
+  void SetInput(uint32_t index, AbstractNode* node, uint32_t connector_index = 0) {
     if (index < 0 || index > 3) return;
-    inputs[index] = node;
+    inputs[index].node = node;
+    inputs[index].connector_index = connector_index;
   }
   void ResetInput(uint32_t index) {
     if (index < 0 || index > 3) return;
-    inputs[index] = nullptr;
+    inputs[index].node = nullptr;
+    inputs[index].connector_index = 0;
   }
   AbstractNode* GetInput(uint32_t index) {
     if (index < 0 || index > 3) return nullptr;
-    return inputs[index];
+    return inputs[index].node;
   }
 
   InputConnector* GetInputConnector(uint32_t index) {
@@ -215,7 +221,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   bool grabbed = false;
   bool highlighted = false;
 
-  std::array<AbstractNode*, MAX_N_INPUTS> inputs = {nullptr, nullptr, nullptr, nullptr};
+  std::array<InputInfo, MAX_N_INPUTS> inputs = {nullptr, 0, nullptr, 0, nullptr, 0, nullptr, 0};
   std::vector<AbstractNode*> m_MultiInput;
   std::vector<InputConnector> m_InputConnectors;
 };

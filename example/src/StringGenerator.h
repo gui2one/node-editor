@@ -48,7 +48,7 @@ class StringGenerate : public StringGenerator {
     combo_p->Set(0);
 
     auto float_p = CREATE_PARAM(NED::ParamFloat, "Float", this);
-    float_p->Set(3.14f, 0.0f, 999.9f);
+    float_p->Set(3.14f, 0.0f, 1000.0f);
 
     auto int_p = CREATE_PARAM(NED::ParamInt, "Int", this);
     int_p->Set(42, 0, 100);
