@@ -27,12 +27,6 @@ std::shared_ptr<NodeParam> FindParamByName(AbstractNode* factory_node, std::stri
 ImVec2 get_nodes_center(std::vector<std::shared_ptr<AbstractNode>>& nodes);
 void deselect_all(std::vector<std::shared_ptr<AbstractNode>>& nodes);
 
-/// <summary>
-/// return true if selections are the same
-/// </summary>
-/// <param name="selA"></param>
-/// <param name="selB"></param>
-/// <returns></returns>
 bool compare_selections(std::vector<AbstractNode*> selA, std::vector<AbstractNode*> selB);
 
 Rect selection_rect(ImVec2 start, ImVec2 end);
