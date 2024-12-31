@@ -92,18 +92,24 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     yaml_node["uuid"] = uuid;
     yaml_node["position"] = position;
     yaml_node["size"] = size;
+
     for (auto item : m_ParamLayout.params) {
       yaml_node["params"].push_back(item->YAMLSerialize());
     }
 
     for (size_t i = 0; i < MAX_N_INPUTS; i++) {
+      YAML::Node input_info;
       if (inputs[i].node != nullptr) {
-        yaml_node["inputs"].push_back(inputs[i].node->uuid);
+        input_info["node"] = uuid;
+        input_info["connector"] = inputs[i].connector_index;
       } else {
-        yaml_node["inputs"].push_back("null");
+        input_info["node"] = "null";
+        input_info["connector"] = 0;
       }
+      yaml_node["inputs"].push_back(input_info);
     }
 
+    // TODO : fix this. It doesn't use the new InputInfo struct
     yaml_node["is_multi_input"] = IsMultiInput();
     if (IsMultiInput()) {
       for (size_t i = 0; i < GetMultiInputCount(); i++) {
