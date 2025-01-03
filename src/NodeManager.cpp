@@ -751,6 +751,8 @@ void NodeManager::tree_view_recurse(NodeNetwork* network) {
         ImGui::TreePop();
       }
     } else {
+      float indent = 25.0f;
+      ImGui::Indent(indent);
       if (ImGui::Selectable(node->title.c_str(), node == m_CurrentNode)) {
         SetCurrentNode(node);
         if (node->parent_node != nullptr) {
@@ -759,6 +761,7 @@ void NodeManager::tree_view_recurse(NodeNetwork* network) {
           GotoRootNetwork();
         }
       }
+      ImGui::Unindent(indent);
     }
   }
 }
