@@ -737,7 +737,7 @@ void NodeManager::tree_view_recurse(NodeNetwork* network) {
 
       bool is_open = ImGui::TreeNodeEx(node->title.c_str(), node_flags);
       if (ImGui::IsItemClicked()) {
-        std::cout << "clicked node : " << node->title << std::endl;
+        // std::cout << "clicked node : " << node->title << std::endl;
         SetCurrentNode(node);
         if (node->parent_node != nullptr) {
           SetCurrentNetwork(&node->parent_node->node_network, node->parent_node->get_shared_ptr());
