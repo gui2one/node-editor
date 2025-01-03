@@ -729,19 +729,32 @@ void NodeManager::SetCurrentNode(std::shared_ptr<AbstractNode> node) {
 void NodeManager::tree_view_recurse(NodeNetwork* network) {
   for (auto node : network->nodes) {
     if (node->IsSubnet()) {
-      if (ImGui::TreeNode(node->title.c_str())) {
-        tree_view_recurse(&node->node_network);
+      // Use a combination of TreeNodeEx and flags for selection
+      ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
+      if (node == m_CurrentNode) {
+        node_flags |= ImGuiTreeNodeFlags_Selected;
+      }
 
+      bool is_open = ImGui::TreeNodeEx(node->title.c_str(), node_flags);
+      if (ImGui::IsItemClicked()) {
+        std::cout << "clicked node : " << node->title << std::endl;
+        SetCurrentNode(node);
+        if (node->parent_node != nullptr) {
+          SetCurrentNetwork(&node->parent_node->node_network, node->parent_node->get_shared_ptr());
+        } else {
+          GotoRootNetwork();
+        }
+      }
+
+      if (is_open) {
+        tree_view_recurse(&node->node_network);
         ImGui::TreePop();
       }
     } else {
-      if (ImGui::Selectable(node->title.c_str(), false)) {
+      if (ImGui::Selectable(node->title.c_str(), node == m_CurrentNode)) {
         SetCurrentNode(node);
         if (node->parent_node != nullptr) {
-          std::cout << node->parent_node->title << std::endl;
-          // m_CurrentNetwork = &node->parent_node->node_network;
           SetCurrentNetwork(&node->parent_node->node_network, node->parent_node->get_shared_ptr());
-          // m_CurrentNetwork->owner = node->parent_node->get_shared_ptr();
         } else {
           GotoRootNetwork();
         }
@@ -1095,7 +1108,14 @@ void NodeManager::OnMouseClick(const Event& event) {
         Utils::deselect_all(GetNodes());
       }
       node->selected = true;
-    } else {
+      SetCurrentNode(node);
+    } else if (m_ViewProps.rectangleSelectionStarted && !clicked_something) {
+      auto sel_rect =
+          Utils::selection_rect(m_ViewProps.rectangleSelectionStartPoint, m_ViewProps.rectangleSelectionEndPoint);
+      node->selected = Utils::node_in_rect(node.get(), sel_rect);
+      if (node->selected) {
+        SetCurrentNode(node);
+      }
     }
 
     if (m_ConnectionProcedure.started && node_hovered) {
@@ -1203,10 +1223,14 @@ void NodeManager::OnMouseRelease(const Event& event) {
     }
   }
 
-  for (auto node : GetNodes()) {
-    if (node->selected) {
-      SetCurrentNode(node);
-      break;
+  if (m_ViewProps.rectangleSelectionStarted == true) {
+    for (auto node : GetNodes()) {
+      auto sel_rect =
+          Utils::selection_rect(m_ViewProps.rectangleSelectionStartPoint, m_ViewProps.rectangleSelectionEndPoint);
+      node->selected = Utils::node_in_rect(node.get(), sel_rect);
+      if (node->selected) {
+        SetCurrentNode(node);
+      }
     }
   }
 
