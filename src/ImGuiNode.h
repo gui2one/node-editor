@@ -166,7 +166,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
 
   inline size_t GetMultiInputCount() { return m_MultiInput.size(); }
-  inline InputInfo GetMultiInput(size_t index) { return m_MultiInput[index]; }
+  inline InputInfo& GetMultiInput(size_t index) { return m_MultiInput[index]; }
   inline void AppendInput(AbstractNode* node, uint32_t connector = 0) {
     InputInfo info;
     info.node = node;
