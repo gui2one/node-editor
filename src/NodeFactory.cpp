@@ -1,4 +1,4 @@
-#include "NodeFactory.h";
+#include "NodeFactory.h"
 
 namespace NED {
 NodeFactoryRegistry& NED::NodeFactoryRegistry::GetInstance() {
