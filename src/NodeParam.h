@@ -98,15 +98,18 @@ class Param : public NodeParam {
   void Set(T _value) {
     temp_value = _value;
     value = _value;
+    default_val = _value;
   };
 
   void Set(T _value, T _min_val, T _max_val) {
     temp_value = _value;
     value = _value;
-
+    default_val = _value;
     min_val = _min_val;
     max_val = _max_val;
   };
+
+  void SetDefaultValue(T _value) { default_val = _value; }
 
   bool IsDefault() { return value == default_val; }
   void SetToDefault() {
