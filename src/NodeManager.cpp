@@ -19,7 +19,7 @@ static GLuint GenerateEmptyTexture() {
 
 static GLuint LoadTexture(const char* filename) {
   int width, height, channels;
-
+  stbi_set_flip_vertically_on_load(0);
   unsigned char* data = stbi_load(filename, &width, &height, &channels, 4);
   if (!data) {
     std::cout << "STBI Unable to load " << filename << std::endl;
