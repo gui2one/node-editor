@@ -5,7 +5,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/dependencies.cmake)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
-add_definitions(-DMODERN_OGL_DEBUG)
+# add_definitions(-DMODERN_OGL_DEBUG)
 option(NODE_EDITOR_BUILD_EXAMPLE "Build node editor example" ON)
 option(NODE_EDITOR_BUILD_DOC "Build node editor documentation" OFF)
 
