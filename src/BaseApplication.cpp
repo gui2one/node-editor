@@ -336,7 +336,6 @@ void BaseApplication::ConfirmDialog() {
 
 void BaseApplication::Run() {
   while (!glfwWindowShouldClose(GetNativeWindow())) {
-    glfwWaitEvents();
     ImGuiBeginFrame();
 
     glClearColor(0.f, 0.f, 0.f, 1.f);
@@ -402,7 +401,7 @@ void BaseApplication::Run() {
 
     ImGuiEndFrame();
     glfwSwapBuffers(GetNativeWindow());
-
+    glfwWaitEventsTimeout(0.032);  // 30 fps
     // std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 }
