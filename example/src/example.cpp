@@ -16,7 +16,7 @@ static void worker_thread(NodeManager *manager, std::string *output_str) {
 
     if (string_op != nullptr) {
       *output_str = string_op->m_DataCache;
-      // std::cout << "Render string : " << STRING_RESULT << std::endl;
+      std::cout << "Render string : " << *output_str << std::endl;
     } else if (number_op != nullptr) {
       std::cout << "Number Op Update -> " << number_op->m_DataCache << std::endl;
 
@@ -24,7 +24,7 @@ static void worker_thread(NodeManager *manager, std::string *output_str) {
       std::cout << "Can't convert to any known Operator Type" << std::endl;
     }
   }
-  std::cout << "working ...." << std::endl;
+  std::cout << "Worker thread Finished" << std::endl;
 }
 
 int main(int argc, char *argv[]) {

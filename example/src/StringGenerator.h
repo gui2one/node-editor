@@ -11,7 +11,10 @@
 #include "ParamFactory.h"
 #include "params.h"
 
-static void fake_wait() { std::this_thread::sleep_for(std::chrono::milliseconds(50)); }
+static void fake_wait() {
+  std::cout << "fake waiting" << std::endl;
+  std::this_thread::sleep_for(std::chrono::milliseconds(20));
+}
 
 namespace NED {
 
@@ -171,7 +174,7 @@ class StringConcatenatorMulti : public StringModifier {
     for (size_t i = 0; i < GetMultiInputCount(); i++) {
       if (GetMultiInput(i).node != nullptr) {
         auto op0 = static_cast<StringOperator*>(GetMultiInput(i).node);
-        if (add_separator_param->Eval()) {
+        if (add_separator_param->Eval() && i > 0) {
           m_DataCache += " " + op0->m_DataCache;
         } else {
           m_DataCache += op0->m_DataCache;
