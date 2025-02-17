@@ -43,6 +43,8 @@ static GLuint LoadTexture(const char* filename) {
 }
 
 namespace NED {
+static void DispatchManagerUpdate() { EventManager::GetInstance().Dispatch(ManagerUpdateEvent()); }
+
 NodeManager::NodeManager() {
   SetNodesMenu([this]() { this->BuildNodeMenuFromRegistry(); });
 
@@ -128,7 +130,9 @@ void NodeManager::EventsSubscribe() {
   });
 
   dispatcher.Subscribe(EventType::NodeConnection, [this](const Event& event) {
-    Evaluate();
+    // Evaluate();
+    std::cout << "node connection" << std::endl;
+    DispatchManagerUpdate();
     auto ev = static_cast<const NodeConnectionEvent&>(event);
     auto action = std::make_shared<NodeConnectAction>(ev.new_parent_node.get(), ev.old_parent_node.get(),
                                                       ev.child_node.get(), ev.child_index);
@@ -137,7 +141,8 @@ void NodeManager::EventsSubscribe() {
   });
 
   dispatcher.Subscribe(EventType::NodeDisconnection, [this](const Event& event) {
-    Evaluate();
+    // Evaluate();
+    DispatchManagerUpdate();
     auto ev = static_cast<const NodeDisconnectionEvent&>(event);
 
     auto action = std::make_shared<NodeDisconnectAction>(ev.parent_node.get(), ev.child_node.get(), ev.child_index);
@@ -1130,7 +1135,7 @@ void NodeManager::OnMouseClick(const Event& event) {
       m_ConnectionProcedure.parent_node = node;
 
       ApplyConnectionProcedure();
-      Evaluate();
+      // Evaluate();
 
       DISPATCH_EDITOR_UPDATE_EVENT();
     }

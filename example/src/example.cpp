@@ -8,14 +8,14 @@
 #include "ui_utils.h"
 using namespace NED;
 
-static void worker_thread(NodeManager *manager) {
+static void worker_thread(NodeManager *manager, std::string *output_str) {
   manager->Evaluate();
   if (manager->GetOutputNode() != nullptr) {
     auto number_op = std::dynamic_pointer_cast<NumberOperator>(manager->GetOutputNode());
     auto string_op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(manager->GetOutputNode());
 
     if (string_op != nullptr) {
-      // STRING_RESULT = string_op->m_DataCache;
+      *output_str = string_op->m_DataCache;
       // std::cout << "Render string : " << STRING_RESULT << std::endl;
     } else if (number_op != nullptr) {
       std::cout << "Number Op Update -> " << number_op->m_DataCache << std::endl;
@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
   dispatcher.Subscribe(EventType::ManagerUpdate, [&app, &STRING_RESULT](const Event &event) {
     auto &manager = app.GetNodeManager();
 
-    std::thread t(worker_thread, &manager);
+    std::thread t(worker_thread, &manager, &STRING_RESULT);
     t.detach();
     // manager.Evaluate();
     // if (manager.GetOutputNode() != nullptr) {
