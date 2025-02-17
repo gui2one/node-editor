@@ -163,7 +163,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     return save;
   }
 
-  inline uint32_t GetNumAvailableInputs() { return m_NumAvailableInputs; }
+  inline uint32_t GetNumAvailableInputs() const { return m_NumAvailableInputs; }
 
   inline size_t GetMultiInputCount() { return m_MultiInput.size(); }
   inline InputInfo& GetMultiInput(size_t index) { return m_MultiInput[index]; }
@@ -175,16 +175,13 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   }
 
   inline void ActivateMultiInput() { m_IsMultiInput = true; }
-  inline bool IsMultiInput() { return m_IsMultiInput; }
+  inline bool IsMultiInput() const { return m_IsMultiInput; }
 
   inline void ActivateSubnet() { m_IsSubnet = true; }
-  inline bool IsSubnet() { return m_IsSubnet; }
+  inline bool IsSubnet() const { return m_IsSubnet; }
 
   inline void ActivateSubnetInputNode() { m_IsSubnetInputNode = true; }
   inline bool IsSubnetInputNode() { return m_IsSubnetInputNode; }
-
-  // inline void AvtivateNullNode() { m_IsNullNode = true; }
-  // inline bool IsNullNode() const { return m_IsNullNode; }
 
   inline void SetNumAvailableInputs(uint32_t num) {
     if (num > MAX_N_INPUTS) {
@@ -220,6 +217,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   // bool m_IsNullNode = false;
 
  public:
+  bool m_IsCooking = false;
   const char* icon_name = "";
   const char* m_TypeName = "no_type";
   NodeNetwork node_network;

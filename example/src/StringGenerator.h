@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <thread>
 #include <type_traits>
 
 #include "ImGuiNode.h"
@@ -74,7 +75,10 @@ class StringGenerate : public StringGenerator {
   };
   ~StringGenerate() {};
 
-  void Generate() override { m_DataCache = value->Eval(); }
+  void Generate() override {
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    m_DataCache = value->Eval();
+  }
 
   std::shared_ptr<ParamString> value;
 

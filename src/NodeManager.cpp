@@ -439,6 +439,10 @@ void NodeManager::DrawNodes() {
     ImVec2 max = min + (node->size * m_ViewProps.zoom);
     draw_list->AddRectFilled(min, max, node->color, 3.0f);
 
+    if (node->m_IsCooking) {
+      draw_list->AddRect(min - ImVec2(2.0f, 2.0f), max + ImVec2(2.0f, 2.0f), NODE_COLOR::RED /* color */,
+                         3.0f /* radius */, 0 /* flags */, 3.0f /* thickness */);
+    }
     if (node->icon_name != "") {
       ImVec2 uv0(0, 0);  // Top-left of the texture
       ImVec2 uv1(1, 1);  // Bottom-right of the texture

@@ -1,3 +1,5 @@
+#include <thread>
+
 #include "Application.h"
 #include "NumberOperator.h"
 #include "StringGenerator.h"
@@ -5,6 +7,25 @@
 #include "params.h"
 #include "ui_utils.h"
 using namespace NED;
+
+static void worker_thread(NodeManager *manager) {
+  manager->Evaluate();
+  if (manager->GetOutputNode() != nullptr) {
+    auto number_op = std::dynamic_pointer_cast<NumberOperator>(manager->GetOutputNode());
+    auto string_op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(manager->GetOutputNode());
+
+    if (string_op != nullptr) {
+      // STRING_RESULT = string_op->m_DataCache;
+      // std::cout << "Render string : " << STRING_RESULT << std::endl;
+    } else if (number_op != nullptr) {
+      std::cout << "Number Op Update -> " << number_op->m_DataCache << std::endl;
+
+    } else {
+      std::cout << "Can't convert to any known Operator Type" << std::endl;
+    }
+  }
+  std::cout << "working ...." << std::endl;
+}
 
 int main(int argc, char *argv[]) {
   std::filesystem::path file_to_load = "";
@@ -34,7 +55,6 @@ int main(int argc, char *argv[]) {
 
   std::string STRING_RESULT = "";
   Application app;
-
   if (!app.Init()) {
     std::cout << "App Init() Error ..." << std::endl;
     return -1;
@@ -78,21 +98,24 @@ int main(int argc, char *argv[]) {
   });
   dispatcher.Subscribe(EventType::ManagerUpdate, [&app, &STRING_RESULT](const Event &event) {
     auto &manager = app.GetNodeManager();
-    manager.Evaluate();
-    if (manager.GetOutputNode() != nullptr) {
-      auto number_op = std::dynamic_pointer_cast<NumberOperator>(manager.GetOutputNode());
-      auto string_op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(manager.GetOutputNode());
 
-      if (string_op != nullptr) {
-        STRING_RESULT = string_op->m_DataCache;
-        std::cout << "Render string : " << STRING_RESULT << std::endl;
-      } else if (number_op != nullptr) {
-        std::cout << "Number Op Update -> " << number_op->m_DataCache << std::endl;
+    std::thread t(worker_thread, &manager);
+    t.detach();
+    // manager.Evaluate();
+    // if (manager.GetOutputNode() != nullptr) {
+    //   auto number_op = std::dynamic_pointer_cast<NumberOperator>(manager.GetOutputNode());
+    //   auto string_op = std::dynamic_pointer_cast<ImGuiNode<std::string>>(manager.GetOutputNode());
 
-      } else {
-        std::cout << "Can't convert to any known Operator Type" << std::endl;
-      }
-    }
+    //  if (string_op != nullptr) {
+    //    STRING_RESULT = string_op->m_DataCache;
+    //    std::cout << "Render string : " << STRING_RESULT << std::endl;
+    //  } else if (number_op != nullptr) {
+    //    std::cout << "Number Op Update -> " << number_op->m_DataCache << std::endl;
+
+    //  } else {
+    //    std::cout << "Can't convert to any known Operator Type" << std::endl;
+    //  }
+    //}
   });
 
   app.GetNodeManager().CreateAllNodes();

@@ -19,6 +19,7 @@ class Node : public T {
 
   void Update() {
     auto node = static_cast<AbstractNode *>(this);
+    node->m_IsCooking = true;
     auto op = dynamic_cast<T *>(this);
     if (!node->IsMultiInput()) {
       if (node->IsSubnetInputNode()) {
@@ -58,6 +59,8 @@ class Node : public T {
       }
     }
     op->Generate();
+
+    node->m_IsCooking = false;
   }
 
   T *ToOperator() { return static_cast<T *>(this); }
