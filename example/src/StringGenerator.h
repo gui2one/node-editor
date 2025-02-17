@@ -11,6 +11,8 @@
 #include "ParamFactory.h"
 #include "params.h"
 
+static void fake_wait() { std::this_thread::sleep_for(std::chrono::milliseconds(500)); }
+
 namespace NED {
 
 class StringOperator : public ImGuiNode<std::string> {
@@ -76,7 +78,7 @@ class StringGenerate : public StringGenerator {
   ~StringGenerate() {};
 
   void Generate() override {
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    fake_wait();
     m_DataCache = value->Eval();
   }
 
@@ -132,6 +134,7 @@ class StringConcatenator : public StringModifier {
   ~StringConcatenator() {};
 
   void Generate() override {
+    fake_wait();
     if (GetInput(0) != nullptr && GetInput(1) != nullptr) {
       auto op0 = static_cast<StringOperator*>(GetInput(0));
       auto op1 = static_cast<StringOperator*>(GetInput(1));
@@ -163,6 +166,7 @@ class StringConcatenatorMulti : public StringModifier {
   ~StringConcatenatorMulti() {};
 
   void Generate() override {
+    fake_wait();
     m_DataCache = "";
     for (size_t i = 0; i < GetMultiInputCount(); i++) {
       if (GetMultiInput(i).node != nullptr) {
@@ -193,6 +197,7 @@ class StringRepeater : public StringModifier {
   ~StringRepeater() {};
 
   void Generate() override {
+    fake_wait();
     if (GetInput(0) != nullptr) {
       std::string val = "";
       auto op0 = static_cast<StringOperator*>(GetInput(0));
@@ -219,6 +224,7 @@ class StringToUpperCase : public StringModifier {
   }
 
   void Generate() override {
+    fake_wait();
     auto op0 = static_cast<StringOperator*>(GetInput(0));
     if (op0 == nullptr) return;
     std::string src = op0->m_DataCache;
