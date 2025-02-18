@@ -132,22 +132,22 @@ void NodeManager::EventsSubscribe() {
   dispatcher.Subscribe(EventType::NodeConnection, [this](const Event& event) {
     // Evaluate();
     std::cout << "node connection" << std::endl;
-    DispatchManagerUpdate();
     auto ev = static_cast<const NodeConnectionEvent&>(event);
     auto action = std::make_shared<NodeConnectAction>(ev.new_parent_node.get(), ev.old_parent_node.get(),
                                                       ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Connect");
     ActionManager::GetInstance().executeCommand(std::move(action));
+    DispatchManagerUpdate();
   });
 
   dispatcher.Subscribe(EventType::NodeDisconnection, [this](const Event& event) {
     // Evaluate();
-    DispatchManagerUpdate();
     auto ev = static_cast<const NodeDisconnectionEvent&>(event);
 
     auto action = std::make_shared<NodeDisconnectAction>(ev.parent_node.get(), ev.child_node.get(), ev.child_index);
     action->message = std::format("Node Disconnect");
     ActionManager::GetInstance().executeCommand(std::move(action));
+    DispatchManagerUpdate();
   });
 
   dispatcher.Subscribe(EventType::NodeCreated, [this](const Event& event) {
@@ -1135,9 +1135,6 @@ void NodeManager::OnMouseClick(const Event& event) {
       m_ConnectionProcedure.parent_node = node;
 
       ApplyConnectionProcedure();
-      // Evaluate();
-
-      DISPATCH_EDITOR_UPDATE_EVENT();
     }
     if (!node->IsMultiInput()) {
       for (uint32_t i = 0; i < node->GetNumAvailableInputs(); i++) {
