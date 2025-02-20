@@ -56,6 +56,11 @@ class NodeFactoryRegistry {
       "NED::NullNode<" #Type ">",                                                                                    \
       {Category, "Null", "NED::NullNode<" #Type ">", []() -> std::shared_ptr<NED::Node<NED::NullNode<Type>>> {       \
          return std::make_shared<NED::Node<NED::NullNode<Type>>>("Null", "NED::NullNode<" #Type ">");                \
+       }});                                                                                                          \
+  NED::NodeFactoryRegistry::GetInstance().RegisterType(                                                              \
+      "NED::SwitchNode<" #Type ">",                                                                                  \
+      {Category, "Switch", "NED::SwitchNode<" #Type ">", []() -> std::shared_ptr<NED::Node<NED::SwitchNode<Type>>> { \
+         return std::make_shared<NED::Node<NED::SwitchNode<Type>>>("Switch", "NED::SwitchNode<" #Type ">");          \
        }})
 
 #endif  // NODE_EDITOR_NODEFACTORY_H

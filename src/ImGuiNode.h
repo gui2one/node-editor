@@ -345,6 +345,36 @@ class NullNode : public ImGuiNode<T> {
 
   void ClearCache() override { this->m_DataCache = T(); }
 };
+
+template <typename T>
+class SwitchNode : public ImGuiNode<T> {
+ public:
+  SwitchNode() : ImGuiNode<T>("no title") {
+    this->ActivateMultiInput();
+    p_input_index = CREATE_PARAM(NED::ParamInt, "input index", this);
+    p_input_index->Set(0, 0, 5);
+    this->m_ParamLayout.params = {p_input_index};
+  }
+
+  void Generate() override {
+    if (this->GetMultiInputCount() > 0) {
+      int cur_index = p_input_index->Eval();
+
+      if (cur_index < 0) {
+        cur_index = 0;
+      } else if (cur_index >= this->GetMultiInputCount()) {
+        cur_index = this->GetMultiInputCount() - 1;
+      }
+
+      auto op = dynamic_cast<ImGuiNode<T>*>(this->GetMultiInput(cur_index).node);
+      this->m_DataCache = op->m_DataCache;
+    }
+  }
+  void ClearCache() override { this->m_DataCache = T(); }
+
+ public:
+  std::shared_ptr<ParamInt> p_input_index;
+};
 };  // namespace NED
 
 #endif
