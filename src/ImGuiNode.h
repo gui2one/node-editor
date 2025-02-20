@@ -175,7 +175,10 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     m_MultiInput.push_back(info);
   }
 
-  inline void ActivateMultiInput() { m_IsMultiInput = true; }
+  inline void ActivateMultiInput() {
+    m_IsMultiInput = true;
+    SetNumAvailableInputs(0);
+  }
   inline bool IsMultiInput() const { return m_IsMultiInput; }
 
   inline void ActivateSubnet() { m_IsSubnet = true; }

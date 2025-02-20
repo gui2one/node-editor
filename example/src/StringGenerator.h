@@ -156,15 +156,12 @@ class StringConcatenator : public StringModifier {
 class StringConcatenatorMulti : public StringModifier {
  public:
   StringConcatenatorMulti() : StringModifier() {
-    SetNumAvailableInputs(0);
     ActivateMultiInput();
-    // add_separator_param = std::make_shared<ParamBool>("Add Separator", false);
+
     add_separator_param = CREATE_PARAM(NED::ParamBool, "Add Separator", this);
     add_separator_param->Set(false);
-    // auto combo_test = std::make_shared<ParamComboBox>("Combo Test");
-    auto combo_test = CREATE_PARAM(NED::ParamComboBox, "Combo Test", this);
-    combo_test->SetChoices({"A", "B", "C"});
-    m_ParamLayout.params = {add_separator_param, combo_test};
+
+    m_ParamLayout.params = {add_separator_param};
   }
   ~StringConcatenatorMulti() {};
 
