@@ -21,6 +21,7 @@ std::string AbstractNode::GenerateParamsHash() {
   YAML::Node yaml_node = YAMLSerialize();
   // std::cout << yaml_node << std::endl;
   //  std::string str = yaml_node.as<std::string>();
+  yaml_node["position"] = ImVec2(0, 0);
   std::hash<std::string> hasher;
   size_t hash = hasher(YAML::Dump(yaml_node));
 
