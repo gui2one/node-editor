@@ -789,7 +789,16 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   }
 
   if (node != nullptr) {
-    /* Manage Node Title*/
+    /* Node color */
+    ImVec4 temp_color = ImGui::ColorConvertU32ToFloat4(node->color);
+    if (ImGui::ColorEdit4("##Node Color", &temp_color.x, ImGuiColorEditFlags_NoInputs)) {
+      node->color = (NODE_COLOR)(ImGui::ColorConvertFloat4ToU32(temp_color));
+    }
+    if (ImGui::IsItemDeactivatedAfterEdit() || (ImGui::IsItemActive() && !ImGui::IsMouseDown(0))) {
+      std::cout << "color changed. Trigger Event Here !" << std::endl;
+    }
+    ImGui::SameLine();
+    /* Node Title*/
     std::string temp_name = node->title;
     std::string name_copy = std::string(node->title);
 
@@ -805,22 +814,15 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
       node->title = generate_unique_name(name_copy, names);
     }
 
-    ImGui::SameLine();
-    ImVec4 temp_color = ImGui::ColorConvertU32ToFloat4(node->color);
-    if (ImGui::ColorEdit4("##Node Color", &temp_color.x, ImGuiColorEditFlags_NoInputs)) {
-      node->color = (NODE_COLOR)(ImGui::ColorConvertFloat4ToU32(temp_color));
+    if (ImGui::Button("Options")) {
+      OpenNodeParamsOptionsPopup();
     }
+
+    ImGui::SameLine();
 
     ImGui::PushStyleColor(ImGuiCol_Text, NODE_COLOR::LIGHT_GREY);
     ImGui::Text("Node Type: %s", node->m_TypeName);
 
-    ImGui::SameLine();
-
-    if (ImGui::Button("Options")) {
-      // std::cout << "Options" << std::endl;
-
-      OpenNodeParamsOptionsPopup();
-    }
     ImGui::Separator();
     ImGui::Spacing();
 
