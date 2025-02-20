@@ -827,7 +827,7 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
     ImGui::PopStyleColor();
 
     ImGui::Spacing();
-    static ImVec4 temp_color = ImGui::ColorConvertU32ToFloat4(node->color);
+    ImVec4 temp_color = ImGui::ColorConvertU32ToFloat4(node->color);
     if (ImGui::ColorEdit4("Node Color", &temp_color.x)) {
       node->color = (NODE_COLOR)(ImGui::ColorConvertFloat4ToU32(temp_color));
     }

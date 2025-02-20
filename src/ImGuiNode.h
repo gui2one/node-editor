@@ -92,6 +92,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     yaml_node["uuid"] = uuid;
     yaml_node["position"] = position;
     yaml_node["size"] = size;
+    yaml_node["color"] = (ImU32)color;
 
     for (auto item : m_ParamLayout.params) {
       yaml_node["params"].push_back(item->YAMLSerialize());

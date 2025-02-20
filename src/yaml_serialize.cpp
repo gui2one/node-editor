@@ -44,6 +44,7 @@ std::shared_ptr<AbstractNode> deserialize_node(YAML::Node yaml_node) {
   factory_node->position = yaml_node["position"].as<ImVec2>();
   factory_node->title = yaml_node["title"].as<std::string>();
   factory_node->uuid = yaml_node["uuid"].as<std::string>();
+  factory_node->color = (NODE_COLOR)yaml_node["color"].as<ImU32>();
 
   bool is_subnet = yaml_node["is_subnet"].as<bool>();
 
