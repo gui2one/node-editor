@@ -825,7 +825,12 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
     }
     ImGui::Text("Cook Hash : %s", hash_view.data());
     ImGui::PopStyleColor();
+
     ImGui::Spacing();
+    static ImVec4 temp_color = ImGui::ColorConvertU32ToFloat4(node->color);
+    if (ImGui::ColorEdit4("Node Color", &temp_color.x)) {
+      node->color = (NODE_COLOR)(ImGui::ColorConvertFloat4ToU32(temp_color));
+    }
     for (auto param : node->m_ParamLayout.params) {
       // param->Display();
       // std::cout << param->m_TypeName << std::endl;
