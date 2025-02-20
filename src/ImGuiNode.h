@@ -209,6 +209,8 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
     }
   }
 
+  std::string GenerateParamsHash();
+
  private:
   uint32_t m_NumAvailableInputs = 1;
   bool m_IsMultiInput = false;
@@ -238,6 +240,8 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
   std::array<InputInfo, MAX_N_INPUTS> inputs = {nullptr, 0, nullptr, 0, nullptr, 0, nullptr, 0};
   std::vector<InputInfo> m_MultiInput;
   std::vector<InputConnector> m_InputConnectors;
+
+  std::string m_ParamsHash = "";
 };
 
 template <typename T>

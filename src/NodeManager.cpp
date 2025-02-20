@@ -789,6 +789,7 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
   }
 
   if (node != nullptr) {
+    /* Manage Node Title*/
     std::string temp_name = node->title;
     std::string name_copy = std::string(node->title);
 
@@ -806,8 +807,9 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
 
     ImGui::PushStyleColor(ImGuiCol_Text, NODE_COLOR::LIGHT_GREY);
     ImGui::Text("Node Type: %s", node->m_TypeName);
-    ImGui::PopStyleColor();
+
     ImGui::SameLine();
+
     if (ImGui::Button("Options")) {
       // std::cout << "Options" << std::endl;
 
@@ -815,6 +817,14 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
     }
     ImGui::Separator();
     ImGui::Spacing();
+
+    /* Display Params Hash*/
+    std::string_view hash_view = std::string_view(node->m_ParamsHash);
+    if (hash_view == "") {
+      hash_view = "Never Cooked";
+    }
+    ImGui::Text("Cook Hash : %s", hash_view.data());
+    ImGui::PopStyleColor();
     ImGui::Spacing();
     for (auto param : node->m_ParamLayout.params) {
       // param->Display();

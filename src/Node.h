@@ -20,6 +20,11 @@ class Node : public T {
   void Update() {
     auto node = static_cast<AbstractNode *>(this);
     node->m_IsCooking = true;
+
+    std::string hash = node->GenerateParamsHash();
+    // std::cout << "HASHH : " << hash << std::endl;
+    node->m_ParamsHash = hash;
+
     auto op = dynamic_cast<T *>(this);
     if (!node->IsMultiInput()) {
       if (node->IsSubnetInputNode()) {

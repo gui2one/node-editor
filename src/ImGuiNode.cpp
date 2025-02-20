@@ -17,4 +17,16 @@ void NodeNetwork::RemoveNode(AbstractNode* _node) {
   if (it == nodes.end()) return;
   nodes.erase(it);
 }
+std::string AbstractNode::GenerateParamsHash() {
+  YAML::Node yaml_node = YAMLSerialize();
+  // std::cout << yaml_node << std::endl;
+  //  std::string str = yaml_node.as<std::string>();
+  std::hash<std::string> hasher;
+  size_t hash = hasher(YAML::Dump(yaml_node));
+
+  std::stringstream stream;
+  stream << std::hex << hash;
+  std::string result(stream.str());
+  return result;
+}
 };  // namespace NED
