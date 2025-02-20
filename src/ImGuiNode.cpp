@@ -19,8 +19,9 @@ void NodeNetwork::RemoveNode(AbstractNode* _node) {
 }
 std::string AbstractNode::GenerateParamsHash() {
   YAML::Node yaml_node = YAMLSerialize();
-
+  /* reset position. I don't want it to affect hash*/
   yaml_node["position"] = ImVec2(0, 0);
+
   std::hash<std::string> hasher;
   size_t hash = hasher(YAML::Dump(yaml_node));
 
