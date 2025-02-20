@@ -805,6 +805,12 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
       node->title = generate_unique_name(name_copy, names);
     }
 
+    ImGui::SameLine();
+    ImVec4 temp_color = ImGui::ColorConvertU32ToFloat4(node->color);
+    if (ImGui::ColorEdit4("##Node Color", &temp_color.x, ImGuiColorEditFlags_NoInputs)) {
+      node->color = (NODE_COLOR)(ImGui::ColorConvertFloat4ToU32(temp_color));
+    }
+
     ImGui::PushStyleColor(ImGuiCol_Text, NODE_COLOR::LIGHT_GREY);
     ImGui::Text("Node Type: %s", node->m_TypeName);
 
@@ -827,10 +833,7 @@ void NodeManager::DisplayNodeParams(std::shared_ptr<AbstractNode> node) {
     ImGui::PopStyleColor();
 
     ImGui::Spacing();
-    ImVec4 temp_color = ImGui::ColorConvertU32ToFloat4(node->color);
-    if (ImGui::ColorEdit4("Node Color", &temp_color.x)) {
-      node->color = (NODE_COLOR)(ImGui::ColorConvertFloat4ToU32(temp_color));
-    }
+
     for (auto param : node->m_ParamLayout.params) {
       // param->Display();
       // std::cout << param->m_TypeName << std::endl;
