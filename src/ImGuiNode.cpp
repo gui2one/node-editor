@@ -28,8 +28,8 @@ static void reset_node_pos_in_yaml(YAML::Node& yaml) {
 }
 std::string AbstractNode::GenerateParamsHash() {
   YAML::Node yaml_node = YAMLSerialize();
-  yaml_node["position"] = ImVec2(0, 0);
   reset_node_pos_in_yaml(yaml_node);
+
   std::hash<std::string> hasher;
   size_t hash = hasher(YAML::Dump(yaml_node));
 
