@@ -54,6 +54,7 @@ NodeManager::NodeManager() {
   REGISTER_PARAM_TYPE(NED::ParamGroup);
   REGISTER_PARAM_TYPE(NED::ParamComboBox);
   REGISTER_PARAM_TYPE(NED::ParamFile);
+  REGISTER_PARAM_TYPE(NED::ParamSeparator);
 
   REGISTER_PARAM_TYPE(NED::ParamFloat);
   REGISTER_PARAM_TYPE(NED::ParamInt);
