@@ -16,7 +16,7 @@
 
 namespace NED {
 
-class AbstractNode;
+// class AbstractNode;
 
 enum NODE_COLOR {
   BLACK = (ImU32)IM_COL32(0, 0, 0, 255),
@@ -81,7 +81,7 @@ class AbstractNode : public std::enable_shared_from_this<AbstractNode> {
 
   std::shared_ptr<AbstractNode> get_shared_ptr() { return shared_from_this(); }
   virtual void Update() = 0;    // implemented in Node.h, in the Node<T> class
-  virtual void Generate() = 0;  // user defined method. i.e the work the node is doint for the user app
+  virtual void Generate() = 0;  // user defined method. i.e the work the node is doing for the user app
   virtual void ClearCache() = 0;
 
   YAML::Node YAMLSerialize() {
@@ -322,6 +322,7 @@ class SubnetInputNode : public ImGuiNode<T> {
 
   std::shared_ptr<Param<int>> input_id;
 };
+
 template <typename T>
 class NullNode : public ImGuiNode<T> {
  public:
@@ -349,12 +350,15 @@ class NullNode : public ImGuiNode<T> {
 template <typename T>
 class SwitchNode : public ImGuiNode<T> {
  public:
-  SwitchNode() : ImGuiNode<T>("no title") {
+  SwitchNode() : ImGuiNode<T>("switch") {
     this->ActivateMultiInput();
-    p_input_index = CREATE_PARAM(NED::ParamInt, "input index", this);
-    p_input_index->Set(0, 0, 5);
-    this->m_ParamLayout.params = {p_input_index};
+    this->SetNumAvailableInputs(0);
+    this->p_input_index = CREATE_PARAM(NED::ParamInt, "input Index", this);
+    this->p_input_index->Set(0, 0, 5);
+    this->m_ParamLayout.params.push_back(p_input_index);
   }
+
+  ~SwitchNode() {}
 
   void Generate() override {
     if (this->GetMultiInputCount() > 0) {
@@ -363,17 +367,25 @@ class SwitchNode : public ImGuiNode<T> {
       if (cur_index < 0) {
         cur_index = 0;
       } else if (cur_index >= this->GetMultiInputCount()) {
-        cur_index = this->GetMultiInputCount() - 1;
+        cur_index = (int)this->GetMultiInputCount() - 1;
       }
 
-      auto op = dynamic_cast<ImGuiNode<T>*>(this->GetMultiInput(cur_index).node);
-      this->m_DataCache = op->m_DataCache;
+      AbstractNode* node = this->GetMultiInput(cur_index).node;
+
+      auto op =
+          static_cast<ImGuiNode<T>*>(node); /* a different mthod than other utility nodes
+                                                                              (trying to address a weir warning issue)*/
+      if (op != nullptr) {
+        this->m_DataCache = op->m_DataCache;
+      } else {
+        this->m_DataCache = T();
+      }
     }
   }
   void ClearCache() override { this->m_DataCache = T(); }
 
  public:
-  std::shared_ptr<ParamInt> p_input_index;
+  std::shared_ptr<Param<int>> p_input_index;
 };
 };  // namespace NED
 
