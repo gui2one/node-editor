@@ -17,11 +17,19 @@ void NodeNetwork::RemoveNode(AbstractNode* _node) {
   if (it == nodes.end()) return;
   nodes.erase(it);
 }
+
+static void reset_node_pos_in_yaml(YAML::Node& yaml) {
+  yaml["position"] = ImVec2(0, 0);
+  if (yaml["is_subnet"].as<bool>() == true) {
+    for (auto child : yaml["node_network"]["nodes"]) {
+      reset_node_pos_in_yaml(child);
+    }
+  }
+}
 std::string AbstractNode::GenerateParamsHash() {
   YAML::Node yaml_node = YAMLSerialize();
-  /* reset position. I don't want it to affect hash*/
   yaml_node["position"] = ImVec2(0, 0);
-
+  reset_node_pos_in_yaml(yaml_node);
   std::hash<std::string> hasher;
   size_t hash = hasher(YAML::Dump(yaml_node));
 
