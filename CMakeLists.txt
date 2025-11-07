@@ -81,6 +81,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC glad)
 
 if(NODE_EDITOR_BUILD_EXAMPLE)
   add_subdirectory(example)
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT node_editor_example)
+
 endif()
 
 if(NODE_EDITOR_BUILD_DOC)
