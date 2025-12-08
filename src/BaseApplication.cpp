@@ -120,7 +120,7 @@ bool BaseApplication::InitGLFW() {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return false;
   }
-// #define MODERN_OGL_DEBUG
+#define MODERN_OGL_DEBUG
 #ifdef MODERN_OGL_DEBUG
   m_DebugData = new DebugData();
 
